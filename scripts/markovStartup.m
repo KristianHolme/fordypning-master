@@ -1,4 +1,5 @@
 disp(['pwd: ', pwd()]);
+disp(fullfile(pwd, ".\..\..\..\mrst-bitbucket\mrst-core\startup.m"))
 run(".\..\..\..\mrst-bitbucket\mrst-core\startup.m");
 
 mrstPath register nfvm .\..\..\..\mrst-2023b\modules\nfvm;
