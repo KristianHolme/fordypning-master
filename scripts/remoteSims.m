@@ -1,3 +1,6 @@
+mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
+    ad-blackoil postprocessing diagnostics prosjektOppgave...
+    deckformat
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
