@@ -21,12 +21,20 @@ function G = setupGrid11A(simcase, varargin)
                 G = gmshToMRST(mFile);
                 save(matFile, "G")
             end
-                   
+            load(matFile);       
             
+            G = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
+            G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
+            G.cells.indexMap = (1:G.cells.num)';
+            if opt.dim == 3
+                G = makeLayeredGrid(G, 0.01);
+                G = computeGeometry(G);
+            end
+            G = RotateGrid(G);%rotategrid to Z axis
         elseif contains(gridcase, 'struct')
-            resolution = replace(gridcase, 'struct', ''); %format struct200x200
-            matFile = fullfile(geometriesFolder, ['spe11a_struct', resolution ,'_grid.mat']);
-            mFile = fullfile(geometriesFolder, ['spe11a_struct', resolution, '.m']);
+            res = 
+            matFile = fullfile(geometriesFolder, ['spe11a_struct', num2str(refinement_factor) ,'_grid.mat']);
+            mFile = fullfile(geometriesFolder, ['spe11a_ref', num2str(refinement_factor), '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
                 error([matFile,' and ', mfile, ' not found']);
             elseif ~isfile(matFile) && isfile(mFile)
@@ -35,15 +43,6 @@ function G = setupGrid11A(simcase, varargin)
             end
         
         end
-        load(matFile);
-        G = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
-        G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
-        G.cells.indexMap = (1:G.cells.num)';
-        if opt.dim == 3
-            G = makeLayeredGrid(G, 0.01);
-            G = computeGeometry(G);
-        end
-        G = RotateGrid(G);%rotategrid to Z axis
 
 
     elseif ~isempty(simcase.deck) %use deck if present

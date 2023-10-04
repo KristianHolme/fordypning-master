@@ -1,20 +1,18 @@
 clear all
 close all
 %%
-mrstModule add prosjektOppgave
-%%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat
+    deckformat gmsh
 %%
-deckcases = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV'};
+% decks = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV'};
 
 
 %%
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'tetRef10'};
+gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'struct220x90'};
 schedulecases = {'simple-std'};
 deckcases = {'RS'};
 
