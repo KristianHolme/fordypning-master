@@ -8,7 +8,7 @@ function G = setupGrid11A(simcase, varargin)
         refinement_factor = str2double(replace(gridcase, 'tetRef', ''));
         if strcmp(simcase.user, 'holme')
             geometriesFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\11thSPE-CSP\geometries\11AFiles";
-        elseif strcmp(simcase.username, 'kholme')
+        elseif strcmp(simcase.user, 'kholme')
             geometriesFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/11thSPE-CSP/geometries/11AFiles';
         end
         matFile = fullfile(geometriesFolder, ['spe11a_ref', num2str(refinement_factor) ,'_grid.mat']);
