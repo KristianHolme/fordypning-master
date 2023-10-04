@@ -10,6 +10,8 @@ classdef Simcase < handle
         tagcase
         schedulecase
         rockcase
+        deckcase
+        usedeck
 
         G
         rock
@@ -21,8 +23,7 @@ classdef Simcase < handle
         deck
         
         gravity
-        deckcase
-        usedeck
+
     end
     properties (Access = private)
         resetprop  % trigger reset of properties in getters and setters (default = 1)
@@ -230,7 +231,7 @@ classdef Simcase < handle
             dataOutputDir = simcase.dataOutputDir;
             if isempty(dataOutputDir)
                 if strcmp(simcase.user, 'holme')
-                    dataOutputDir = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\11SPE\src\output';
+                    dataOutputDir = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\output';
                 elseif strcmp(simcase.user, 'kholme')
                     dataOutputDir = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/output';
                 end
@@ -244,6 +245,11 @@ classdef Simcase < handle
             view(0,0);
             title(simcase.casename, 'Interpreter','none');
         end
+        function [err, errvect, fwerr] = computeStaticIndicator(simcase)
+            tbls = setupTables(simcase.G);
+            [err, errvect, fwerr] = computeOrthError(simcase.G, simcase.rock, tbls);
+        end
+
 
     end
 end
