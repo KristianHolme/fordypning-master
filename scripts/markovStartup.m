@@ -1,3 +1,4 @@
+disp(['pwd: ', pwd()]);
 run("..\mrst-bitbucket\mrst-core\startup.m");
 
 mrstPath register nfvm .\..\mrst-2023b\modules\nfvm;
