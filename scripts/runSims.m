@@ -14,12 +14,12 @@ deckcases = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV'};
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {''};
-schedulecases = {''};
-deckcases = {'RS'};
+gridcases = {'tetRef10'};
+schedulecases = {'simple-coarse'};
+deckcases = {'IMMISCIBLE'};
 
 resetData = false;
-do.plotStates = true;
+do.plotStates = false;
 do.multiphase = true;
 useJutulIfPossible = false;
 

@@ -22,9 +22,11 @@ function model = setupModel11A(simcase, varargin)
         water = true;
         oil = false;
         model = GenericBlackOilModel(G, rock, fluid, 'water', water, 'oil', oil, 'gas', gas);
+        model.OutputStateFunctions{end+1} = 'CapillaryPressure'; %leads
+        model.outputFluxes = false;
     else
         model = selectModelFromDeck(G, rock, fluid, deck);
-        % model.OutputStateFunctions{end+1} = 'CapillaryPressure'; %leads
+        model.OutputStateFunctions{end+1} = 'CapillaryPressure'; %leads
         % to fatal error
         model.outputFluxes = false;
     end

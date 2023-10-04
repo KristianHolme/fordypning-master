@@ -230,7 +230,7 @@ classdef Simcase < handle
             dataOutputDir = simcase.dataOutputDir;
             if isempty(dataOutputDir)
                 if strcmp(simcase.user, 'holme')
-                    dataOutputDir = fullfile(ROOTDIR, 'output');%'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\11SPE\src\output';
+                    dataOutputDir = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\11SPE\src\output';
                 elseif strcmp(simcase.user, 'kholme')
                     dataOutputDir = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/output';
                 end
