@@ -160,7 +160,11 @@ classdef Simcase < handle
                 deckname = simcase.deckcase;
                 deckname = ['CSP11A_', deckname, '.DATA'];
                 if ~isempty(deckname)
-                    deckFolder = "spe11-utils\deck";
+                    if strcmp(simcase.user, 'kholme')
+                        deckFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/spe11-utils/deck';
+                    else
+                        deckFolder = "spe11-utils\deck";
+                    end
                     deck = readEclipseDeck(fullfile(deckFolder, deckname));
                     deck = convertDeckUnits(deck);
                 end
@@ -185,9 +189,13 @@ classdef Simcase < handle
         function user = get.user(simcase)
             user = simcase.user;
             if isempty(user)
-                user = getenv('username');
+                user = getenv('USER');  % For Unix/Linux/Mac
+                if isempty(user)
+                    user = getenv('USERNAME');  % For Windows
+                end
                 simcase.user = user;
             end
+
         end
         function G = get.G(simcase)
             G = simcase.G;
@@ -223,6 +231,8 @@ classdef Simcase < handle
             if isempty(dataOutputDir)
                 if strcmp(simcase.user, 'holme')
                     dataOutputDir = fullfile(ROOTDIR, 'output');%'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\11SPE\src\output';
+                elseif strcmp(simcase.user, 'kholme')
+                    dataOutputDir = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/output';
                 end
                 simcase.dataOutputDir = dataOutputDir;
             end

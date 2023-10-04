@@ -6,7 +6,11 @@ function G = setupGrid11A(simcase, varargin)
 
     if ~isempty(gridcase) && contains(gridcase, 'tetRef')
         refinement_factor = str2double(replace(gridcase, 'tetRef', ''));
-        geometriesFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\11SPE\src\11thSPE-CSP\geometries\11AFiles";
+        if strcmp(simcase.user, 'holme')
+            geometriesFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\11thSPE-CSP\geometries\11AFiles";
+        elseif strcmp(simcase.username, 'kholme')
+            geometriesFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/11thSPE-CSP/geometries/11AFiles';
+        end
         matFile = fullfile(geometriesFolder, ['spe11a_ref', num2str(refinement_factor) ,'_grid.mat']);
         mFile = fullfile(geometriesFolder, ['spe11a_ref', num2str(refinement_factor), '.m']);
         if ~isfile(matFile) && ~isfile(mFile)
