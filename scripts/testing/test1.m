@@ -7,7 +7,8 @@ mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
 %%
 gridcase = 'struct220x90';
 gridcase = 'tetRef1';
-simcase = Simcase('gridcase', gridcase);
+deckcase = 'RS';
+simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', true);
 % plotCellData(simcase.G, simcase.rock.perm);view(0,0);
 
 

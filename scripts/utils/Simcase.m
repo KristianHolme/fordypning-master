@@ -249,6 +249,22 @@ classdef Simcase < handle
             tbls = setupTables(simcase.G);
             [err, errvect, fwerr] = computeOrthError(simcase.G, simcase.rock, tbls);
         end
+        function [well1Index, well2Index] = getinjcells(simcase)
+            SPEcase = simcase.SPEcase;
+            G = simcase.G;
+            if strcmp(SPEcase, 'A')
+                [~, dim] = size(G.cells.centroids);
+                if dim == 3
+                    well1Coords = [0.9, 0.05, 1.2-0.3];
+                    well2Coords = [1.7, 0.05, 1.2-0.7];
+                else
+                    well1Coords = [0.9, 0.3];
+                    well2Coords = [1.7, 0.7];
+                end
+                [~,well1Index] = min(vecnorm(G.cells.centroids - well1Coords, 2, 2));
+                [~,well2Index] = min(vecnorm(G.cells.centroids - well2Coords, 2, 2));
+            end
+        end
 
 
     end

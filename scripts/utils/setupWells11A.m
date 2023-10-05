@@ -1,19 +1,13 @@
-function [wells1, wells2, wells3] = setupWells11A(G, rock, varargin)
-    [~, dim] = size(G.cells.centroids);
-    if dim == 3
-        well1Coords = [0.9, 0.05, 1.2-0.3];
-        well2Coords = [1.7, 0.05, 1.2-0.7];
-    else
-        well1Coords = [0.9, 0.3];
-        well2Coords = [1.7, 0.7];
-    end
-
+function [wells1, wells2, wells3] = setupWells11A(simcase, varargin)
+    G = simcase.G;
+    rock = sicmase.rock;
+   
     testFactor = 1;
     wellRate = 1.7e-7/2.05864576494*testFactor;%FIXME correct rate??make dep on pressure?
     wellRadius = 9e-4;%m
-
-    [~,well1Index] = min(vecnorm(G.cells.centroids - well1Coords, 2, 2));
-    [~,well2Index]=  min(vecnorm(G.cells.centroids - well2Coords, 2, 2));
+    
+    
+    [well1Index, well2Index] = simcase.getinjcells;
 
     wells = addWell([], G, rock, well1Index, 'Type', 'rate', 'val', wellRate, ...
         'radius', wellRadius, 'compi', [0, 1], 'name', 'INJE01', 'dir', 'z');

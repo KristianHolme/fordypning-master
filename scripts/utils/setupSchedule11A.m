@@ -38,10 +38,18 @@ function schedule = setupSchedule11A(simcase, varargin)
         schedule.control(3).W = wells3;
         schedule.control(3).bc = bc;
         % schedule = simpleSchedule(dt, 'w', wells1);
+   
+
     elseif simcase.usedeck
         model = simcase.model;
         deck = simcase.deck;
         schedule = convertDeckScheduleToMRST(model, deck);
+        if ~isempty(simcase.gridcase)%using non-deck grid with deck-schedule NOT FINISHED FIXME
+            [cell1, cell2] = simcase.getinjcells;
+            for i = 1:numel(schedule.control)
+                schedule.control(i).W.cells
+            end
+        end
         G = model.G;
         bf = boundaryFaces(G);
         bf = bf(G.faces.centroids(bf, 3) < 1e-12);

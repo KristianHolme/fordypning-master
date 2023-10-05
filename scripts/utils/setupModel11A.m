@@ -29,5 +29,6 @@ function model = setupModel11A(simcase, varargin)
         model.OutputStateFunctions{end+1} = 'CapillaryPressure';
         model.outputFluxes = false;
     end
+    model.AutoDiffBackend = DiagonalAutoDiffBackend('useMex', true);
     model.dpMaxRel = 0.2; %copied from initEclipseProblem
 end

@@ -13,15 +13,15 @@ mrstVerbose off
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'tetRef10'};
+gridcases = {'tetRef2'};
 schedulecases = {'simple-std'};
 deckcases = {'RS'};
 
-resetData = true;
+resetData = false;
 do.plotStates = false;
 do.multiphase = true;
 useJutulIfPossible = false;
-direct_solver = true;
+direct_solver = false;
 
 timings = struct();
 for ideck = 1:numel(deckcases)
