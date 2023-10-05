@@ -6,14 +6,14 @@ mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     deckformat
 %%
 gridcase = 'struct220x90';
-gridcase = 'tetRef2';
+gridcase = 'tetRef1';
 simcase = Simcase('gridcase', gridcase);
-plotCellData(simcase.G, simcase.rock.perm);view(0,0);
+% plotCellData(simcase.G, simcase.rock.perm);view(0,0);
 
 
 %%
 simcase = Simcase('deckcase', 'RS', 'usedeck', true, 'schedulecase', 'simple-std');
-plotCellData(simcase.G, simcase.rock.poro);view(0,0);
+% plotCellData(simcase.G, simcase.rock.poro);view(0,0);
 
 %%
 geometriesFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\11SPE\src\11thSPE-CSP\geometries";

@@ -22,12 +22,11 @@ function model = setupModel11A(simcase, varargin)
         water = true;
         oil = false;
         model = GenericBlackOilModel(G, rock, fluid, 'water', water, 'oil', oil, 'gas', gas);
-        model.OutputStateFunctions{end+1} = 'CapillaryPressure'; %leads
+        model.OutputStateFunctions{end+1} = 'CapillaryPressure';
         model.outputFluxes = false;
     else
         model = selectModelFromDeck(G, rock, fluid, deck);
-        model.OutputStateFunctions{end+1} = 'CapillaryPressure'; %leads
-        % to fatal error
+        model.OutputStateFunctions{end+1} = 'CapillaryPressure';
         model.outputFluxes = false;
     end
     model.dpMaxRel = 0.2; %copied from initEclipseProblem

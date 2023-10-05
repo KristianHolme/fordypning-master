@@ -4,22 +4,24 @@ close all
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
     deckformat gmsh
+mrstVerbose off
 %%
 % decks = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV'};
 
 
 %%
-% gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
+% gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'struct220x90'};
+gridcases = {'tetRef10'};
 schedulecases = {'simple-std'};
 deckcases = {'RS'};
 
-resetData = false;
+resetData = true;
 do.plotStates = false;
 do.multiphase = true;
 useJutulIfPossible = false;
+direct_solver = true;
 
 timings = struct();
 for ideck = 1:numel(deckcases)
@@ -37,7 +39,8 @@ for ideck = 1:numel(deckcases)
             simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                             'schedulecase', schedulecase);
             if do.multiphase
-                [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul);
+                [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                                    'direct_solver', direct_solver);
                 timings.(simcase.deckcase) = time;
             end
             if do.plotStates
