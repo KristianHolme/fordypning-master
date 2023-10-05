@@ -12,11 +12,11 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'struct220x90'};
+gridcases = {'struct220x90'};
 schedulecases = {'simple-std'};
 deckcases = {'RS'};
 
-resetData = true;
+resetData = false;
 do.plotStates = false;
 do.multiphase = true;
 useJutulIfPossible = false;
