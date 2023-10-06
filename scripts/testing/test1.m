@@ -5,13 +5,12 @@ mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
 %%
-gridcase = 'struct220x90';
-gridcase = 'tetRef1';
+gridcase = 'tetRef0.8';
 deckcase = 'RS';
 simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', true);
 % plotCellData(simcase.G, simcase.rock.perm);view(0,0);
 
-
+simcase.G;
 %%
 simcase = Simcase('deckcase', 'RS', 'usedeck', true, 'schedulecase', 'simple-std');
 % plotCellData(simcase.G, simcase.rock.poro);view(0,0);

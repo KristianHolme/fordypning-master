@@ -25,5 +25,5 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
     nls.maxTimestepCuts = 20;
     nls.maxIterations = 12; %fra readEclipse
     nls.useRelaxation = true;
-    
+
 end

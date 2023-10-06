@@ -241,7 +241,7 @@ classdef Simcase < handle
         function plotStates(simcase)
             [states, wellsols, reports] = simcase.getSimData;
             figure
-            plotToolbar(simcase.G, states, 'field', 'FlowProps.ComponentTotalMass:2');
+            plotToolbar(simcase.G, states, 'field', 'FlowProps.ComponentTotalMass:2', 'pauseTime', 0.05);
             view(0,0);
             title(simcase.casename, 'Interpreter','none');
         end

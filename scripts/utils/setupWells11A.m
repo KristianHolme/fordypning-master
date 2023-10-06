@@ -1,6 +1,6 @@
 function [wells1, wells2, wells3] = setupWells11A(simcase, varargin)
     G = simcase.G;
-    rock = sicmase.rock;
+    rock = simcase.rock;
    
     testFactor = 1;
     wellRate = 1.7e-7/2.05864576494*testFactor;%FIXME correct rate??make dep on pressure?

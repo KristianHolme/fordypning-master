@@ -18,8 +18,8 @@ schedulecases = {'simple-std'};
 deckcases = {'RS'};
 
 resetData = false;
-do.plotStates = false;
-do.multiphase = true;
+do.plotStates = true;
+do.multiphase = false;
 useJutulIfPossible = false;
 direct_solver = false;
 

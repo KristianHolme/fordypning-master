@@ -4,8 +4,8 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {''};
-schedulecases = {''};
+gridcases = {'tetRef1, struct340x150, tetRef0.8'};
+schedulecases = {'simple-std'};
 deckcases = {'RS'};
 
 resetData = false;
@@ -24,8 +24,9 @@ for ideck = 1:numel(deckcases)
                             'schedulecase', schedulecase);
             if do.multiphase
                 [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData);
-                timings.(simcase.deckcase) = time;
+                timings.(simcase.gridcase) = time;
             end
         end
     end
 end
+disp(timings);

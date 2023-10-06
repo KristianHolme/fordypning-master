@@ -20,7 +20,7 @@ function schedule = setupSchedule11A(simcase, varargin)
         endTime = 5*day;
         injInterval = 2.5*hour;
         
-        [wells1, wells2, wells3] = setupWells11A(G, rock, varargin{:});
+        [wells1, wells2, wells3] = setupWells11A(simcase, varargin{:});
         bc = setupBC11A(G);
         Tsettle = endTime - 2* injInterval;
         Nsettle = ceil(Tsettle/settleTimeStep);
