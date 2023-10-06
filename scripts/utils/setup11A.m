@@ -8,10 +8,15 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
     deck        = simcase.deck;
     direct_solver = opt.direct_solver;
 
-    if ~isempty(deck)
+    if ~isempty(simcase.gridcase)%not grid from deck
         % state00 = initResSol(G, 1*atm, [1, 0]);
-        regions = getInitializationRegionsDeck(model, deck);
-        [state0, p] = initStateBlackOilAD(model, regions);
+        % regions = getInitializationRegionsDeck(model, deck);
+        % [state0, p] = initStateBlackOilAD(model, regions);
+        sat = [1,0];
+        p_ref = 1.1e5;
+        g = model.gravity(3);
+        p_res = p_ref + g*G.cells.centroids(:, 3).* model.fluid.rhoOS;
+        state0 = initResSol(G, p_res, sat);
     elseif simcase.usedeck
         state0 = initStateDeck(model, deck);
     else
