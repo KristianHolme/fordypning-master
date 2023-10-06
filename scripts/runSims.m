@@ -13,13 +13,13 @@ mrstVerbose off
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'tetRef2'};
+gridcases = {'struct340x150'};
 schedulecases = {'simple-std'};
 deckcases = {'RS'};
 
 resetData = false;
-do.plotStates = true;
-do.multiphase = false;
+do.plotStates = false;
+do.multiphase = true;
 useJutulIfPossible = false;
 direct_solver = false;
 
