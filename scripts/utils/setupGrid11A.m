@@ -12,9 +12,9 @@ function G = setupGrid11A(simcase, varargin)
         end
         if contains(gridcase, 'tetRef')
             refinement_factor = str2double(replace(gridcase, 'tetRef', ''));
-            str_ref_Factor = num2str(refinement_factor);
+            str_ref_factor = num2str(refinement_factor);
             if mod(refinement_factor, 1) ~= 0
-                str_ref_factor = replace(str_ref_Factor, '.', '_');
+                str_ref_factor = replace(str_ref_factor, '.', '_');
             end
            
             matFile = fullfile(geometriesFolder, ['spe11a_ref', str_ref_factor ,'_grid.mat']);
