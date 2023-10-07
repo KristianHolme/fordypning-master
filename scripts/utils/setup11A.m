@@ -38,11 +38,6 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
             regions{ireg} = region;
         end
 
-        % region = getInitializationRegionsBlackOil(model, [-1], ...
-        %                                   'datum_pressure', p_ref, ...
-        %                                   'datum_depth', depth_datum,...
-        %                                   'rs', rs);%EXPERIMENTAL
-
         state0 = initStateBlackOilAD(model, regions);
     elseif simcase.usedeck
         state0 = initStateDeck(model, deck);

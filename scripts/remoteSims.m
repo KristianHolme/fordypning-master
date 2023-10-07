@@ -4,8 +4,8 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'tetRef1', 'struct340x150', 'tetRef0.8'};
-schedulecases = {'simple-std'};
+gridcases = {'tetRef4', 'struct340x150', 'tetRef0.8'};
+schedulecases = {''};
 deckcases = {'RS'};
 
 resetData = false;

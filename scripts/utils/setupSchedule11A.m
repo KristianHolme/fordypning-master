@@ -43,12 +43,20 @@ function schedule = setupSchedule11A(simcase, varargin)
     elseif simcase.usedeck
         model = simcase.model;
         deck = simcase.deck;
-        schedule = convertDeckScheduleToMRST(model, deck);
-        if ~isempty(simcase.gridcase)%using non-deck grid with deck-schedule NOT FINISHED FIXME
+        
+        if ~isempty(simcase.gridcase)%using non-deck grid with deck-schedule
+            deck_simcase = Simcase('deckcase', simcase.deckcase, 'usedeck', true);
+            deckmodel = deck_simcase.model;
+            deck = simcase.deck;
+            schedule = convertDeckScheduleToMRST(deckmodel, deck);
             [cell1, cell2] = simcase.getinjcells;
+            %change cells in schedule, and keep everything else
             for i = 1:numel(schedule.control)
-                schedule.control(i).W.cells
+                schedule.control(i).W(1).cells = cell1;
+                schedule.control(i).W(2).cells = cell2;
             end
+        else
+            schedule = convertDeckScheduleToMRST(model, deck);
         end
         G = model.G;
         bf = boundaryFaces(G);

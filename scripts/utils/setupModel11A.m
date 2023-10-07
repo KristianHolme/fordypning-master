@@ -1,5 +1,5 @@
 function model = setupModel11A(simcase, varargin)
-    opt = struct('usedeck', true, 'deck', []);
+    opt = struct();
     opt = merge_options(opt, varargin{:});
     
     G = simcase.G;
@@ -8,12 +8,7 @@ function model = setupModel11A(simcase, varargin)
 
     usedeck = simcase.usedeck;
     deck = simcase.deck;
-   
-    water = false;
-    oil = true;
-    gas = true;
     
-
     gravity([0, 0, 9.81]);
     gravity on
 
@@ -21,14 +16,14 @@ function model = setupModel11A(simcase, varargin)
     if ~usedeck
         water = true;
         oil = false;
+        gas = true;
         model = GenericBlackOilModel(G, rock, fluid, 'water', water, 'oil', oil, 'gas', gas);
-        model.OutputStateFunctions{end+1} = 'CapillaryPressure';
-        model.outputFluxes = false;
     else
         model = selectModelFromDeck(G, rock, fluid, deck);
-        model.OutputStateFunctions{end+1} = 'CapillaryPressure';
-        model.outputFluxes = false;
     end
+
+    model.OutputStateFunctions{end+1} = 'CapillaryPressure';
+    model.outputFluxes = false;
     model.AutoDiffBackend = DiagonalAutoDiffBackend('useMex', true);
     model.dpMaxRel = 0.2; %copied from initEclipseProblem
 end

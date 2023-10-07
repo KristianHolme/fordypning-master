@@ -243,6 +243,8 @@ classdef Simcase < handle
             figure
             plotToolbar(simcase.G, states, 'field', 'FlowProps.ComponentTotalMass:2', 'pauseTime', 0.05);
             view(0,0);
+            axis tight;
+            colorbar;
             title(simcase.casename, 'Interpreter','none');
         end
         function [err, errvect, fwerr] = computeStaticIndicator(simcase)

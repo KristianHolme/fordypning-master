@@ -13,9 +13,10 @@ mrstVerbose off
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'struct340x150'};
-schedulecases = {'simple-std'};
+gridcases = {'tetRef1', 'struct340x150'};
+schedulecases = {''};
 deckcases = {'RS'};
+tagcase = '';
 
 resetData = false;
 do.plotStates = false;
@@ -37,11 +38,14 @@ for ideck = 1:numel(deckcases)
             schedulecase = schedulecases{ischedule};
 
             simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                            'schedulecase', schedulecase);
+                            'schedulecase', schedulecase, 'tagcase', tagcase);
             if do.multiphase
                 [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                     'direct_solver', direct_solver);
-                timings.(simcase.deckcase) = time;
+                disp(['Done with: ', simcase.casename]);
+                timingname = replace(simcase.casename, '=', '_');
+                timingname = replace(timingname, '-', '_');
+                timings.(timingname) = time;
             end
             if do.plotStates
                 simcase.plotStates
