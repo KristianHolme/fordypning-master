@@ -8,11 +8,12 @@ gridcases = {'tetRef2'};
 schedulecases = {''};
 discmethods = {'', 'hybrid-avgmpfa-oo'};
 deckcases = {'RS'};
+tagcase = '';
 
 resetData = false;
 do.multiphase = true;
 Jutul = false;
-
+direct_solver = false;
 
 timings = struct();
 for ideck = 1:numel(deckcases)
