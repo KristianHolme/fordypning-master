@@ -43,8 +43,8 @@ cellblocks{1} = tpfaCells;
 cellblocks{2} = otherCells;
 hybridModel = getHybridDisc(simcase, model, 'avgmpfa-oo', cellblocks, 'resetAssembly', true);
 %%
-[wellSolsHy, stateHy, reportHy]  = simulateScheduleAD(state0, model, schedule);
+[wellSolsHy, stateHy, reportHy]  = simulateScheduleAD(state0, hybridModel, schedule);
 %%
 figure
-plotToolbar(G, stateHy)
+plotToolbar(G, stateHy);
 title('hybrid-avgmpfa-oo');
