@@ -12,6 +12,7 @@ classdef Simcase < handle
         rockcase
         deckcase
         usedeck
+        discmethod %eks. 'hybrid-avgmpfa-oo'
 
         G
         rock
@@ -41,10 +42,11 @@ classdef Simcase < handle
                          'usedeck'      , false, ...
                          'schedulecase' , [], ...
                          'deck'         , [], ...
-                         'rockcase'     , []);
+                         'rockcase'     , [], ...
+                         'discmethod'   , []);
             opt = merge_options(opt, varargin{:});
 
-            propnames = {'SPEcase', 'deckcase', 'gridcase', 'fluidcase', 'tagcase',...
+            propnames = {'SPEcase', 'deckcase', 'gridcase', 'discmethod', 'fluidcase', 'tagcase',...
                 'schedulecase'};
             
             simcase.updateprop = false;
@@ -146,6 +148,15 @@ classdef Simcase < handle
                 simcase.resetProps;
             end
         end
+
+        function simcase = set.discmethod(simcase, discmethod)
+            simcase.discmethod = discmethod;
+            if simcase.updateprop
+                simcase.casename = simcase.ConstructCasename();
+                simcase.resetProps;
+            end
+        end
+
 
         function schedule = get.schedule(simcase)
             schedule = simcase.schedule;

@@ -44,7 +44,7 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
     else
         state0 = initResSol(G, 1*atm, [1, 0]);
     end
-    linearSolverArguments = {'BackslashThreshold', 2000};
+    linearSolverArguments = {'BackslashThreshold', 10000};
     nls = getNonLinearSolver(model, 'LinearSolverArguments', linearSolverArguments);
     if direct_solver
         nls.LinearSolver = BackslashSolverAD();

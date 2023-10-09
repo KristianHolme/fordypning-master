@@ -22,8 +22,13 @@ function model = setupModel11A(simcase, varargin)
         model = selectModelFromDeck(G, rock, fluid, deck);
     end
 
+    if ~isempty(simcase.discmethod) && contains(simcase.discmethod, 'hybrid')
+        cellblocks = getCellblocks(simcase);
+        model = getHybridDisc(simcase, model, replace(simcase.discmethod, 'hybrid-', ''), cellblocks);
+    end
+
     model.OutputStateFunctions{end+1} = 'CapillaryPressure';
     model.outputFluxes = false;
-    model.AutoDiffBackend = DiagonalAutoDiffBackend('useMex', true);
+    model.AutoDiffBackend = DiagonalAutoDiffBackend('useMex', true);% safe to use with hybrid-method?
     model.dpMaxRel = 0.2; %copied from initEclipseProblem
 end

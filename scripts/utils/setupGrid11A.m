@@ -37,7 +37,9 @@ function G = setupGrid11A(simcase, varargin)
                 G = gmshToMRST(mFile);
                 save(matFile, "G")
             end
-        
+        elseif contains(gridcase, 'skewed3D')
+            G = makeSkewed3D();
+            return        
         end
         load(matFile);
         G = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
@@ -55,4 +57,15 @@ function G = setupGrid11A(simcase, varargin)
     end
     G = computeGeometry(G);
     assert(checkGrid(G) == true);
+end
+
+function G = makeSkewed3D()
+    G = cartGrid([41,20],[2,1]);
+    makeSkew = @(c) c(:,1) + .4*(1-(c(:,1)-1).^2).*(1-c(:,2));
+    G.nodes.coords(:,1) = 2*makeSkew(G.nodes.coords);
+    % G.nodes.coords = twister(G.nodes.coords);
+    % G.nodes.coords(:,1) = 2*G.nodes.coords(:,1);
+    G = computeGeometry(G);
+    G = makeLayeredGrid(G, 0.01);
+    G = computeGeometry(G);
 end
