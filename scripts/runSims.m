@@ -13,7 +13,7 @@ mrstVerbose off
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'tetRef1', 'struct340x150'};
+gridcases = {'tetRef0.8'};
 schedulecases = {''};
 deckcases = {'RS'};
 tagcase = '';
