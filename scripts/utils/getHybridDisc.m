@@ -8,7 +8,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
     rock = simcase.rock;
 
 
-    models = cell(2, 1);
+    models = cell(1, 2);
     models{1} = tpfaModel;
     assemblyDir = fullfile(simcase.dataOutputDir, 'assembly', simcase.gridcase, hybridDiscmethod);
     switch hybridDiscmethod
@@ -34,7 +34,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
             models{2} = model;
     end
     
-    faceBlocks = getFaceBlocks(G, cellblocks);
+    faceBlocks = getFaceBlocks(G, cellblocks);%faces
 
     hybridModel = setHybridDiscretization(tpfaModel, models, faceBlocks);
 end

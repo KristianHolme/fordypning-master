@@ -1,6 +1,7 @@
 function rock = setupRock11A(simcase)
     G = simcase.G;
-    if contains(simcase.gridcase, 'skewed3D')
+    gridcase = simcase.gridcase;
+    if ~isempty(gridcase) && contains(gridcase, 'skewed3D')
         rock = makeRock(G, 100*milli*darcy, .2);
         return
     end
