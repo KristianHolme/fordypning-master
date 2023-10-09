@@ -5,7 +5,40 @@ mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
 %%
-gridcase = 'tetRef0.8';
+gridcase = 'tetRef10';
+deckcase = 'RS';
+discmethods = {'', 'hybrid-avgmpfa-oo'};
+sim1 = Simcase('deckcase', deckcase, 'gridcase', gridcase, ...
+    'discmethod', '');
+sim2 = Simcase('deckcase', deckcase, 'gridcase', gridcase, ...
+    'discmethod', 'hybrid-avgmpfa-oo');
+states1 = sim1.getSimData;
+states2 = sim2.getSimData;
+figure
+G = sim1.G;
+%%
+clf;
+plotGrid(G, 'facealpha', 0);view(0,0);
+step = 70;
+ctm1 = states1{step}.FlowProps.CapillaryPressure{2};
+ctm2 = states2{step}.FlowProps.CapillaryPressure{2};
+ctmDifference = abs(ctm1-ctm2); 
+plotCellData(G, ctmDifference)
+colorbar;
+axis tight;
+
+%%
+simcase = Simcase('deckcase', 'RS', 'gridcase', 'tetRef10', 'usedeck', true, ...
+    'discmethod', 'hybrid-avgmpfa-oo');
+cellBlocks = getCellblocks(simcase, 'paddingLayers', 1);
+simcase.model;
+
+% plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);
+% plotGrid(simcase.G, cellBlocks{1});
+
+
+%%
+gridcase = 'tetRef2';
 deckcase = 'RS';
 simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', true, ...
     'schedulecase', '');

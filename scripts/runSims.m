@@ -3,7 +3,7 @@ close all
 %%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh
+    deckformat gmsh nfvm
 mrstVerbose off
 %%
 % decks = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV'};
@@ -13,16 +13,17 @@ mrstVerbose off
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'tetRef0.8'};
+gridcases = {'tetRef3'};
 schedulecases = {''};
 deckcases = {'RS'};
+discmethods = {'', 'hybrid-avgmpfa-oo'};
 tagcase = '';
 
 resetData = false;
 do.plotStates = false;
 do.multiphase = true;
 useJutulIfPossible = false;
-direct_solver = false;
+direct_solver = false; %may not be respected if backslashThreshold is not met
 
 timings = struct();
 for ideck = 1:numel(deckcases)
@@ -36,19 +37,22 @@ for ideck = 1:numel(deckcases)
         gridcase = gridcases{igrid};
         for ischedule = 1:numel(schedulecases)
             schedulecase = schedulecases{ischedule};
-
-            simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                            'schedulecase', schedulecase, 'tagcase', tagcase);
-            if do.multiphase
-                [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
-                                    'direct_solver', direct_solver);
-                disp(['Done with: ', simcase.casename]);
-                timingname = replace(simcase.casename, '=', '_');
-                timingname = replace(timingname, '-', '_');
-                timings.(timingname) = time;
-            end
-            if do.plotStates
-                simcase.plotStates
+            for idisc = 1:numel(discmethods)
+                discmethod = discmethods{idisc};
+                simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                                'schedulecase', schedulecase, 'tagcase', tagcase, ...
+                                'discmethod', discmethod);
+                if do.multiphase
+                    [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                                        'direct_solver', direct_solver);
+                    disp(['Done with: ', simcase.casename]);
+                    timingname = replace(simcase.casename, '=', '_');
+                    timingname = replace(timingname, '-', '_');
+                    timings.(timingname) = time;
+                end
+                if do.plotStates
+                    simcase.plotStates
+                end
             end
         end
     end
