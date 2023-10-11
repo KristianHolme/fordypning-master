@@ -5,6 +5,21 @@ mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
 %%
+
+gridcase = 'tetRef6';
+deckcase = 'RS';
+simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', true, ...
+    'schedulecase', '');
+
+popcells = simcase.getPoPCells;
+[cell1Ix, cell2Ix] = simcase.getinjcells;
+data = simcase.getCellData('FlowProps.ComponentTotalMass', popcells(1));
+data2 = simcase.getCellData('FlowProps.ComponentTotalMass', popcells(2));
+data = [data, data2];
+labels = ["data1", "data2"];
+plotData(labels, data)
+
+%%
 gridcase = 'tetRef10';
 deckcase = 'RS';
 discmethods = {'', 'hybrid-avgmpfa-oo'};
@@ -37,13 +52,11 @@ simcase.model;
 % plotGrid(simcase.G, cellBlocks{1});
 
 
-%%
+%% Print number of cells
 gridcase = 'tetRef2';
-deckcase = 'RS';
-simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', true, ...
-    'schedulecase', '');
-plotCellData(simcase.G, simcase.rock.perm);view(0,0);
-% plotGrid(simcase.G);view(0,0);
+
+simcase = Simcase('gridcase', gridcase);
+disp(['gridcase ', gridcase, 'cells: ', num2str(simcase.G.cells.num)]);
 
 %%
 simcase = Simcase('deckcase', 'RS', 'usedeck', true, 'schedulecase', 'simple-std');

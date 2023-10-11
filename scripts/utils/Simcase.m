@@ -279,6 +279,40 @@ classdef Simcase < handle
             end
         end
 
+        function popCells = getPoPCells(simcase)
+            specase = simcase.SPEcase;
+            switch specase
+                case 'A'
+                    pop1 = [1.5, 0.005, 1.2 - 0.5];
+                    pop2 = [1.7, 0.005, 1.2 - 1.1];
+                    popCells = findEnclosingCell(simcase.G, [pop1;pop2]);
+            end
+        end
 
+        function data = getCellData(simcase, type, cellIx)
+            typeParts = strsplit(type, '.');
+
+            if isempty(simcase.schedulecase) || strcmp(simcase.schedulecase, 'simple-std')
+                steps = 720;
+            end
+            [states, ~, ~] = simcase.getSimData;
+            data = zeros(steps, 1);
+            if strcmp(type, 'pressure') || strcmp(type, 'rs') %variable has single value
+                for it = 1:steps
+                    fulldata = getfield(states{it}, typeParts{:});
+                    data(it) = fulldata(cellIx);
+                end
+            elseif strcmp(type, 'Density') %report for water
+                for it = 1:steps
+                    fulldata = getfield(states{it}, typeParts{:});
+                    data(it) = fulldata{1}(cellIx);
+                end
+            else %varable is reported for phase 2
+                for it = 1:steps
+                    fulldata = getfield(states{it}, typeParts{:});
+                    data(it) = fulldata{2}(cellIx);
+                end
+            end
+        end     
     end
 end

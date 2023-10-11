@@ -13,10 +13,11 @@ mrstVerbose off
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'tetRef1'};
+gridcases = {'tetRef2'};
 schedulecases = {''};
 deckcases = {'RS'};
-discmethods = {'','hybrid-avgmpfa-oo'};
+discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo'};
+% discmethods = {''};
 tagcase = '';
 
 resetData = false;

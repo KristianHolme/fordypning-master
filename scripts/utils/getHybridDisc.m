@@ -14,6 +14,8 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
     switch hybridDiscmethod
         case 'avgmpfa-oo'
             structFileName = 'avgmpfaoostruct.mat';
+        case 'ntpfa-oo'
+            structFileName = 'ntpfaoostruct.mat';
     end
     structFilePath = fullfile(assemblyDir, structFileName);
 
@@ -30,6 +32,19 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
                 saveStruct(hybridAssemblyStruct, assemblyDir, structFileName);
             end
             model = setAvgMPFADiscretization(tpfaModel, 'OSflux', hybridAssemblyStruct.OSflux, ...
+                    'interpFace', hybridAssemblyStruct.interpFace);
+            models{2} = model;
+        case 'ntpfa-oo'
+            if isfile(structFilePath) && ~resetAssembly
+                load(structFilePath);
+            else
+                hybridAssemblyStruct.interpFace = findHAP(G, rock);
+                hybridAssemblyStruct.interpFace = correctHAP(G, hybridAssemblyStruct.interpFace, opt.ratio);
+                hybridAssemblyStruct.OSflux = findOSflux(G, rock, hybridAssemblyStruct.interpFace);
+
+                saveStruct(hybridAssemblyStruct, assemblyDir, structFileName);
+            end
+            model = setNTPFADiscretization(tpfaModel, 'OSflux', hybridAssemblyStruct.OSflux, ...
                     'interpFace', hybridAssemblyStruct.interpFace);
             models{2} = model;
     end
