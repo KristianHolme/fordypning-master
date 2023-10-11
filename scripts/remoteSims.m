@@ -6,7 +6,7 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
 
 gridcases = {''};
 schedulecases = {''};
-discmethods = {'', 'hybrid-avgmpfa-oo'};
+discmethods = {'hybrid-avgmpfa-oo'};
 deckcases = {'RS'};
 tagcase = '';
 
