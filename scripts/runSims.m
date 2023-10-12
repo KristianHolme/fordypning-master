@@ -13,12 +13,13 @@ mrstVerbose off
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
+gridcases = {'struct340x150'};
 gridcases = {'tetRef10'};
 schedulecases = {''};
 deckcases = {'RS'};
 discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
-% discmethods = {'hybrid-ntpfa-oo'};
-% discmethods = {'hybrid-mpfa-oo'};
+% discmethods = {'', 'hybrid-avgmpfa-oo'};
+% discmethods = {''};
 disc_prio = 1;
 tagcase = '';
 
@@ -55,7 +56,7 @@ for ideck = 1:numel(deckcases)
                 end
                 if do.plotStates
                     simcase.plotStates('lockCaxis', true);
-                    clim([0 4e-5]);
+                    clim([0 6e-7]);
                 end
             end
         end

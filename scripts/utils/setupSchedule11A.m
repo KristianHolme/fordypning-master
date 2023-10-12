@@ -66,5 +66,8 @@ function schedule = setupSchedule11A(simcase, varargin)
         for i = 1:numel(schedule.control)
             schedule.control(i).bc = bc;
         end
+    else
+        schedule = [];
+        disp('No schedule assigned.')
     end
 end

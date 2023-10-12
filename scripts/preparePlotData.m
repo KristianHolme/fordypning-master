@@ -9,13 +9,13 @@ deckcases = {'RS'};
 discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-mpfa-oo'};
 tagcase = '';
 
-steps = 720;
+steps = 100;
 xscaling = hour;
 popcell = 2;
 
-datatypeShort = 'CTM';
-labels = {'TPFA', 'hybrid-avgMPFA'};
-title = [datatypeShort, ' at PoP ', num2str(popcell), '. Grid: ', gridcases{1}];
+datatypeShort = 'Density';
+labels = {'TPFA', 'hybrid-avgMPFA', 'hybrid-MPFA'};
+plotTitle = [datatypeShort, ' at PoP ', num2str(popcell), '. Grid: ', gridcases{1}];
 ylabel = datatypeShort;
 xlabel = 'time [h]';
 %% Load simcases
@@ -37,7 +37,7 @@ for ideck = 1:numel(deckcases)
 end
 %% Load data
 dataTypesShort = {'CTM', 'Pressure', 'Density'};
-dataTypesLong = {'FlowProps.ComponentTotalMass', 'Pressure', 'PVTProps.Density'};
+dataTypesLong = {'FlowProps.ComponentTotalMass', 'pressure', 'PVTProps.Density'};
 shortToLongDatatype = containers.Map(dataTypesShort, dataTypesLong);
 datatype = shortToLongDatatype(datatypeShort);
 
@@ -46,12 +46,12 @@ data = nan(720, numel(simcases));
 for isim = 1:numel(simcases)
     simcase = simcases{isim};
     popcells = simcase.getPoPCells;
-    data(:,isim) = simcase.getCellData(datatype, popcells(1));
+    data(:,isim) = simcase.getCellData(datatype, popcells(popcell));
 end
 
 %% Plot
 xdataTruncated = xdata(1:steps,:);
 dataTruncated = data(1:steps, :);
-plotData(labels, dataTruncated, 'title', title, 'xlabel', xlabel, 'ylabel', ylabel, ...
+plotData(labels, dataTruncated, 'title', plotTitle, 'xlabel', xlabel, 'ylabel', ylabel, ...
     'xdata', xdataTruncated);
 

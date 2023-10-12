@@ -4,6 +4,35 @@ close all
 mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
+%% SimpleTest
+simcase = Simcase('gridcase', 'tetRef2', ...
+    'discmethod', 'hybrid-ntpfa-oo');
+simpleTest(simcase, 'direction', 'lr')
+% plotCellData(simcase.G, simcase.G.cells.volumes);view(0,0);
+%% Find boundary faces
+%find side faces
+xMin = min(G.nodes.coords(:,1));
+xMax = max(G.nodes.coords(:,1));
+
+yMin = min(G.nodes.coords(:,2));
+yMax = max(G.nodes.coords(:,2));
+
+slack = 1e-7;
+logSideFaces = G.faces.centroids(:,1) < xMin+slack | G.faces.centroids(:,1) > xMax-slack | G.faces.centroids(:,2) < yMin+slack...
+    | G.faces.centroids(:,2) > yMax-slack;
+
+logBdryFaces = ( G.faces.neighbors(:,1) == 0 | G.faces.neighbors(:,2) == 0);
+
+logNonSideFaces =  logBdryFaces & ~logSideFaces;
+plotFaces(G, find(logNonSideFaces));
+view(12,25);
+shg;
+%%
+gridcase = 'tetRef6';
+deckcase = 'RS';
+simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', false, ...
+    'schedulecase', '');
+getCellblocks(simcase)
 %%
 
 gridcase = 'tetRef6';
@@ -19,7 +48,7 @@ data = [data, data2];
 labels = ["data1", "data2"];
 plotData(labels, data)
 
-%% PLot difference between two cases
+%% Plot difference between two cases
 gridcase = 'tetRef10';
 deckcase = 'RS';
 discmethods = {'', 'hybrid-avgmpfa-oo'};

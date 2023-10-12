@@ -1,6 +1,7 @@
 function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellblocks, varargin)
     opt = struct('resetAssembly', false, ...
-        'ratio', []);
+        'ratio', [], ...
+        'saveAssembly', true);
     [opt, extra] = merge_options(opt, varargin{:});
 
     resetAssembly = opt.resetAssembly;
@@ -31,8 +32,9 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
                 hybridAssemblyStruct.interpFace = findHAP(G, rock);
                 hybridAssemblyStruct.interpFace = correctHAP(G, hybridAssemblyStruct.interpFace, opt.ratio);
                 hybridAssemblyStruct.OSflux = findOSflux(G, rock, hybridAssemblyStruct.interpFace);
-
-                saveStruct(hybridAssemblyStruct, assemblyDir, structFileName);
+                if opt.saveAssembly
+                    saveStruct(hybridAssemblyStruct, assemblyDir, structFileName);
+                end
             end
             model = setAvgMPFADiscretization(tpfaModel, 'OSflux', hybridAssemblyStruct.OSflux, ...
                     'interpFace', hybridAssemblyStruct.interpFace);
@@ -44,8 +46,9 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
                 hybridAssemblyStruct.interpFace = findHAP(G, rock);
                 hybridAssemblyStruct.interpFace = correctHAP(G, hybridAssemblyStruct.interpFace, opt.ratio);
                 hybridAssemblyStruct.OSflux = findOSflux(G, rock, hybridAssemblyStruct.interpFace);
-
-                saveStruct(hybridAssemblyStruct, assemblyDir, structFileName);
+                if opt.saveAssembly
+                    saveStruct(hybridAssemblyStruct, assemblyDir, structFileName);
+                end
             end
             model = setNTPFADiscretization(tpfaModel, 'OSflux', hybridAssemblyStruct.OSflux, ...
                     'interpFace', hybridAssemblyStruct.interpFace);

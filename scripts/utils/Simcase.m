@@ -43,7 +43,7 @@ classdef Simcase < handle
                          'schedulecase' , [], ...
                          'deck'         , [], ...
                          'rockcase'     , [], ...
-                         'discmethod'   , []);
+                         'discmethod'   , '');
             opt = merge_options(opt, varargin{:});
 
             propnames = {'SPEcase', 'deckcase', 'gridcase', 'discmethod', 'fluidcase', 'tagcase',...
@@ -252,7 +252,7 @@ classdef Simcase < handle
         function plotStates(simcase, varargin)
             opt = struct('field', 'FlowProps.ComponentTotalMass:2', ...
                 'pauseTime', 0.05);
-            opt = merge_options(opt, varargin{:});
+            [opt, extra] = merge_options(opt, varargin{:});
 
             [states, ~, ~] = simcase.getSimData;
             figure
