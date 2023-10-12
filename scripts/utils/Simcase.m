@@ -216,10 +216,10 @@ classdef Simcase < handle
                 simcase.G = G;
             end
         end
-        function model = get.model(simcase)
+        function model = get.model(simcase, varargin)
             model = simcase.model;
             if isempty(simcase.model) && simcase.updateprop
-                model = setupModel11A(simcase);
+                model = setupModel11A(simcase, varargin{:});
                 simcase.model = model;
             end
             
@@ -249,10 +249,15 @@ classdef Simcase < handle
                 simcase.dataOutputDir = dataOutputDir;
             end
         end
-        function plotStates(simcase)
-            [states, wellsols, reports] = simcase.getSimData;
+        function plotStates(simcase, varargin)
+            opt = struct('field', 'FlowProps.ComponentTotalMass:2', ...
+                'pauseTime', 0.05);
+            opt = merge_options(opt, varargin{:});
+
+            [states, ~, ~] = simcase.getSimData;
             figure
-            plotToolbar(simcase.G, states, 'field', 'FlowProps.ComponentTotalMass:2', 'pauseTime', 0.05);
+            plotToolbar(simcase.G, states, 'field', opt.field, 'pauseTime', opt.pauseTime, ...
+                varargin{:});
             view(0,0);
             axis tight;
             colorbar;

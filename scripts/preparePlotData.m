@@ -3,24 +3,22 @@ clear all;close all;
 set(groot, 'defaultLineLineWidth', 2);
 
 %% Cases to get data from
-gridcases = {'tetRef2'};
+gridcases = {'tetRef10'};
 schedulecases = {''};
 deckcases = {'RS'};
-discmethods = {'', 'hybrid-avgmpfa-oo'};
+discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-mpfa-oo'};
 tagcase = '';
-
-datatypeShort = 'CTM';
-labels = {'TPFA', 'hybrid-avgMPFA'};
-title = [datatypeShort, ' at PoP 1.', ' Grid: ', gridcases{1}];
-ylabel = datatypeShort;
-xlabel = 'time [h]';
-% datatypes: PVTProps.Density, Pressure, FlowProps.ComponentTotalMass, 
 
 steps = 720;
 xscaling = hour;
+popcell = 2;
+
+datatypeShort = 'CTM';
+labels = {'TPFA', 'hybrid-avgMPFA'};
+title = [datatypeShort, ' at PoP ', num2str(popcell), '. Grid: ', gridcases{1}];
+ylabel = datatypeShort;
+xlabel = 'time [h]';
 %% Load simcases
-
-
 simcases = {};
 for ideck = 1:numel(deckcases)
     deckcase = deckcases{ideck};

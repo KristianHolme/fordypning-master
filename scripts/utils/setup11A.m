@@ -1,9 +1,10 @@
 function [state0, model, schedule, nls] = setup11A(simcase, varargin)
     opt = struct('direct_solver', false);
-    opt = merge_options(opt, varargin{:});
+    [opt, extra] = merge_options(opt, varargin{:});
 
     G           = simcase.G;
-    model       = simcase.model;
+    model       = setupModel11A(simcase, extra{:});
+    simcase.model = model;
     schedule    = simcase.schedule;
     deck        = simcase.deck;
     direct_solver = opt.direct_solver;

@@ -19,28 +19,46 @@ data = [data, data2];
 labels = ["data1", "data2"];
 plotData(labels, data)
 
-%%
+%% PLot difference between two cases
 gridcase = 'tetRef10';
 deckcase = 'RS';
 discmethods = {'', 'hybrid-avgmpfa-oo'};
 sim1 = Simcase('deckcase', deckcase, 'gridcase', gridcase, ...
     'discmethod', '');
 sim2 = Simcase('deckcase', deckcase, 'gridcase', gridcase, ...
-    'discmethod', 'hybrid-avgmpfa-oo');
+    'discmethod', '', 'tagcase', 'newPVT');
 states1 = sim1.getSimData;
 states2 = sim2.getSimData;
 figure
 G = sim1.G;
-%%
+%% cont. diff plot
 clf;
 plotGrid(G, 'facealpha', 0);view(0,0);
-step = 70;
+step = 10;
 ctm1 = states1{step}.FlowProps.CapillaryPressure{2};
 ctm2 = states2{step}.FlowProps.CapillaryPressure{2};
 ctmDifference = abs(ctm1-ctm2); 
 plotCellData(G, ctmDifference)
 colorbar;
 axis tight;
+
+%% Plot Cellblocks
+simcase = Simcase('gridcase', 'tetRef10', 'discmethod', 'hybrid-ntpfa-oo');
+cellblocks = getCellblocks(simcase);
+G = simcase.G;
+plotGrid(G, 'facealpha', 0);
+plotGrid(G, cellblocks{1}, 'facecolor', 'yellow');
+% plotGrid(G, cellblocks{2}, 'facecolor', 'red');
+view(0,0);
+axis tight;
+title('tpfa cells');
+%% plot top bc cells
+simcase = Simcase('gridcase', 'tetRef2');
+bcCells = getbcCells(simcase);
+plotGrid(simcase.G, 'facealpha', 0);view(0,0);
+plotGrid(simcase.G, bcCells);
+
+
 
 %%
 simcase = Simcase('deckcase', 'RS', 'gridcase', 'tetRef10', 'usedeck', true, ...
@@ -53,7 +71,7 @@ simcase.model;
 
 
 %% Print number of cells
-gridcase = 'tetRef2';
+gridcase = 'tetRef1';
 
 simcase = Simcase('gridcase', gridcase);
 disp(['gridcase ', gridcase, 'cells: ', num2str(simcase.G.cells.num)]);

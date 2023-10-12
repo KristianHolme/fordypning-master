@@ -1,7 +1,7 @@
 clear all
 close all
 %%
-mrstModule add incomp mimetic streamlines diagnostics
+mrstModule add incomp mimetic streamlines diagnostics nfvm
 
 % Rectangular reservoir with a skew grid.
 G = cartGrid([41,20],[2,1]);
@@ -21,12 +21,12 @@ pv   = sum(poreVolume(G,rock));
 srcCells = findEnclosingCell(G,[2 .975 .005; .5 .025 .005; 3.5 .025 .005]);
 src = addSource([], srcCells, [pv; -.5*pv; -.5*pv], 'sat', [1;1;1]);
 
-
 gravity off
 fluid = initSimpleADIFluid('phases', 'W', 'mu', 1*centi*poise, 'rho', 1000);
 model = GenericBlackOilModel(G, rock, fluid, 'water', true, 'oil', false, 'gas', false);
-state0 = initResSol(G, 0);
-schedule = simpleSchedule(1*day, 'src', src);
+state0 = initResSol(G, 1*barsa);
+model.verbose = true;
+schedule = simpleSchedule(1, 'src', src);
 %%
 [wellSols, state, report]  = simulateScheduleAD(state0, model, schedule);
 
@@ -35,13 +35,16 @@ figure
 plotToolbar(G, state);
 title('TPFA');
     %%
-simcase = Simcase('gridcase', 'skewed3D', 'discmethod', 'avgmpfa-oo');
+simcase = Simcase('gridcase', 'skewed3D', 'discmethod', 'hybrid-ntpfa-oo');
 tpfaCells = findCellNeighbors(G, srcCells, 1);
-tpfaCells = findCellNeighbors(G, [], 1);
+% tpfaCells = findCellNeighbors(G, [], 1);
 otherCells = setdiff(1:G.cells.num, tpfaCells);
 cellblocks{1} = tpfaCells;
 cellblocks{2} = otherCells;
-hybridModel = getHybridDisc(simcase, model, 'avgmpfa-oo', cellblocks, 'resetAssembly', true);
+hybridModel = getHybridDisc(simcase, model, 'ntpfa-oo', cellblocks, 'resetAssembly', true);
+% hybridModel = setAvgMPFADiscretization(model);
+% hybridModel = setNTPFADiscretization(model);
+hybridModel.verbose = true;
 %%
 [wellSolsHy, stateHy, reportHy]  = simulateScheduleAD(state0, hybridModel, schedule);
 %%

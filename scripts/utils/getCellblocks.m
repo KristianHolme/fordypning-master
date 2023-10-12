@@ -7,7 +7,16 @@ function cellblocks = getCellblocks(simcase, varargin)
     [cell1, cell2] = simcase.getinjcells;
     injectionsCells = [cell1; cell2];
     tpfaCells = findCellNeighbors(G, injectionsCells, paddingLayers);
-    otherCells = setdiff(1:G.cells.num, tpfaCells);
+
+    if contains(simcase.discmethod, 'ntpfa','IgnoreCase', true)
+        bccells = getbcCells(simcase);
+        bccells = findCellNeighbors(G, bccells, paddingLayers);
+        tpfaCells = union(tpfaCells, bccells);
+    end
+    
+
+
+    otherCells = setdiff((1:G.cells.num)', tpfaCells);
 
     cellblocks{1} = tpfaCells;
     cellblocks{2} = otherCells;

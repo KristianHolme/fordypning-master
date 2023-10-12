@@ -23,12 +23,14 @@ function model = setupModel11A(simcase, varargin)
     end
 
     if ~isempty(simcase.discmethod) && contains(simcase.discmethod, 'hybrid')
-        cellblocks = getCellblocks(simcase);
-        model = getHybridDisc(simcase, model, replace(simcase.discmethod, 'hybrid-', ''), cellblocks);
+        cellblocks = getCellblocks(simcase, varargin{:});
+        model = getHybridDisc(simcase, model, replace(simcase.discmethod, 'hybrid-', ''), ...
+            cellblocks, varargin{:});
     end
 
     model.OutputStateFunctions{end+1} = 'CapillaryPressure';
     model.outputFluxes = false;
     model.AutoDiffBackend = DiagonalAutoDiffBackend('useMex', true);% safe to use with hybrid-method?
+    model = model.validateModel();
     model.dpMaxRel = 0.2; %copied from initEclipseProblem
 end

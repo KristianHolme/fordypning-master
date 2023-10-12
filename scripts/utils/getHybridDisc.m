@@ -1,7 +1,7 @@
 function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellblocks, varargin)
     opt = struct('resetAssembly', false, ...
         'ratio', []);
-    opt = merge_options(opt, varargin{:});
+    [opt, extra] = merge_options(opt, varargin{:});
 
     resetAssembly = opt.resetAssembly;
     G = simcase.G;
@@ -16,6 +16,9 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
             structFileName = 'avgmpfaoostruct.mat';
         case 'ntpfa-oo'
             structFileName = 'ntpfaoostruct.mat';
+        case 'mpfa-oo'
+            structFileName = '';
+            %not saved
     end
     structFilePath = fullfile(assemblyDir, structFileName);
 
@@ -47,9 +50,12 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
             model = setNTPFADiscretization(tpfaModel, 'OSflux', hybridAssemblyStruct.OSflux, ...
                     'interpFace', hybridAssemblyStruct.interpFace);
             models{2} = model;
+        case 'mpfa-oo'
+            model = setMPFADiscretization(tpfaModel);
+            models{2} = model;
     end
     
-    faceBlocks = getFaceBlocks(G, cellblocks);%faces
+    faceBlocks = getFaceBlocks(G, cellblocks, extra{:});%faces
 
     hybridModel = setHybridDiscretization(tpfaModel, models, faceBlocks);
 end
