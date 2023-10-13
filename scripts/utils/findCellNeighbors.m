@@ -4,6 +4,9 @@ function neighborCells = findCellNeighbors(G, cell_ids, paddingLayers)
     if isempty(cell_ids)
         return
     end
+    if paddingLayers == 0
+        return
+    end
     numCells = G.cells.num;
     cellsToNodes = cell(round(numCells), 1);
     for ic = 1:G.cells.num

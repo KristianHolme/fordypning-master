@@ -60,12 +60,16 @@ function G = setupGrid11A(simcase, varargin)
 end
 
 function G = makeSkewed3D()
-    G = cartGrid([41,20],[2,1]);
+    G = cartGrid([41,20],[2, 1]);
     makeSkew = @(c) c(:,1) + .4*(1-(c(:,1)-1).^2).*(1-c(:,2));
     G.nodes.coords(:,1) = 2*makeSkew(G.nodes.coords);
+    G.nodes.coords(:,1) = G.nodes.coords(:,1)*(2.8/4);
+    G.nodes.coords(:,2) = G.nodes.coords(:,2)*(1.2);
     % G.nodes.coords = twister(G.nodes.coords);
     % G.nodes.coords(:,1) = 2*G.nodes.coords(:,1);
-    G = computeGeometry(G);
+    
     G = makeLayeredGrid(G, 0.01);
+    G = computeGeometry(G);
+    G = RotateGrid(G);
     G = computeGeometry(G);
 end

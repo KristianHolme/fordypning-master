@@ -1,9 +1,17 @@
 function simpleTest(simcase, varargin)
     opt = struct('uniformK', true, ...
         'type', 'linear', ... %linear or src
-        'direction', 'tb');%direction of linear test, "tp" (top-bottom), lr (left-right)
+        'direction', 'tb', ...
+        'title', '', ...
+        'paddingLayers', 1);%direction of linear test, "tp" (top-bottom), lr (left-right)
+    if isempty(simcase.discmethod)
+        discmethod = 'tpfa';
+    else
+        discmethod = simcase.discmethod;
+    end
+    opt.title = ['grid: ', simcase.gridcase, ' , disc: ', discmethod];
     opt = merge_options(opt, varargin{:});
-
+    
     G = simcase.G;
     if opt.uniformK
         rock = makeRock(G, 100*milli*darcy, 0.2);
@@ -27,12 +35,12 @@ function simpleTest(simcase, varargin)
     simcase.schedule = schedule;
 
     discmethod = replace(simcase.discmethod, 'hybrid-', '');
-    cellblocks = getCellblocks(simcase, 'paddingLayers', 0);
+    cellblocks = getCellblocks(simcase, 'paddingLayers', opt.paddingLayers);
     if isempty(discmethod)
         model = tpfamodel;
     else
-        % model = getHybridDisc(simcase, tpfamodel, discmethod, cellblocks, 'resetAssembly', true, ...
-        %     'saveAssembly', false);
+        model = getHybridDisc(simcase, tpfamodel, discmethod, cellblocks, 'resetAssembly', true, ...
+            'saveAssembly', false);
 
         % model2 = setAvgMPFADiscretization(model);
         % faceblocks{1} = [];faceblocks{2} = 1:G.faces.num;
@@ -47,10 +55,16 @@ function simpleTest(simcase, varargin)
     [wellSols, state, report]  = simulateScheduleAD(state0, model, schedule);
     state{1}.error = G.cells.centroids(:,3) - state{1}.pressure;
     state{1}.CTMnorm = state{1}.FlowProps.ComponentTotalMass ./G.cells.volumes;
-    figure
+    figure('Visible','on');
     plotToolbar(G, state);
-    title(discmethod);
+    title(opt.title);
     view(0,0);axis tight;colorbar;
+    if strcmp(opt.direction, 'lr')
+        maxp = 2.8;
+    else
+        maxp = 1.2;
+    end
+    clim([0 maxp]);
     
 
 end
