@@ -1,6 +1,6 @@
 function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellblocks, varargin)
     opt = struct('resetAssembly', false, ...
-        'ratio', [], ...
+        'myRatio', [], ...
         'saveAssembly', true);
     [opt, extra] = merge_options(opt, varargin{:});
 
@@ -23,14 +23,15 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
     end
     structFilePath = fullfile(assemblyDir, structFileName);
 
-    
+    mv = mrstVerbose;
+    mrstVerbose on;
     switch hybridDiscmethod
         case 'avgmpfa-oo'
             if isfile(structFilePath) && ~resetAssembly
                 load(structFilePath);
             else
                 hybridAssemblyStruct.interpFace = findHAP(G, rock);
-                hybridAssemblyStruct.interpFace = correctHAP(G, hybridAssemblyStruct.interpFace, opt.ratio);
+                hybridAssemblyStruct.interpFace = correctHAP(G, hybridAssemblyStruct.interpFace, opt.myRatio);
                 hybridAssemblyStruct.OSflux = findOSflux(G, rock, hybridAssemblyStruct.interpFace);
                 if opt.saveAssembly
                     saveStruct(hybridAssemblyStruct, assemblyDir, structFileName);
@@ -44,7 +45,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
                 load(structFilePath);
             else
                 hybridAssemblyStruct.interpFace = findHAP(G, rock);
-                hybridAssemblyStruct.interpFace = correctHAP(G, hybridAssemblyStruct.interpFace, opt.ratio);
+                hybridAssemblyStruct.interpFace = correctHAP(G, hybridAssemblyStruct.interpFace, opt.myRatio);
                 hybridAssemblyStruct.OSflux = findOSflux(G, rock, hybridAssemblyStruct.interpFace);
                 if opt.saveAssembly
                     saveStruct(hybridAssemblyStruct, assemblyDir, structFileName);
@@ -57,6 +58,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
             model = setMPFADiscretization(tpfaModel);
             models{2} = model;
     end
+    mrstVerbose(mv);
     
     faceBlocks = getFaceBlocks(G, cellblocks, extra{:});%faces
 

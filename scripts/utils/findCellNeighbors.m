@@ -6,6 +6,9 @@ function neighborCells = findCellNeighbors(G, cell_ids, paddingLayers)
     end
     if paddingLayers == 0
         return
+    elseif paddingLayers == -1
+        neighborCells = []; %if padding level is -1, then we dont have any tpfacells
+        return
     end
     numCells = G.cells.num;
     cellsToNodes = cell(round(numCells), 1);

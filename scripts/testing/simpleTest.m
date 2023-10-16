@@ -3,7 +3,8 @@ function simpleTest(simcase, varargin)
         'type', 'linear', ... %linear or src
         'direction', 'tb', ...
         'title', '', ...
-        'paddingLayers', 1);%direction of linear test, "tp" (top-bottom), lr (left-right)
+        'paddingLayers', 1, ...
+        'myRatio', []);%direction of linear test, "tp" (top-bottom), lr (left-right)
     if isempty(simcase.discmethod)
         discmethod = 'tpfa';
     else
@@ -12,6 +13,7 @@ function simpleTest(simcase, varargin)
     opt.title = ['grid: ', simcase.gridcase, ' , disc: ', discmethod];
     opt = merge_options(opt, varargin{:});
     
+    myRatio = opt.myRatio;
     G = simcase.G;
     if opt.uniformK
         rock = makeRock(G, 100*milli*darcy, 0.2);
@@ -40,14 +42,14 @@ function simpleTest(simcase, varargin)
         model = tpfamodel;
     else
         model = getHybridDisc(simcase, tpfamodel, discmethod, cellblocks, 'resetAssembly', true, ...
-            'saveAssembly', false);
+            'saveAssembly', false, 'myRatio', myRatio);
 
         % model2 = setAvgMPFADiscretization(model);
         % faceblocks{1} = [];faceblocks{2} = 1:G.faces.num;
         % models{1} = model;models{2} = model2;
         % model = setHybridDiscretization(model, models, faceblocks);
         
-        model = setNTPFADiscretization(tpfamodel);
+        % model = setNTPFADiscretization(tpfamodel);
 
 
     end
