@@ -39,7 +39,13 @@ function G = setupGrid11A(simcase, varargin)
             end
         elseif contains(gridcase, 'skewed3D')
             G = makeSkewed3D();
-            return        
+            return
+        elseif contains(gridcase, 'semi')
+            params = replace(gridcase, 'semi', '');
+            matFile = fullfile(geometriesFolder, ['spe11a_semi', params, '_grid.mat']);
+            if ~isfile(matFile)
+                error([matFile, 'not found']);
+            end
         end
         load(matFile);
         G = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells

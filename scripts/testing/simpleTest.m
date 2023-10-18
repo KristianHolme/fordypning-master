@@ -22,10 +22,12 @@ function simpleTest(simcase, varargin)
     end
     simcase.rock = rock;
 
-    fluid = initSimpleADIFluid('phases', 'W', 'mu', 1*centi*poise, 'rho', 1000);
+    % fluid = initSimpleADIFluid('phases', 'W', 'mu', 1*centi*poise, 'rho', 1000);
+    fluid = initSimpleADIFluid('phases', 'WO', 'rho', [1000, 100]);
     gravity off
-    tpfamodel = GenericBlackOilModel(G, rock, fluid, 'water', true, 'oil', false, 'gas', false);
-    state0 = initResSol(G, 0.0);
+    tpfamodel = GenericBlackOilModel(G, rock, fluid, 'water', true, 'oil', true, 'gas', false);
+    % state0 = initResSol(G, 0.0);
+    state0 = initResSol(G, 1*barsa, [1,0]);
     
     df = struct('W', [], 'bc', [], 'src', []);
 
@@ -55,8 +57,8 @@ function simpleTest(simcase, varargin)
     end
 
     [wellSols, state, report]  = simulateScheduleAD(state0, model, schedule);
-    state{1}.error = G.cells.centroids(:,3) - state{1}.pressure;
-    state{1}.CTMnorm = state{1}.FlowProps.ComponentTotalMass ./G.cells.volumes;
+    % state{1}.error = G.cells.centroids(:,3) - state{1}.pressure;
+    % state{1}.CTMnorm = state{1}.FlowProps.ComponentTotalMass ./G.cells.volumes;
     figure('Visible','on');
     plotToolbar(G, state);
     title(opt.title);
@@ -109,6 +111,6 @@ function bc = linearPressureBC(G, dir)
             maxFaces = find(abs(G.faces.centroids(:, dir)-maxVal) < tol);
         end
         bc = [];
-        bc = addBC(bc, minFaces, 'pressure', minVal);
-        bc = addBC(bc, maxFaces, 'pressure', maxVal);
+        bc = addBC(bc, minFaces, 'pressure', minVal, 'sat', [1,0]);
+        bc = addBC(bc, maxFaces, 'pressure', maxVal, 'sat', [1,0]);
 end

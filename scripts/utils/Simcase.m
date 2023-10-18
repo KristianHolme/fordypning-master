@@ -170,15 +170,39 @@ classdef Simcase < handle
             deck = simcase.deck;
             if isempty(deck)
                 deckname = simcase.deckcase;
-                deckname = ['CSP11A_', deckname, '.DATA'];
-                if ~isempty(deckname)
-                    if strcmp(simcase.user, 'kholme')
-                        deckFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/spe11-utils/deck';
-                    else
-                        deckFolder = "spe11-utils\deck";
+                if contains(deckname, 'pyopm')
+                    deckname = replace(deckname, 'pyopm-', '');
+                    folderFromSrc = fullfile('pyopmcsp11\decks\',simcase.SPEcase, deckname, 'preprocessing');
+                    deckname = 'CSP11A.DATA';
+                    
+                else
+                    deckname = ['CSP11A_', deckname, '.DATA'];
+                    if ~isempty(deckname)
+                        folderFromSrc = "spe11-utils\deck";
                     end
+                end
+                if strcmp(simcase.user, 'kholme')%on markov
+                    deckFolder = fullfile('/home/shomec/k/kholme/Documents/Prosjektoppgave/src/',folderFromSrc);
+                else
+                    deckFolder = folderFromSrc;
+                end
+                %load deck from mat file or save to mat file
+                decksavename = replace(deckname, '.DATA', '_deck.mat');
+                decksavePath = fullfile(deckFolder, decksavename);
+                if isfile(decksavePath)
+                    disp('Loading deck from saved .mat file...')
+                    load(decksavePath);
+                else
+                    disp('Reading, converting and saving deck...')
+                    tic()
                     deck = readEclipseDeck(fullfile(deckFolder, deckname));
                     deck = convertDeckUnits(deck);
+                    if ~isfield(deck.GRID, 'ACTNUM')
+                        deck.GRID.ACTNUM = deck.GRID.PORO > 0;
+                    end
+                    save(decksavePath, 'deck');
+                    t1 = toc();
+                    disp(['Done in ', num2str(t1), 's'])
                 end
                 simcase.deck = deck;
             end
