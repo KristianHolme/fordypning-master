@@ -4,7 +4,8 @@ function simpleTest(simcase, varargin)
         'direction', 'tb', ...
         'title', '', ...
         'paddingLayers', 1, ...
-        'myRatio', []);%direction of linear test, "tp" (top-bottom), lr (left-right)
+        'myRatio', [], ...
+        'saveplot', false);%direction of linear test, "tp" (top-bottom), lr (left-right)
     if isempty(simcase.discmethod)
         discmethod = 'tpfa';
     else
@@ -59,7 +60,7 @@ function simpleTest(simcase, varargin)
     [wellSols, state, report]  = simulateScheduleAD(state0, model, schedule);
     % state{1}.error = G.cells.centroids(:,3) - state{1}.pressure;
     % state{1}.CTMnorm = state{1}.FlowProps.ComponentTotalMass ./G.cells.volumes;
-    figure('Visible','on');
+    fig = figure('Visible','on');
     plotToolbar(G, state);
     title(opt.title);
     view(0,0);axis tight;colorbar;
@@ -69,8 +70,11 @@ function simpleTest(simcase, varargin)
         maxp = 1.2;
     end
     clim([0 maxp]);
-    
-
+    if opt.saveplot
+        filename = [simcase.gridcase, '_', shortDiscName(discmethod), '_', opt.direction, '.eps'];
+        filename = fullfile('plots/linearPressuretest', filename);
+        saveas(fig, filename);
+    end
 end
 
 function bc = linearPressureBC(G, dir)

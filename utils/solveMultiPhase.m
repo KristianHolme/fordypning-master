@@ -11,8 +11,8 @@ function [ok, status, time] = solveMultiPhase(simcase, varargin)
     dirName       = fullfile(simcase.dataOutputDir, simcase.casename);
 
     [state0, model, schedule, nls] = setup11A(simcase, 'direct_solver', opt.direct_solver, extra{:});
-    % assert(all(state0.s(:,2)==0))
-    % assert(all(state0.s(:,1)==1))
+    assert(all(state0.s(:,2)==0))
+    assert(all(state0.s(:,1)==1))
 
     problem = packSimulationProblem(state0, model, ...
         schedule, simcase.casename, ...

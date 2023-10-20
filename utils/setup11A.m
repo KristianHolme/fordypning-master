@@ -8,14 +8,8 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
     simcase.model = model;
     schedule    = simcase.schedule;
     direct_solver = opt.direct_solver;
-    
-    if contains(simcase.fluidcase, 'experimental')
-        if contains(simcase.fluidcase, 'ref')
-            state0 = initResSol(G, 1*atm, [1, 0]);
-        else
-            state0 = initResSol(G, 1*atm, [0,1, 0]);
-        end
-    elseif ~isempty(simcase.gridcase)%not grid from deck
+
+    if ~isempty(simcase.gridcase)%not grid from deck
         % state00 = initResSol(G, 1*atm, [1, 0]);
         % regions = getInitializationRegionsDeck(model, deck);
         % [state0, p] = initStateBlackOilAD(model, regions);

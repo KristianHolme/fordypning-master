@@ -13,9 +13,9 @@ function model = setupModel11A(simcase, varargin)
     gravity on
 
 
-    if ~usedeck || strcmp(simcase.fluidcase, 'experimental')
-        water = strcmp(simcase.fluidcase, 'experimental');
-        oil = true;
+    if ~usedeck
+        water = true;
+        oil = false;
         gas = true;
         model = GenericBlackOilModel(G, rock, fluid, 'water', water, 'oil', oil, 'gas', gas);
     else

@@ -15,17 +15,19 @@ mrstVerbose off
 
 gridcases = {'tetRef10'};
 schedulecases = {''};
-deckcases = {'pyopm-ScheduleTest', 'RS'};
+fluidcase = '';
+deckcases = {'IMMISCIBLE'};
 % discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
-discmethods = {''};
+discmethods = {'', 'hybrid-ntpfa-oo', 'hybrid-avgmpfa-oo'};
 disc_prio = 1;%1 means tpfa prio
 tagcase = '';
 
-resetData = false;
+resetData = true;
 do.plotStates = true;
-do.multiphase = false;
+do.multiphase = true;
 useJutulIfPossible = false;
 direct_solver = false; %may not be respected if backslashThreshold is not met
+usedeck = true;
 
 timings = struct();
 for ideck = 1:numel(deckcases)
@@ -41,9 +43,9 @@ for ideck = 1:numel(deckcases)
             schedulecase = schedulecases{ischedule};
             for idisc = 1:numel(discmethods)
                 discmethod = discmethods{idisc};
-                simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                simcase = Simcase('deckcase', deckcase, 'usedeck', usedeck, 'gridcase', gridcase, ...
                                 'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                'discmethod', discmethod);
+                                'discmethod', discmethod, 'fluidcase', fluidcase);
                 if do.multiphase
                     [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                         'direct_solver', direct_solver, 'prio', disc_prio);

@@ -10,18 +10,19 @@ mrstVerbose off
 
 
 %%
-% gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
+% gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90', 'struct340x150',
+% 'semi188x38_0.3', 'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'semi220x150_0.5'};
+gridcases = {'semi188x38_0.3', 'semi263x154_0.3', 'semi200x150_0.5'};
 schedulecases = {''};
 deckcases = {'RS'};
 % discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
-discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
+discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo'};
 disc_prio = 1;%1 means tpfa prio
 tagcase = '';
 
-resetData = true;
+resetData = false;
 do.plotStates = false;
 do.multiphase = true;
 useJutulIfPossible = false;
@@ -50,6 +51,7 @@ for ideck = 1:numel(deckcases)
                     disp(['Done with: ', simcase.casename]);
                     timingname = replace(simcase.casename, '=', '_');
                     timingname = replace(timingname, '-', '_');
+                    timingname = replace(timingname, '.', '_');
                     timings.(timingname) = time;
                 end
                 if do.plotStates

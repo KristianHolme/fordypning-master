@@ -12,10 +12,7 @@ function schedule = setupSchedule11A(simcase, varargin)
                 settleTimeStep    = 10*minute;
             case 'simple-coarse'
                 injectionTimeStep = 30*minute;
-                settleTimeStep    = 120*minute;
-            otherwise
-                injectionTimeStep = 10*minute;
-                settleTimeStep    = 10*minute;
+                settleTimeStep    = 120*minute;    
         end
 
 
@@ -46,6 +43,7 @@ function schedule = setupSchedule11A(simcase, varargin)
    
 
     elseif simcase.usedeck
+        model = simcase.model;
         deck = simcase.deck;
         
         if ~isempty(simcase.gridcase)%using non-deck grid with deck-schedule
@@ -60,10 +58,9 @@ function schedule = setupSchedule11A(simcase, varargin)
                 schedule.control(i).W(2).cells = cell2;
             end
         else
-            model = simcase.model;
             schedule = convertDeckScheduleToMRST(model, deck);
         end
-        G = simcase.G;
+        G = model.G;
         bf = boundaryFaces(G);
         bf = bf(G.faces.centroids(bf, 3) < 1e-12);
 
