@@ -12,6 +12,5 @@ To run files (hopefully):
             - corresponding gridcase name : "struct280x120"
         - spe11a_semi183x38_0.5_grid.mat (semi-structured grid generated from scripts in Vetle Nevlands master thesis https://github.com/vetlenev/Master-Thesis/tree/main/FluidFlower. resolution 183x38 and 0.5 density in unstructred regions)
         -  corresponding gridcase name: "semi183x154_0.5"
-    these grids
 
 - ./scripts is added as an mrst module called prosjektOppgave
