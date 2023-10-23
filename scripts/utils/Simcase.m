@@ -182,7 +182,7 @@ classdef Simcase < handle
                     end
                 end
                 if strcmp(simcase.user, 'kholme')%on markov
-                    deckFolder = fullfile('/home/shomec/k/kholme/Documents/Prosjektoppgave/src/',folderFromSrc);
+                    deckFolder = fullfile('/home/shomec/k/kholme/Documents/Prosjektoppgave/src/', replace(folderFromSrc, '\', '/');
                 else
                     deckFolder = folderFromSrc;
                 end
