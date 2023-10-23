@@ -1,6 +1,8 @@
 spe11-utils
-11thSPE-CSP
-!11thSPE-CSP/geometries/11AFiles
+11thSPE-CSP/
+!11thSPE-CSP/geometries/
+11thSPE-CSP/geometries/*
+!11thSPE-CSP/geometries/11AFiles/
 output
 plots
 *.asv
