@@ -6,9 +6,9 @@ function G = setupGrid11A(simcase, varargin)
 
     if ~isempty(gridcase)
         if strcmp(simcase.user, 'holme')
-            geometriesFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\11thSPE-CSP\geometries\11AFiles";
+            geometriesFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\grid-files";
         elseif strcmp(simcase.user, 'kholme')
-            geometriesFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/11thSPE-CSP/geometries/11AFiles';
+            geometriesFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/grid-files';
         end
         if contains(gridcase, 'tetRef')
             refinement_factor = str2double(replace(gridcase, 'tetRef', ''));
