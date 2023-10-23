@@ -274,7 +274,7 @@ classdef Simcase < handle
             end
         end
         function plotStates(simcase, varargin)
-            opt = struct('field', 'FlowProps.ComponentTotalMass:2', ...
+            opt = struct('field', 'PVTProps.Density:1', ...
                 'pauseTime', 0.05);
             [opt, extra] = merge_options(opt, varargin{:});
 
@@ -283,7 +283,7 @@ classdef Simcase < handle
             plotToolbar(simcase.G, states, 'field', opt.field, 'pauseTime', opt.pauseTime, ...
                 varargin{:});
             view(0,0);
-            axis tight;
+            axis tight;axis equal;
             colorbar;
             title(simcase.casename, 'Interpreter','none');
         end

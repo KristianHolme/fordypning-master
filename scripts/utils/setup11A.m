@@ -9,7 +9,7 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
     schedule    = simcase.schedule;
     direct_solver = opt.direct_solver;
     
-    if contains(simcase.fluidcase, 'experimental')
+    if ~isempty(simcase.fluidcase) && contains(simcase.fluidcase, 'experimental')
         if contains(simcase.fluidcase, 'ref')
             state0 = initResSol(G, 1*atm, [1, 0]);
         else

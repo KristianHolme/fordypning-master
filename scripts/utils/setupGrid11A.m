@@ -11,14 +11,15 @@ function G = setupGrid11A(simcase, varargin)
             geometriesFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/grid-files';
         end
         if contains(gridcase, 'tetRef')
-            refinement_factor = str2double(replace(gridcase, 'tetRef', ''));
+            meshAlg = str2double(gridcase(1));
+            refinement_factor = str2double(replace(gridcase(2:end), 'tetRef', ''));
             str_ref_factor = num2str(refinement_factor);
             if mod(refinement_factor, 1) ~= 0
                 str_ref_factor = replace(str_ref_factor, '.', '_');
             end
            
-            matFile = fullfile(geometriesFolder, ['spe11a_ref', str_ref_factor ,'_grid.mat']);
-            mFile = fullfile(geometriesFolder, ['spe11a_ref', str_ref_factor, '.m']);
+            matFile = fullfile(geometriesFolder, ['spe11a_ref', str_ref_factor, '_alg', num2str(meshAlg),'_grid.mat']);
+            mFile = fullfile(geometriesFolder, ['spe11a_ref', str_ref_factor, '_alg', num2str(meshAlg), '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
                 error([matFile,' and ', mfile, ' not found']);
             elseif ~isfile(matFile) && isfile(mFile)
