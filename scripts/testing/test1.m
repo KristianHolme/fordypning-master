@@ -9,15 +9,15 @@ saveplot = false;
 grid = 'semi188x38_0.3';
 simcase{1} = Simcase('gridcase', grid, ...
     'discmethod', '');
-% simcase{2} = Simcase('gridcase', grid, ...
-%     'discmethod', 'hybrid-avgmpfa-oo');
-% simcase{3} = Simcase('gridcase', grid, ...
-%     'discmethod', 'hybrid-ntpfa-oo');
+simcase{2} = Simcase('gridcase', grid, ...
+    'discmethod', 'hybrid-avgmpfa-oo');
+simcase{3} = Simcase('gridcase', grid, ...
+    'discmethod', 'hybrid-ntpfa-oo');
 % simcase{4} = Simcase('gridcase', grid, ...
 %     'discmethod', 'hybrid-mpfa-oo');
 for i = 1:numel(simcase)
     simpleTest(simcase{i}, 'direction', 'tb', ...
-        'paddingLayers', 100, 'saveplot', saveplot, ...
+        'paddingLayers', -1, 'saveplot', saveplot, ...
         'uniformK', false);
 end
 
@@ -40,26 +40,13 @@ logNonSideFaces =  logBdryFaces & ~logSideFaces;
 plotFaces(G, find(logNonSideFaces));
 view(12,25);
 shg;
-%%
+%% Cellblocks
 gridcase = 'tetRef6';
 deckcase = 'RS';
 simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', false, ...
     'schedulecase', '');
 getCellblocks(simcase)
-%%
 
-gridcase = 'tetRef6';
-deckcase = 'RS';
-simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', true, ...
-    'schedulecase', '');
-
-popcells = simcase.getPoPCells;
-[cell1Ix, cell2Ix] = simcase.getinjcells;
-data = simcase.getCellData('FlowProps.ComponentTotalMass', popcells(1));
-data2 = simcase.getCellData('FlowProps.ComponentTotalMass', popcells(2));
-data = [data, data2];
-labels = ["data1", "data2"];
-plotData(labels, data)
 
 %% Plot difference between two cases
 gridcase = 'tetRef10';
@@ -102,18 +89,17 @@ plotGrid(simcase.G, bcCells);
 
 
 
-%%
-simcase = Simcase('deckcase', 'RS', 'gridcase', 'tetRef10', 'usedeck', true, ...
-    'discmethod', 'hybrid-avgmpfa-oo');
-cellBlocks = getCellblocks(simcase, 'paddingLayers', 1);
-simcase.model;
-
-% plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);
+%% Plot grid
+gridcase = 'semi263x154_0.3';
+gridcase = '6tetRef3';
+simcase = Simcase('gridcase', gridcase);
+figure
+plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
 % plotGrid(simcase.G, cellBlocks{1});
 
 
 %% Print number of cells
-gridcase = 'tetRef1';
+gridcase = 'semi263x154_0.3';
 
 simcase = Simcase('gridcase', gridcase);
 disp(['gridcase ', gridcase, 'cells: ', num2str(simcase.G.cells.num)]);
@@ -210,8 +196,11 @@ simcase = Simcase('deckcase', deckcase,'usedeck', true, 'gridcase', gridcase, ..
 
 %%
 [ok, status, time] = solveMultiPhase(simcase, 'resetData', true);
-
+%%
+gridcase = '5tetRef3';
+simcase = Simcase('gridcase', gridcase);
 %% Plot perm
+figure
 plotToolbar(simcase.G, simcase.rock.perm);view(0,0);
 %% Plot poro
 plotToolbar(simcase.G, simcase.rock.poro);view(0,0);

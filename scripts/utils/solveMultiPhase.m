@@ -6,6 +6,7 @@ function [ok, status, time] = solveMultiPhase(simcase, varargin)
         'usedeck'           , true, ...
         'Jutul'             , false, ...
         'direct_solver'     , false);
+    status = struct();
 
     [opt, extra] = merge_options(opt, varargin{:});
     dirName       = fullfile(simcase.dataOutputDir, simcase.casename);
@@ -28,8 +29,8 @@ function [ok, status, time] = solveMultiPhase(simcase, varargin)
     end
     tic();
     if opt.Jutul
-        projPath = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\11SPE\src';
-        outputfolder = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\11SPE\src\output';
+        projPath = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src';
+        outputfolder = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\output';
         [ws, states] = simulatePackedProblemJutul(problem, 'name', simcase.casename, 'project', projPath, 'path', outputfolder);
         ok = true;%?
     else

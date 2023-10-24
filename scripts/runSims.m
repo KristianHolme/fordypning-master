@@ -10,15 +10,15 @@ mrstVerbose off
 
 
 %%
-% gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90', 'struct340x150',
+% gridcases = {'5tetRef10', '5tetRef8', '5tetRef6', '5tetRef4', '5tetRef2','struct220x90', 'struct340x150',
 % 'semi188x38_0.3', 'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'semi188x38_0.3', 'semi263x154_0.3', 'semi200x150_0.5'};
+gridcases = {'5tetRef1'};
 schedulecases = {''};
 deckcases = {'RS'};
 % discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
-discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo'};
+discmethods = {'', 'hybrid-avgmpfa-oo'};
 disc_prio = 1;%1 means tpfa prio
 tagcase = '';
 
