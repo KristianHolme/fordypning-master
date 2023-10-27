@@ -274,7 +274,7 @@ classdef Simcase < handle
             end
         end
         function plotStates(simcase, varargin)
-            opt = struct('field', 'PVTProps.Density:1', ...
+            opt = struct('field', 'rs', ...4
                 'pauseTime', 0.05);
             [opt, extra] = merge_options(opt, varargin{:});
 

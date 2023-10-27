@@ -29,6 +29,11 @@ function model = setupModel11A(simcase, varargin)
     end
 
     model.OutputStateFunctions{end+1} = 'CapillaryPressure';
+    model.OutputStateFunctions{end+1} = 'ComponentMobility';
+    model.OutputStateFunctions{end+1} = 'ComponentPhaseDensity';
+    model.OutputStateFunctions{end+1} = 'ComponentPhaseMass';
+    model.OutputStateFunctions{end+1} = 'Mobility';
+    model.OutputStateFunctions{end+1} = 'PhasePressures';
     model.outputFluxes = false;
     model.AutoDiffBackend = DiagonalAutoDiffBackend('useMex', true);% safe to use with hybrid-method?
     model = model.validateModel();

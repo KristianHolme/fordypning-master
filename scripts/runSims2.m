@@ -15,17 +15,17 @@ mrstVerbose off
 
 gridcases = {'5tetRef10'};%, 'semi263x154_0.3'};%, 'struct340x150'};%, 'semi200x150_0.5'};
 schedulecases = {''};
-deckcases = {'IMMISCIBLE'};
+deckcases = {'RS'};
 fluidcase = '';
 % discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
 discmethods = {''};
 disc_prio = 1;%1 means tpfa prio
-tagcase = 'jutultest';
+tagcase = 'test';
 
 resetData = true;
 do.plotStates = false;
 do.multiphase = true;
-useJutulIfPossible = true;
+useJutulIfPossible = false;
 direct_solver = false; %may not be respected if backslashThreshold is not met
 usedeck = true;
 
@@ -35,7 +35,7 @@ for ideck = 1:numel(deckcases)
     if strcmp(deckcase, 'IMMISCIBLE') && useJutulIfPossible
         Jutul = true;
     else
-        Jutul = true;
+        Jutul = false;
     end
     for igrid = 1:numel(gridcases)
         gridcase = gridcases{igrid};
