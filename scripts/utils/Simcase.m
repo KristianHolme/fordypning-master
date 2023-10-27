@@ -318,7 +318,11 @@ classdef Simcase < handle
             end
         end
 
-        function data = getCellData(simcase, type, cellIx)
+        function data = getCellData(simcase, type, varargin)
+            opt = struct('cellIx', []);
+            opt = merge_options(opt, varargin{:});
+            cellIx = opt.cellIx;
+
             typeParts = strsplit(type, '.');
 
             if isempty(simcase.schedulecase) || strcmp(simcase.schedulecase, 'simple-std')
@@ -339,7 +343,11 @@ classdef Simcase < handle
             else %varable is reported for phase 2
                 for it = 1:steps
                     fulldata = getfield(states{it}, typeParts{:});
-                    data(it) = fulldata{2}(cellIx);
+                    if ~isempty(cellIx)%specific cell
+                        data(it) = fulldata{2}(cellIx);
+                    else %sum all values (for CTM)
+                        data(it) = sum(fulldata{2});
+                    end
                 end
             end
         end     

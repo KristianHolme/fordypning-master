@@ -3,19 +3,20 @@ clear all;close all;
 set(groot, 'defaultLineLineWidth', 2);
 
 %% Cases to get data from
-gridcases = {'tetRef10'};
+gridcases = {'5tetRef2', 'struct340x150', 'semi263x154_0.3'};
 schedulecases = {''};
 deckcases = {'RS'};
-discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-mpfa-oo'};
+discmethods = {''};
 tagcase = '';
 
-steps = 100;
+steps = 40;
 xscaling = hour;
 popcell = 2;
 
-datatypeShort = 'Density';
-labels = {'TPFA', 'hybrid-avgMPFA', 'hybrid-MPFA'};
-plotTitle = [datatypeShort, ' at PoP ', num2str(popcell), '. Grid: ', gridcases{1}];
+datatypeShort = 'CTM';
+labels = {'unstruct', 'struct', 'semi'};
+% plotTitle = [datatypeShort, ' at PoP ', num2str(popcell), '. Grid: ', gridcases{1}];
+plotTitle = datatypeShort;
 ylabel = datatypeShort;
 xlabel = 'time [h]';
 %% Load simcases
@@ -35,19 +36,26 @@ for ideck = 1:numel(deckcases)
         end
     end
 end
-%% Load data
+%% Misc
 dataTypesShort = {'CTM', 'Pressure', 'Density'};
 dataTypesLong = {'FlowProps.ComponentTotalMass', 'pressure', 'PVTProps.Density'};
 shortToLongDatatype = containers.Map(dataTypesShort, dataTypesLong);
 datatype = shortToLongDatatype(datatypeShort);
-
 xdata = cumsum(600*ones(720, 1))/xscaling;
 data = nan(720, numel(simcases));
+%% Load data pop
 for isim = 1:numel(simcases)
     simcase = simcases{isim};
     popcells = simcase.getPoPCells;
-    data(:,isim) = simcase.getCellData(datatype, popcells(popcell));
+    data(:,isim) = simcase.getCellData(datatype, 'cellIx', popcells(popcell));
 end
+
+%% Load data totalmass
+for isim = 1:numel(simcases)
+    simcase = simcases{isim};
+    data(:,isim) = simcase.getCellData(datatype);
+end
+
 
 %% Plot
 xdataTruncated = xdata(1:steps,:);
