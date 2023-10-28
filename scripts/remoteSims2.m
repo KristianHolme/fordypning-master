@@ -31,9 +31,7 @@ for ideck = 1:numel(deckcases)
                     [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                         'direct_solver', direct_solver);
                     disp(['Done with: ', simcase.casename]);
-                    timingname = replace(simcase.casename, '=', '_');
-                    timingname = replace(timingname, '-', '_');
-                    timings.(timingname) = time;
+                    timings.(timingName(simcase.casename)) = time;
                 end
             end
         end

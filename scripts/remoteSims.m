@@ -7,7 +7,7 @@ function timings = remoteSims(server)
     
     switch  server
         case 1
-            gridcases = {'5tetRef10', '5tetRef6', '5tetRef4', '5TetRef2'};
+            gridcases = {'5tetRef10', '5tetRef6', '5tetRef4', '5tetRef2'};
             schedulecases = {''};
             discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-mpfa-oo', 'hybrid-ntpfa-oo'};
             deckcases = {'RS'};
@@ -64,9 +64,7 @@ function timings = remoteSims(server)
                         [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                             'direct_solver', direct_solver);
                         disp(['Done with: ', simcase.casename]);
-                        timingname = replace(simcase.casename, '=', '_');
-                        timingname = replace(timingname, '-', '_');
-                        timings.(timingname) = time;
+                        timings.(timingName(simcase.casename)) = time;
                     end
                 end
             end
