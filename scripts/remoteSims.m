@@ -7,7 +7,7 @@ function timings = remoteSims(server)
     
     switch  server
         case 1
-            gridcases = {'5tetRef10', '5tetRef6', '5tetRef4', '5tetRef2'};
+            gridcases = {'5tetRef2'};
             schedulecases = {''};
             discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-mpfa-oo', 'hybrid-ntpfa-oo'};
             deckcases = {'RS'};
@@ -19,7 +19,7 @@ function timings = remoteSims(server)
         case 2
             gridcases = {'struct340x150', 'struct220x90'};
             schedulecases = {''};
-            discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo'};
+            discmethods = {'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -29,7 +29,7 @@ function timings = remoteSims(server)
         case 3
             gridcases = {'semi188x38_0.3', 'semi263x154_0.3'};
             schedulecases = {''};
-            discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo'};
+            discmethods = {'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -37,9 +37,9 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 4
-            gridcases = {'5tetRef1'};
+            gridcases = {'struct220x90', 'semi263x154_0.3'};
             schedulecases = {''};
-            discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-mpfa-oo'};
+            discmethods = {''};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
