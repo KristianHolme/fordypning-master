@@ -4,7 +4,9 @@ function plotData(labels, data, varargin)
                  'ylabel', [], ...
                  'xdata', [], ...
                  'title', [], ...
-                 'legend', true);
+                 'legend', true, ...
+                 'interpreter', 'none', ...
+                 'legendLoc', 'best');
     opt = merge_options(opt, varargin{:});
     
     figure;
@@ -30,7 +32,7 @@ function plotData(labels, data, varargin)
     end
     
     if opt.legend
-        legend(labels);
+        legend(labels, 'Location', opt.legendLoc, 'interpreter', opt.interpreter);
     end
     grid;
     hold off;

@@ -90,8 +90,8 @@ plotGrid(simcase.G, bcCells);
 
 
 %% Plot grid
-gridcase = 'semi263x154_0.3';
-gridcase = '6tetRef3';
+gridcase = 'semi203x72_0.3';
+% gridcase = '6tetRef3';
 simcase = Simcase('gridcase', gridcase);
 figure
 plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
@@ -99,106 +99,18 @@ plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
 
 
 %% Print number of cells
-gridcase = 'semi263x154_0.3';
-
-simcase = Simcase('gridcase', gridcase);
-disp(['gridcase ', gridcase, 'cells: ', num2str(simcase.G.cells.num)]);
-
-%%
-simcase = Simcase('deckcase', 'RS', 'usedeck', true, 'schedulecase', 'simple-std');
-% plotCellData(simcase.G, simcase.rock.poro);view(0,0);
-
-%%
-geometriesFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\11SPE\src\11thSPE-CSP\geometries";
-%%
-file = fullfile(geometriesFolder, "spe11a_ref3.m");
-
-
-G = gmshToMRST(file);
-save(fullfile(geometriesFolder, 'spe11a_ref3_grid.mat'), "G");
-%%
-load(fullfile(geometriesFolder, 'spe11a_ref3_grid.mat'));
-rock = createRock11A(G);
-%%
-plotCellData(G, rock.perm);
-%%
-[err, errvect, fwerr] = computeOrthError(G, rock, setupTables(G));
-%%
-figure
-plotCellData(G, fwerr);
-figure 
-plotCellData(G, err);
-%% Setup
-deck = readEclipseDeck('spe11-utils\deck\CSP11A_RS.DATA');
-deck = convertDeckUnits(deck);
-refinement = 10;
-dim = 3;
-G = setupGrid11A('refinement_factor', refinement, 'dim', dim);
-rock = setupRock11A(G);
-fluid = setupFluid11A('deck', deck);
-model = setupModel11A(G, rock, fluid, 'usedeck', true);
-schedule = setupSchedule11A(G, rock, 'dim', dim);
-% initState = initResSol(G, 1*atm, [1, 0]);
-state0 = initStateDeck(model, deck);
-nls = getNonLinearSolver(model);
-nls.maxTimestepCuts = 20;
-%% Setup
-injectionTimeStep = 2*minute;
-refinement_factor = 3;
-settleTimeStep = 2*hour;
-[state0, model, schedule, nls] = setup11A('refinement_Factor', refinement_factor, ...
-                                          'injectionTimeStep', injectionTimeStep, ...
-                                          'settleTimeStep'   , settleTimeStep,...
-                                          'dim'              , 3);
-%% Full deck sim setup
-deckname = 'RSRV';
-simcase = Simcase('deckcase', deckname, 'usedeck', true);
-%%
-solveMultiPhase(simcase, 'resetData', true)
-%%
-[states, wellsols, reports] = simcase.getSimData;
-% states = states{1};
-%%
-plotToolbar(simcase.G, states);
-view(0,0);
-%%
-simcase = Simcase('SPEcase', 'A', 'gridcase', 'tetRef10', ...
-    'fluidcase', 'simple');
-
-%%
-solveMultiPhase(simcase, 'usedeck', false);
-
-%%
-[states, wellsols, reports] = simcase.getSimData();
-%% Simulate
-disp('Starting simulation...');
-[wellSols, state, report]  = simulateScheduleAD(state0, model, schedule, 'NonLinearSolver', nls);
-%%
-plotToolbar(G, states, 'field', 's:2', 'startplayback', true)
-axis tight; colorbar;
-%%
-figure
-plotGrid(G)
-plotGrid(G, [schedule.control(2).W.cells], 'facecolor', 'red')
-
+gridcases = {'5tetRef10', '5tetRef8', '5tetRef6', '5tetRef4','5tetRef2', '5tetRef1',...
+    'struct220x90', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};
+for i = 1:numel(gridcases)
+    gridcase = gridcases{i};
+    simcase = Simcase('gridcase', gridcase);
+    disp(['gridcase ', gridcase, 'cells: ', num2str(simcase.G.cells.num)]);
+end
 %%
 initpressure = state{1}.pressure;
 for i = 1:numel(state)
     state{i}.pressureDiff = state{i}.pressure - initpressure;
 end
-
-%%
-deckcase = 'RS';
-gridcase = 'tetRef10';
-schedulecase = 'simple';
-simcase = Simcase('deckcase', deckcase,'usedeck', true, 'gridcase', gridcase, ...
-    'schedulecase', schedulecase);
-
-%%
-[ok, status, time] = solveMultiPhase(simcase, 'resetData', true);
-%%
-gridcase = '5tetRef3';
-simcase = Simcase('gridcase', gridcase);
 %% Plot perm
 figure
 plotToolbar(simcase.G, simcase.rock.perm);view(0,0);

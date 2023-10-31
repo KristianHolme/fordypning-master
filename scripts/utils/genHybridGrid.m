@@ -12,7 +12,7 @@ function G = genHybridGrid(varargin)
     node_density = opt.density;
     verbose = opt.verbose;
     plotUnstructured = opt.plotUnstructured;
-    savepath = ['11thSPE-CSP\geometries\11AFiles\spe11a_semi', ...
+    savepath = ['grid-files\spe11a_semi', ...
     num2str(nx_glob), 'x', num2str(nz_glob), '_', num2str(node_density), '_grid.mat'];
 
     mrstModule add matlab_bgl coarsegrid

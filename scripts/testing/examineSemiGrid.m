@@ -23,6 +23,9 @@ max_xParams = goodparams(idx_max_x, 1:3);
 min_xParams = goodparams(idx_min_x, 1:3);
 max_zParams = goodparams(idx_max_z, 1:3);
 min_zParams = goodparams(idx_min_z, 1:3);
+%% Find combinatino with right amount of cells
+sorted_goodparams = sortrows(goodparams, -4);
+
 %%
 n = randi(size(goodparams,1));
 

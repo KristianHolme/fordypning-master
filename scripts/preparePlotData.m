@@ -3,18 +3,18 @@ clear all;close all;
 set(groot, 'defaultLineLineWidth', 2);
 
 %% Cases to get data from
-gridcases = {'5tetRef2', 'struct340x150', 'semi263x154_0.3'};
+gridcases = {'6tetRef10'};
 schedulecases = {''};
-deckcases = {'RS'};
+deckcases = {'RS', 'IMMISCIBLE'};
 discmethods = {''};
 tagcase = '';
 
-steps = 40;
+steps = 90;
 xscaling = hour;
 popcell = 2;
 
 datatypeShort = 'CTM';
-labels = {'unstruct', 'struct', 'semi'};
+labels = deckcases;
 % plotTitle = [datatypeShort, ' at PoP ', num2str(popcell), '. Grid: ', gridcases{1}];
 plotTitle = datatypeShort;
 ylabel = datatypeShort;

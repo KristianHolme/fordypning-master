@@ -1,16 +1,25 @@
 clear all
 close all
 %%
+aspectRatio = 2.7;
 
+% Calculate the width and height to maintain the aspect ratio
+width = 900;  % Choose an appropriate value for the width
+height = width / aspectRatio;
 
-simcase = Simcase('gridcase', 'tetRef1');
+% Set the default figure position
+set(0, 'DefaultFigurePosition', [100, 100, width, height]);
+%%
+gridcases = {'5tetRef2', '6tetRef2', 'struct340x150', 'struct220x90', 'semi263x154_0.3',...
+    'semi188x38_0.3', 'struct180x40'};
+simcase = Simcase('gridcase', gridcases{7});
 % simcase = Simcase('deckcase', 'RS', 'usedeck',true);
 %%
 G = simcase.G;
 
 [ortherr, errvec, fwerr] = simcase.computeStaticIndicator;
 %%
-plot_fwerr = false;
+plot_fwerr = true;
 saveplot = true;
 
 if plot_fwerr
@@ -28,7 +37,7 @@ else
     gridname = simcase.gridcase;
 end
 title(gridname);
-axis tight;
+axis tight;axis equal;
 colorbar;
 
 if saveplot
@@ -41,4 +50,6 @@ if saveplot
         saveName = [gridname, '_ortherr.eps'];
     end
     exportgraphics(h, fullfile(savefolder, saveName));
+    exportgraphics(h, fullfile(savefolder, replace(saveName, '.eps', '.png')));
+
 end

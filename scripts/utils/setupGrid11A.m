@@ -45,7 +45,8 @@ function G = setupGrid11A(simcase, varargin)
             params = replace(gridcase, 'semi', '');
             matFile = fullfile(geometriesFolder, ['spe11a_semi', params, '_grid.mat']);
             if ~isfile(matFile)
-                error([matFile, 'not found']);
+                
+                error([matFile, ' not found']);
             end
         end
         load(matFile);
