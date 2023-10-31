@@ -1,3 +1,8 @@
+<div align="Left">
+  <img src="Images/logo.png" alt="Project Logo" width="50" style="vertical-align:middle"/>
+  <span style="vertical-align:middle; font-size: 24px; margin-left: 10px;">Fordypningsoppgave</span>
+</div>
+
 To run files (hopefully):
 
 - have a copy of the repo spe11-utils in the main folder of this repo
