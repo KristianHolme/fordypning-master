@@ -1,7 +1,6 @@
-<div align="Left">
-  <img src="Images/logo_small.png" alt="Project Logo" width="50" style="vertical-align:middle"/>
-  <span style="vertical-align:middle; font-size: 24px; margin-left: 10px;">Fordypningsoppgave</span>
-</div>
+![Project Logo](Images/logo_small.png)
+# Fordypningsoppgave
+
 
 To run files (hopefully):
 
