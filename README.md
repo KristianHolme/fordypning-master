@@ -1,5 +1,5 @@
 <div align="Left">
-  <img src="Images/logo.png" alt="Project Logo" width="50" style="vertical-align:middle"/>
+  <img src="Images/logo_small.png" alt="Project Logo" width="50" style="vertical-align:middle"/>
   <span style="vertical-align:middle; font-size: 24px; margin-left: 10px;">Fordypningsoppgave</span>
 </div>
 
