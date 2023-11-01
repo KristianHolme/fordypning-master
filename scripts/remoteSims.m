@@ -37,9 +37,9 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 4
-            gridcases = {'struct220x90', 'semi263x154_0.3'};
+            gridcases = {'6tetRef1'};
             schedulecases = {''};
-            discmethods = {''};
+            discmethods = {'', 'hybrid-avgmpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
