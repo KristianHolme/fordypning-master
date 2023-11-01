@@ -282,7 +282,8 @@ classdef Simcase < handle
             figure
             plotToolbar(simcase.G, states, 'field', opt.field, 'pauseTime', opt.pauseTime, ...
                 varargin{:});
-            plotGrid(simcase.G, simcase.getinjcells, 'facecolor', 'red')
+            [inj1, inj2] = simcase.getinjcells;
+            plotGrid(simcase.G, [inj1, inj2], 'faceAlpha', 0)
             view(0,0);
             axis tight;axis equal;
             colorbar;

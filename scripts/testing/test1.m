@@ -90,7 +90,7 @@ plotGrid(simcase.G, bcCells);
 
 
 %% Plot grid
-gridcase = 'semi203x72_0.3';
+gridcase = 'struct205x75';
 % gridcase = '6tetRef3';
 simcase = Simcase('gridcase', gridcase);
 figure
@@ -99,7 +99,7 @@ plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
 
 
 %% Print number of cells
-gridcases = {'5tetRef10', '5tetRef8', '5tetRef6', '5tetRef4','5tetRef2', '5tetRef1',...
+gridcases = {'5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef3',...
     'struct220x90', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};
 for i = 1:numel(gridcases)
     gridcase = gridcases{i};
@@ -112,6 +112,8 @@ for i = 1:numel(state)
     state{i}.pressureDiff = state{i}.pressure - initpressure;
 end
 %% Plot perm
+gridcase = 'struct190x82';
+simcase = Simcase('gridcase', gridcase);
 figure
 plotToolbar(simcase.G, simcase.rock.perm);view(0,0);
 %% Plot poro

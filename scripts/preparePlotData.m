@@ -3,18 +3,18 @@ clear all;close all;
 set(groot, 'defaultLineLineWidth', 2);
 
 %% Cases to get data from
-gridcases = {'6tetRef10'};
+gridcases = {'5tetRef2', '6tetRef2', 'semi203x72_0.3'};
 schedulecases = {''};
-deckcases = {'RS', 'IMMISCIBLE'};
+deckcases = {'RS'};
 discmethods = {''};
 tagcase = '';
 
-steps = 90;
+steps = 720;
 xscaling = hour;
 popcell = 2;
 
 datatypeShort = 'CTM';
-labels = deckcases;
+labels = gridcases;
 % plotTitle = [datatypeShort, ' at PoP ', num2str(popcell), '. Grid: ', gridcases{1}];
 plotTitle = datatypeShort;
 ylabel = datatypeShort;
@@ -41,9 +41,18 @@ dataTypesShort = {'CTM', 'Pressure', 'Density'};
 dataTypesLong = {'FlowProps.ComponentTotalMass', 'pressure', 'PVTProps.Density'};
 shortToLongDatatype = containers.Map(dataTypesShort, dataTypesLong);
 datatype = shortToLongDatatype(datatypeShort);
+%%
 xdata = cumsum(600*ones(720, 1))/xscaling;
 data = nan(720, numel(simcases));
+%% Load data Cealing CO2
+for isim = 1:numel(simcases)
+    simcase = simcases{isim};
+    popcells = simcase.getPoPCells;
+    data(:,isim) = simcase.getCellData(datatype, 'cellIx', popcells(popcell));
+end
+
 %% Load data pop
+popcell  = 1;
 for isim = 1:numel(simcases)
     simcase = simcases{isim};
     popcells = simcase.getPoPCells;
