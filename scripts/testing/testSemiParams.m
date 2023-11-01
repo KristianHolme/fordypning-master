@@ -27,8 +27,8 @@ count = 0;
 h = waitbar(0, 'Processing...');  % Initialize waitbar
 
 for nx = nxs
-    lower = round((target-slack)/nx);
-    upper = round((target+slack)/nx);
+    lower = round((targetcellnumber-slack)/nx);
+    upper = round((targetcellnumber+slack)/nx);
     for nz = nzs
         for id = 1:numel(densities)
             density = densities(id);
