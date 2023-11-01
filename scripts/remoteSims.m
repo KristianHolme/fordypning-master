@@ -4,7 +4,7 @@ function timings = remoteSims(server)
         deckformat gmsh nfvm mpfa
     % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
     % schedulecases = {'simple-coarse', 'simple-std'};
-    
+    mrstVerbose off
     switch  server
         case 1
             gridcases = {'5tetRef2'};
@@ -37,9 +37,9 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 4
-            gridcases = {'6tetRef1'};
+            gridcases = {'5tetRef1'};
             schedulecases = {''};
-            discmethods = {'', 'hybrid-avgmpfa'};
+            discmethods = {''};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;

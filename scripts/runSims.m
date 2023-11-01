@@ -19,7 +19,7 @@ gridcases = {'5tetRef1'};
 schedulecases = {''};
 deckcases = {'RS'};
 % discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
-discmethods = {'', 'hybrid-avgmpfa-oo'};
+discmethods = {'hybrid-avgmpfa-oo'};
 disc_prio = 1;%1 means tpfa prio
 tagcase = '';
 
