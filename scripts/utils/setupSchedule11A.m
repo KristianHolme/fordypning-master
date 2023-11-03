@@ -65,7 +65,19 @@ function schedule = setupSchedule11A(simcase, varargin)
         end
         G = simcase.G;
         bf = boundaryFaces(G);
-        bf = bf(G.faces.centroids(bf, 3) < 1e-12);
+
+        if simcase.griddim == 3
+            bf = bf(G.faces.centroids(bf, 3) < 1e-12);
+        elseif simcase.griddim == 2
+            %adjust rate by multiplying with 100
+            for i = 1:numel(schedule.control)
+                multFactor = 100;
+                for j = 1:numel(schedule.control(i).W)
+                    schedule.control(i).W(j).val = schedule.control(i).W(j).val * multFactor;
+                end
+            end
+            bf = bf( G.faces.centroids(bf, 2)>(1.2-1e-12) );
+        end
 
         bc = addBC([], bf, 'pressure', 1.1e5, 'sat', [1, 0]);
         for i = 1:numel(schedule.control)

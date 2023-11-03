@@ -9,7 +9,11 @@ function model = setupModel11A(simcase, varargin)
     usedeck = simcase.usedeck;
     deck = simcase.deck;
     
-    gravity([0, 0, 9.81]);
+    if simcase.griddim == 3
+        gravity([0, 0, 9.81]);
+    else
+        gravity([0,-9.81])
+    end
     gravity on
 
 

@@ -13,16 +13,16 @@ mrstVerbose off
 % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'5tetRef10'};
+gridcases = {'5tetRef1'};
 schedulecases = {''};%defaults 
 deckcases = {'RS'};
 fluidcase = '';
 % discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
-discmethods = {''};
+discmethods = {'hybrid-mpfa-oo'};
 disc_prio = 1;%1 means tpfa prio
 tagcase = 'test';
 
-resetData = true;
+resetData = false;
 do.plotStates = false;
 do.multiphase = true;
 useJutulIfPossible = false;

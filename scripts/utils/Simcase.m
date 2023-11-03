@@ -25,6 +25,7 @@ classdef Simcase < handle
         spe11utilsDir
         decksaveDir
         repoDir
+        griddim
         
         
         gravity
@@ -47,7 +48,8 @@ classdef Simcase < handle
                          'schedulecase' , [], ...
                          'deck'         , [], ...
                          'rockcase'     , [], ...
-                         'discmethod'   , '');
+                         'discmethod'   , '', ...
+                         'griddim'      , 3);
             opt = merge_options(opt, varargin{:});
 
             propnames = {'SPEcase', 'deckcase', 'gridcase', 'discmethod', 'fluidcase', 'tagcase',...
@@ -61,6 +63,7 @@ classdef Simcase < handle
                 pn = propnames{i};
                 simcase.(pn) = opt.(pn);
             end
+            simcase.griddim = opt.griddim;
 
             simcase.propnames = propnames;
             simcase.usedeck = opt.usedeck;
@@ -302,7 +305,9 @@ classdef Simcase < handle
                 varargin{:});
             [inj1, inj2] = simcase.getinjcells;
             plotGrid(simcase.G, [inj1, inj2], 'faceAlpha', 0)
-            view(0,0);
+            if simcase.griddim==3
+                view(0,0);
+            end
             axis tight;axis equal;
             colorbar;
             title(simcase.casename, 'Interpreter','none');

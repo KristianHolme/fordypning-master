@@ -1,5 +1,5 @@
 function G = setupGrid11A(simcase, varargin)
-    opt = struct('refinement_factor', 1, 'dim', 3);
+    opt = struct('refinement_factor', 1);
     opt = merge_options(opt, varargin{:});
 
     gridcase = simcase.gridcase;
@@ -54,18 +54,22 @@ function G = setupGrid11A(simcase, varargin)
         G = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
         G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
         G.cells.indexMap = (1:G.cells.num)';
-        if opt.dim == 3 && G.griddim ~=3
+        if simcase.griddim == 3 && G.griddim ~=3
             G = makeLayeredGrid(G, 0.01);
             G = computeGeometry(G);
+            G = RotateGrid(G);%rotategrid to Z axis
+        elseif simcase.griddim == 2
+            %make nodes 3D??no?
+
         end
-        G = RotateGrid(G);%rotategrid to Z axis
+        
 
 
     elseif ~isempty(simcase.deck) %use deck if present
         G = initEclipseGrid(simcase.deck);
     end
     G = computeGeometry(G);
-    assert(checkGrid(G) == true); %not satisfied for semigrid
+    assert(checkGrid(G) == true); %not satisfied for semigrid?
 end
 
 function G = makeSkewed3D()

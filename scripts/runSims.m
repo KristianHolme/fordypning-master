@@ -14,15 +14,16 @@ mrstVerbose off
 % 'semi188x38_0.3', 'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'5tetRef1'};
+gridcases = {'5tetRef10'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
 % discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
-discmethods = {'hybrid-avgmpfa-oo'};
-disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization
-tagcase = '';
+discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo'};
+disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
+tagcase = 'dim2test';
+griddim = 2; % usually 3
 
-resetData = true;
+resetData = false;
 do.plotStates = false;
 do.multiphase = true;
 useJutulIfPossible = false;
@@ -44,7 +45,7 @@ for ideck = 1:numel(deckcases)
                 discmethod = discmethods{idisc};
                 simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                'discmethod', discmethod);
+                                'discmethod', discmethod, 'griddim', griddim);
                 if do.multiphase
                     [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                         'direct_solver', direct_solver, 'prio', disc_prio);
