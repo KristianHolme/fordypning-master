@@ -7,12 +7,12 @@ function timings = remoteSims(server)
     mrstVerbose off
     switch  server
         case 1
-            gridcases = {'5tetRef2'};
+            gridcases = {'5tetRef10'};
             schedulecases = {''};
-            discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-mpfa-oo', 'hybrid-ntpfa-oo'};
+            discmethods = {''};
             deckcases = {'RS'};
-            tagcase = '';
-            resetData = false;
+            tagcase = 'test';
+            resetData = true;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
