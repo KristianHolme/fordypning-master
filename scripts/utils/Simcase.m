@@ -19,9 +19,13 @@ classdef Simcase < handle
         fluid
         schedule
         model
+        deck
         user
         dataOutputDir
-        deck
+        spe11utilsDir
+        decksaveDir
+        repoDir
+        
         
         gravity
 
@@ -60,8 +64,14 @@ classdef Simcase < handle
 
             simcase.propnames = propnames;
             simcase.usedeck = opt.usedeck;
-
-
+            
+            %configure folder structure
+            configFile = fileread('config.JSON');
+            config = jsondecode(configFile);
+            simcase.dataOutputDir = config.output_folder;
+            simcase.spe11utilsDir = config.spe11utils_folder;
+            simcase.decksaveDir = config.decksave_folder;
+            simcase.repoDir = config.repo_folder;
 
             simcase.updateprop = true;
             simcase.resetprop  = true;
@@ -170,25 +180,33 @@ classdef Simcase < handle
             deck = simcase.deck;
             if isempty(deck)
                 deckname = simcase.deckcase;
-                if contains(deckname, 'pyopm')
+                if contains(deckname, 'pyopm')%pyopm deck
                     deckname = replace(deckname, 'pyopm-', '');
                     folderFromSrc = fullfile('pyopmcsp11\decks\',simcase.SPEcase, deckname, 'preprocessing');
                     deckname = 'CSP11A.DATA';
                     
-                else
+                else%deck from spe11-utils
                     deckname = ['CSP11A_', deckname, '.DATA'];
                     if ~isempty(deckname)
                         folderFromSrc = "spe11-utils\deck";
                     end
+                    deckFolder = fullfile(simcase.spe11utilsDir, 'deck');
                 end
-                if strcmp(simcase.user, 'kholme')%on markov
-                    deckFolder = fullfile('/home/shomec/k/kholme/Documents/Prosjektoppgave/src/', replace(folderFromSrc, '\', '/'));
-                else
-                    deckFolder = folderFromSrc;
+              
+                if isempty(deckFolder)%something wrong with config if we enter here
+                    if strcmp(simcase.user, 'kholme')%on markov
+                        deckFolder = fullfile('/home/shomec/k/kholme/Documents/Prosjektoppgave/src/', replace(folderFromSrc, '\', '/'));
+                    else
+                        deckFolder = folderFromSrc;
+                    end
                 end
                 %load deck from mat file or save to mat file
                 decksavename = replace(deckname, '.DATA', '_deck.mat');
-                decksavePath = fullfile(deckFolder, decksavename);
+                decksaveFolder = simcase.decksaveDir;
+                if isempty(decksaveFolder)
+                    decksaveFolder = deckFolder;
+                end
+                decksavePath = fullfile(decksaveFolder, decksavename);
                 if isfile(decksavePath)
                     disp('Loading deck from saved .mat file...')
                     load(decksavePath);
@@ -264,10 +282,10 @@ classdef Simcase < handle
         end
         function dataOutputDir = get.dataOutputDir(simcase)
             dataOutputDir = simcase.dataOutputDir;
-            if isempty(dataOutputDir)
+            if isempty(dataOutputDir)%should not enter here if config is correct
                 if strcmp(simcase.user, 'holme')
                     dataOutputDir = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\output';
-                elseif strcmp(simcase.user, 'kholme')
+                elseif strcmp(simcase.user, 'kholme')%on markov
                     dataOutputDir = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/output';
                 end
                 simcase.dataOutputDir = dataOutputDir;

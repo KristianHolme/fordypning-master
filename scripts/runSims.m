@@ -6,21 +6,20 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     deckformat gmsh nfvm mpfa
 mrstVerbose off
 %%
-% decks = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV', 'pyopm-Finer', 'pyopm-Coarser'};
+% deckcases = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV', 'pyopm-Finer', 'pyopm-Coarser'};
 
 
 %%
-% gridcases = {'5tetRef10', '5tetRef8', '5tetRef6', '5tetRef4',
-% '5tetRef2','struct220x90', 'struct340x150',
+% gridcases = {'5tetRef10', '5tetRef8', '5tetRef6', '5tetRef4', '5tetRef2','struct220x90', 'struct340x150',
 % 'semi188x38_0.3', 'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
 gridcases = {'5tetRef1'};
-schedulecases = {''};
-deckcases = {'RS'};
+schedulecases = {''};%defaults to schedule from deck
+deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
 % discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
 discmethods = {'hybrid-avgmpfa-oo'};
-disc_prio = 1;%1 means tpfa prio
+disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization
 tagcase = '';
 
 resetData = true;

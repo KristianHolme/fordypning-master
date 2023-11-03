@@ -5,10 +5,11 @@ function G = setupGrid11A(simcase, varargin)
     gridcase = simcase.gridcase;
 
     if ~isempty(gridcase)
+        gridFolder = fullfile(simcase.repoDir, 'grid-files');
         if strcmp(simcase.user, 'holme')
-            geometriesFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\grid-files";
+            gridFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\grid-files";
         elseif strcmp(simcase.user, 'kholme')
-            geometriesFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/grid-files';
+            gridFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/grid-files';
         end
         if contains(gridcase, 'tetRef')
             meshAlg = str2double(gridcase(1));
@@ -18,8 +19,8 @@ function G = setupGrid11A(simcase, varargin)
                 str_ref_factor = replace(str_ref_factor, '.', '_');
             end
            
-            matFile = fullfile(geometriesFolder, ['spe11a_ref', str_ref_factor, '_alg', num2str(meshAlg),'_grid.mat']);
-            mFile = fullfile(geometriesFolder, ['spe11a_ref', str_ref_factor, '_alg', num2str(meshAlg), '.m']);
+            matFile = fullfile(gridFolder, ['spe11a_ref', str_ref_factor, '_alg', num2str(meshAlg),'_grid.mat']);
+            mFile = fullfile(gridFolder, ['spe11a_ref', str_ref_factor, '_alg', num2str(meshAlg), '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
                 error([matFile,' and ', mfile, ' not found']);
             elseif ~isfile(matFile) && isfile(mFile)
@@ -30,8 +31,8 @@ function G = setupGrid11A(simcase, varargin)
             
         elseif contains(gridcase, 'struct')
             resolution = replace(gridcase, 'struct', ''); %format struct200x200
-            matFile = fullfile(geometriesFolder, ['spe11a_struct', resolution ,'_grid.mat']);
-            mFile = fullfile(geometriesFolder, ['spe11a_struct', resolution, '.m']);
+            matFile = fullfile(gridFolder, ['spe11a_struct', resolution ,'_grid.mat']);
+            mFile = fullfile(gridFolder, ['spe11a_struct', resolution, '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
                 error([matFile,' and ', mfile, ' not found']);
             elseif ~isfile(matFile) && isfile(mFile)
@@ -43,7 +44,7 @@ function G = setupGrid11A(simcase, varargin)
             return
         elseif contains(gridcase, 'semi')
             params = replace(gridcase, 'semi', '');
-            matFile = fullfile(geometriesFolder, ['spe11a_semi', params, '_grid.mat']);
+            matFile = fullfile(gridFolder, ['spe11a_semi', params, '_grid.mat']);
             if ~isfile(matFile)
                 
                 error([matFile, ' not found']);

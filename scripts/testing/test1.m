@@ -4,7 +4,17 @@ close all
 mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
-%% SimpleTest
+%%
+gridcase = '5tetRef6';
+deckcase = 'RS';
+simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', false, ...
+    'schedulecase', '');
+[~, ~, reports] = simcase.getSimData;
+
+rep = reports{10};
+
+
+%% SimpleTest linear pressuretest
 saveplot = false;
 grid = 'semi188x38_0.3';
 simcase{1} = Simcase('gridcase', grid, ...
@@ -41,12 +51,12 @@ plotFaces(G, find(logNonSideFaces));
 view(12,25);
 shg;
 %% Cellblocks
-gridcase = 'tetRef6';
+gridcase = '5tetRef6';
 deckcase = 'RS';
 simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', false, ...
     'schedulecase', '');
 getCellblocks(simcase)
-
+simcase.getSimData
 
 %% Plot difference between two cases
 gridcase = 'tetRef10';
