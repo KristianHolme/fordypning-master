@@ -27,7 +27,6 @@
 
 - disc-methods:
     - '' for tpfa
-    - 'hybrid-avgmpfa-oo' for tpfa around wells and avgmpfa elsewhere
-    - 'hybrid-mpfa-oo' for mpfa around wells and avgmpfa elsewhere
-    - 'hybrid-ntpfa-oo' for tpfa around well cells and along top pressure boundary
-    - ('oo' refers to using the object oriented simulation framework in MRST, and is somewhat superfluous since everything uses this framework. )
+    - 'hybrid-avgmpfa' for tpfa around wells and avgmpfa elsewhere
+    - 'hybrid-mpfa' for mpfa around wells and avgmpfa elsewhere
+    - 'hybrid-ntpfa' for tpfa around well cells and along top pressure boundary
