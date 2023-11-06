@@ -60,7 +60,10 @@ function G = setupGrid11A(simcase, varargin)
             G = RotateGrid(G);%rotategrid to Z axis
         elseif simcase.griddim == 2
             %make nodes 3D??no?
-
+            % G.nodes.coords = [G.nodes.coords, zeros(size(G.nodes.coords, 1), 1)];
+            % G = computeGeometry(G);
+            % G.faces.normals = [G.faces.normals, zeros(size(G.faces.normals, 1), 1)];
+            % return
         end
         
 

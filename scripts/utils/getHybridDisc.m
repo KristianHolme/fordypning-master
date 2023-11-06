@@ -13,11 +13,11 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
     models{1} = tpfaModel;
     assemblyDir = fullfile(simcase.dataOutputDir, 'assembly', simcase.gridcase, hybridDiscmethod);
     switch hybridDiscmethod
-        case 'avgmpfa-oo'
-            structFileName = 'avgmpfaoostruct.mat';
-        case 'ntpfa-oo'
-            structFileName = 'ntpfaoostruct.mat';
-        case 'mpfa-oo'
+        case 'avgmpfa'
+            structFileName = 'avgmpfastruct.mat';
+        case 'ntpfa'
+            structFileName = 'ntpfastruct.mat';
+        case 'mpfa'
             structFileName = '';
             %not saved
     end
@@ -26,7 +26,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
     mv = mrstVerbose;
     mrstVerbose on;
     switch hybridDiscmethod
-        case 'avgmpfa-oo'
+        case 'avgmpfa'
             if isfile(structFilePath) && ~resetAssembly
                 load(structFilePath);
             else
@@ -40,7 +40,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
             model = setAvgMPFADiscretization(tpfaModel, 'OSflux', hybridAssemblyStruct.OSflux, ...
                     'interpFace', hybridAssemblyStruct.interpFace);
             models{2} = model;
-        case 'ntpfa-oo'
+        case 'ntpfa'
             if isfile(structFilePath) && ~resetAssembly
                 load(structFilePath);
             else
@@ -54,7 +54,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
             model = setNTPFADiscretization(tpfaModel, 'OSflux', hybridAssemblyStruct.OSflux, ...
                     'interpFace', hybridAssemblyStruct.interpFace);
             models{2} = model;
-        case 'mpfa-oo'
+        case 'mpfa'
             model = setMPFADiscretization(tpfaModel);
             models{2} = model;
     end

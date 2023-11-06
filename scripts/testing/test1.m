@@ -4,14 +4,13 @@ close all
 mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
-%%
-gridcase = '5tetRef6';
+%% compute walltime
+gridcase = '5tetRef10';
 deckcase = 'RS';
 simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', false, ...
-    'schedulecase', '');
-[~, ~, reports] = simcase.getSimData;
-
-rep = reports{10};
+    'schedulecase', '', 'griddim', 2);
+% G = simcase.G;
+wt = simcase.getWallTime;
 
 
 %% SimpleTest linear pressuretest
@@ -20,11 +19,11 @@ grid = 'semi188x38_0.3';
 simcase{1} = Simcase('gridcase', grid, ...
     'discmethod', '');
 simcase{2} = Simcase('gridcase', grid, ...
-    'discmethod', 'hybrid-avgmpfa-oo');
+    'discmethod', 'hybrid-avgmpfa');
 simcase{3} = Simcase('gridcase', grid, ...
-    'discmethod', 'hybrid-ntpfa-oo');
+    'discmethod', 'hybrid-ntpfa');
 % simcase{4} = Simcase('gridcase', grid, ...
-%     'discmethod', 'hybrid-mpfa-oo');
+%     'discmethod', 'hybrid-mpfa');
 for i = 1:numel(simcase)
     simpleTest(simcase{i}, 'direction', 'tb', ...
         'paddingLayers', -1, 'saveplot', saveplot, ...
@@ -61,7 +60,7 @@ simcase.getSimData
 %% Plot difference between two cases
 gridcase = 'tetRef10';
 deckcase = 'RS';
-discmethods = {'', 'hybrid-avgmpfa-oo'};
+discmethods = {'', 'hybrid-avgmpfa'};
 sim1 = Simcase('deckcase', deckcase, 'gridcase', gridcase, ...
     'discmethod', '');
 sim2 = Simcase('deckcase', deckcase, 'gridcase', gridcase, ...
@@ -82,7 +81,7 @@ colorbar;
 axis tight;
 
 %% Plot Cellblocks
-simcase = Simcase('gridcase', 'tetRef10', 'discmethod', 'hybrid-ntpfa-oo');
+simcase = Simcase('gridcase', 'tetRef10', 'discmethod', 'hybrid-ntpfa');
 cellblocks = getCellblocks(simcase);
 G = simcase.G;
 plotGrid(G, 'facealpha', 0);
@@ -100,9 +99,9 @@ plotGrid(simcase.G, bcCells);
 
 
 %% Plot grid
-gridcase = 'struct205x75';
+gridcase = '5tetRef10';
 % gridcase = '6tetRef3';
-simcase = Simcase('gridcase', gridcase);
+simcase = Simcase('gridcase', gridcase, 'griddim', 2);
 figure
 plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
 % plotGrid(simcase.G, cellBlocks{1});

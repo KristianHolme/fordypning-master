@@ -3,6 +3,5 @@ function discname = shortDiscName(discname)
         discname = 'tpfa';
     else
         discname = replace(discname, 'hybrid-', '');
-        discname = replace(discname, '-oo', '');
     end
 end

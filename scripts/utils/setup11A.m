@@ -19,6 +19,7 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
         if simcase.griddim == 2 %get initstate from extruded version
             simcase3d = simcase;
             simcase3d.griddim = 3;
+            simcase3d.discmethod = '';
             simcase3d.G = [];
             [state0, ~, ~, ~] = setup11A(simcase3d);
         else

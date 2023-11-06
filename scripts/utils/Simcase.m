@@ -12,7 +12,7 @@ classdef Simcase < handle
         rockcase
         deckcase
         usedeck
-        discmethod %eks. 'hybrid-avgmpfa-oo'
+        discmethod %eks. 'hybrid-avgmpfa'
 
         G
         rock
@@ -340,6 +340,14 @@ classdef Simcase < handle
                     pop1 = [1.5, 0.005, 1.2 - 0.5];
                     pop2 = [1.7, 0.005, 1.2 - 1.1];
                     popCells = findEnclosingCell(simcase.G, [pop1;pop2]);
+            end
+        end
+        function wallTime = getWallTime(simcase)
+            [~, ~, reports] = simcase.getSimData;
+            wallTime = 0;
+            reports.data;
+            for i=1:numelData(reports)
+                wallTime = wallTime + reports{i}.WallTime;
             end
         end
 

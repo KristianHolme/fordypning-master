@@ -1,66 +1,73 @@
-clear all
-close all
-%%
-mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-    ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa Jutul
-mrstVerbose off
-%%
-% decks = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV', 'pyopm-Finer'};
-
-
-%%
-% gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2','struct220x90'};
-% schedulecases = {'simple-coarse', 'simple-std'};
-
-gridcases = {'5tetRef1'};
-schedulecases = {''};%defaults 
-deckcases = {'RS'};
-fluidcase = '';
-% discmethods = {'', 'hybrid-avgmpfa-oo', 'hybrid-ntpfa-oo', 'hybrid-mpfa-oo'};
-discmethods = {'hybrid-mpfa-oo'};
-disc_prio = 1;%1 means tpfa prio
-tagcase = 'test';
-
-resetData = false;
-do.plotStates = false;
-do.multiphase = true;
-useJutulIfPossible = false;
-direct_solver = false; %may not be respected if backslashThreshold is not met
-usedeck = true;
-
-timings = struct();
-for ideck = 1:numel(deckcases)
-    deckcase = deckcases{ideck};
-    if strcmp(deckcase, 'IMMISCIBLE') && useJutulIfPossible
-        Jutul = true;
-    else
-        Jutul = false;
+function timings = runSims2(server)
+    mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
+        ad-blackoil postprocessing diagnostics prosjektOppgave...
+        deckformat gmsh nfvm mpfa
+    % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
+    % schedulecases = {'simple-coarse', 'simple-std'};
+    mrstVerbose off
+    switch  server
+        case 1
+            gridcases = {'5tetRef6'};
+            schedulecases = {''};
+            discmethods = {'', 'hybrid-avgmpfa', 'hybrid-avgmpfa'};
+            deckcases = {'RS'};
+            tagcase = 'test';
+            resetData = true;
+            do.multiphase = true;
+            Jutul = false;
+            direct_solver = false;
+        case 2
+            gridcases = {'struct340x150', 'struct220x90'};
+            schedulecases = {''};
+            discmethods = {'hybrid-avgmpfa', 'hybrid-ntpfa'};
+            deckcases = {'RS'};
+            tagcase = '';
+            resetData = false;
+            do.multiphase = true;
+            Jutul = false;
+            direct_solver = false;
+        case 3
+            gridcases = {'semi188x38_0.3', 'semi263x154_0.3'};
+            schedulecases = {''};
+            discmethods = {'hybrid-avgmpfa', 'hybrid-ntpfa'};
+            deckcases = {'RS'};
+            tagcase = '';
+            resetData = false;
+            do.multiphase = true;
+            Jutul = false;
+            direct_solver = false;
+        case 4
+            gridcases = {'5tetRef1'};
+            schedulecases = {''};
+            discmethods = {''};
+            deckcases = {'RS'};
+            tagcase = '';
+            resetData = false;
+            do.multiphase = true;
+            Jutul = false;
+            direct_solver = false;
     end
-    for igrid = 1:numel(gridcases)
-        gridcase = gridcases{igrid};
-        for ischedule = 1:numel(schedulecases)
-            schedulecase = schedulecases{ischedule};
-            for idisc = 1:numel(discmethods)
-                discmethod = discmethods{idisc};
-                simcase = Simcase('deckcase', deckcase, 'usedeck', usedeck, 'gridcase', gridcase, ...
-                                'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                'discmethod', discmethod, 'fluidcase', fluidcase);
-                if do.multiphase
-                    [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
-                                        'direct_solver', direct_solver, 'prio', disc_prio);
-                    disp(['Done with: ', simcase.casename]);
-                    timingname = replace(simcase.casename, '=', '_');
-                    timingname = replace(timingname, '-', '_');
-                    timingname = replace(timingname, '.', '_');
-                    timings.(timingname) = time;
-                end
-                if do.plotStates
-                    simcase.plotStates('lockCaxis', false);
-                    % clim([0 6e-7]);
+    
+    timings = struct();
+    for ideck = 1:numel(deckcases)
+        deckcase = deckcases{ideck};
+        for igrid = 1:numel(gridcases)
+            gridcase = gridcases{igrid};
+            for ischedule = 1:numel(schedulecases)
+                schedulecase = schedulecases{ischedule};
+                for idisc = 1:numel(discmethods)
+                    discmethod = discmethods{idisc};
+                    simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                                    'schedulecase', schedulecase, 'tagcase', tagcase, ...
+                                    'discmethod', discmethod);
+                    if do.multiphase
+                        [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                                            'direct_solver', direct_solver);
+                        disp(['Done with: ', simcase.casename]);
+                        timings.(timingName(simcase.casename)) = time;
+                    end
                 end
             end
         end
     end
-end
-disp(timings)
+    disp(timings);

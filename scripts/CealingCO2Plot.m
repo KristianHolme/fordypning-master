@@ -10,7 +10,7 @@ saveplot = true;
 
 gridcases = {'5tetRef1', '5tetRef2', '5tetRef4'};
 deckcase = 'RS';
-discmethods = {'', 'hybrid-avgmpfa-oo'};
+discmethods = {'', 'hybrid-avgmpfa'};
 
 steps = 720;
 xscaling = hour;
