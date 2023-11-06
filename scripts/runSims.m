@@ -18,15 +18,15 @@ gridcases = {'5tetRef6'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
 % discmethods = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-discmethods = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+discmethods = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = 'dim2test';
 griddim = 2; % usually 3
 
 resetData = false;
-resetAssembly = true;
-do.plotStates = false;
-do.multiphase = true;
+resetAssembly = false;
+do.plotStates = true;
+do.multiphase = false;
 useJutulIfPossible = false;
 direct_solver = false; %may not be respected if backslashThreshold is not met
 

@@ -17,7 +17,8 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
         end
     elseif ~isempty(simcase.gridcase)%not grid from deck
         if simcase.griddim == 2 %get initstate from extruded version
-            simcase3d = simcase;
+            copyStream = getByteStreamFromArray(simcase);
+            simcase3d = getArrayFromByteStream(copyStream);%deep copy
             simcase3d.griddim = 3;
             simcase3d.discmethod = '';
             simcase3d.G = [];

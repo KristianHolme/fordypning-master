@@ -54,9 +54,11 @@ function G = setupGrid11A(simcase, varargin)
         G = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
         G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
         G.cells.indexMap = (1:G.cells.num)';
-        if simcase.griddim == 3 && G.griddim ~=3
-            G = makeLayeredGrid(G, 0.01);
-            G = computeGeometry(G);
+        if simcase.griddim == 3
+            if G.griddim ~=3
+                G = makeLayeredGrid(G, 0.01);
+                G = computeGeometry(G);
+            end
             G = RotateGrid(G);%rotategrid to Z axis
         elseif simcase.griddim == 2
             %make nodes 3D??no?

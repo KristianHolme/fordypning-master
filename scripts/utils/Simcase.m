@@ -52,7 +52,7 @@ classdef Simcase < handle
                          'griddim'      , 3);
             opt = merge_options(opt, varargin{:});
 
-            propnames = {'SPEcase', 'deckcase', 'gridcase', 'discmethod', 'fluidcase', 'tagcase',...
+            propnames = {'SPEcase', 'deckcase', 'gridcase', 'griddim', 'discmethod', 'fluidcase', 'tagcase',...
                 'schedulecase'};
             
             simcase.updateprop = false;
@@ -92,7 +92,11 @@ classdef Simcase < handle
             casename = [];
             for i = 1:numel(simcase.propnames)
                 pn = simcase.propnames{i}; 
-                if ~isempty(simcase.(pn))
+                if strcmp(pn, 'griddim')
+                    if simcase.(pn) == 2%if dim is 2, then add name to case, if 3 leave out 
+                        casename = [casename, 'dim', num2str(simcase.(pn)), '_'];
+                    end
+                elseif ~isempty(simcase.(pn))
                     casename = [casename,strrep(pn, 'case', ''), '=', simcase.(pn), '_'];
                 end
             end

@@ -7,25 +7,29 @@ function timings = runSims2(server)
     mrstVerbose off
     switch  server
         case 1
-            gridcases = {'5tetRef6'};
+            gridcases = {'5tetRef2'};
             schedulecases = {''};
-            discmethods = {'', 'hybrid-avgmpfa', 'hybrid-avgmpfa'};
-            deckcases = {'RS'};
-            tagcase = 'test';
-            resetData = true;
-            do.multiphase = true;
-            Jutul = false;
-            direct_solver = false;
-        case 2
-            gridcases = {'struct340x150', 'struct220x90'};
-            schedulecases = {''};
-            discmethods = {'hybrid-avgmpfa', 'hybrid-ntpfa'};
+            discmethods = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
+            resetAssembly = true;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
+            griddim = 2;
+        case 2
+            gridcases = {'5tetRef2'};
+            schedulecases = {''};
+            discmethods = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+            deckcases = {'RS'};
+            tagcase = '';
+            resetData = true;
+            resetAssembly = true;
+            do.multiphase = true;
+            Jutul = false;
+            direct_solver = false;
+            griddim = 3;
         case 3
             gridcases = {'semi188x38_0.3', 'semi263x154_0.3'};
             schedulecases = {''};
@@ -33,6 +37,7 @@ function timings = runSims2(server)
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
+            resetAssembly = false;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
@@ -43,6 +48,7 @@ function timings = runSims2(server)
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
+            resetAssembly = false;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
@@ -59,10 +65,10 @@ function timings = runSims2(server)
                     discmethod = discmethods{idisc};
                     simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                     'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                    'discmethod', discmethod);
+                                    'discmethod', discmethod, 'griddim', griddim);
                     if do.multiphase
                         [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
-                                            'direct_solver', direct_solver);
+                                            'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
                         disp(['Done with: ', simcase.casename]);
                         timings.(timingName(simcase.casename)) = time;
                     end
