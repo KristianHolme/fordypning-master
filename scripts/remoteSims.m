@@ -13,6 +13,7 @@ function timings = remoteSims(server)
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
+            resetAssembly = true;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
@@ -24,6 +25,7 @@ function timings = remoteSims(server)
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
+            resetAssembly = true;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
@@ -35,6 +37,7 @@ function timings = remoteSims(server)
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
+            resetAssembly = true;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
@@ -45,7 +48,8 @@ function timings = remoteSims(server)
             discmethods = {'hybrid-avgmpfa', 'hybrid-mpfa'};
             deckcases = {'RS'};
             tagcase = '';
-            resetData = false;
+            resetData = true;
+            resetAssembly = true;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
@@ -66,7 +70,7 @@ function timings = remoteSims(server)
                                     'discmethod', discmethod, 'griddim', griddim);
                     if do.multiphase
                         [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
-                                            'direct_solver', direct_solver);
+                                            'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
                         disp(['Done with: ', simcase.casename]);
                         timings.(timingName(simcase.casename)) = time;
                     end
