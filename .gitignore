@@ -7,3 +7,4 @@ pyopmcsp11
 Nevland
 11thSPE-CSP/.gitignore
 config.JSON
+*.xlsx
