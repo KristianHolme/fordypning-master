@@ -7,45 +7,49 @@ function timings = remoteSims(server)
     mrstVerbose off
     switch  server
         case 1
-            gridcases = {'5tetRef10'};
+            gridcases = {'5tetRef2'};
             schedulecases = {''};
-            discmethods = {''};
+            discmethods = {'', 'hybrid-ntpfa'};
             deckcases = {'RS'};
-            tagcase = 'test';
-            resetData = true;
+            tagcase = '';
+            resetData = false;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
+            griddim = 2;
         case 2
-            gridcases = {'struct340x150', 'struct220x90'};
+            gridcases = {'5tetRef2'};
             schedulecases = {''};
-            discmethods = {'hybrid-avgmpfa', 'hybrid-ntpfa'};
+            discmethods = {'hybrid-avgmpfa', 'hybrid-mpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
+            griddim = 2;
         case 3
-            gridcases = {'semi188x38_0.3', 'semi263x154_0.3'};
+            gridcases = {'5tetRef2'};
             schedulecases = {''};
-            discmethods = {'hybrid-avgmpfa', 'hybrid-ntpfa'};
+            discmethods = {'', 'hybrid-ntpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
+            griddim = 3;
         case 4
-            gridcases = {'5tetRef1'};
+            gridcases = {'5tetRef2'};
             schedulecases = {''};
-            discmethods = {''};
+            discmethods = {'hybrid-avgmpfa', 'hybrid-mpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
+            griddim = 3;
     end
     
     timings = struct();
@@ -59,7 +63,7 @@ function timings = remoteSims(server)
                     discmethod = discmethods{idisc};
                     simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                     'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                    'discmethod', discmethod);
+                                    'discmethod', discmethod, 'griddim', griddim);
                     if do.multiphase
                         [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                             'direct_solver', direct_solver);
