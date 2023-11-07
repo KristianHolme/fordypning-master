@@ -9,7 +9,7 @@ function timings = remoteSims(server)
         case 1
             gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
-            discmethods = {'', 'hybrid-ntpfa'};
+            discmethods = {'hybrid-ntpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -20,7 +20,7 @@ function timings = remoteSims(server)
         case 2
             gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
-            discmethods = {'hybrid-avgmpfa', 'hybrid-mpfa'};
+            discmethods = {'hybrid-mpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -31,7 +31,7 @@ function timings = remoteSims(server)
         case 3
             gridcases = {'5tetRef2'};
             schedulecases = {''};
-            discmethods = {'', 'hybrid-ntpfa'};
+            discmethods = {'hybrid-ntpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -42,7 +42,7 @@ function timings = remoteSims(server)
         case 4
             gridcases = {'5tetRef2'};
             schedulecases = {''};
-            discmethods = {'hybrid-avgmpfa', 'hybrid-mpfa'};
+            discmethods = {'hybrid-mpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;

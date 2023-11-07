@@ -212,13 +212,14 @@ classdef Simcase < handle
                     deckFolder = fullfile(simcase.spe11utilsDir, 'deck');
                 end
               
-                if isempty(deckFolder)%something wrong with config if we enter here
-                    if strcmp(simcase.user, 'kholme')%on markov
-                        deckFolder = fullfile('/home/shomec/k/kholme/Documents/Prosjektoppgave/src/', replace(folderFromSrc, '\', '/'));
-                    else
-                        deckFolder = folderFromSrc;
-                    end
-                end
+                % if isempty(deckFolder)%something wrong with config if we
+                % enter here %TODO delete
+                %     if strcmp(simcase.user, 'kholme')%on markov
+                %         deckFolder = fullfile('/home/shomec/k/kholme/Documents/Prosjektoppgave/src/', replace(folderFromSrc, '\', '/'));
+                %     else
+                %         deckFolder = folderFromSrc;
+                %     end
+                % end
                 %load deck from mat file or save to mat file
                 decksavename = replace(deckname, '.DATA', '_deck.mat');
                 decksaveFolder = simcase.decksaveDir;
@@ -299,17 +300,17 @@ classdef Simcase < handle
                                    'dataDirectory', dirname, ...
                                    'dataFolder', 'multiphase');
         end
-        function dataOutputDir = get.dataOutputDir(simcase)
-            dataOutputDir = simcase.dataOutputDir;
-            if isempty(dataOutputDir)%should not enter here if config is correct
-                if strcmp(simcase.user, 'holme')
-                    dataOutputDir = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\output';
-                elseif strcmp(simcase.user, 'kholme')%on markov
-                    dataOutputDir = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/output';
-                end
-                simcase.dataOutputDir = dataOutputDir;
-            end
-        end
+        % function dataOutputDir = get.dataOutputDir(simcase) %TODO delete
+        %     dataOutputDir = simcase.dataOutputDir;
+        %     if isempty(dataOutputDir)%should not enter here if config is correct
+        %         if strcmp(simcase.user, 'holme')
+        %             dataOutputDir = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\output';
+        %         elseif strcmp(simcase.user, 'kholme')%on markov
+        %             dataOutputDir = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/output';
+        %         end
+        %         simcase.dataOutputDir = dataOutputDir;
+        %     end
+        % end
         function plotStates(simcase, varargin)
             opt = struct('field', 'rs', ...4
                 'pauseTime', 0.05);
