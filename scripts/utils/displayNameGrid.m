@@ -16,5 +16,7 @@ function displayName = displayNameGrid(gridcase)
             displayName = 'S-M/F';
         case 'struct340x150'
             displayName = 'S-F';
+        case 'struct193x83'
+            displayName = 'S-M';
     end
 end

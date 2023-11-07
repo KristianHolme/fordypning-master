@@ -12,7 +12,8 @@ classdef Simcase < handle
         rockcase
         deckcase
         usedeck
-        discmethod %eks. 'hybrid-avgmpfa'
+        pdisc %eks. pressure discretization'hybrid-avgmpfa'
+        uwdisc
 
         G
         rock
@@ -48,11 +49,12 @@ classdef Simcase < handle
                          'schedulecase' , [], ...
                          'deck'         , [], ...
                          'rockcase'     , [], ...
-                         'discmethod'   , '', ...
-                         'griddim'      , []);
+                         'pdisc'   , '', ...
+                         'griddim'      , [], ...
+                         'uwdisc'      , []);
             opt = merge_options(opt, varargin{:});
 
-            propnames = {'SPEcase', 'deckcase', 'gridcase', 'discmethod', 'fluidcase', 'tagcase',...
+            propnames = {'SPEcase', 'deckcase', 'gridcase', 'pdisc', 'uwdisc', 'fluidcase', 'tagcase',...
                 'schedulecase'};
             
             simcase.updateprop = false;
@@ -162,8 +164,15 @@ classdef Simcase < handle
             end
         end
 
-        function simcase = set.discmethod(simcase, discmethod)
-            simcase.discmethod = discmethod;
+        function simcase = set.pdisc(simcase, pdisc)
+            simcase.pdisc = pdisc;
+            if simcase.updateprop
+                simcase.casename = simcase.ConstructCasename();
+                simcase.resetProps;
+            end
+        end
+        function simcase = set.uwdisc(simcase, uwdisc)
+            simcase.uwdisc = uwdisc;
             if simcase.updateprop
                 simcase.casename = simcase.ConstructCasename();
                 simcase.resetProps;

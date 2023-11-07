@@ -4,7 +4,7 @@ function cellblocks = getCellblocks(simcase, varargin)
     
     paddingLayers = opt.paddingLayers;
     G = simcase.G;
-    discmethod = simcase.discmethod;
+    pdisc = simcase.pdisc;
     injectionCells = [];
     if ~isempty(simcase.schedule) && ~isempty(simcase.schedule.control(1).W)
         [cell1, cell2] = simcase.schedule.control(1).W.cells;
@@ -13,7 +13,7 @@ function cellblocks = getCellblocks(simcase, varargin)
     tpfaCells = findCellNeighbors(G, injectionCells, paddingLayers);
 
 
-    if ~isempty(discmethod) && contains(discmethod, 'ntpfa','IgnoreCase', true)
+    if ~isempty(pdisc) && contains(pdisc, 'ntpfa','IgnoreCase', true)
         bccells = getbcCells(simcase);
         bccells = findCellNeighbors(G, bccells, paddingLayers);
         tpfaCells = union(tpfaCells, bccells);

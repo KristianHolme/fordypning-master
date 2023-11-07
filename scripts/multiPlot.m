@@ -1,26 +1,32 @@
 clear all;
 close all;
 %% Setup
-gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct220x90'};
-discmethods = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+% gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct220x90'};
+% gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'};
+% gridcases = {'6tetRef2', '5tetRef2'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 deckcase = 'RS';
 tagcase = '';
 griddim = 3;
 
+saveplot = true;
+filename = 'meshAlgComparisonRef2';
+savefolder="plots\multiplot";
+
 steps = [30, 144, 720];
 numGrids = numel(gridcases);
-numDiscs = numel(discmethods);
+numDiscs = numel(pdiscs);
 %% Loading data
 data = cell(numDiscs, numGrids, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
     for i = 1:numDiscs
-        discmethod = discmethods{i};
+        pdisc = pdiscs{i};
         for j = 1:numGrids
             gridcase = gridcases{j};
             simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'tagcase', tagcase, ...
-                                'discmethod', discmethod, 'griddim', griddim);
+                                'pdisc', pdisc, 'griddim', griddim);
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step
@@ -35,17 +41,13 @@ for istep = 1:numel(steps)
 end
 
 %% Plotting
-saveplot = true;
-savefolder="plots\multiplot";
-filename = @(step) ['Comp=', strjoin(gridcases, '_'), '_', strjoin(discmethods, '_'), '_step', num2str(step)];
-
 for istep = 1:numel(steps)
     step = steps(istep);
     % Get the screen size
     screenSize = get(0, 'ScreenSize');
     
     % Calculate the desired figure size (e.g., full screen or a fraction of it)
-    figWidth = screenSize(3) * 0.8; % 80% of the screen width
+    figWidth = screenSize(3) * 0.8*numGrids/3; % 80% of the screen width
     figHeight = screenSize(4) * 0.8; % 80% of the screen height
     
     % Create a figure with the desired size
@@ -54,7 +56,7 @@ for istep = 1:numel(steps)
     title(t, ['rs at time=', num2str(step/6), 'h'])
     
     for i = 1:numDiscs
-        discmethod = discmethods{i};
+        pdisc = pdiscs{i};
         for j = 1:numGrids
             gridcase = gridcases{j};
             p = (i-1)*numGrids + j;
@@ -70,7 +72,7 @@ for istep = 1:numel(steps)
 
                 % Add y-label to the first column subplots for row labels
                 if j == 1
-                    ylh = ylabel(ax, shortDiscName(discmethods{i}), FontSize=12, FontWeight='bold');
+                    ylh = ylabel(ax, shortDiscName(pdiscs{i}), FontSize=12, FontWeight='bold');
                     set(ylh, 'Visible', 'on'); % Ensure the label is visible
                     % Adjust the position of the ylabel if necessary
                     set(ylh, 'Position', [-0.11, 0.5], 'Units', 'Normalized');
@@ -98,7 +100,8 @@ for istep = 1:numel(steps)
         end
     end
     if saveplot
-        savepath = fullfile(savefolder, filename(step));
+        savepath = fullfile(savefolder, [filename, '_step', num2str(step)]);
+        savepath = replace(savepath, '.', '_');
         saveas(f, savepath, 'png');
         saveas(f, savepath, 'eps');
     end

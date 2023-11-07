@@ -26,10 +26,13 @@ function model = setupModel11A(simcase, varargin)
         model = selectModelFromDeck(G, rock, fluid, deck);
     end
 
-    if ~isempty(simcase.discmethod) && contains(simcase.discmethod, 'hybrid')
+    if ~isempty(simcase.pdisc) && contains(simcase.pdisc, 'hybrid')
         cellblocks = getCellblocks(simcase, varargin{:});
-        model = getHybridDisc(simcase, model, replace(simcase.discmethod, 'hybrid-', ''), ...
+        model = getHybridDisc(simcase, model, replace(simcase.pdisc, 'hybrid-', ''), ...
             cellblocks, varargin{:});
+    end
+    if ~isempty(simcase.uwdisc) && contains(simcase.uwdisc, 'WENO')
+        model = setWENODiscretization(model);
     end
 
     model.OutputStateFunctions{end+1} = 'CapillaryPressure';

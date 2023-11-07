@@ -6,12 +6,12 @@ function simpleTest(simcase, varargin)
         'paddingLayers', 1, ...
         'myRatio', [], ...
         'saveplot', false);%direction of linear test, "tp" (top-bottom), lr (left-right)
-    if isempty(simcase.discmethod)
-        discmethod = 'tpfa';
+    if isempty(simcase.pdisc)
+        pdisc = 'tpfa';
     else
-        discmethod = simcase.discmethod;
+        pdisc = simcase.pdisc;
     end
-    opt.title = ['grid: ', simcase.gridcase, ' , disc: ', discmethod];
+    opt.title = ['grid: ', simcase.gridcase, ' , disc: ', pdisc];
     opt = merge_options(opt, varargin{:});
     
     myRatio = opt.myRatio;
@@ -39,12 +39,12 @@ function simpleTest(simcase, varargin)
     schedule = simpleSchedule(1, 'W', df.W, 'bc', df.bc, 'src', df.src);
     simcase.schedule = schedule;
 
-    discmethod = replace(simcase.discmethod, 'hybrid-', '');
+    pdisc = replace(simcase.pdisc, 'hybrid-', '');
     cellblocks = getCellblocks(simcase, 'paddingLayers', opt.paddingLayers);
-    if isempty(discmethod)
+    if isempty(pdisc)
         model = tpfamodel;
     else
-        model = getHybridDisc(simcase, tpfamodel, discmethod, cellblocks, 'resetAssembly', true, ...
+        model = getHybridDisc(simcase, tpfamodel, pdisc, cellblocks, 'resetAssembly', true, ...
             'saveAssembly', false, 'myRatio', myRatio);
 
         % model2 = setAvgMPFADiscretization(model);
@@ -71,7 +71,7 @@ function simpleTest(simcase, varargin)
     end
     clim([0 maxp]);
     if opt.saveplot
-        filename = [simcase.gridcase, '_', shortDiscName(discmethod), '_', opt.direction, '.eps'];
+        filename = [simcase.gridcase, '_', shortDiscName(pdisc), '_', opt.direction, '.eps'];
         filename = fullfile('plots/linearPressuretest', filename);
         saveas(fig, filename);
     end

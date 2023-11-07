@@ -17,13 +17,13 @@ wt = simcase.getWallTime;
 saveplot = false;
 grid = 'semi188x38_0.3';
 simcase{1} = Simcase('gridcase', grid, ...
-    'discmethod', '');
+    'pdisc', '');
 simcase{2} = Simcase('gridcase', grid, ...
-    'discmethod', 'hybrid-avgmpfa');
+    'pdisc', 'hybrid-avgmpfa');
 simcase{3} = Simcase('gridcase', grid, ...
-    'discmethod', 'hybrid-ntpfa');
+    'pdisc', 'hybrid-ntpfa');
 % simcase{4} = Simcase('gridcase', grid, ...
-%     'discmethod', 'hybrid-mpfa');
+%     'pdisc', 'hybrid-mpfa');
 for i = 1:numel(simcase)
     simpleTest(simcase{i}, 'direction', 'tb', ...
         'paddingLayers', -1, 'saveplot', saveplot, ...
@@ -60,11 +60,11 @@ simcase.getSimData
 %% Plot difference between two cases
 gridcase = 'tetRef10';
 deckcase = 'RS';
-discmethods = {'', 'hybrid-avgmpfa'};
+pdiscs = {'', 'hybrid-avgmpfa'};
 sim1 = Simcase('deckcase', deckcase, 'gridcase', gridcase, ...
-    'discmethod', '');
+    'pdisc', '');
 sim2 = Simcase('deckcase', deckcase, 'gridcase', gridcase, ...
-    'discmethod', '', 'tagcase', 'newPVT');
+    'pdisc', '', 'tagcase', 'newPVT');
 states1 = sim1.getSimData;
 states2 = sim2.getSimData;
 figure
@@ -81,7 +81,7 @@ colorbar;
 axis tight;
 
 %% Plot Cellblocks
-simcase = Simcase('gridcase', 'tetRef10', 'discmethod', 'hybrid-ntpfa');
+simcase = Simcase('gridcase', 'tetRef10', 'pdisc', 'hybrid-ntpfa');
 cellblocks = getCellblocks(simcase);
 G = simcase.G;
 plotGrid(G, 'facealpha', 0);
@@ -108,8 +108,8 @@ plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
 
 
 %% Print number of cells
-gridcases = {'5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef3',...
-    'struct220x90', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};
+gridcases = {'5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef4',...
+    'struct193x83', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};
 for i = 1:numel(gridcases)
     gridcase = gridcases{i};
     simcase = Simcase('gridcase', gridcase);
@@ -121,9 +121,12 @@ for i = 1:numel(state)
     state{i}.pressureDiff = state{i}.pressure - initpressure;
 end
 %% Plot perm
-gridcase = 'struct190x82';
+gridcase = 'struct193x83';%193x83
+screenSize = get(0, 'ScreenSize');
+figWidth = screenSize(3)*0.7;
+figHeight = screenSize(4)*0.7;
 simcase = Simcase('gridcase', gridcase);
-figure
+figure('Position', [screenSize(3)*0.1 screenSize(4)*0.1 figWidth figHeight]);
 plotToolbar(simcase.G, simcase.rock.perm);view(0,0);
 %% Plot poro
 plotToolbar(simcase.G, simcase.rock.poro);view(0,0);

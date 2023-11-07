@@ -9,7 +9,7 @@ function timings = remoteSims(server)
         case 1
             gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
-            discmethods = {'hybrid-ntpfa'};
+            pdiscs = {'hybrid-ntpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -20,7 +20,7 @@ function timings = remoteSims(server)
         case 2
             gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
-            discmethods = {'hybrid-mpfa'};
+            pdiscs = {'hybrid-mpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -31,7 +31,7 @@ function timings = remoteSims(server)
         case 3
             gridcases = {'5tetRef2'};
             schedulecases = {''};
-            discmethods = {'hybrid-ntpfa'};
+            pdiscs = {'hybrid-ntpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -42,7 +42,7 @@ function timings = remoteSims(server)
         case 4
             gridcases = {'5tetRef2'};
             schedulecases = {''};
-            discmethods = {'hybrid-mpfa'};
+            pdiscs = {'hybrid-mpfa'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -59,16 +59,19 @@ function timings = remoteSims(server)
             gridcase = gridcases{igrid};
             for ischedule = 1:numel(schedulecases)
                 schedulecase = schedulecases{ischedule};
-                for idisc = 1:numel(discmethods)
-                    discmethod = discmethods{idisc};
-                    simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                                    'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                    'discmethod', discmethod);
-                    if do.multiphase
-                        [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
-                                            'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
-                        disp(['Done with: ', simcase.casename]);
-                        timings.(timingName(simcase.casename)) = time;
+                for ipdisc = 1:numel(pdiscs)
+                    pdisc = pdiscs{ipdisc};
+                    for iuwdisc = 1:numel(uwdiscs)
+                        uwdisc = uwdiscs{iuwdisc};
+                        simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                                        'schedulecase', schedulecase, 'tagcase', tagcase, ...
+                                        'pdisc', pdisc, 'uwdisc', uwdisc);
+                        if do.multiphase
+                            [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                                                'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
+                            disp(['Done with: ', simcase.casename]);
+                            timings.(timingName(simcase.casename)) = time;
+                        end
                     end
                 end
             end

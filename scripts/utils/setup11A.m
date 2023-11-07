@@ -20,7 +20,7 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
             copyStream = getByteStreamFromArray(simcase);
             simcase3d = getArrayFromByteStream(copyStream);%deep copy
             simcase3d.griddim = 3;
-            simcase3d.discmethod = '';
+            simcase3d.pdisc = '';
             simcase3d.G = [];
             [state0, ~, ~, ~] = setup11A(simcase3d);
         else
@@ -66,7 +66,7 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
         nls.LinearSolver = BackslashSolverAD();
     end
     nls.maxTimestepCuts = 20;
-    nls.maxIterations = 12; %fra readEclipse
+    nls.maxIterations = 12; %12 fra readeclipse
     nls.useRelaxation = true;
 
 end

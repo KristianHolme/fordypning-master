@@ -14,18 +14,19 @@ mrstVerbose off
 % 'semi188x38_0.3', 'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'5tetRef6-2D'};
+gridcases = {'5tetRef10-2D'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
-% discmethods = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-discmethods = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+pdiscs = {''};
+uwdiscs = {'', 'WENO'};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = 'dim2test';
+tagcase = '';
 
 resetData = false;
 resetAssembly = false;
-do.plotStates = true;
-do.multiphase = false;
+do.plotStates = false;
+do.multiphase = true;
 useJutulIfPossible = false;
 direct_solver = false; %may not be respected if backslashThreshold is not met
 
@@ -41,23 +42,26 @@ for ideck = 1:numel(deckcases)
         gridcase = gridcases{igrid};
         for ischedule = 1:numel(schedulecases)
             schedulecase = schedulecases{ischedule};
-            for idisc = 1:numel(discmethods)
-                discmethod = discmethods{idisc};
-                simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                                'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                'discmethod', discmethod, 'griddim', griddim);
-                if do.multiphase
-                    [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
-                                        'direct_solver', direct_solver, 'prio', disc_prio, 'resetAssembly', resetAssembly);
-                    disp(['Done with: ', simcase.casename]);
-                    timingname = replace(simcase.casename, '=', '_');
-                    timingname = replace(timingname, '-', '_');
-                    timingname = replace(timingname, '.', '_');
-                    timings.(timingname) = time;
-                end
-                if do.plotStates
-                    simcase.plotStates('lockCaxis', false);
-                    % clim([0 6e-7]);
+            for ipdisc = 1:numel(pdiscs)
+                pdisc = pdiscs{ipdisc};
+                for iuwdisc = 1:numel(uwdiscs)
+                    uwdisc = uwdiscs{iuwdisc};
+                    simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                                    'schedulecase', schedulecase, 'tagcase', tagcase, ...
+                                    'pdisc', pdisc, 'uwdisc', uwdisc);
+                    if do.multiphase
+                        [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                                            'direct_solver', direct_solver, 'prio', disc_prio, 'resetAssembly', resetAssembly);
+                        disp(['Done with: ', simcase.casename]);
+                        timingname = replace(simcase.casename, '=', '_');
+                        timingname = replace(timingname, '-', '_');
+                        timingname = replace(timingname, '.', '_');
+                        timings.(timingname) = time;
+                    end
+                    if do.plotStates
+                        simcase.plotStates('lockCaxis', false);
+                        % clim([0 6e-7]);
+                    end
                 end
             end
         end

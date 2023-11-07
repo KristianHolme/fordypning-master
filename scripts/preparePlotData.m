@@ -6,7 +6,7 @@ set(groot, 'defaultLineLineWidth', 2);
 gridcases = {'5tetRef2', '6tetRef2', 'semi203x72_0.3'};
 schedulecases = {''};
 deckcases = {'RS'};
-discmethods = {''};
+pdiscs = {''};
 tagcase = '';
 
 steps = 720;
@@ -27,11 +27,11 @@ for ideck = 1:numel(deckcases)
         gridcase = gridcases{igrid};
         for ischedule = 1:numel(schedulecases)
             schedulecase = schedulecases{ischedule};
-            for idisc = 1:numel(discmethods)
-                discmethod = discmethods{idisc};
+            for idisc = 1:numel(pdiscs)
+                pdisc = pdiscs{idisc};
                 simcases{end+1} = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                'discmethod', discmethod);
+                                'pdisc', pdisc);
             end
         end
     end

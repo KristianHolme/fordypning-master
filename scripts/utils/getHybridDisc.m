@@ -1,4 +1,4 @@
-function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellblocks, varargin)
+function hybridModel = getHybridDisc(simcase, tpfaModel, hybridpdisc, cellblocks, varargin)
     opt = struct('resetAssembly', false, ...
         'myRatio', [], ...
         'saveAssembly', true);
@@ -11,8 +11,8 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
 
     models = cell(1, 2);
     models{1} = tpfaModel;
-    assemblyDir = fullfile(simcase.dataOutputDir, 'assembly', simcase.gridcase, hybridDiscmethod);
-    switch hybridDiscmethod
+    assemblyDir = fullfile(simcase.dataOutputDir, 'assembly', simcase.gridcase, hybridpdisc);
+    switch hybridpdisc
         case 'avgmpfa'
             structFileName = 'avgmpfastruct.mat';
         case 'ntpfa'
@@ -25,7 +25,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridDiscmethod, cellb
 
     mv = mrstVerbose;
     mrstVerbose on;
-    switch hybridDiscmethod
+    switch hybridpdisc
         case 'avgmpfa'
             if isfile(structFilePath) && ~resetAssembly
                 load(structFilePath);
