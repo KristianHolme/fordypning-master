@@ -35,6 +35,10 @@ for istep = 1:numel(steps)
 end
 
 %% Plotting
+saveplot = true;
+savefolder="plots\multiplot";
+filename = @(step) ['Comp=', strjoin(gridcases, '_'), '_', strjoin(discmethods, '_'), '_step', num2str(step)];
+
 for istep = 1:numel(steps)
     step = steps(istep);
     % Get the screen size
@@ -45,7 +49,7 @@ for istep = 1:numel(steps)
     figHeight = screenSize(4) * 0.8; % 80% of the screen height
     
     % Create a figure with the desired size
-    figure('Position', [screenSize(3)*0.1 screenSize(4)*0.1 figWidth figHeight]);
+    f = figure('Position', [screenSize(3)*0.1 screenSize(4)*0.1 figWidth figHeight]);
     t = tiledlayout(numDiscs, numGrids, 'Padding', 'compact', 'TileSpacing', 'compact');
     title(t, ['rs at time=', num2str(step/6), 'h'])
     
@@ -61,7 +65,7 @@ for istep = 1:numel(steps)
             if ~isempty(data{i, j, istep})
                 % Add title to the first row subplots for column labels
                 if i == 1
-                    title(['G: ' num2str(gridcase)]);
+                    title(['G: ' displayNameGrid(gridcase)]);
                 end
 
                 % Add y-label to the first column subplots for row labels
@@ -92,5 +96,10 @@ for istep = 1:numel(steps)
             end
 
         end
+    end
+    if saveplot
+        savepath = fullfile(savefolder, filename(step));
+        saveas(f, savepath, 'png');
+        saveas(f, savepath, 'eps');
     end
 end

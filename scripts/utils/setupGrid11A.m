@@ -6,11 +6,6 @@ function G = setupGrid11A(simcase, varargin)
 
     if ~isempty(gridcase)
         gridFolder = fullfile(simcase.repoDir, 'grid-files');
-        if strcmp(simcase.user, 'holme')
-            gridFolder = "C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\grid-files";
-        elseif strcmp(simcase.user, 'kholme')
-            gridFolder = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/grid-files';
-        end
         if contains(gridcase, 'tetRef')
             meshAlg = str2double(gridcase(1));
             refinement_factor = str2double(replace(gridcase(2:end), 'tetRef', ''));

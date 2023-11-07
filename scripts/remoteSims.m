@@ -7,7 +7,7 @@ function timings = remoteSims(server)
     mrstVerbose off
     switch  server
         case 1
-            gridcases = {'5tetRef2'};
+            gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
             discmethods = {'', 'hybrid-ntpfa'};
             deckcases = {'RS'};
@@ -17,9 +17,8 @@ function timings = remoteSims(server)
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
-            griddim = 2;
         case 2
-            gridcases = {'5tetRef2'};
+            gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
             discmethods = {'hybrid-avgmpfa', 'hybrid-mpfa'};
             deckcases = {'RS'};
@@ -29,7 +28,6 @@ function timings = remoteSims(server)
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
-            griddim = 2;
         case 3
             gridcases = {'5tetRef2'};
             schedulecases = {''};
@@ -41,7 +39,6 @@ function timings = remoteSims(server)
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
-            griddim = 3;
         case 4
             gridcases = {'5tetRef2'};
             schedulecases = {''};
@@ -53,7 +50,6 @@ function timings = remoteSims(server)
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
-            griddim = 3;
     end
     
     timings = struct();
@@ -67,7 +63,7 @@ function timings = remoteSims(server)
                     discmethod = discmethods{idisc};
                     simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                     'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                    'discmethod', discmethod, 'griddim', griddim);
+                                    'discmethod', discmethod);
                     if do.multiphase
                         [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                             'direct_solver', direct_solver, 'resetAssembly', resetAssembly);

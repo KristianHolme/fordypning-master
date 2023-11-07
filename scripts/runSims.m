@@ -14,14 +14,13 @@ mrstVerbose off
 % 'semi188x38_0.3', 'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'5tetRef6'};
+gridcases = {'5tetRef6-2D'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
 % discmethods = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 discmethods = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = 'dim2test';
-griddim = 2; % usually 3
 
 resetData = false;
 resetAssembly = false;

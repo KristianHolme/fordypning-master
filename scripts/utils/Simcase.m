@@ -49,10 +49,10 @@ classdef Simcase < handle
                          'deck'         , [], ...
                          'rockcase'     , [], ...
                          'discmethod'   , '', ...
-                         'griddim'      , 3);
+                         'griddim'      , []);
             opt = merge_options(opt, varargin{:});
 
-            propnames = {'SPEcase', 'deckcase', 'gridcase', 'griddim', 'discmethod', 'fluidcase', 'tagcase',...
+            propnames = {'SPEcase', 'deckcase', 'gridcase', 'discmethod', 'fluidcase', 'tagcase',...
                 'schedulecase'};
             
             simcase.updateprop = false;
@@ -92,15 +92,11 @@ classdef Simcase < handle
             casename = [];
             for i = 1:numel(simcase.propnames)
                 pn = simcase.propnames{i}; 
-                if strcmp(pn, 'griddim')
-                    if simcase.(pn) == 2%if dim is 2, then add name to case, if 3 leave out 
-                        casename = [casename, 'dim', num2str(simcase.(pn)), '_'];
-                    end
-                elseif ~isempty(simcase.(pn))
+                if ~isempty(simcase.(pn))
                     casename = [casename,strrep(pn, 'case', ''), '=', simcase.(pn), '_'];
                 end
             end
-            casename = replace(casename, 'SPE=', 'SPE');
+            casename = replace(casename, 'SPE=', '');
             casename = casename(1:end-1);
         end
         function resetProps(simcase)
@@ -171,6 +167,22 @@ classdef Simcase < handle
             if simcase.updateprop
                 simcase.casename = simcase.ConstructCasename();
                 simcase.resetProps;
+            end
+        end
+
+        function griddim = get.griddim(simcase)
+            %if gridcase exists then default to griddim 3 if
+            %not gridcase contains "-2D"
+            griddim = simcase.griddim;
+            if isempty(griddim)
+                gridcase = simcase.gridcase;
+                if ~isempty(gridcase)
+                    if contains(gridcase, '-2D')
+                        griddim = 2;
+                    else
+                        griddim = 3;
+                    end
+                end
             end
         end
 
