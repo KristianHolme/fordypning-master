@@ -6,9 +6,12 @@ function G = setupGrid11A(simcase, varargin)
 
     if ~isempty(gridcase)
         gridFolder = fullfile(simcase.repoDir, 'grid-files');
+        
         if contains(gridcase, 'tetRef')
             meshAlg = str2double(gridcase(1));
-            refinement_factor = str2double(replace(gridcase(2:end), 'tetRef', ''));
+            pattern = 'Ref(-?\d+\.?\d*)';
+            match = regexp(gridcase, pattern, 'tokens');
+            refinement_factor = match{1}{1};
             str_ref_factor = num2str(refinement_factor);
             if mod(refinement_factor, 1) ~= 0
                 str_ref_factor = replace(str_ref_factor, '.', '_');
