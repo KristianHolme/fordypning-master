@@ -2,6 +2,8 @@ function displayName = displayNameGrid(gridcase)
     switch gridcase
         case '5tetRef2'
             displayName = 'UU-M';
+        case '5tetRef2-2D'
+            displayName = 'UU-M-2D';
         case '6tetRef2'
             displayName = 'U-M';
         case '5tetRef1'

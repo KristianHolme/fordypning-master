@@ -19,6 +19,7 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
         if simcase.griddim == 2 %get initstate from extruded version
             copyStream = getByteStreamFromArray(simcase);
             simcase3d = getArrayFromByteStream(copyStream);%deep copy
+            simcase3d.gridcase = replace(simcase.gridcase, '-2D', '');
             simcase3d.griddim = 3;
             simcase3d.pdisc = '';
             simcase3d.G = [];

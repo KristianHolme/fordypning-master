@@ -9,37 +9,34 @@ function timings = runSims2(server)
         case 1
             gridcases = {'struct193x83'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-            uwdiscs = {''};
+            pdiscs = {''};
+            uwdiscs = {'WENO'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
             Jutul = false;
             direct_solver = false;
         case 2
-            gridcases = {'struct193x83'};
+            gridcases = {'semi203x72_0.3'};
             schedulecases = {''};
-            pdiscs = {'hybrid-mpfa'};
-            uwdiscs = {''};
+            pdiscs = {''};
+            uwdiscs = {'WENO'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
             Jutul = false;
             direct_solver = false;
         case 3
-            gridcases = {'5tetRef2'};
+            gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
-            pdiscs = {''};
+            pdiscs = {'hybrid-ntpfa'};
             uwdiscs = {'', 'WENO'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
-            resetAssembly = false;
-            do.multiphase = true;
+            resetAssembly = true;
             Jutul = false;
             direct_solver = false;
         case 4
@@ -51,7 +48,6 @@ function timings = runSims2(server)
             tagcase = '';
             resetData = false;
             resetAssembly = false;
-            do.multiphase = true;
             Jutul = false;
             direct_solver = false;
     end
@@ -70,12 +66,12 @@ function timings = runSims2(server)
                         simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                         'schedulecase', schedulecase, 'tagcase', tagcase, ...
                                         'pdisc', pdisc, 'uwdisc', uwdisc);
-                        if do.multiphase
-                            [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
-                                                'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
-                            disp(['Done with: ', simcase.casename]);
-                            timings.(timingName(simcase.casename)) = time;
-                        end
+
+                        [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                                            'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
+                        disp(['Done with: ', simcase.casename]);
+                        timings.(timingName(simcase.casename)) = time;
+
                     end
                 end
             end

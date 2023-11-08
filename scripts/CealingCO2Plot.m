@@ -8,9 +8,9 @@ mrstVerbose off
 %% Setup Cealing CO2 plotting
 saveplot = true;
 
-gridcases = {'5tetRef1', '5tetRef2', '5tetRef4'};
+gridcases = {'5tetRef2', '5tetRef2-2D'};
 deckcase = 'RS';
-pdiscs = {'', 'hybrid-avgmpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 
 steps = 720;
 xscaling = hour;

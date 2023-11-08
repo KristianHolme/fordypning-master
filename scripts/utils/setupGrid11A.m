@@ -28,7 +28,7 @@ function G = setupGrid11A(simcase, varargin)
                    
             
         elseif contains(gridcase, 'struct')
-            resolution = replace(gridcase, 'struct', ''); %format struct200x200
+            resolution = replace(replace(gridcase, '-2D', ''), 'struct', ''); %format struct200x200
             matFile = fullfile(gridFolder, ['spe11a_struct', resolution ,'_grid.mat']);
             mFile = fullfile(gridFolder, ['spe11a_struct', resolution, '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
@@ -41,7 +41,7 @@ function G = setupGrid11A(simcase, varargin)
             G = makeSkewed3D();
             return
         elseif contains(gridcase, 'semi')
-            params = replace(gridcase, 'semi', '');
+            params = replace(replace(gridcase, '-2D', ''), 'semi', '');
             matFile = fullfile(gridFolder, ['spe11a_semi', params, '_grid.mat']);
             if ~isfile(matFile)
                 
@@ -58,21 +58,13 @@ function G = setupGrid11A(simcase, varargin)
                 G = computeGeometry(G);
             end
             G = RotateGrid(G);%rotategrid to Z axis
-        elseif simcase.griddim == 2
-            %make nodes 3D??no?
-            % G.nodes.coords = [G.nodes.coords, zeros(size(G.nodes.coords, 1), 1)];
-            % G = computeGeometry(G);
-            % G.faces.normals = [G.faces.normals, zeros(size(G.faces.normals, 1), 1)];
-            % return
         end
         
-
-
     elseif ~isempty(simcase.deck) %use deck if present
         G = initEclipseGrid(simcase.deck);
     end
     G = computeGeometry(G);
-    assert(checkGrid(G) == true); %not satisfied for semigrid?
+    assert(checkGrid(G) == true);
 end
 
 function G = makeSkewed3D()

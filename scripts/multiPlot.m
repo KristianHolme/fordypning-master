@@ -1,16 +1,16 @@
 clear all;
 close all;
 %% Setup
-% gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct220x90'};
+% gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'};
 % gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'};
 % gridcases = {'6tetRef2', '5tetRef2'};
+gridcases = {'5tetRef2', '5tetRef2-2D'};
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 deckcase = 'RS';
 tagcase = '';
-griddim = 3;
 
 saveplot = true;
-filename = 'meshAlgComparisonRef2';
+filename = 'UUgriddimComp';
 savefolder="plots\multiplot";
 
 steps = [30, 144, 720];
@@ -26,7 +26,7 @@ for istep = 1:numel(steps)
             gridcase = gridcases{j};
             simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'tagcase', tagcase, ...
-                                'pdisc', pdisc, 'griddim', griddim);
+                                'pdisc', pdisc);
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step
@@ -48,10 +48,10 @@ for istep = 1:numel(steps)
     
     % Calculate the desired figure size (e.g., full screen or a fraction of it)
     figWidth = screenSize(3) * 0.8*numGrids/3; % 80% of the screen width
-    figHeight = screenSize(4) * 0.8; % 80% of the screen height
+    figHeight = screenSize(4) * 0.81*numDiscs/4; % 80% of the screen height
     
     % Create a figure with the desired size
-    f = figure('Position', [screenSize(3)*0.1 screenSize(4)*0.1 figWidth figHeight]);
+    f = figure('Position', [screenSize(3)*0.05 screenSize(4)*0.05 figWidth figHeight]);
     t = tiledlayout(numDiscs, numGrids, 'Padding', 'compact', 'TileSpacing', 'compact');
     title(t, ['rs at time=', num2str(step/6), 'h'])
     
@@ -83,8 +83,14 @@ for istep = 1:numel(steps)
                 G           = data{i, j, istep}.G;
                 % subplot(numDiscs, numGrids, p)
                 
-                plotCellData(G, statedata, 'edgealpha', 0);view(0,0);
+                plotCellData(G, statedata, 'edgealpha', 0);
                 plotGrid(G, injcells, 'facecolor', 'red');
+                if G.griddim == 3 %change view if on 3D grid
+                    view(0,0);
+                end
+                xticks([]);
+                yticks([]);
+                zticks([]);
                 
                 axis tight;axis equal;
                 
