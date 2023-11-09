@@ -1,4 +1,4 @@
-function model = setupModel11A(simcase, varargin)
+function model = setupModel(simcase, varargin)
     opt = struct();
     opt = merge_options(opt, varargin{:});
     
@@ -42,7 +42,7 @@ function model = setupModel11A(simcase, varargin)
     model.OutputStateFunctions{end+1} = 'Mobility';
     model.OutputStateFunctions{end+1} = 'PhasePressures';
     model.OutputStateFunctions{end+1} = 'RelativePermeability';
-    model.outputFluxes = false;
+    % model.outputFluxes = false;
     model.AutoDiffBackend = DiagonalAutoDiffBackend('useMex', true);% safe to use with hybrid-method?
     model = model.validateModel();
     model.dpMaxRel = 0.2; %copied from initEclipseProblem

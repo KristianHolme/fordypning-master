@@ -7,10 +7,10 @@ function timings = runSims2(server)
     mrstVerbose off
     switch  server
         case 1
-            gridcases = {'struct193x83'};
+            gridcases = {'5tetRef1'};
             schedulecases = {''};
-            pdiscs = {''};
-            uwdiscs = {'WENO'};
+            pdiscs = {'hybrid-mpfa'};
+            uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -18,10 +18,10 @@ function timings = runSims2(server)
             Jutul = false;
             direct_solver = false;
         case 2
-            gridcases = {'semi203x72_0.3'};
+            gridcases = {'5tetRef1'};
             schedulecases = {''};
-            pdiscs = {''};
-            uwdiscs = {'WENO'};
+            pdiscs = {'hybrid-ntpfa'};
+            uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -29,10 +29,10 @@ function timings = runSims2(server)
             Jutul = false;
             direct_solver = false;
         case 3
-            gridcases = {'5tetRef2-2D'};
+            gridcases = {'5tetRef2'};
             schedulecases = {''};
-            pdiscs = {'hybrid-ntpfa'};
-            uwdiscs = {'', 'WENO'};
+            pdiscs = {'hybrid-avgmpfa', 'hybrid-ntpfa'};
+            uwdiscs = {'WENO'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -40,10 +40,10 @@ function timings = runSims2(server)
             Jutul = false;
             direct_solver = false;
         case 4
-            gridcases = {'5tetRef1'};
+            gridcases = {'semi203x72_0.3'};
             schedulecases = {''};
             pdiscs = {''};
-            uwdiscs = {''};
+            uwdiscs = {'WENO'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;

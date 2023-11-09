@@ -1,4 +1,4 @@
-function schedule = setupSchedule11A(simcase, varargin)
+function schedule = setupSchedule(simcase, varargin)
 
     schedulecase = simcase.schedulecase;
     
@@ -25,8 +25,8 @@ function schedule = setupSchedule11A(simcase, varargin)
         endTime = 5*day;
         injInterval = 2.5*hour;
         
-        [wells1, wells2, wells3] = setupWells11A(simcase, varargin{:}, 'experimental', experimental);
-        bc = setupBC11A(G, 'experimental', experimental);
+        [wells1, wells2, wells3] = setupWells(simcase, varargin{:}, 'experimental', experimental);
+        bc = setupBC(G, 'experimental', experimental);
         Tsettle = endTime - 2* injInterval;
         Nsettle = ceil(Tsettle/settleTimeStep);
         Ninterval = injInterval/injectionTimeStep;

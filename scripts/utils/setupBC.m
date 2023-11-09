@@ -1,4 +1,4 @@
-function bc = setupBC11A(G, varargin)
+function bc = setupBC(G, varargin)
     opt = struct('experimental', false);
     opt = merge_options(opt, varargin{:});
 

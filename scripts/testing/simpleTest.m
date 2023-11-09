@@ -19,7 +19,7 @@ function simpleTest(simcase, varargin)
     if opt.uniformK
         rock = makeRock(G, 100*milli*darcy, 0.2);
     else
-        rock = setupRock11A(simcase);
+        rock = setupRock(simcase);
     end
     simcase.rock = rock;
 

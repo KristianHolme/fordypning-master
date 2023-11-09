@@ -1,4 +1,4 @@
-function fluid = setupFluid11A(simcase, varargin)
+function fluid = setupFluid(simcase, varargin)
     opt = struct('deck', []);
     opt = merge_options(opt, varargin{:});
 

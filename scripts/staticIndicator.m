@@ -10,9 +10,9 @@ height = width / aspectRatio;
 % Set the default figure position
 set(0, 'DefaultFigurePosition', [100, 100, width, height]);
 %%
-gridcases = {'5tetRef2', '6tetRef2', 'struct340x150', 'struct220x90', 'semi263x154_0.3',...
+gridcases = {'5tetRef3', '6tetRef3', 'struct340x150', 'struct220x90', 'semi263x154_0.3',...
     'semi188x38_0.3', 'struct180x40'};
-simcase = Simcase('gridcase', gridcases{7});
+simcase = Simcase('gridcase', gridcases{2});
 % simcase = Simcase('deckcase', 'RS', 'usedeck',true);
 %%
 G = simcase.G;
@@ -36,7 +36,7 @@ if isempty(simcase.gridcase)
 else
     gridname = simcase.gridcase;
 end
-title(gridname);
+title(displayNameGrid(gridname));
 axis tight;axis equal;
 colorbar;
 
@@ -49,7 +49,7 @@ if saveplot
         savefolder = fullfile(statPlotFolder, 'ortherr');
         saveName = [gridname, '_ortherr.eps'];
     end
-    exportgraphics(h, fullfile(savefolder, saveName));
+    % exportgraphics(h, fullfile(savefolder, saveName));
     exportgraphics(h, fullfile(savefolder, replace(saveName, '.eps', '.png')));
 
 end

@@ -1,10 +1,10 @@
-function [state0, model, schedule, nls] = setup11A(simcase, varargin)
+function [state0, model, schedule, nls] = setupSim(simcase, varargin)
     opt = struct('direct_solver', false);
     [opt, extra] = merge_options(opt, varargin{:});
 
     deck        = simcase.deck;
     G           = simcase.G;
-    model       = setupModel11A(simcase, extra{:});
+    model       = setupModel(simcase, extra{:});
     simcase.model = model;
     schedule    = simcase.schedule;
     direct_solver = opt.direct_solver;
@@ -23,7 +23,7 @@ function [state0, model, schedule, nls] = setup11A(simcase, varargin)
             simcase3d.griddim = 3;
             simcase3d.pdisc = '';
             simcase3d.G = [];
-            [state0, ~, ~, ~] = setup11A(simcase3d);
+            [state0, ~, ~, ~] = setupSim(simcase3d);
         else
             % state00 = initResSol(G, 1*atm, [1, 0]);
             % regions = getInitializationRegionsDeck(model, deck);

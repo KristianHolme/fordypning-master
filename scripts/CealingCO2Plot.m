@@ -8,9 +8,9 @@ mrstVerbose off
 %% Setup Cealing CO2 plotting
 saveplot = true;
 
-gridcases = {'5tetRef2', '5tetRef2-2D'};
+gridcases = {'6tetRef2', '5tetRef2'};
 deckcase = 'RS';
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
 
 steps = 720;
 xscaling = hour;
@@ -81,7 +81,7 @@ grid on;
 if saveplot
     folder = 'plots/CealingCO2';
     filename = [strjoin(gridcases, '_'), '-', strjoin(pdiscsDisp, '_')];
-    saveas(gcf, fullfile(folder, [filename, '.eps']))
+    % exportgraphics(gcf, fullfile(folder, [filename, '.eps']))%for color
     saveas(gcf, fullfile(folder, [filename, '.png']))
 end
 

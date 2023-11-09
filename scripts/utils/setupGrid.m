@@ -1,9 +1,9 @@
-function G = setupGrid11A(simcase, varargin)
-    opt = struct('refinement_factor', 1);
-    opt = merge_options(opt, varargin{:});
+function G = setupGrid(simcase, varargin)
 
     gridcase = simcase.gridcase;
-
+    specase = lower(simcase.SPEcase);
+    prefix = ['spe11', specase];
+    
     if ~isempty(gridcase)
         gridFolder = fullfile(simcase.repoDir, 'grid-files');
         
@@ -17,8 +17,8 @@ function G = setupGrid11A(simcase, varargin)
                 str_ref_factor = replace(str_ref_factor, '.', '_');
             end
            
-            matFile = fullfile(gridFolder, ['spe11a_ref', str_ref_factor, '_alg', num2str(meshAlg),'_grid.mat']);
-            mFile = fullfile(gridFolder, ['spe11a_ref', str_ref_factor, '_alg', num2str(meshAlg), '.m']);
+            matFile = fullfile(gridFolder, [prefix, '_ref', str_ref_factor, '_alg', num2str(meshAlg),'_grid.mat']);
+            mFile = fullfile(gridFolder, [prefix, '_ref', str_ref_factor, '_alg', num2str(meshAlg), '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
                 error([matFile,' and ', mfile, ' not found']);
             elseif ~isfile(matFile) && isfile(mFile)
@@ -29,8 +29,8 @@ function G = setupGrid11A(simcase, varargin)
             
         elseif contains(gridcase, 'struct')
             resolution = replace(replace(gridcase, '-2D', ''), 'struct', ''); %format struct200x200
-            matFile = fullfile(gridFolder, ['spe11a_struct', resolution ,'_grid.mat']);
-            mFile = fullfile(gridFolder, ['spe11a_struct', resolution, '.m']);
+            matFile = fullfile(gridFolder, [prefix, '_struct', resolution ,'_grid.mat']);
+            mFile = fullfile(gridFolder, [prefix, '_struct', resolution, '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
                 error([matFile,' and ', mfile, ' not found']);
             elseif ~isfile(matFile) && isfile(mFile)
@@ -42,7 +42,7 @@ function G = setupGrid11A(simcase, varargin)
             return
         elseif contains(gridcase, 'semi')
             params = replace(replace(gridcase, '-2D', ''), 'semi', '');
-            matFile = fullfile(gridFolder, ['spe11a_semi', params, '_grid.mat']);
+            matFile = fullfile(gridFolder, [prefix, '_semi', params, '_grid.mat']);
             if ~isfile(matFile)
                 
                 error([matFile, ' not found']);

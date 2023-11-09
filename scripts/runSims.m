@@ -11,22 +11,22 @@ mrstVerbose off
 
 %%
 % gridcases = {'5tetRef10', '5tetRef8', '5tetRef6', '5tetRef4', '5tetRef2','struct220x90', 'struct340x150',
-% 'semi188x38_0.3', 'semi263x154_0.3'};
+% 'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'5tetRef10-2D'};
+gridcases = {'5tetRef2-2D'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-pdiscs = {''};
-uwdiscs = {'', 'WENO'};
+pdiscs = {'hybrid-ntpfa'};
+uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';
 
 resetData = false;
 resetAssembly = false;
-do.plotStates = false;
-do.multiphase = true;
+do.plotStates = true;
+do.multiphase = false;
 useJutulIfPossible = false;
 direct_solver = false; %may not be respected if backslashThreshold is not met
 

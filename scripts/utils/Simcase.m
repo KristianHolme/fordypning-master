@@ -199,7 +199,7 @@ classdef Simcase < handle
         function schedule = get.schedule(simcase)
             schedule = simcase.schedule;
             if isempty(schedule)
-                schedule = setupSchedule11A(simcase);
+                schedule = setupSchedule(simcase);
                 simcase.schedule = schedule;
             end
         end
@@ -257,14 +257,14 @@ classdef Simcase < handle
         function fluid = get.fluid(simcase)
             fluid = simcase.fluid;
             if isempty(fluid)
-                fluid = setupFluid11A(simcase);
+                fluid = setupFluid(simcase);
                 simcase.fluid = fluid;
             end
         end
         function rock = get.rock(simcase)
             rock = simcase.rock;
             if isempty(rock)  
-                rock = setupRock11A(simcase);
+                rock = setupRock(simcase);
                 simcase.rock = rock;
             end
         end
@@ -283,14 +283,14 @@ classdef Simcase < handle
         function G = get.G(simcase)
             G = simcase.G;
             if isempty(G)
-                G = setupGrid11A(simcase);
+                G = setupGrid(simcase);
                 simcase.G = G;
             end
         end
         function model = get.model(simcase, varargin)
             model = simcase.model;
             if isempty(simcase.model) && simcase.updateprop
-                model = setupModel11A(simcase, varargin{:});
+                model = setupModel(simcase, varargin{:});
                 simcase.model = model;
             end
             
@@ -348,14 +348,26 @@ classdef Simcase < handle
             if strcmp(SPEcase, 'A')
                 [~, dim] = size(G.cells.centroids);
                 if dim == 3
-                    well1Coords = [0.9, 0.05, 1.2-0.3];
-                    well2Coords = [1.7, 0.05, 1.2-0.7];
+                    well1Coords = [0.9, 0.005, 1.2-0.3];
+                    well2Coords = [1.7, 0.005, 1.2-0.7];
                 else
                     well1Coords = [0.9, 0.3];
                     well2Coords = [1.7, 0.7];
                 end
                 [~,well1Index] = min(vecnorm(G.cells.centroids - well1Coords, 2, 2));
                 [~,well2Index] = min(vecnorm(G.cells.centroids - well2Coords, 2, 2));
+            elseif strcmp(SPEcase, 'B')
+                [~, dim] = size(G.cells.centroids);
+                if dim == 3
+                    well1Coords = [2700, 0.5, 1200-300];
+                    well2Coords = [5100, 0.5, 1200-700];
+                else
+                    well1Coords = [2700, 300];
+                    well2Coords = [5100, 700];
+                end
+                [~,well1Index] = min(vecnorm(G.cells.centroids - well1Coords, 2, 2));
+                [~,well2Index] = min(vecnorm(G.cells.centroids - well2Coords, 2, 2));
+
             end
         end
 
@@ -365,6 +377,10 @@ classdef Simcase < handle
                 case 'A'
                     pop1 = [1.5, 0.005, 1.2 - 0.5];
                     pop2 = [1.7, 0.005, 1.2 - 1.1];
+                    popCells = findEnclosingCell(simcase.G, [pop1;pop2]);
+                case 'B'
+                    pop1 = [4500, 0.5, 1200 - 500];
+                    pop2 = [5100, 0.5, 1200 - 1100];
                     popCells = findEnclosingCell(simcase.G, [pop1;pop2]);
             end
         end

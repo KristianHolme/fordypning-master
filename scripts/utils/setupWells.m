@@ -1,4 +1,4 @@
-function [wells1, wells2, wells3] = setupWells11A(simcase, varargin)
+function [wells1, wells2, wells3] = setupWells(simcase, varargin)
     opt = struct('experimental', false);
     opt = merge_options(opt, varargin{:});
 

@@ -4,13 +4,24 @@ close all
 mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
-%% compute walltime
+%%
+ABCcase = 'A';
 gridcase = '5tetRef10';
+simcase = Simcase('SPEcase', ABCcase, 'gridcase', gridcase);
+G = simcase.G;
+plotGrid(G, 'facealpha', 0);view(0,0);axis tight;axis equal;
+rock = simcase.rock;
+inj1, inj2 = simcase.getinjcells;
+plotGrid(G, [inj1, inj2], 'facecolor', 'red');
+%% compute walltime
+gridcase = 'semi203x72_0.3';
 deckcase = 'RS';
-simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', false, ...
-    'schedulecase', '', 'griddim', 2);
+pdisc = '';
+uwdisc = 'WENO';
+simcase = Simcase('gridcase', gridcase, 'deckcase', deckcase, 'usedeck', false, 'pdisc', pdisc, 'uwdisc' , uwdisc);
 % G = simcase.G;
 wt = simcase.getWallTime;
+wth = wt/3600;
 
 
 %% SimpleTest linear pressuretest
