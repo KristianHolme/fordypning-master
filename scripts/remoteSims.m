@@ -7,10 +7,10 @@ function timings = remoteSims(server)
     mrstVerbose off
     switch  server
         case 1
-            gridcases = {'5tetRef3'};
+            gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
-            pdiscs = {''};
-            uwdiscs = {''};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa','hybrid-ntpfa'};
+            uwdiscs = {'WENO'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
@@ -19,10 +19,10 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 2
-            gridcases = {'5tetRef3'};
+            gridcases = {'struct193x83-2D'};
             schedulecases = {''};
-            pdiscs = {'hybrid-avgmpfa'};
-            uwdiscs = {''};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa','hybrid-ntpfa'};
+            uwdiscs = {'WENO'};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
