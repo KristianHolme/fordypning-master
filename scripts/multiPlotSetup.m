@@ -2,9 +2,9 @@ clear all;
 close all;
 %% Setup
 % gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'gridtypeComp';
-% gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'}; filename ='UU_refine_disc';
+gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'}; filename ='UU_refine_disc';
 % gridcases = {'6tetRef2', '5tetRef2'}; filename = 'meshAlgComparisonRef2';
-gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
+% gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 deckcase = 'RS';
 tagcase = '';

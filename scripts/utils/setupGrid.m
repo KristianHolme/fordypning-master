@@ -53,8 +53,13 @@ function G = setupGrid(simcase, varargin)
         G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
         G.cells.indexMap = (1:G.cells.num)';
         if simcase.griddim == 3
+            if strcmp(simcase.SPEcase, 'A')
+                depth = 0.01;
+            else
+                depth = 1.0;
+            end
             if G.griddim ~=3
-                G = makeLayeredGrid(G, 0.01);
+                G = makeLayeredGrid(G, depth);
                 G = computeGeometry(G);
             end
             G = RotateGrid(G);%rotategrid to Z axis

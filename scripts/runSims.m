@@ -10,23 +10,24 @@ mrstVerbose off
 
 
 %%
-% gridcases = {'5tetRef10', '5tetRef8', '5tetRef6', '5tetRef4', '5tetRef2','struct220x90', 'struct340x150',
+% gridcases = {'5tetRef10', '5tetRef8', '5tetRef6', '5tetRef4', '5tetRef2',, 'struct193x83', 'struct220x90', 'struct340x150',
 % 'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-gridcases = {'5tetRef2-2D'};
+SPEcase = 'B';
+gridcases = {'5tetRef10'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-pdiscs = {'hybrid-ntpfa'};
+pdiscs = {''};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';
 
-resetData = false;
-resetAssembly = false;
+resetData = true;
+resetAssembly = true;
 do.plotStates = true;
-do.multiphase = false;
+do.multiphase = true;
 useJutulIfPossible = false;
 direct_solver = false; %may not be respected if backslashThreshold is not met
 
@@ -46,7 +47,7 @@ for ideck = 1:numel(deckcases)
                 pdisc = pdiscs{ipdisc};
                 for iuwdisc = 1:numel(uwdiscs)
                     uwdisc = uwdiscs{iuwdisc};
-                    simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                    simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                     'schedulecase', schedulecase, 'tagcase', tagcase, ...
                                     'pdisc', pdisc, 'uwdisc', uwdisc);
                     if do.multiphase

@@ -213,12 +213,15 @@ classdef Simcase < handle
                     folderFromSrc = fullfile('pyopmcsp11\decks\',simcase.SPEcase, deckname, 'preprocessing');
                     deckname = 'CSP11A.DATA';
                     
-                else%deck from spe11-utils
+                elseif strcmp(simcase.SPEcase, 'A')%deck from spe11-utils
                     deckname = ['CSP11A_', deckname, '.DATA'];
                     if ~isempty(deckname)
                         folderFromSrc = "spe11-utils\deck";
                     end
                     deckFolder = fullfile(simcase.spe11utilsDir, 'deck');
+                elseif strcmp(simcase.SPEcase, 'B')
+                    deckname = ['CSP11B_', deckname, '.DATA'];
+                    deckFolder = fullfile(simcase.repoDir, 'deck');
                 end
               
                 % if isempty(deckFolder)%something wrong with config if we
@@ -242,7 +245,8 @@ classdef Simcase < handle
                 else
                     disp('Reading, converting and saving deck...')
                     tic()
-                    deck = readEclipseDeck(fullfile(deckFolder, deckname));
+                    filename = fullfile(deckFolder, deckname);
+                    deck = readEclipseDeck(filename);
                     deck = convertDeckUnits(deck);
                     if ~isfield(deck.GRID, 'ACTNUM')
                         deck.GRID.ACTNUM = deck.GRID.PORO > 0;

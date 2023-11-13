@@ -7,7 +7,7 @@ function timings = runSims2(server)
     mrstVerbose off
     switch  server
         case 1
-            gridcases = {'5tetRef1'};
+            gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
             pdiscs = {'hybrid-mpfa'};
             uwdiscs = {''};
@@ -31,7 +31,7 @@ function timings = runSims2(server)
         case 3
             gridcases = {'5tetRef2'};
             schedulecases = {''};
-            pdiscs = {'hybrid-avgmpfa', 'hybrid-ntpfa'};
+            pdiscs = {'hybrid-avgmpfa'};
             uwdiscs = {'WENO'};
             deckcases = {'RS'};
             tagcase = '';
@@ -39,6 +39,7 @@ function timings = runSims2(server)
             resetAssembly = true;
             Jutul = false;
             direct_solver = false;
+            mrstVerbose on;
         case 4
             gridcases = {'semi203x72_0.3'};
             schedulecases = {''};

@@ -26,7 +26,7 @@ function schedule = setupSchedule(simcase, varargin)
         injInterval = 2.5*hour;
         
         [wells1, wells2, wells3] = setupWells(simcase, varargin{:}, 'experimental', experimental);
-        bc = setupBC(G, 'experimental', experimental);
+        bc = setupBC(G, 'experimental', experimental, 'SPEcase', simcase.SPEcase);
         Tsettle = endTime - 2* injInterval;
         Nsettle = ceil(Tsettle/settleTimeStep);
         Ninterval = injInterval/injectionTimeStep;
@@ -49,7 +49,7 @@ function schedule = setupSchedule(simcase, varargin)
         deck = simcase.deck;
         
         if ~isempty(simcase.gridcase)%using non-deck grid with deck-schedule
-            deck_simcase = Simcase('deckcase', simcase.deckcase, 'usedeck', true);
+            deck_simcase = Simcase('SPEcase', simcase.SPEcase, 'deckcase', simcase.deckcase, 'usedeck', true);
             deckmodel = deck_simcase.model;
             deck = simcase.deck;
             schedule = convertDeckScheduleToMRST(deckmodel, deck);
@@ -78,8 +78,8 @@ function schedule = setupSchedule(simcase, varargin)
             end
             bf = bf( G.faces.centroids(bf, 2)>(1.2-1e-12) );
         end
-
-        bc = addBC([], bf, 'pressure', 1.1e5, 'sat', [1, 0]);
+        
+        bc = setupBC(G, 'experimental', experimental, 'SPEcase', simcase.SPEcase);
         for i = 1:numel(schedule.control)
             schedule.control(i).bc = bc;
         end
