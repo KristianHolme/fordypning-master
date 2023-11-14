@@ -65,10 +65,7 @@ classdef Simcase < handle
                 pn = propnames{i};
                 simcase.(pn) = opt.(pn);
             end
-            if contains(simcase.gridcase, '-2D')
-                opt.griddim = 2;
-            end
-            simcase.griddim = opt.griddim;
+           
 
             simcase.propnames = propnames;
             simcase.usedeck = opt.usedeck;
@@ -83,6 +80,11 @@ classdef Simcase < handle
 
             simcase.updateprop = true;
             simcase.resetprop  = true;
+
+             if contains(simcase.gridcase, '-2D')
+                opt.griddim = 2;
+            end
+            simcase.griddim = opt.griddim;
         end
 
         function casename = get.casename(simcase)
