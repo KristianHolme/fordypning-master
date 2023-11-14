@@ -4,6 +4,7 @@ output
 plots
 *.asv
 pyopmcsp11
+pyopmspe11
 Nevland
 11thSPE-CSP/.gitignore
 config.JSON
