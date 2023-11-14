@@ -3,14 +3,16 @@ clear all;close all;
 set(groot, 'defaultLineLineWidth', 2);
 
 %% Cases to get data from
-gridcases = {'5tetRef2', '6tetRef2', 'semi203x72_0.3'};
+SPEcase = 'B';
+gridcases = {''};
 schedulecases = {''};
 deckcases = {'RS'};
 pdiscs = {''};
 tagcase = '';
 
-steps = 720;
-xscaling = hour;
+steps = 60;
+maxsteps = 360;
+xscaling = year;
 popcell = 2;
 
 datatypeShort = 'CTM';
@@ -18,7 +20,7 @@ labels = gridcases;
 % plotTitle = [datatypeShort, ' at PoP ', num2str(popcell), '. Grid: ', gridcases{1}];
 plotTitle = datatypeShort;
 ylabel = datatypeShort;
-xlabel = 'time [h]';
+xlabel = 'time [y]';
 %% Load simcases
 simcases = {};
 for ideck = 1:numel(deckcases)
@@ -29,7 +31,7 @@ for ideck = 1:numel(deckcases)
             schedulecase = schedulecases{ischedule};
             for idisc = 1:numel(pdiscs)
                 pdisc = pdiscs{idisc};
-                simcases{end+1} = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'schedulecase', schedulecase, 'tagcase', tagcase, ...
                                 'pdisc', pdisc);
             end
@@ -42,8 +44,9 @@ dataTypesLong = {'FlowProps.ComponentTotalMass', 'pressure', 'PVTProps.Density'}
 shortToLongDatatype = containers.Map(dataTypesShort, dataTypesLong);
 datatype = shortToLongDatatype(datatypeShort);
 %%
-xdata = cumsum(600*ones(720, 1))/xscaling;
-data = nan(720, numel(simcases));
+timesteps = cumsum(simcases{1}.schedule.step.val);
+xdata = timesteps/xscaling;
+data = nan(maxsteps, numel(simcases));
 %% Load data Cealing CO2
 for isim = 1:numel(simcases)
     simcase = simcases{isim};

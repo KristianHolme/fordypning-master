@@ -9,7 +9,7 @@ pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 deckcase = 'RS';
 tagcase = '';
 
-saveplot = true;
+saveplot = false;
 
 savefolder="plots\multiplot";
 
@@ -23,8 +23,8 @@ for istep = 1:numel(steps)
     for i = 1:numDiscs
         pdisc = pdiscs{i};
         for j = 1:numGrids
-            gridcase = gridcases{j};
-            simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+            pdisc = gridcases{j};
+            simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', pdisc, ...
                                 'tagcase', tagcase, ...
                                 'pdisc', pdisc);
             [states, ~, ~] = simcase.getSimData;
@@ -36,7 +36,7 @@ for istep = 1:numel(steps)
                 data{i, j, istep}.injcells = [inj1, inj2];
                 data{i, j, istep}.G = G;
                 if i == 1
-                    data{i, j, istep}.title = displayNameGrid(gridcase);
+                    data{i, j, istep}.title = displayNameGrid(pdisc);
                 end
                 if j == 1
                     data{i, j, istep}.ylabel = shortDiscName(pdisc);
@@ -53,4 +53,46 @@ for istep = 1:numel(steps)
     multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step)], ...
         'saveplot', saveplot, 'cmap', '');   
+end
+%% Setup full error plot
+SPEcase = 'A';
+pdisc = '5tetRef10';
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+deckcase = 'RS';
+tagcase = '';
+
+saveplot = false;
+savefolder = 'plots\differenceplots';
+steps = [30, 144, 720];
+numDiscs = numel(pdiscs);
+%% Load data
+data = cell(numDiscs, numDiscs, numel(steps));
+for istep = 1:numel(steps)
+    step = steps(istep);
+    for i = 1:numDiscs
+        for j = (i):numDiscs
+            pdisc = pdiscs{j};
+            simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                                'tagcase', tagcase, ...
+                                'pdisc', pdisc);
+            [states, ~, ~] = simcase.getSimData;
+            G = simcase.G;
+            if numelData(states) >= step
+                statedata = states{step}.rs;
+                [inj1, inj2] = simcase.getinjcells;
+                data{i, j, istep}.statedata = statedata;
+                data{i, j, istep}.injcells = [inj1, inj2];
+                data{i, j, istep}.G = G;
+                if i == 1
+                    data{i, j, istep}.title = displayNameGrid(pdisc);
+                end
+                if j == 1
+                    data{i, j, istep}.ylabel = shortDiscName(pdisc);
+                end
+                %make diff
+                data{i, j, istep}.statedata = data{i, j, istep}.statedata - data{i, i, istep}.statedata
+
+            end
+        end
+    end
 end

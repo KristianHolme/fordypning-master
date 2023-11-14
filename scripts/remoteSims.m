@@ -7,6 +7,7 @@ function timings = remoteSims(server)
     mrstVerbose off
     switch  server
         case 1
+            SPEcase = 'B';
             gridcases = {'5tetRef2-2D'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa','hybrid-ntpfa'};
@@ -19,6 +20,7 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 2
+            SPEcase = 'B';
             gridcases = {'struct193x83-2D'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa','hybrid-ntpfa'};
@@ -31,6 +33,7 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 3
+            SPEcase = 'B';
             gridcases = {'5tetRef3'};
             schedulecases = {''};
             pdiscs = {'hybrid-mpfa'};
@@ -43,6 +46,7 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 4
+            SPEcase = 'B';
             gridcases = {'5tetRef3'};
             schedulecases = {''};
             pdiscs = {'hybrid-ntpfa'};
@@ -67,7 +71,7 @@ function timings = remoteSims(server)
                     pdisc = pdiscs{ipdisc};
                     for iuwdisc = 1:numel(uwdiscs)
                         uwdisc = uwdiscs{iuwdisc};
-                        simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                        simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                         'schedulecase', schedulecase, 'tagcase', tagcase, ...
                                         'pdisc', pdisc, 'uwdisc', uwdisc);
                         if do.multiphase

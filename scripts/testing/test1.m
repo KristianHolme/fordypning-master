@@ -5,6 +5,10 @@ mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
 %%
+[inj1, inj2] = simcase.getinjcells;
+[states, ~, ~] = simcase.getSimData;
+states{100}.pressure(inj1) 
+%%
 ABCcase = 'A';
 gridcase = '5tetRef10';
 simcase = Simcase('SPEcase', ABCcase, 'gridcase', gridcase);
@@ -132,11 +136,12 @@ for i = 1:numel(state)
     state{i}.pressureDiff = state{i}.pressure - initpressure;
 end
 %% Plot perm
-gridcase = 'struct193x83';%193x83
+SPEcase = 'B';
+gridcase = '';%193x83
 screenSize = get(0, 'ScreenSize');
 figWidth = screenSize(3)*0.7;
 figHeight = screenSize(4)*0.7;
-simcase = Simcase('gridcase', gridcase);
+simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'usedeck', true, 'deckcase', 'RS');
 figure('Position', [screenSize(3)*0.1 screenSize(4)*0.1 figWidth figHeight]);
 plotToolbar(simcase.G, simcase.rock.perm);view(0,0);
 %% Plot poro

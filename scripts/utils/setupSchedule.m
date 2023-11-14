@@ -66,9 +66,7 @@ function schedule = setupSchedule(simcase, varargin)
         G = simcase.G;
         bf = boundaryFaces(G);
 
-        if simcase.griddim == 3
-            bf = bf(G.faces.centroids(bf, 3) < 1e-12);
-        elseif simcase.griddim == 2
+        if simcase.griddim == 2
             %adjust rate by multiplying with 100
             for i = 1:numel(schedule.control)
                 multFactor = 100;
@@ -76,7 +74,6 @@ function schedule = setupSchedule(simcase, varargin)
                     schedule.control(i).W(j).val = schedule.control(i).W(j).val * multFactor;
                 end
             end
-            bf = bf( G.faces.centroids(bf, 2)>(1.2-1e-12) );
         end
         
         bc = setupBC(G, 'experimental', experimental, 'SPEcase', simcase.SPEcase);

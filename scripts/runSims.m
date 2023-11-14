@@ -15,7 +15,7 @@ mrstVerbose off
 % schedulecases = {'simple-coarse', 'simple-std'};
 
 SPEcase = 'B';
-gridcases = {'5tetRef10'};
+gridcases = {''};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};

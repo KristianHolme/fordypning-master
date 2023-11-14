@@ -50,7 +50,7 @@ classdef Simcase < handle
                          'deck'         , [], ...
                          'rockcase'     , [], ...
                          'pdisc'   , '', ...
-                         'griddim'      , [], ...
+                         'griddim'      , 3, ...
                          'uwdisc'      , []);
             opt = merge_options(opt, varargin{:});
 
@@ -64,6 +64,9 @@ classdef Simcase < handle
             for i = 1:numel(propnames)
                 pn = propnames{i};
                 simcase.(pn) = opt.(pn);
+            end
+            if contains(simcase.gridcase, '-2D')
+                opt.griddim = 2;
             end
             simcase.griddim = opt.griddim;
 
@@ -405,9 +408,10 @@ classdef Simcase < handle
             typeParts = strsplit(type, '.');
 
             if isempty(simcase.schedulecase) || strcmp(simcase.schedulecase, 'simple-std')
-                steps = 720;
+                steps = size(simcase.schedule.step.val, 1);
             end
             [states, ~, ~] = simcase.getSimData;
+            steps = min(steps, numelData(states));
             data = zeros(steps, 1);
             if strcmp(type, 'pressure') || strcmp(type, 'rs') %variable has single value
                 for it = 1:steps

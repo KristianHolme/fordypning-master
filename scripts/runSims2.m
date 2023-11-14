@@ -7,9 +7,10 @@ function timings = runSims2(server)
     mrstVerbose off
     switch  server
         case 1
-            gridcases = {'5tetRef2-2D'};
+            SPEcase = 'B';
+            gridcases = {''};
             schedulecases = {''};
-            pdiscs = {'hybrid-mpfa'};
+            pdiscs = {''};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
@@ -18,7 +19,8 @@ function timings = runSims2(server)
             Jutul = false;
             direct_solver = false;
         case 2
-            gridcases = {'5tetRef1'};
+            SPEcase = 'B';
+            gridcases = {'5tetRef10'};
             schedulecases = {''};
             pdiscs = {'hybrid-ntpfa'};
             uwdiscs = {''};
@@ -29,7 +31,8 @@ function timings = runSims2(server)
             Jutul = false;
             direct_solver = false;
         case 3
-            gridcases = {'5tetRef2'};
+            SPEcase = 'B';
+            gridcases = {'5tetRef3'};
             schedulecases = {''};
             pdiscs = {'hybrid-avgmpfa'};
             uwdiscs = {'WENO'};
@@ -41,7 +44,8 @@ function timings = runSims2(server)
             direct_solver = false;
             mrstVerbose on;
         case 4
-            gridcases = {'semi203x72_0.3'};
+            SPEcase = 'B';
+            gridcases = {''};
             schedulecases = {''};
             pdiscs = {''};
             uwdiscs = {'WENO'};
@@ -64,7 +68,7 @@ function timings = runSims2(server)
                     pdisc = pdiscs{idisc};
                     for iuwdisc = 1:numel(uwdiscs)
                         uwdisc = uwdiscs{iuwdisc};
-                        simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                        simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                         'schedulecase', schedulecase, 'tagcase', tagcase, ...
                                         'pdisc', pdisc, 'uwdisc', uwdisc);
 
