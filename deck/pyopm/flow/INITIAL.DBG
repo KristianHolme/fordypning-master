@@ -1,0 +1,307 @@
+
+
+
+ ########  #          ######   #           #
+ #         #         #      #   #         # 
+ #####     #         #      #    #   #   #  
+ #         #         #      #     # # # #   
+ #         #######    ######       #   #    
+
+Flow is a simulator for fully implicit three-phase black-oil flow, and is part of OPM.
+For more information visit: https://opm-project.org 
+
+Flow Version     =  2023.04 (lsb_release -d | sed s/.*:s+(.*)/1/: 2023.04-rfinal-1~jammy)
+Machine name     =  KristiansLaptop (Number of logical cores: 12, Memory size: 15851.10 MB) 
+Operating system =  Linux x86_64 (Kernel: 5.15.90.1-microsoft-standard-WSL2, #1 SMP Fri Jan 27 02:56:13 UTC 2023 )
+Build time       =  
+Simulation started on 14-11-2023 at 10:04:29 hrs
+Parameters used by Flow:
+# [known parameters which were specified at run-time]
+LinearSolver="cprw" # default: "ilu0"
+EnableTuning="true" # default: "0"
+EnableOpmRstFile="true" # default: "0"
+OutputExtraConvergenceInfo="steps,iterations" # default: "none"
+EnableWellOperabilityCheck="false" # default: "1"
+MinTimeStepBeforeShuttingProblematicWellsInDays="1e-99" # default: "0.01"
+OutputDir="/mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/pyopmspe11/../deck/pyopm/flow" # default: ""
+EclDeckFileName="/mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/pyopmspe11/../deck/pyopm/deck/INITIAL.DATA" # default: ""
+# [parameters which were specified at compile-time]
+AcceleratorMode="none"
+AllowDistributedWells="0"
+AlternativeWellRateInit="1"
+BdaDeviceId="0"
+ContinueOnConvergenceError="0"
+CprReuseInterval="30"
+CprReuseSetup="4"
+DbhpMaxRel="1"
+DpMaxRel="0.3"
+DsMax="0.2"
+DwellFractionMax="0.2"
+EclEnableDriftCompensation="1"
+EclEnableTuning="0"
+EclMaxTimeStepSizeAfterWellEvent="3.15576e+07"
+EclNewtonRelaxedTolerance="1e+09"
+EclNewtonRelaxedVolumeFraction="0.03"
+EclNewtonStrictIterations="8"
+EclNewtonSumTolerance="0.0001"
+EclNewtonSumToleranceExponent="0.333333"
+EclOutputDoublePrecision="0"
+EclOutputInterval="-1"
+EclRestartShrinkFactor="3"
+EdgeWeightsMethod="1"
+EnableAdaptiveTimeStepping="1"
+EnableAsyncEclOutput="1"
+EnableAsyncVtkOutput="1"
+EnableDryRun="auto"
+EnableEclOutput="1"
+EnableEsmry="0"
+EnableGravity="1"
+EnableGridAdaptation="0"
+EnableIntensiveQuantityCache="1"
+EnableLoggingFalloutWarning="0"
+EnableStorageCache="1"
+EnableTerminalOutput="1"
+EnableThermodynamicHints="0"
+EnableVtkOutput="0"
+EnableWellOperabilityCheckIter="0"
+EnableWriteAllSolutions="0"
+EndTime="1e+100"
+ForceDisableFluidInPlaceOutput="0"
+ForceDisableResvFluidInPlaceOutput="0"
+FullTimeStepInitially="0"
+IgnoreKeywords=""
+IluFillinLevel="0"
+IluRedblack="0"
+IluRelaxation="0.9"
+IluReorderSpheres="0"
+InitialTimeStepInDays="1"
+InitialTimeStepSize="86400"
+LinearSolverIgnoreConvergenceFailure="0"
+LinearSolverMaxIter="200"
+LinearSolverReduction="0.01"
+LinearSolverRestart="40"
+LinearSolverVerbosity="0"
+LoadStep="-1"
+MatrixAddWellContributions="0"
+MaxInnerIterMsWells="100"
+MaxInnerIterWells="50"
+MaxNewtonIterationsWithInnerWellIterations="8"
+MaxPressureChangeMsWells="1e+06"
+MaxResidualAllowed="1e+07"
+MaxSinglePrecisionDays="20"
+MaxTemperatureChange="5"
+MaxTimeStepDivisions="10"
+MaxTimeStepSize="inf"
+MaxWelleqIter="30"
+MaximumNumberOfWellSwitches="3"
+MiluVariant="ILU"
+MinStrictCnvIter="0"
+MinTimeStepBasedOnNewtonIterations="0"
+MinTimeStepSize="0"
+NewtonMaxError="1e+10"
+NewtonMaxIterations="20"
+NewtonMaxRelax="0.5"
+NewtonMinIterations="1"
+NewtonRelaxationType="dampen"
+NewtonTargetIterations="6"
+NewtonTolerance="0.01"
+NewtonVerbose="1"
+NewtonWriteConvergence="0"
+OpenclIluParallel="1"
+OpenclPlatformId="0"
+OutputInterval="1"
+OutputMode="all"
+OwnerCellsFirst="1"
+ParameterFile=""
+ParsingStrictness="normal"
+PredeterminedTimeStepsFile=""
+PriVarOscilationThreshold="1e-05"
+PrintParameters="2"
+PrintProperties="2"
+ProjectSaturations="0"
+RegularizationFactorWells="100"
+RelaxedLinearSolverReduction="0.01"
+RelaxedMaxPvFraction="0.03"
+RelaxedPressureTolMsw="10000"
+RelaxedWellFlowTol="0.001"
+RestartTime="-1e+35"
+RestartWritingInterval="16777215"
+SaveFile=""
+SaveStep=""
+ScaleLinearSystem="0"
+SchedRestart="0"
+SerialPartitioning="0"
+ShutUnsolvableWells="1"
+SolveWelleqInitially="1"
+SolverContinueOnConvergenceFailure="0"
+SolverGrowthFactor="2"
+SolverMaxGrowth="3"
+SolverMaxRestarts="10"
+SolverMaxTimeStepInDays="365"
+SolverMinTimeStep="1e-12"
+SolverRestartFactor="0.33"
+SolverVerbosity="1"
+StrictInnerIterWells="40"
+StrictOuterIterWells="6"
+TemperatureMax="1e+09"
+TemperatureMin="0"
+ThreadsPerProcess="-1"
+TimeStepAfterEventInDays="-1"
+TimeStepControl="pid+newtoniteration"
+TimeStepControlDecayDampingFactor="1"
+TimeStepControlDecayRate="0.75"
+TimeStepControlFileName="timesteps"
+TimeStepControlGrowthDampingFactor="3.2"
+TimeStepControlGrowthRate="1.25"
+TimeStepControlTargetIterations="30"
+TimeStepControlTargetNewtonIterations="8"
+TimeStepControlTolerance="0.1"
+TimeStepVerbosity="1"
+ToleranceCnv="0.01"
+ToleranceCnvRelaxed="1"
+ToleranceMb="1e-06"
+TolerancePressureMsWells="1000"
+ToleranceWellControl="1e-07"
+ToleranceWells="0.0001"
+UpdateEquationsScaling="0"
+UseGmres="0"
+UseMultisegmentWell="1"
+UseUpdateStabilization="1"
+VtkWriteAverageMolarMasses="0"
+VtkWriteDensities="1"
+VtkWriteDiffusionCoefficients="0"
+VtkWriteDofIndex="0"
+VtkWriteEclTracerConcentration="0"
+VtkWriteEffectiveDiffusionCoefficients="0"
+VtkWriteExtrusionFactor="0"
+VtkWriteFilterVelocities="0"
+VtkWriteFugacities="0"
+VtkWriteFugacityCoeffs="0"
+VtkWriteGasDissolutionFactor="0"
+VtkWriteGasFormationVolumeFactor="0"
+VtkWriteGasSaturationPressure="0"
+VtkWriteIntrinsicPermeabilities="0"
+VtkWriteMassFractions="0"
+VtkWriteMobilities="0"
+VtkWriteMolarities="0"
+VtkWriteMoleFractions="1"
+VtkWriteOilFormationVolumeFactor="0"
+VtkWriteOilSaturationPressure="0"
+VtkWriteOilVaporizationFactor="0"
+VtkWritePorosity="1"
+VtkWritePotentialGradients="0"
+VtkWritePressures="1"
+VtkWritePrimaryVars="0"
+VtkWritePrimaryVarsMeaning="0"
+VtkWriteProcessRank="0"
+VtkWriteRelativePermeabilities="1"
+VtkWriteSaturatedGasOilVaporizationFactor="0"
+VtkWriteSaturatedOilGasDissolutionFactor="0"
+VtkWriteSaturationRatios="0"
+VtkWriteSaturations="1"
+VtkWriteTemperature="1"
+VtkWriteTortuosities="0"
+VtkWriteTotalMassFractions="0"
+VtkWriteTotalMoleFractions="0"
+VtkWriteViscosities="0"
+VtkWriteWaterFormationVolumeFactor="0"
+ZoltanImbalanceTol="1.1"
+ZoltanParams="graph"
+
+Reading deck file '/mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/pyopmspe11/../deck/pyopm/deck/INITIAL.DATA'
+    0 Reading RUNSPEC  in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 4
+    1 Reading DIMENS   in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 6
+    2 Reading OIL      in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 9
+    3 Reading GAS      in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 10
+    4 Reading CO2STORE in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 11
+    5 Reading EQLDIMS  in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 13
+    6 Reading TABDIMS  in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 16
+    7 Reading WELLDIMS in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 19
+    8 Reading UNIFOUT  in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 22
+    9 Reading GRID     in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 24
+   10 Reading INIT     in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 26
+   11 Reading COORD    in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/GRID.INC line 3
+   12 Reading ZCORN    in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/GRID.INC line 530
+   13 Reading PORO     in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 31
+   14 Reading PERMX    in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 35
+   15 Reading COPY     in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 39
+   16 Reading PROPS    in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 44
+   17 Reading SGOF     in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 46
+   18 Reading SOLUTION in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 50
+   19 Reading EQUIL    in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 52
+   20 Reading RPTRST   in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 55
+   21 Reading SCHEDULE in /mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 58
+The CO2 storage option is given. PVT properties from the Brine-CO2 system is used 
+See the OPM manual for details on the used models.
+
+Creating corner-point grid from keywords COORD, ZCORN and others
+2 fluid phases are active
+
+Processing dynamic information from
+/mnt/c/Users/holme/Documents/Prosjekt/Prosjektoppgave/src/deck/pyopm/deck/INITIAL.DATA line 58
+Initializing report step 0/0 at 1983-01-01 0 DAYS line 58
+
+Processing grid
+Total number of active cells: 8059 / total pore volume: 2016000 RM3
+Property tree for linear solver:
+{
+    "maxiter": "20",
+    "tol": "0.0050000000000000001",
+    "verbosity": "0",
+    "solver": "bicgstab",
+    "preconditioner": {
+        "type": "cprw",
+        "use_well_weights": "false",
+        "add_wells": "true",
+        "weight_type": "trueimpes",
+        "finesmoother": {
+            "type": "ParOverILU0",
+            "relaxation": "1"
+        },
+        "verbosity": "0",
+        "coarsesolver": {
+            "maxiter": "1",
+            "tol": "0.10000000000000001",
+            "solver": "loopsolver",
+            "verbosity": "0",
+            "preconditioner": {
+                "type": "amg",
+                "alpha": "0.33333333333300003",
+                "relaxation": "1",
+                "iterations": "1",
+                "coarsenTarget": "1200",
+                "pre_smooth": "1",
+                "post_smooth": "1",
+                "beta": "0",
+                "smoother": "ILU0",
+                "verbosity": "0",
+                "maxlevel": "15",
+                "skip_isolated": "0",
+                "accumulate": "1",
+                "prolongationdamping": "1",
+                "maxdistance": "2",
+                "maxconnectivity": "15",
+                "maxaggsize": "6",
+                "minaggsize": "4"
+            }
+        }
+    }
+}
+
+
+===============Saturation Functions Diagnostics===============
+
+System:  Oil-Gas system.
+Relative permeability input format: Saturation Family I.
+Number of saturation regions: 1
+
+
+
+Error summary:
+Warnings          0
+Info              35
+Errors            0
+Bugs              0
+Debug             0
+Problems          0
+
