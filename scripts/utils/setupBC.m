@@ -10,9 +10,12 @@ function bc = setupBC(G, varargin)
     if strcmp(opt.SPEcase, 'A')
         press = 1.1*barsa;
     else
-        press = 211.88658*barsa;
+        press = 2.0754e+07;
     end
     topBCfaces = find(G.faces.centroids(:,G.griddim) < 1e-12);
     bc = addBC([], topBCfaces, 'pressure', press, ...
         'sat', sat);
+    if strcmp(opt.SPEcase, 'B') %return no BC for B-case
+        bc = [];
+    end
 end

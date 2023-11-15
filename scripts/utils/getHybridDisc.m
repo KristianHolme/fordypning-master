@@ -11,7 +11,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridpdisc, cellblocks
 
     models = cell(1, 2);
     models{1} = tpfaModel;
-    assemblyDir = fullfile(simcase.dataOutputDir, 'assembly', simcase.gridcase, hybridpdisc);
+    assemblyDir = fullfile(simcase.dataOutputDir, 'assembly', simcase.SPEcase, simcase.gridcase, hybridpdisc);
     switch hybridpdisc
         case 'avgmpfa'
             structFileName = 'avgmpfastruct.mat';

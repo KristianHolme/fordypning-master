@@ -1,5 +1,5 @@
 function rock = setupRock(simcase)
-    G = simcase.G;
+    G = setupGrid(simcase, 'buffer', false); %no circular dependency
     gridcase = simcase.gridcase;
     if ~isempty(gridcase) && contains(gridcase, 'skewed3D')
         rock = makeRock(G, 100*milli*darcy, .2);
@@ -15,7 +15,7 @@ function rock = setupRock(simcase)
             faciesPoro      = [0.1; 0.2; 0.2; 0.2; 0.25; 0.35; 0.0];
             rock.perm       = faciesPerm(G.cells.tag);
             if G.griddim == 3
-                rock.perm(:, end+1) = faciesPerm(G.cells.tag)*0;
+                rock.perm(:, end+1) = faciesPerm(G.cells.tag)*1;%same perm in y direction
             end
             rock.perm(:, end+1) = faciesPerm(G.cells.tag)*0.1;
         end

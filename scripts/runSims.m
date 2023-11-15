@@ -1,5 +1,6 @@
 clear all
 close all
+
 %%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
@@ -15,11 +16,11 @@ mrstVerbose off
 % schedulecases = {'simple-coarse', 'simple-std'};
 
 SPEcase = 'B';
-gridcases = {''};
+gridcases = {'5tetRef10'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-pdiscs = {''};
+pdiscs = {'hybrid-avgmpfa'};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';

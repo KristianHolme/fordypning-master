@@ -1,4 +1,6 @@
 function G = setupGrid(simcase, varargin)
+    opt = struct('buffer', true);
+    opt = merge_options(opt, varargin{:});
 
     gridcase = simcase.gridcase;
     specase = lower(simcase.SPEcase);
@@ -69,6 +71,9 @@ function G = setupGrid(simcase, varargin)
         G = initEclipseGrid(simcase.deck);
     end
     G = computeGeometry(G);
+    if strcmp(specase, 'b') && opt.buffer %add buffervolume
+        G = addBufferVolume(G, simcase.rock);
+    end
     assert(checkGrid(G) == true);
 end
 
