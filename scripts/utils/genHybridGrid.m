@@ -4,7 +4,8 @@ function G = genHybridGrid(varargin)
                  'density', 0.5, ...
                  'savegrid', false, ...
                  'plotUnstructured', false, ...
-                 'verbose', false);
+                 'verbose', false, ...
+                 'version', 'A');
     % Grid genereation code from https://github.com/vetlenev/Master-Thesis/blob/main/FluidFlower/hybridGrid_FluidFlower.m
     opt = merge_options(opt, varargin{:});
     nx_glob = opt.nx;
@@ -18,8 +19,9 @@ function G = genHybridGrid(varargin)
     mrstModule add matlab_bgl coarsegrid
     addpath("Nevland\FluidFlower\SPE11-utils\");
     addpath("Nevland\FluidFlower\grid");
-
-    filename = '11thSPE-CSP/geometries/spe11a.geo';
+    
+    
+    filename = ['11thSPE-CSP/geometries/spe11', lower(opt.version), '.geo'];
     [pts, loops, facies] = parse_spe11_geo(filename, 'verbose', verbose);
 
     % Other definitions

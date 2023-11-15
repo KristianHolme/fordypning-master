@@ -137,7 +137,7 @@ for i = 1:numel(state)
 end
 %% Plot perm
 SPEcase = 'B';
-gridcase = '';%193x83
+gridcase = '5tetRef10';%193x83
 screenSize = get(0, 'ScreenSize');
 figWidth = screenSize(3)*0.7;
 figHeight = screenSize(4)*0.7;

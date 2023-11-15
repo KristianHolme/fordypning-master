@@ -24,5 +24,7 @@ function displayName = displayNameGrid(gridcase)
             displayName = 'S-F';
         case 'struct193x83'
             displayName = 'S-M';
+        otherwise
+            displayName = gridcase;
     end
 end

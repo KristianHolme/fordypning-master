@@ -1,5 +1,17 @@
 clear all
 close all
+%%
+SPEcase = 'B';
+gridcase = 'struct840x120';%193x83
+simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'usedeck', true, 'deckcase', 'RS');
+G = simcase.G;
+plotGrid(G);view(0,0);
+axis equal;axis tight;
+%%
+G = genHybridGrid('nx', 260, 'nz', 120, 'density', 0.3, 'version', 'B');
+plotGrid(G, 'facealpha', 0);
+
+
 %% Find pressure at top
 rho = @(p) model.fluid.rhoOS/model.fluid.bO(p, 0, 1);
 equil = ode23(@(z, p) 9.81 .*rho(p), [900, 0], 300*barsa); %gives pressure at top is 2.0754e+07

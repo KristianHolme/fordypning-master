@@ -56,12 +56,14 @@ for istep = 1:numel(steps)
 end
 %% Setup full error plot
 SPEcase = 'A';
-pdisc = '5tetRef10';
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+gridcase = 'semi203x72_0.3';
+filename =[SPEcase, '_diff_', gridcase];
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 deckcase = 'RS';
 tagcase = '';
 
-saveplot = false;
+saveplot = true;
 savefolder = 'plots\differenceplots';
 steps = [30, 144, 720];
 numDiscs = numel(pdiscs);
@@ -70,7 +72,7 @@ data = cell(numDiscs, numDiscs, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
     for i = 1:numDiscs
-        for j = (i):numDiscs
+        for j = i:numDiscs
             pdisc = pdiscs{j};
             simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'tagcase', tagcase, ...
@@ -84,15 +86,25 @@ for istep = 1:numel(steps)
                 data{i, j, istep}.injcells = [inj1, inj2];
                 data{i, j, istep}.G = G;
                 if i == 1
-                    data{i, j, istep}.title = displayNameGrid(pdisc);
+                    data{i, j, istep}.title = shortDiscName(pdisc);
                 end
-                if j == 1
+                if j == i
                     data{i, j, istep}.ylabel = shortDiscName(pdisc);
                 end
                 %make diff
-                data{i, j, istep}.statedata = data{i, j, istep}.statedata - data{i, i, istep}.statedata
+                if j ~=i
+                    data{i, j, istep}.statedata = abs(data{i, j, istep}.statedata - data{i, i, istep}.statedata);
+                end
 
             end
         end
     end
+end
+     %% Plotting diff
+for istep = 1:numel(steps)
+    step = steps(istep);
+    plottitle = ['absolute difference in rs at t=', num2str(step/6), 'h for grid: ', displayNameGrid(gridcase)];
+    multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
+        'savename', [filename, '_step', num2str(step)], ...
+        'saveplot', saveplot, 'cmap', '');   
 end
