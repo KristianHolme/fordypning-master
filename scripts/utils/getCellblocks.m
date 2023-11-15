@@ -18,7 +18,7 @@ function cellblocks = getCellblocks(simcase, varargin)
     tpfaCells = findCellNeighbors(G, injectionCells, paddingLayers);
 
 
-    if ~isempty(pdisc) && contains(pdisc, 'ntpfa','IgnoreCase', true)
+    if ~isempty(pdisc) && contains(pdisc, 'ntpfa','IgnoreCase', true) && strcmp(simcase.SPEcase, 'A')
         bccells = getbcCells(simcase);
         bccells = findCellNeighbors(G, bccells, paddingLayers);
         tpfaCells = union(tpfaCells, bccells);
