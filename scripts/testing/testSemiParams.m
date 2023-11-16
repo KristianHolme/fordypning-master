@@ -2,17 +2,17 @@ clear all
 close all
 
 %% Testing which params work with semistruct-grid
-version = 'B';
+version = 'A';
 
 printbad = false;
 printgood = true;
 
-targetcellnumber = 40000;
-slack = 20000;
+targetcellnumber = 100000;
+slack = 10000;
 
 
-nxs = 330:1680;
-nzs = 47:240;
+nxs = 270:1680;
+% nzs = 47:240;
 densities = [0.3];
 
 % nxs = 20:22;
@@ -92,7 +92,7 @@ end
 %     end
 % end
 close(h);  % Close waitbar
-save('Misc/goodparamsB2.mat', 'goodparams');
+save('Misc/goodparamsA2.mat', 'goodparams');
 
 
 

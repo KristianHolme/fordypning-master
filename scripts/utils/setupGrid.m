@@ -45,8 +45,14 @@ function G = setupGrid(simcase, varargin)
         elseif contains(gridcase, 'semi')
             params = replace(replace(gridcase, '-2D', ''), 'semi', '');
             matFile = fullfile(gridFolder, [prefix, '_semi', params, '_grid.mat']);
+            if strcmp(simcase.SPEcase, 'B')%stretch A-grid
+                amatFile = fullfile(gridFolder, ['spe11a_semi', params, '_grid.mat']);
+                load(amatFile)
+                G = StretchGrid(RotateGrid(G));
+                save(matFile, 'G');
+            end
+            
             if ~isfile(matFile)
-                
                 error([matFile, ' not found']);
             end
         end

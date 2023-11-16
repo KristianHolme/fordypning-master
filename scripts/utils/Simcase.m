@@ -240,15 +240,16 @@ classdef Simcase < handle
                 %load deck from mat file or save to mat file
                 decksavename = replace(deckname, '.DATA', '_deck.mat');
                 decksaveFolder = simcase.decksaveDir;
+                saveDeck = true;
                 if isempty(decksaveFolder)
-                    decksaveFolder = deckFolder;
+                    saveDeck = false;
                 end
                 decksavePath = fullfile(decksaveFolder, decksavename);
                 if isfile(decksavePath)
                     disp('Loading deck from saved .mat file...')
                     load(decksavePath);
                 else
-                    disp('Reading, converting and saving deck...')
+                    disp('Converting deck...')
                     tic()
                     filename = fullfile(deckFolder, deckname);
                     deck = readEclipseDeck(filename);
@@ -256,9 +257,12 @@ classdef Simcase < handle
                     if ~isfield(deck.GRID, 'ACTNUM')
                         deck.GRID.ACTNUM = deck.GRID.PORO > 0;
                     end
-                    save(decksavePath, 'deck');
+                    if saveDeck
+                        disp('Saving deck...');
+                        save(decksavePath, 'deck');
+                    end
                     t1 = toc();
-                    disp(['Done in ', num2str(t1), 's'])
+                    disp(['Done with deck setup in ', num2str(t1), 's'])
                 end
                 simcase.deck = deck;
             end
