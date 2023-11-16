@@ -124,12 +124,33 @@ plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
 
 %% Print number of cells
 % gridcases = {'5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef4',...
-    % 'struct193x83', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};
-gridcases = {'5tetRef0.4','5tetRef0.5','5tetRef0.6','5tetRef0.7','5tetRef0.8', '5tetRef0.9','5tetRef1', '5tetRef2','5tetRef3', '5tetRef10'};
+%     'struct193x83', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};
+
+gridcases = {'5tetRef0.4','5tetRef0.8', '5tetRef2', '5tetRef10'};%B grids
+% gridcases = {};
+% ress = {};
+% % cd grid-files\;
+% files = dir('grid-files/spe11b_struct*');
+% for k = 1:length(files)
+%     filename = files(k).name;
+%     % Regular expression to find the pattern 'structAxB' where A and B are numbers
+%     tokens = regexp(filename, 'spe11b_struct(\d+x\d+).m', 'tokens');
+%     if ~isempty(tokens)
+%         % tokens{1}{1} contains the 'AxB' part
+%         disp(tokens{1}{1});
+%         ress{end+1} = tokens{1}{1};
+%     end
+% end
+% ress = {'336x141','420x122','420x141','840x100','840x110','840x120',...
+% '840x122','840x141','84x12'};
+% % cd ../
+% gridcases = cellfun(@(x) ['struct' x], ress, 'UniformOutput', false);
 for i = 1:numel(gridcases)
     gridcase = gridcases{i};
     simcase = Simcase('SPEcase', 'B', 'gridcase', gridcase);
     disp(['gridcase ', gridcase, 'cells: ', num2str(simcase.G.cells.num)]);
+    % plotCellData(simcase.G, simcase.rock.perm(:,1)), view(0,0);
+    % clf
 end
 %%
 initpressure = state{1}.pressure;
