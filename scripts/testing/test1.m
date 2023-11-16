@@ -123,11 +123,12 @@ plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
 
 
 %% Print number of cells
-gridcases = {'5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef4',...
-    'struct193x83', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};
+% gridcases = {'5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef4',...
+    % 'struct193x83', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};
+gridcases = {'5tetRef0.4','5tetRef0.5','5tetRef0.6','5tetRef0.7','5tetRef0.8', '5tetRef0.9','5tetRef1', '5tetRef2','5tetRef3', '5tetRef10'};
 for i = 1:numel(gridcases)
     gridcase = gridcases{i};
-    simcase = Simcase('gridcase', gridcase);
+    simcase = Simcase('SPEcase', 'B', 'gridcase', gridcase);
     disp(['gridcase ', gridcase, 'cells: ', num2str(simcase.G.cells.num)]);
 end
 %%
@@ -137,7 +138,7 @@ for i = 1:numel(state)
 end
 %% Plot perm
 SPEcase = 'B';
-gridcase = '5tetRef10';%193x83
+gridcase = '5tetRef0.1';%193x83
 screenSize = get(0, 'ScreenSize');
 figWidth = screenSize(3)*0.7;
 figHeight = screenSize(4)*0.7;

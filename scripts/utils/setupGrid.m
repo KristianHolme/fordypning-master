@@ -13,8 +13,8 @@ function G = setupGrid(simcase, varargin)
             meshAlg = str2double(gridcase(1));
             pattern = 'Ref(-?\d+\.?\d*)';
             match = regexp(gridcase, pattern, 'tokens');
-            refinement_factor = match{1}{1};
-            str_ref_factor = num2str(refinement_factor);
+            str_ref_factor = match{1}{1};
+            refinement_factor = str2double(str_ref_factor);
             if mod(refinement_factor, 1) ~= 0
                 str_ref_factor = replace(str_ref_factor, '.', '_');
             end

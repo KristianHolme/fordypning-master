@@ -1,8 +1,9 @@
 clear all;
 close all;
 %% Setup
+SPEcase = 'B';
 % gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'gridtypeComp';
-gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'}; filename ='UU_refine_disc';
+gridcases = {'5tetRef1', '5tetRef2', '5tetRef3', '5tetRef10'}; filename =[SPEcase, '_UU_refine_disc'];
 % gridcases = {'6tetRef2', '5tetRef2'}; filename = 'meshAlgComparisonRef2';
 % gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
@@ -13,7 +14,10 @@ saveplot = false;
 
 savefolder="plots\multiplot";
 
-steps = [30, 144, 720];
+if strcmp(SPEcase, 'A')
+    steps = [30, 144, 720];
+else
+    steps = [40, 150, 360];
 numGrids = numel(gridcases);
 numDiscs = numel(pdiscs);
 %% Loading data grid vs pdisc
@@ -24,7 +28,7 @@ for istep = 1:numel(steps)
         pdisc = pdiscs{i};
         for j = 1:numGrids
             pdisc = gridcases{j};
-            simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', pdisc, ...
+            simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', pdisc, ...
                                 'tagcase', tagcase, ...
                                 'pdisc', pdisc);
             [states, ~, ~] = simcase.getSimData;

@@ -8,9 +8,9 @@ function timings = remoteSims(server)
     switch  server
         case 1
             SPEcase = 'B';
-            gridcases = {'5tetRef10'};
+            gridcases = {'5tetRef0.4'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa','hybrid-ntpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
@@ -21,7 +21,7 @@ function timings = remoteSims(server)
             direct_solver = false;
         case 2
             SPEcase = 'B';
-            gridcases = {'5tetRef2'};
+            gridcases = {'5tetRef0.8'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa','hybrid-ntpfa'};
             uwdiscs = {''};
@@ -34,9 +34,9 @@ function timings = remoteSims(server)
             direct_solver = false;
         case 3
             SPEcase = 'B';
-            gridcases = {'5tetRef3'};
+            gridcases = {'5tetRef0.4'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa','hybrid-ntpfa'};
+            pdiscs = {'hybrid-mpfa','hybrid-ntpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
