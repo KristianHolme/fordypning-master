@@ -5,8 +5,8 @@
 ## To run files (hopefully):
 - Rename 'config-template.JSON' to 'config.JSON' and modify it to suit your setup
     - output_folder: folder where output from simulations are stored
-    - spe11utils_folder: folder of the spe11-utils repo
-    - decksave_folder: folder to save deck files to. for example spe11utils_folder\deck
+    - spe11utils_folder: folder of the spe11-utils repo (cloned from SINTEF-MRST-BitBucket)
+    - decksave_folder: folder to save deck files to (as .mat-files). for example spe11utils_folder\deck, leave as empty string if you don't mind converting from the .DATA file each time (usually doesn't take a lot of time)
     - repo_folder: the folder where this repo is cloned.
 - Run setup.m
     - This adds the scripts-folder as an mrst module called prosjektOppgave and adds it to the path
