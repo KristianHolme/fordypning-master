@@ -7,10 +7,10 @@ function timings = remoteSims(server)
     mrstVerbose off
     switch  server
         case 1
-            SPEcase = 'B';
-            gridcases = {'5tetRef0.4'};
+            SPEcase = 'A';
+            gridcases = {'5tetRef0.7', '5tetRef0.5'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
@@ -20,10 +20,10 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 2
-            SPEcase = 'B';
-            gridcases = {'5tetRef0.8'};
+            SPEcase = 'A';
+            gridcases = {'5tetRef0.4'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa','hybrid-ntpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa','hybrid-mpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
@@ -34,7 +34,7 @@ function timings = remoteSims(server)
             direct_solver = false;
         case 3
             SPEcase = 'B';
-            gridcases = {'5tetRef0.4'};
+            gridcases = {'5tetRef0.3', '5tetRef0.21', '5tetRef0.175'};
             schedulecases = {''};
             pdiscs = {'hybrid-ntpfa'};
             uwdiscs = {''};
@@ -47,9 +47,9 @@ function timings = remoteSims(server)
             direct_solver = false;
         case 4
             SPEcase = 'B';
-            gridcases = {'5tetRef1'};
+            gridcases = {'struct420x141', 'struct840x141'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa','hybrid-ntpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
