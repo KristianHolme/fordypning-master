@@ -9,11 +9,31 @@ function multiplot(data, varargin)
                  'cblabel'   , [], ...
                  'cmap'      , []);
     opt = merge_options(opt, varargin{:});
+     
+
+    
+
 
      % Get the screen size
     screenSize = get(0, 'ScreenSize');
     [numRows, numCols] = size(data);
 
+    %get min and max value
+    minV = 0; 
+    maxV = 0;
+    for i = 1:numRows
+        for j = 1:numCols
+            frame = data{i, j};
+            if ~isempty(frame)
+                statedata   = frame.statedata;
+                stateMin = min(statedata);
+                stateMax = max(statedata);
+                minV = min(minV, stateMin);
+                maxV = max(maxV, stateMax);
+            end
+        end
+    end
+    
     
     % Calculate the desired figure size (e.g., full screen or a fraction of it)
     figWidth = screenSize(3) * min(0.8*numCols/3, 0.80); % 80% of the screen width
@@ -68,7 +88,7 @@ function multiplot(data, varargin)
                 if ~isempty(opt.cmap)
                     colormap(ax, opt.cmap)
                 end
-                clim(ax, [0 1]);%comparable colors on all plots
+                clim(ax, [minV maxV]);%comparable colors on all plots
 
             else
                 delete(ax);
