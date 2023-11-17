@@ -8,9 +8,9 @@ function timings = remoteSims(server)
     switch  server
         case 1
             SPEcase = 'B';
-            gridcases = {'5tetRef0.4'};
+            gridcases = {'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
