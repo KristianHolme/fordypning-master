@@ -7,7 +7,7 @@ function timings = remoteSims(server)
     mrstVerbose off
     switch  server
         case 1
-            SPEcase = 'B';
+            SPEcase = 'A';
             gridcases = {'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
