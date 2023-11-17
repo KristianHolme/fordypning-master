@@ -70,7 +70,9 @@ function G = setupGrid(simcase, varargin)
                 G = makeLayeredGrid(G, depth);
                 G = computeGeometry(G);
             end
-            G = RotateGrid(G);%rotategrid to Z axis
+            if ~ismember(G.type, 'RotateGrid')
+                G = RotateGrid(G);%rotategrid to Z axis
+            end
         end
         
     elseif ~isempty(simcase.deck) %use deck if present
