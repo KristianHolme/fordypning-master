@@ -20,10 +20,10 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 2
-            SPEcase = 'B';
-            gridcases = {'struct420x141'};
+            SPEcase = 'A';
+            gridcases = {'5tetRef3', '5tetRef2', '5tetRef1'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa','hybrid-ntpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa','hybrid-mpfa', 'hybrid-ntpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
@@ -33,8 +33,8 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 3
-            SPEcase = 'B';
-            gridcases = {'struct420x141'};
+            SPEcase = 'A';
+            gridcases = {'struct193x83', 'struct220x90', 'struct340x150'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa','hybrid-ntpfa'};
             uwdiscs = {''};
