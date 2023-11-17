@@ -1,6 +1,17 @@
 clear all
 close all
 %%
+simcase = Simcase('SPEcase', 'B', 'gridcase', '5tetRef2', 'deckcase', 'RS', 'usedeck', true);
+[states, ~, ~] = simcase.getSimData;
+state = states{25};
+G = simcase.G;
+cellV = faceFlux2cellVelocity(G, state.flux(:, 2));
+plotCellData(G, cellV(:, 1)), view(0,0); colormap('jet')
+%% Regen semigrid
+G = genHybridGrid('nx', 220, 'nz', 150, 'density', 0.5, 'savegrid', true);
+plotCellData(G, G.cells.tag);
+
+%%
 SPEcase = 'B';
 gridcase = 'struct840x120';%193x83
 simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'usedeck', true, 'deckcase', 'RS');
