@@ -70,8 +70,14 @@ function multiplot(data, varargin)
                 statedata   = frame.statedata;
                 injcells    = frame.injcells;
                 G           = frame.G;
-                
-                plotCellData(G, statedata, 'edgealpha', 0);
+                if isfield(frame, 'cells')
+                    cells = frame.cells;
+                else
+                    cells = 1:G.cells.num;
+                end
+
+                plotCellData(G, statedata, cells, 'edgealpha', 0);
+                injcells = intersect(injcells, cells);
                 plotGrid(G, injcells, 'facecolor', 'red');
                 if G.griddim == 3 %change view if on 3D grid
                     view(0,0);

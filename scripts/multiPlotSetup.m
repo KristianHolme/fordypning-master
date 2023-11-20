@@ -7,19 +7,22 @@ getData = @(states, step, G) states{step}.rs; cmap='';
 SPEcase = 'A';
 
 % gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'gridtypeComp';
-gridcases = {'5tetRef1', '5tetRef2', '5tetRef3}; filename = 'UU_refine_disc';
+gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'}; filename = 'UU_refine_disc';
 % gridcases = {'6tetRef2', '5tetRef2'}; filename = 'meshAlgComparisonRef2';
 % gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 
 
-SPEcase = 'A';
+SPEcase = 'B';
 
 % gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'gridtypeComp';
 gridcases = {'5tetRef0.4', '5tetRef0.8', '5tetRef2'}; filename = 'UU_refine_disc';
 % gridcases = {'6tetRef0.8', '5tetRef0.8'}; filename = 'meshAlgComparisonRef2';
 % gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+
+subname = 'uppermiddle'; %'', 'uppermiddle', 
+[p1, p2] = getBoxPoints(subname, SPEcase, 3);
 
 
 deckcase = 'RS';
@@ -28,12 +31,12 @@ tagcase = '';
 if strcmp(SPEcase, 'A') 
     scaling = hour; unit = 'h';
 else 
-    scaling = year;unit='y';
+    scaling = SPEyear;unit='y';
 end
 saveplot = false;
 
 filename = [SPEcase, '_', filename];
-savefolder="plots\multiplot";
+savefolder=fullfile('plots\multiplot', subname);
 
 if strcmp(SPEcase, 'A')
     steps = [30, 144, 720];
@@ -56,13 +59,14 @@ for istep = 1:numel(steps)
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step
-                statedata = getData(states,step, G);
+                statedata = getData(states, step, G);
                 [inj1, inj2] = simcase.getinjcells;
                 data{i, j, istep}.statedata = statedata;
                 data{i, j, istep}.injcells = [inj1, inj2];
                 data{i, j, istep}.G = G;
+                data{i, j, istep}.cells = getSubCellsInBox(G, p1, p2);
                 if i == 1
-                    data{i, j, istep}.title = displayNameGrid(gridcase);
+                    data{i, j, istep}.title = displayNameGrid(gridcase, simcase.SPEcase);
                 end
                 if j == 1
                     data{i, j, istep}.ylabel = shortDiscName(pdisc);
@@ -76,14 +80,14 @@ end
 times = cumsum(simcase.schedule.step.val);
 for istep = 1:numel(steps)
     step = steps(istep);
-    plottitle = ['rs at t=', num2str(times(step)/scaling), unit];
+    plottitle = ['rs at t=', num2str(round(times(step)/scaling)), unit];
     multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step)], ...
-        'saveplot', saveplot, 'cmap', cmap);   
+        'saveplot', saveplot, 'cmap', cmap, 'equal', false);   
 end
 %% Setup full error plot
 SPEcase = 'A';
-gridcase = 'semi203x72_0.3';
+gridcase = 'struct220x90';
 filename =[SPEcase, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
@@ -91,8 +95,8 @@ deckcase = 'RS';
 tagcase = '';
 
 
-saveplot = true;
-savefolder = 'plots\differenceplots';
+saveplot = false;
+savefolder = 'plots\differenceplots\fluxes';
 steps = [30, 144, 720];
 numDiscs = numel(pdiscs);
 %% Load data diff
@@ -108,7 +112,7 @@ for istep = 1:numel(steps)
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step
-                statedata = states{step}.rs;
+                statedata = getData(states,step, G);
                 [inj1, inj2] = simcase.getinjcells;
                 data{i, j, istep}.statedata = statedata;
                 data{i, j, istep}.injcells = [inj1, inj2];
@@ -120,10 +124,9 @@ for istep = 1:numel(steps)
                     data{i, j, istep}.ylabel = shortDiscName(pdisc);
                 end
                 %make diff
-                if j ~=i
+                if j ~= i
                     data{i, j, istep}.statedata = abs(data{i, j, istep}.statedata - data{i, i, istep}.statedata);
                 end
-
             end
         end
     end
@@ -141,7 +144,7 @@ SPEcase = 'A';
 if strcmp(SPEcase, 'A') 
     scaling = hour; unit = 'h';
 else 
-    scaling = year;unit='y';
+    scaling = SPEyear;unit='y';
 end
 gridcases = {'5tetRef2', '6tetRef2'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};

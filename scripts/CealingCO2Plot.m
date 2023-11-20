@@ -8,17 +8,21 @@ mrstVerbose off
 %% Setup Cealing CO2 plotting
 saveplot = true;
 
-gridcases = {'6tetRef2', '5tetRef2'};
+SPEcase = 'B';
+% gridcases = {'6tetRef2', '5tetRef2'};
+gridcases = {'5tetRef10-stretch'};
 deckcase = 'RS';
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
+pdiscs = {''};
+tagcase = 'test';
 
-steps = 720;
-xscaling = hour;
+steps = 360;
+xscaling = year;
 
 labels = gridcases;
 plotTitle = 'CO2 in Cealing units';
 ytxt = 'CO2 [kg]';
-xtxt = 'time [h]';
+xtxt = 'time [y]';
 
 %% Load simcases
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E"};
@@ -32,14 +36,16 @@ for igrid = 1:numel(gridcases)
     for idisc = 1:numel(pdiscs)
         pdisc = pdiscs{idisc};
         style = pdiscstyles{idisc};
-        simcases{end+1} = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                       'pdisc', pdisc);
+        simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                       'pdisc', pdisc, 'tagcase', tagcase);
         plotStyles{end+1} = struct('Color', color, 'LineStyle', style);
     end
 end
 %%
-xdata = cumsum(600*ones(720, 1))/xscaling;
-data = nan(720, numel(simcases));
+totsteps = 360;
+
+xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
+data = nan(totsteps, numel(simcases));
 %% Load data
 for isim = 1:numel(simcases)
     simcase = simcases{isim};

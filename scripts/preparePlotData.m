@@ -4,11 +4,11 @@ set(groot, 'defaultLineLineWidth', 2);
 
 %% Cases to get data from
 SPEcase = 'B';
-gridcases = {''};
+gridcases = {'5tetRef10-stretch'};
 schedulecases = {''};
 deckcases = {'RS'};
 pdiscs = {''};
-tagcase = '';
+tagcase = 'test';
 
 steps = 60;
 maxsteps = 360;

@@ -1,30 +1,39 @@
-function displayName = displayNameGrid(gridcase)
-    switch gridcase
-        case '5tetRef2'
-            displayName = 'UU-M';
-        case '5tetRef3'
-            displayName = 'UU-C';
-        case '5tetRef2-2D'
-            displayName = 'UU-M-2D';
-        case '6tetRef2'
-            displayName = 'U-M';
-        case '6tetRef3'
-            displayName = 'U-C';
-        case '5tetRef1'
-            displayName = 'UU-F';
-        case '5tetRef4'
-            displayName = 'UU-C';           
-        case '6tetRef1'
-            displayName = 'U-F';
-        case 'semi203x72_0.3'
-            displayName = 'SS-M';
-        case 'struct220x90'
-            displayName = 'S-M/F';
-        case 'struct340x150'
-            displayName = 'S-F';
-        case 'struct193x83'
-            displayName = 'S-M';
-        otherwise
+function displayName = displayNameGrid(gridcase, specase)
+    Amap = containers.Map;
+    Amap('5tetRef2') = 'UU-M';
+    Amap('5tetRef3') = 'UU-C';
+    Amap('5tetRef2-2D') = 'UU-M-2D';
+    Amap('6tetRef2') = 'U-M';
+    Amap('6tetRef3') = 'U-C';
+    Amap('5tetRef1') = 'UU-F';
+    Amap('5tetRef4') = 'UU-C';
+    Amap('6tetRef1') = 'U-F';
+    Amap('semi203x72_0.3') = 'SS-M';
+    Amap('struct220x90') = 'S-M/F';
+    Amap('struct340x150') = 'S-F';
+    Amap('struct193x83') = 'S-M';
+    
+    Bmap = containers.Map;
+    Bmap('5tetRef0.4') = 'UU-F';
+    Bmap('5tetRef0.8') = 'UU-M';
+    Bmap('5tetRef2') = 'UU-C';
+    Bmap('6tetRef2') = 'U-C';
+    Bmap('6tetRef0.8') = 'U-M';
+
+    if strcmp(lower(specase), 'a')
+        if isKey(Amap, gridcase)
+            displayName = Amap(gridcase);
+        else
             displayName = gridcase;
+        end
+    elseif strcmp(lower(specase), 'b')
+        if isKey(Bmap, gridcase)
+            displayName = Bmap(gridcase);
+        else
+            displayName = gridcase;
+        end
     end
+
+    
+    
 end
