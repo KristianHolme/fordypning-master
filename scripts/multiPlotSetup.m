@@ -1,26 +1,38 @@
 clear all;
 close all;
-%% setup data
-getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap='jet';
-% getData = @(states, step, G) states{step}.rs; cmap='';
+%% Setup data
+% getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap='jet';
+getData = @(states, step, G) states{step}.rs; cmap='';
 %% Setup grid v disc
-SPEcase = 'B';
+SPEcase = 'A';
+
+% gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'gridtypeComp';
+gridcases = {'5tetRef1', '5tetRef2', '5tetRef3}; filename = 'UU_refine_disc';
+% gridcases = {'6tetRef2', '5tetRef2'}; filename = 'meshAlgComparisonRef2';
+% gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+
+
+SPEcase = 'A';
+
+% gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'gridtypeComp';
+gridcases = {'5tetRef0.4', '5tetRef0.8', '5tetRef2'}; filename = 'UU_refine_disc';
+% gridcases = {'6tetRef0.8', '5tetRef0.8'}; filename = 'meshAlgComparisonRef2';
+% gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+
+
+deckcase = 'RS';
+tagcase = '';
+
 if strcmp(SPEcase, 'A') 
     scaling = hour; unit = 'h';
 else 
     scaling = year;unit='y';
 end
-% gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'gridtypeComp';
-gridcases = {'5tetRef0.4'}; filename =[SPEcase, '_UU_refine_disc'];
-% gridcases = {'6tetRef2', '5tetRef2'}; filename = 'meshAlgComparisonRef2';
-% gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-deckcase = 'RS';
-tagcase = '';
-
-
 saveplot = false;
 
+filename = [SPEcase, '_', filename];
 savefolder="plots\multiplot";
 
 if strcmp(SPEcase, 'A')
@@ -124,3 +136,63 @@ for istep = 1:numel(steps)
         'savename', [filename, '_step', num2str(step)], ...
         'saveplot', saveplot, 'cmap', '');   
 end
+%% Setup time evolution plot
+SPEcase = 'A';
+if strcmp(SPEcase, 'A') 
+    scaling = hour; unit = 'h';
+else 
+    scaling = year;unit='y';
+end
+gridcases = {'5tetRef2', '6tetRef2'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa'};%one for eavh grid
+filename =[SPEcase, '_timeEvo_' strjoin(cellfun(@(x, y) [x '-' shortDiscName(y)], gridcases, pdiscs, 'UniformOutput', false), '_')];
+assert(numel(pdiscs)==numel(gridcases))
+deckcase = 'RS';
+tagcase = '';
+
+
+saveplot = false;
+savefolder = 'plots\timeEvolution';
+if strcmp(SPEcase, 'A')
+    steps = [30, 144, 720];
+else
+    steps = [40, 150, 360];
+end
+numcases = numel(pdiscs);
+%% Load timeEvo data
+data = cell(numel(steps), numcases);
+for i = 1:numcases
+    gridcase = gridcases{i};
+    pdisc = pdiscs{i};
+    simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                            'tagcase', tagcase, ...
+                            'pdisc', pdisc);
+    [states, ~, ~] = simcase.getSimData;
+    G = simcase.G;
+    if i == 1
+        times = cumsum(simcase.schedule.step.val);
+    end
+    for istep = 1:numel(steps)
+        step = steps(istep);
+        if numelData(states) >= step
+            statedata = getData(states, step, G);
+            [inj1, inj2] = simcase.getinjcells;
+            data{istep, i}.statedata = statedata;
+            data{istep, i}.injcells = [inj1, inj2];
+            data{istep, i}.G = G;
+            if istep == 1
+                data{istep, i}.title = [displayNameGrid(gridcase), ', ', shortDiscName(pdisc)];
+            end
+            if i == 1
+                data{istep, i}.ylabel = [num2str(times(step)/scaling), ' ', unit];
+            end
+        end
+    end
+end
+%% Plotting timeEvo
+
+plottitle = 'time evolution of rs';
+multiplot(data, 'title', plottitle, 'savefolder', savefolder, ...
+        'savename', filename, 'saveplot', saveplot, 'cmap', ''); 
+
