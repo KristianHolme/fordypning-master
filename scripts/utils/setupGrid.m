@@ -4,8 +4,14 @@ function G = setupGrid(simcase, varargin)
 
     gridcase = simcase.gridcase;
     specase = lower(simcase.SPEcase);
+    if contains(gridcase, 'stretch')
+        stretch = true;
+        specase = 'a';
+    else
+        stretch = false;
+    end
     prefix = ['spe11', specase];
-    
+        
     if ~isempty(gridcase)
         gridFolder = fullfile(simcase.repoDir, 'grid-files');
         
@@ -79,7 +85,10 @@ function G = setupGrid(simcase, varargin)
         G = initEclipseGrid(simcase.deck);
     end
     G = computeGeometry(G);
-    if strcmp(specase, 'b') && opt.buffer %add buffervolume
+    if stretch
+        G = StretchGrid(G);
+    end
+    if strcmp(simcase.SPEcase, 'b') && opt.buffer %add buffervolume
         G = addBufferVolume(G, simcase.rock);
     end
     assert(checkGrid(G) == true);
