@@ -58,6 +58,32 @@ function timings = remoteSims(server)
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
+        case 'test'
+            SPEcase = 'A';
+            gridcases = {'5tetRef10'};
+            schedulecases = {''};
+            pdiscs = {''};
+            uwdiscs = {''};
+            deckcases = {'RS'};
+            tagcase = '';
+            resetData = false;
+            resetAssembly = true;
+            do.multiphase = true;
+            Jutul = false;
+            direct_solver = false;
+        case 'august'
+            SPEcase = 'A'; gridcases = {'5tetRef2'};
+            % SPEcase = 'B'; gridcases = {'5tetRef0.8'};
+            schedulecases = {''};
+            pdiscs = {'', 'hybrid-avgmpfa'};
+            uwdiscs = {'WENO'};
+            deckcases = {'RS'};
+            tagcase = '';
+            resetData = false;
+            resetAssembly = true;
+            do.multiphase = true;
+            Jutul = false;
+            direct_solver = false;
     end
     
     timings = struct();
