@@ -123,10 +123,10 @@ plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
 
 
 %% Print number of cells
-% gridcases = {'5tetRef0.4','5tetRef0.5','5tetRef0.7','5tetRef0.8','5tetRef0.9','5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef4',...
+% gridcases = {'5tetRef0.4','5tetRef0.5','5tetRef0.7','5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef4',...
 %     'struct193x83', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};SPEcase = 'A';
 
-gridcases = {'5tetRef0.175','5tetRef0.21', '5tetRef0.3', '5tetRef0.4','5tetRef0.8', '5tetRef2', '5tetRef10'};SPEcase = 'B'; %B grids
+% gridcases = {'5tetRef0.175','5tetRef0.21', '5tetRef0.3', '5tetRef0.4','5tetRef0.8', '5tetRef2', '5tetRef10'};SPEcase = 'B'; %B grids
 % gridcases = {};
 % ress = {};
 
@@ -141,10 +141,10 @@ gridcases = {'5tetRef0.175','5tetRef0.21', '5tetRef0.3', '5tetRef0.4','5tetRef0.
 %         ress{end+1} = tokens{1}{1};
 %     end
 % end
-% ress = {'336x141','420x122','420x141','840x100','840x110','840x120',...
-% '840x122','840x141','84x12'};SPEcase = 'B';
+ress = {'336x141','420x122','420x141','840x100','840x110','840x120',...
+'840x122','840x141','84x12'};SPEcase = 'B';
 
-% gridcases = cellfun(@(x) ['struct' x], ress, 'UniformOutput', false);
+gridcases = cellfun(@(x) ['struct' x], ress, 'UniformOutput', false);
 for i = 1:numel(gridcases)
     gridcase = gridcases{i};
     simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase);

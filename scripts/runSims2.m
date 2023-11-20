@@ -8,9 +8,9 @@ function timings = runSims2(server)
     switch  server
         case 1
             SPEcase = 'B';
-            gridcases = {''};
+            gridcases = {'5tetRef2-stretch'};
             schedulecases = {''};
-            pdiscs = {''};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
@@ -20,9 +20,9 @@ function timings = runSims2(server)
             direct_solver = false;
         case 2
             SPEcase = 'B';
-            gridcases = {'5tetRef10'};
+            gridcases = {'semi263x154_0.3'};
             schedulecases = {''};
-            pdiscs = {'hybrid-ntpfa'};
+            pdiscs = {'hybrid-mpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
@@ -32,17 +32,17 @@ function timings = runSims2(server)
             direct_solver = false;
         case 3
             SPEcase = 'B';
-            gridcases = {'5tetRef3'};
+            gridcases = {'5tetRef0.8'};
             schedulecases = {''};
-            pdiscs = {'hybrid-avgmpfa'};
-            uwdiscs = {'WENO'};
+            pdiscs = {'hybrid-mpfa'};
+            uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
             resetAssembly = true;
             Jutul = false;
             direct_solver = false;
-            mrstVerbose on;
+            mrstVerbose off;
         case 4
             SPEcase = 'B';
             gridcases = {''};

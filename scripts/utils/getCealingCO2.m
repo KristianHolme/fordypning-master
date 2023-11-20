@@ -11,9 +11,6 @@ function data = getCealingCO2(simcase, steps)
         else
             adjustmentfactor = 1;
         end
-
         data(it) = sum(fulldata{2}(cealingcells))*adjustmentfactor;
-
-
     end
 end

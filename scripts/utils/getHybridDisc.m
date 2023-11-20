@@ -55,7 +55,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridpdisc, cellblocks
                     'interpFace', hybridAssemblyStruct.interpFace);
             models{2} = model;
         case 'mpfa'
-            model = setMPFADiscretization(tpfaModel);
+            model = setMPFADiscretization(tpfaModel, 'useTensorAssembly', false, 'invertBlocks', 'MATLAB');
             models{2} = model;
     end
     mrstVerbose(mv);
