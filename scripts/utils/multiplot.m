@@ -77,7 +77,7 @@ function multiplot(data, varargin)
                 end
 
                 plotCellData(G, statedata, cells, 'edgealpha', 0);
-                injcells = intersect(injcells, cells);
+                injcells = intersect(injcells, find(cells));
                 plotGrid(G, injcells, 'facecolor', 'red');
                 if G.griddim == 3 %change view if on 3D grid
                     view(0,0);

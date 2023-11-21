@@ -14,11 +14,12 @@ function displayName = displayNameGrid(gridcase, specase)
     Amap('struct193x83') = 'S-M';
     
     Bmap = containers.Map;
-    Bmap('5tetRef0.4') = 'UU-F';
-    Bmap('5tetRef0.8') = 'UU-M';
-    Bmap('5tetRef2') = 'UU-C';
+    Bmap('5tetRef0.4') = 'UU-F';%59k
+    Bmap('5tetRef0.8') = 'UU-M';%16k
+    Bmap('5tetRef2') = 'UU-C';%3k
     Bmap('6tetRef2') = 'U-C';
     Bmap('6tetRef0.8') = 'U-M';
+    Bmap('struct420x141') = 'S-F';%54k
 
     if strcmp(lower(specase), 'a')
         if isKey(Amap, gridcase)

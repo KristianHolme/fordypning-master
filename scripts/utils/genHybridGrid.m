@@ -364,7 +364,7 @@ function G = genHybridGrid(varargin)
                  poly.p1left.p_idx; poly.p1mid.p_idx; poly.p1rightA.p_idx; ...
                  poly.p1rightB.p_idx; poly.p1rightC.p_idx; poly.p1small.p_idx};
                  
-    
+
     % Glue together subgrids
     poly.glued = poly.p32; % top grid is basis for gluing
     poly.glued.G.facies = repmat(poly.glued.facies, poly.glued.G.cells.num, 1);
