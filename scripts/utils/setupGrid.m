@@ -62,7 +62,7 @@ function G = setupGrid(simcase, varargin)
                 error([matFile, ' not found']);
             end
         end
-        load(matFile);
+       load(matFile);
         G = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
         G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
         G.cells.indexMap = (1:G.cells.num)';
@@ -88,7 +88,7 @@ function G = setupGrid(simcase, varargin)
     if stretch
         G = StretchGrid(G);
     end
-    if strcmp(simcase.SPEcase, 'b') && opt.buffer %add buffervolume
+    if strcmp(simcase.SPEcase, 'B') && opt.buffer %add buffervolume
         G = addBufferVolume(G, simcase.rock);
     end
     assert(checkGrid(G) == true);
