@@ -1,6 +1,11 @@
 function cellblocks = getCellblocks(simcase, varargin)
     opt = struct('paddingLayers', 1);
     opt = merge_options(opt, varargin{:});
+    if strcmp(simcase.tagcase, 'leaveTop')
+        tpfatop = false;
+    else
+        tpfatop = true;
+    end
     
     paddingLayers = opt.paddingLayers;
     G = simcase.G;
@@ -18,7 +23,7 @@ function cellblocks = getCellblocks(simcase, varargin)
     tpfaCells = findCellNeighbors(G, injectionCells, paddingLayers);
 
 
-    if ~isempty(pdisc) && contains(pdisc, 'ntpfa','IgnoreCase', true) && strcmp(simcase.SPEcase, 'A')
+    if tpfatop && ~isempty(pdisc) && contains(pdisc, 'ntpfa','IgnoreCase', true) && strcmp(simcase.SPEcase, 'A')
         bccells = getbcCells(simcase);
         bccells = findCellNeighbors(G, bccells, paddingLayers);
         tpfaCells = union(tpfaCells, bccells);
