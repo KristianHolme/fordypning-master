@@ -8,7 +8,9 @@ function displayName = displayNameGrid(gridcase, specase)
     Amap('5tetRef1') = 'UU-F';
     Amap('5tetRef4') = 'UU-C';
     Amap('6tetRef1') = 'U-F';
+    Amap('semi188x38_0.3') = 'SS-C';
     Amap('semi203x72_0.3') = 'SS-M';
+    Amap('semi263x154_0.3') = 'SS-F';
     Amap('struct220x90') = 'S-M/F';
     Amap('struct340x150') = 'S-F';
     Amap('struct193x83') = 'S-M';
@@ -19,7 +21,14 @@ function displayName = displayNameGrid(gridcase, specase)
     Bmap('5tetRef2') = 'UU-C';%3k
     Bmap('6tetRef2') = 'U-C';
     Bmap('6tetRef0.8') = 'U-M';
+    Bmap('6tetRef0.4') = 'U-F';
     Bmap('struct420x141') = 'S-F';%54k
+    Bmap('semi188x38_0.3') = 'SS-C';
+    Bmap('semi203x72_0.3') = 'SS-M';
+    Bmap('semi263x154_0.3') = 'SS-F';
+    Bmap('5tetRef2-stretch') = 'UU-M-Astretch';
+    Bmap('5tetRef1-stretch') = 'UU-F-Astretch';
+    
 
     if strcmp(lower(specase), 'a')
         if isKey(Amap, gridcase)

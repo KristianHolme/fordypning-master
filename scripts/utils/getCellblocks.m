@@ -1,10 +1,11 @@
 function cellblocks = getCellblocks(simcase, varargin)
     opt = struct('paddingLayers', 1);
     opt = merge_options(opt, varargin{:});
-    if strcmp(simcase.tagcase, 'leaveTop')
-        tpfatop = false;
-    else
+
+    if strcmp(simcase.tagcase, 'tpfaTop')
         tpfatop = true;
+    else
+        tpfatop = false;
     end
     
     paddingLayers = opt.paddingLayers;
