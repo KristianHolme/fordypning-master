@@ -1,7 +1,8 @@
 function hybridModel = getHybridDisc(simcase, tpfaModel, hybridpdisc, cellblocks, varargin)
     opt = struct('resetAssembly', false, ...
         'myRatio', [], ...
-        'saveAssembly', true);
+        'saveAssembly', true, ...
+        'invertBlocks', 'MEX');
     [opt, extra] = merge_options(opt, varargin{:});
 
     resetAssembly = opt.resetAssembly;
@@ -18,8 +19,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridpdisc, cellblocks
         case 'ntpfa'
             structFileName = 'ntpfastruct.mat';
         case 'mpfa'
-            structFileName = '';
-            %not saved
+            structFileName = 'multipointtrans.mat';
     end
     structFilePath = fullfile(assemblyDir, structFileName);
 
@@ -55,7 +55,16 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridpdisc, cellblocks
                     'interpFace', hybridAssemblyStruct.interpFace);
             models{2} = model;
         case 'mpfa'
-            model = setMPFADiscretization(tpfaModel, 'useTensorAssembly', false, 'invertBlocks', 'MEX');
+            if isfile(structFilePath) && ~resetAssembly
+                load(structFilePath);
+            else
+                [~, M] = computeMultiPointTrans(tpfaModel.G, tpfaModel.rock, 'invertBlocks', opt.invertBlocks);
+                hybridAssemblyStruct.M = M;
+                if opt.saveAssembly
+                    saveStruct(hybridAssemblyStruct, assemblyDir, structFileName);
+                end
+            end
+            model = setMPFADiscretization(tpfaModel, 'M', hybridAssemblyStruct.M, 'invertBlocks', 'MEX');
             models{2} = model;
     end
     mrstVerbose(mv);
