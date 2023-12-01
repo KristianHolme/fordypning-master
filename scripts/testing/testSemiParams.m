@@ -7,11 +7,11 @@ version = 'A';
 printbad = false;
 printgood = true;
 
-targetcellnumber = 100000;
+targetcellnumber = 50000;
 slack = 10000;
 
 
-nxs = 270:1680;
+nxs = 180:600;
 % nzs = 47:240;
 densities = [0.3];
 

@@ -114,19 +114,48 @@ plotGrid(simcase.G, bcCells);
 
 
 %% Plot grid
-gridcase = '5tetRef10';
-% gridcase = '6tetRef3';
-simcase = Simcase('gridcase', gridcase, 'griddim', 2);
-figure
-plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
-% plotGrid(simcase.G, cellBlocks{1});
+savegridplot = true;
+plotfacies = true;
+edgealpha = 1;
+SPEcase = 'B';
+if strcmp(SPEcase, 'B')
+    scalingfactor = 0.3;
+else
+    scalingfactor = 0.8;
+end
+gridcase = '5tetRef2-stretch';
+% gridcase = '5tetRef0.8';
+simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase);
+screenSize = get(0, 'ScreenSize');
+f = figure('Position', [screenSize(3)*0.05 screenSize(4)*0.05 screenSize(3)*0.90 screenSize(4)*scalingfactor]);
 
+inj1 = getinjcells(simcase);
+% plotGrid(simcase.G, inj1, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
+if plotfacies
+    plotCellData(simcase.G, simcase.G.cells.tag, 'edgealpha', edgealpha);view(0,0);axis tight;axis equal;
+else
+    plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
+end
+title(displayNameGrid(gridcase, SPEcase))
+
+set(gca, 'Position', [0.02,0.1,0.97,0.82])
+
+
+ax = gca;
+% ax.InnerPosition = [0.1 0.3 0.9 0.95];
+% plotGrid(simcase.G, cellBlocks{1});
+if savegridplot
+    name = replace([SPEcase, '_', displayNameGrid(gridcase, SPEcase), '_', gridcase], '.', '-');
+    saveas(f, fullfile('plots\grids', name), 'png')
+end
 
 %% Print number of cells
 % gridcases = {'5tetRef0.4','5tetRef0.5','5tetRef0.7','5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef4',...
 %     'struct193x83', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};SPEcase = 'A';
+% gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'};SPEcase = 'A';
 
 % gridcases = {'5tetRef0.175','5tetRef0.21', '5tetRef0.3', '5tetRef0.4','5tetRef0.8', '5tetRef2', '5tetRef10'};SPEcase = 'B'; %B grids
+% gridcases = {'5tetRef0.4','5tetRef0.8', '5tetRef2', '5tetRef10'};SPEcase = 'B'; %B grids
 % gridcases = {};
 % ress = {};
 
@@ -148,7 +177,7 @@ gridcases = cellfun(@(x) ['struct' x], ress, 'UniformOutput', false);
 for i = 1:numel(gridcases)
     gridcase = gridcases{i};
     simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase);
-    disp(['gridcase ', gridcase, 'cells: ', num2str(simcase.G.cells.num)]);
+    disp([SPEcase, ' ', gridcase, ' cells: ', num2str(simcase.G.cells.num)]);
     % plotCellData(simcase.G, simcase.rock.perm(:,1)), view(0,0);
     % clf
 end

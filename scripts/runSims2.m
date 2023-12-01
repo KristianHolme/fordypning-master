@@ -7,34 +7,34 @@ function timings = runSims2(server)
     mrstVerbose off
     switch  server
         case 1
-            SPEcase = 'B';
-            gridcases = {'5tetRef2-stretch'};
+            SPEcase = 'A';
+            gridcases = {'5tetRef1'};
+            schedulecases = {''};
+            pdiscs = {'hybrid-mpfa'};
+            uwdiscs = {''};
+            deckcases = {'RS'};
+            tagcase = '';
+            resetData = true;
+            resetAssembly = false;
+            Jutul = false;
+            direct_solver = false;
+        case 2
+            SPEcase = 'A';
+            gridcases = {'6tetRef1'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
-            resetData = true;
-            resetAssembly = true;
-            Jutul = false;
-            direct_solver = false;
-        case 2
-            SPEcase = 'B';
-            gridcases = {'semi263x154_0.3'};
-            schedulecases = {''};
-            pdiscs = {'hybrid-mpfa'};
-            uwdiscs = {''};
-            deckcases = {'RS'};
-            tagcase = '';
             resetData = false;
-            resetAssembly = true;
+            resetAssembly = false;
             Jutul = false;
             direct_solver = false;
         case 3
             SPEcase = 'B';
-            gridcases = {'5tetRef0.8'};
+            gridcases = {'5tetRef1-stretch'};
             schedulecases = {''};
-            pdiscs = {'hybrid-mpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
@@ -45,7 +45,7 @@ function timings = runSims2(server)
             mrstVerbose off;
         case 4
             SPEcase = 'B';
-            gridcases = {''};
+            gridcases = {'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
             schedulecases = {''};
             pdiscs = {''};
             uwdiscs = {'WENO'};
