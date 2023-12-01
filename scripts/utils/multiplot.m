@@ -7,31 +7,45 @@ function multiplot(data, varargin)
                  'savename'  , [], ...
                  'colorbar'  , true, ...
                  'cblabel'   , [], ...
-                 'cmap'      , []);
+                 'cmap'      , [],...
+                 'plotgrid'  , false, ...
+                 'diff'      , false);
     opt = merge_options(opt, varargin{:});
      
 
-    
-
-
-     % Get the screen size
+    % Get the screen size
     screenSize = get(0, 'ScreenSize');
     [numRows, numCols] = size(data);
 
     %get min and max value
     minV = 0; 
     maxV = 0;
+    
     for i = 1:numRows
-        for j = 1:numCols
+        if opt.diff
+            jstart = i+1;
+        else
+            jstart = 1;
+        end
+        for j = jstart:numCols
             frame = data{i, j};
             if ~isempty(frame) && isfield(frame, 'statedata') 
-                statedata   = frame.statedata;
-                stateMin = min(statedata);
-                stateMax = max(statedata);
-                minV = min(minV, stateMin);
-                maxV = max(maxV, stateMax);
+                G = frame.G;
+                if isfield(frame, 'cells')
+                    cells = frame.cells;
+                else
+                    cells = 1:G.cells.num;
+                end
+                statedata   = frame.statedata(cells);
+                stateMin    = min(statedata);
+                stateMax    = max(statedata);
+                minV        = min(minV, stateMin);
+                maxV        = max(maxV, stateMax);
             end
         end
+    end
+    if strcmp(opt.cmap, "Seismic")
+        opt.cmap = Seismic(minV, maxV);
     end
     
     
@@ -52,7 +66,7 @@ function multiplot(data, varargin)
             frame = data{i, j};
             p = (i-1)*numCols + j;
             if isfield(frame, 'span')
-                ax = nexttile(p, frame.span);
+                h(p) = nexttile(p, frame.span);
                 plotGrid(frame.G, 'facealpha', 0);axis tight;
                 if G.griddim == 3 %change view if on 3D grid
                     view(0,0);
@@ -63,7 +77,7 @@ function multiplot(data, varargin)
                 end
             else
                 if ~isempty(frame)
-                    ax = nexttile(p);
+                    h(p) = nexttile(p);
                     % Add title if supplied
                     if isfield(frame, 'title') && ~isempty(frame.title)
                         title(frame.title);
@@ -71,7 +85,7 @@ function multiplot(data, varargin)
     
                     % Add y-label if supplied
                     if isfield(frame, 'ylabel') && ~isempty(frame.ylabel)
-                        ylh = ylabel(ax, frame.ylabel, FontSize=12, FontWeight='bold');
+                        ylh = ylabel(h(p), frame.ylabel, FontSize=12, FontWeight='bold');
                         set(ylh, 'Visible', 'on'); % Ensure the label is visible
                         % Adjust the position of the ylabel if necessary
                         set(ylh, 'Position', [-0.11, 0.5], 'Units', 'Normalized');
@@ -89,6 +103,9 @@ function multiplot(data, varargin)
                     plotCellData(G, statedata, cells, 'edgealpha', 0);
                     injcells = intersect(injcells, find(cells));
                     plotGrid(G, injcells, 'facecolor', 'red');
+                    if opt.plotgrid || (isfield(frame, 'plotgrid') && frame.plotGrid)
+                        plotGrid(G, cells, 'facealpha', 0);
+                    end
                     if G.griddim == 3 %change view if on 3D grid
                         view(0,0);
                     end
@@ -101,10 +118,12 @@ function multiplot(data, varargin)
                     if opt.equal
                         axis equal
                     end
-                    if ~isempty(opt.cmap)
-                        colormap(ax, opt.cmap)
+                    if ~isempty(opt.cmap) && ~(opt.diff && j<=i)
+                        colormap(h(p), opt.cmap)
                     end
-                    clim(ax, [minV maxV]);%comparable colors on all plots
+                    if ~(opt.diff && j == i)
+                        clim(h(p), [minV maxV]);%comparable colors on all plots
+                    end
     
                 else
                     % delete(ax);
@@ -114,7 +133,7 @@ function multiplot(data, varargin)
         end
     end
     if opt.colorbar
-        cb = colorbar;
+        cb = colorbar(h(2));
         cb.Layout.Tile = 'east';
         if ~isempty(opt.cblabel)
             ylabel(cb, opt.cblabel);
