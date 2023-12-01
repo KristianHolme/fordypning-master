@@ -1,48 +1,59 @@
 clear all;
 close all;
 %% Setup data
-% getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap='jet';
-getData = @(states, step, G) states{step}.rs; cmap='';
-%% Setup grid v disc
-SPEcase = 'A';
-
-% gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'gridtypeComp';
-gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'}; filename = 'UU_refine_disc';
-% gridcases = {'6tetRef2', '5tetRef2'}; filename = 'meshAlgComparisonRef2';
-% gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-
-
+getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'flux';
+% getData = @(states, step, G) states{step}.rs; cmap=''; dataname = 'rs';
+% getData = @(states, step, G) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation';
+% getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';
+%%
 SPEcase = 'B';
+if strcmp(SPEcase, 'A') 
+    scaling = hour; unit = 'h';
+    steps = [30, 144, 720];
+else 
+    scaling = SPEyear;unit='y';
+    steps = [40, 150, 360];
+end
+%% Setup grid v disc
 
-% gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'gridtypeComp';
-gridcases = {'5tetRef0.4', '5tetRef0.8', '5tetRef2'}; filename = 'UU_refine_disc';
-% gridcases = {'6tetRef0.8', '5tetRef0.8'}; filename = 'meshAlgComparisonRef2';
+%A
+% gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'MgridtypeComp';
+% gridcases = {'5tetRef1', 'semi263x154_0.3', 'struct340x150'}; filename = 'FgridtypeComp';
+% gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'}; filename = 'UU_refine_disc';
+% gridcases = {'6tetRef2', '5tetRef2'}; filename = 'meshAlgComparisonRef2';
+% gridcases = {'6tetRef1', '5tetRef1'}; filename = 'meshAlgComparisonRef1';
 % gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
+gridcases = {'semi203x72_0.3'}; filename = 'SS_M';
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+
+
+
+%B
+% gridcases = {'5tetRef0.4', 'semi263x154_0.3', 'struct420x141'}; filename = 'FgridtypeComp';
+% gridcases = {'5tetRef0.4', '5tetRef0.8', '5tetRef2'}; filename = 'UU_refine_disc';
+% gridcases = {'6tetRef0.8', '5tetRef0.8'}; filename = 'meshAlgComparisonRef0.8';
+% gridcases = {'6tetRef0.4', '5tetRef0.4'}; filename = 'meshAlgComparisonRef0.4';
+% gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
+% gridcases = {'semi263x154_0.3','semi203x72_0.3',  'semi188x38_0.3'};filename = 'SS_refine_alldiscs';
+% gridcases = {'5tetRef0.8', '5tetRef2-stretch'};filename = 'UU_M_stretch_comp';
+% gridcases = {'5tetRef0.4', '5tetRef1-stretch'};filename = 'UU_F_stretch_comp';
+% gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
+gridcases = {'struct420x141'};
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 
-subname = 'uppermiddle'; %'', 'uppermiddle', 
+subname = ''; %'', 'uppermiddle', 
 [p1, p2] = getBoxPoints(subname, SPEcase, 3);
 
 
 deckcase = 'RS';
 tagcase = '';
 
-if strcmp(SPEcase, 'A') 
-    scaling = hour; unit = 'h';
-else 
-    scaling = SPEyear;unit='y';
-end
-saveplot = false;
+plotgrid = false;
+saveplot = true;
 
-filename = [SPEcase, '_', filename];
+filename = [SPEcase, '_', dataname, '_', filename];
 savefolder=fullfile('plots\multiplot', subname);
 
-if strcmp(SPEcase, 'A')
-    steps = [30, 144, 720];
-else
-    steps = [40, 150, 360];
-end
 numGrids = numel(gridcases);
 numDiscs = numel(pdiscs);
 %% Loading data grid vs pdisc
@@ -80,34 +91,37 @@ end
 times = cumsum(simcase.schedule.step.val);
 for istep = 1:numel(steps)
     step = steps(istep);
-    plottitle = ['rs at t=', num2str(round(times(step)/scaling)), unit];
+    plottitle = [dataname, ' at t=', num2str(round(times(step)/scaling)), unit];
     multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step)], ...
-        'saveplot', saveplot, 'cmap', cmap, 'equal', false);   
+        'saveplot', saveplot, 'cmap', cmap, 'equal', false, 'plotgrid', plotgrid);   
 end
-%% Setup full error plot
-SPEcase = 'A';
-gridcase = 'struct220x90';
-filename =[SPEcase, '_diff_', gridcase];
+%% Setup full error plot/diff
+% gridcase = '5tetRef0.4';
+gridcase = '5tetRef0.4';
+filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa'};
 deckcase = 'RS';
-tagcase = '';
+tagcases = {''};%one for each pdisc or one for all cases
 
 
-saveplot = false;
-savefolder = 'plots\differenceplots\fluxes';
-steps = [30, 144, 720];
+saveplot = true;
+savefolder = 'plots\differenceplots';
 numDiscs = numel(pdiscs);
 %% Load data diff
+if numel(tagcases) ~= numDiscs
+    tagcases = repmat(tagcases, 1, numDiscs);
+end
 data = cell(numDiscs, numDiscs, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
     for i = 1:numDiscs
         for j = i:numDiscs
             pdisc = pdiscs{j};
-            simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                                'tagcase', tagcase, ...
+            simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                                'tagcase', tagcases{j}, ...
                                 'pdisc', pdisc);
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
@@ -125,50 +139,65 @@ for istep = 1:numel(steps)
                 end
                 %make diff
                 if j ~= i
-                    data{i, j, istep}.statedata = abs(data{i, j, istep}.statedata - data{i, i, istep}.statedata);
+                    data{i, j, istep}.statedata = data{i, i, istep}.statedata - data{i, j, istep}.statedata;
                 end
             end
         end
     end
+    %add grid for plot in corner
+    plotsize = numel(pdiscs);
+    switch plotsize
+        case 4
+            gridplotheight = 2;
+            gridplotwidth = 2;
+        case 3
+            gridplotheight = 1;
+            gridplotwidth = 2;
+        case 2
+            gridplotheight = 1;
+            gridplotwidth = 1;
+    end
+    gridplotsize = floor(plotsize/2);
+    i = plotsize + 1 - gridplotheight;
+    data{i, 1, istep}.G = G;
+    data{i, 1, istep}.title = displayNameGrid(gridcase, SPEcase);
+    data{i, 1, istep}.span = [gridplotheight, gridplotwidth];
+
 end
+
+
 %% Plotting diff
+times = cumsum(simcase.schedule.step.val);
 for istep = 1:numel(steps)
     step = steps(istep);
-    plottitle = ['absolute difference in rs at t=', num2str(step/6), 'h for grid: ', displayNameGrid(gridcase)];
+    plottitle = ['difference in ', dataname, ' at t=', num2str(round(times(step)/scaling)), unit, ' for grid: ', displayNameGrid(gridcase, SPEcase)];
     multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step)], ...
-        'saveplot', saveplot, 'cmap', '');   
+        'saveplot', saveplot, 'cmap', 'Seismic', 'equal', strcmp(SPEcase, 'A'), ...
+        'diff', true);   
 end
 %% Setup time evolution plot
-SPEcase = 'A';
-if strcmp(SPEcase, 'A') 
-    scaling = hour; unit = 'h';
-else 
-    scaling = SPEyear;unit='y';
-end
-gridcases = {'5tetRef2', '6tetRef2'};
+gridcases = {'5tetRef0.4', '5tetRef1-stretch'}; pdiscs = {'hybrid-mpfa', 'hybrid-mpfa'};%one for each grid
+% gridcases = {'5tetRef10', '5tetRef10'}; pdiscs = {'', 'hybrid-ntpfa'};
+% gridcases = {'5tetRef0.4', '6tetRef0.4'}; pdiscs = {'', ''};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-pdiscs = {'', 'hybrid-avgmpfa'};%one for eavh grid
-filename =[SPEcase, '_timeEvo_' strjoin(cellfun(@(x, y) [x '-' shortDiscName(y)], gridcases, pdiscs, 'UniformOutput', false), '_')];
+
+filename =[SPEcase, '_timeEvo_', dataname, '_', strjoin(cellfun(@(x, y) [x '-' shortDiscName(y)], gridcases, pdiscs, 'UniformOutput', false), '_')];
 assert(numel(pdiscs)==numel(gridcases))
 deckcase = 'RS';
 tagcase = '';
 
 
-saveplot = false;
+saveplot = true;
 savefolder = 'plots\timeEvolution';
-if strcmp(SPEcase, 'A')
-    steps = [30, 144, 720];
-else
-    steps = [40, 150, 360];
-end
+
 numcases = numel(pdiscs);
 %% Load timeEvo data
 data = cell(numel(steps), numcases);
 for i = 1:numcases
     gridcase = gridcases{i};
     pdisc = pdiscs{i};
-    simcase = Simcase('deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+    simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                             'tagcase', tagcase, ...
                             'pdisc', pdisc);
     [states, ~, ~] = simcase.getSimData;
@@ -185,17 +214,16 @@ for i = 1:numcases
             data{istep, i}.injcells = [inj1, inj2];
             data{istep, i}.G = G;
             if istep == 1
-                data{istep, i}.title = [displayNameGrid(gridcase), ', ', shortDiscName(pdisc)];
+                data{istep, i}.title = [displayNameGrid(gridcase, SPEcase), ', ', shortDiscName(pdisc)];
             end
             if i == 1
-                data{istep, i}.ylabel = [num2str(times(step)/scaling), ' ', unit];
+                data{istep, i}.ylabel = [num2str(round(times(step)/scaling)), ' ', unit];
             end
         end
     end
 end
 %% Plotting timeEvo
 
-plottitle = 'time evolution of rs';
+plottitle = ['time evolution of ', dataname];
 multiplot(data, 'title', plottitle, 'savefolder', savefolder, ...
-        'savename', filename, 'saveplot', saveplot, 'cmap', ''); 
-
+        'savename', filename, 'saveplot', saveplot, 'cmap', cmap, 'equal', strcmp(SPEcase, 'A'));

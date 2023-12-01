@@ -10,14 +10,14 @@ saveplot = true;
 
 SPEcase = 'B';
 % gridcases = {'6tetRef2', '5tetRef2'};
-gridcases = {'5tetRef10-stretch'};
+gridcases = {'5tetRef0.4', '5tetRef0.8', '5tetRef2'};
 deckcase = 'RS';
-% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
-pdiscs = {''};
-tagcase = 'test';
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+% pdiscs = {''};
+tagcase = '';
 
 steps = 360;
-xscaling = year;
+xscaling = SPEyear;
 
 labels = gridcases;
 plotTitle = 'CO2 in Cealing units';
@@ -72,7 +72,7 @@ end
 % Combine handles and labels
 handles = [h_grid, h_disc];
 gridcasesDisp = gridcases;
-gridcasesDisp = cellfun(@displayNameGrid, gridcases, 'UniformOutput', false);
+gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), gridcases,  'UniformOutput', false);
 pdiscsDisp = cellfun(@shortDiscName, pdiscs, 'UniformOutput', false); 
 labels = [gridcasesDisp, pdiscsDisp];
 
@@ -86,7 +86,7 @@ ylabel(ytxt);
 grid on;
 if saveplot
     folder = 'plots/CealingCO2';
-    filename = [strjoin(gridcases, '_'), '-', strjoin(pdiscsDisp, '_')];
+    filename = [SPEcase, '_', strjoin(gridcases, '_'), '-', strjoin(pdiscsDisp, '_')];
     % exportgraphics(gcf, fullfile(folder, [filename, '.eps']))%for color
     saveas(gcf, fullfile(folder, [filename, '.png']))
 end
