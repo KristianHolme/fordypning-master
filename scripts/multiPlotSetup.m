@@ -1,12 +1,12 @@
 clear all;
 close all;
 %% Setup data
-getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'flux';
-% getData = @(states, step, G) states{step}.rs; cmap=''; dataname = 'rs';
+% getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'flux';
+getData = @(states, step, G) states{step}.rs; cmap=''; dataname = 'rs';
 % getData = @(states, step, G) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation';
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';
 %%
-SPEcase = 'B';
+SPEcase = 'A';
 if strcmp(SPEcase, 'A') 
     scaling = hour; unit = 'h';
     steps = [30, 144, 720];
@@ -98,7 +98,7 @@ for istep = 1:numel(steps)
 end
 %% Setup full error plot/diff
 % gridcase = '5tetRef0.4';
-gridcase = '5tetRef0.4';
+gridcase = '5tetRef1';
 filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
@@ -108,7 +108,8 @@ tagcases = {''};%one for each pdisc or one for all cases
 
 
 saveplot = true;
-savefolder = 'plots\differenceplots';
+bigGrid = false;
+savefolder = ['plots\differenceplots\', SPEcase, '\', displayNameGrid(gridcase, SPEcase)];
 numDiscs = numel(pdiscs);
 %% Load data diff
 if numel(tagcases) ~= numDiscs
@@ -167,14 +168,19 @@ end
 
 
 %% Plotting diff
+if bigGrid
+    apx = '_BigGrid';
+else
+    apx = '';
+end
 times = cumsum(simcase.schedule.step.val);
 for istep = 1:numel(steps)
     step = steps(istep);
     plottitle = ['difference in ', dataname, ' at t=', num2str(round(times(step)/scaling)), unit, ' for grid: ', displayNameGrid(gridcase, SPEcase)];
     multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
-        'savename', [filename, '_step', num2str(step)], ...
+        'savename', [filename, '_step', num2str(step), apx], ...
         'saveplot', saveplot, 'cmap', 'Seismic', 'equal', strcmp(SPEcase, 'A'), ...
-        'diff', true);   
+        'diff', true, 'bigGrid', bigGrid);   
 end
 %% Setup time evolution plot
 gridcases = {'5tetRef0.4', '5tetRef1-stretch'}; pdiscs = {'hybrid-mpfa', 'hybrid-mpfa'};%one for each grid

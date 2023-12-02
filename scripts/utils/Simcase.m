@@ -334,8 +334,8 @@ classdef Simcase < handle
         %     end
         % end
         function plotStates(simcase, varargin)
-            opt = struct('field', 'rs', ...4
-                'pauseTime', 0.05);
+            opt = struct('field', 'rs', ...
+                'pauseTime', 0.04);
             [opt, extra] = merge_options(opt, varargin{:});
 
             [states, ~, ~] = simcase.getSimData;
@@ -351,10 +351,38 @@ classdef Simcase < handle
             colorbar;
             title(simcase.casename, 'Interpreter','none');
         end
+
+        function plotFlux(simcase, varargin)
+            opt = struct('direction', [], ...
+                         'phase', 'g', ...
+                         'pauseTime', 0.04);
+            opt = merge_options(opt, varargin{:});
+
+            [states, ~, ~] = simcase.getSimData;
+            G = simcase.G;
+            numsteps = numel(simcase.schedule.step.val);
+            cv = cell(1, numsteps);
+            for step = 1:numsteps
+                cv{step} = CellVelocity(states, step, G, opt.phase, 'direction', opt.direction);
+            end
+            figure
+            plotToolbar(G, cv, 'pauseTime', opt.pauseTime);
+             [inj1, inj2] = simcase.getinjcells;
+            plotGrid(simcase.G, [inj1, inj2], 'faceAlpha', 0)
+            if simcase.griddim==3
+                view(0,0);
+            end
+            axis tight;axis equal;
+            colorbar;
+            title(simcase.casename, 'Interpreter','none');
+
+        end
+
         function [err, errvect, fwerr] = computeStaticIndicator(simcase)
             tbls = setupTables(simcase.G);
             [err, errvect, fwerr] = computeOrthError(simcase.G, simcase.rock, tbls);
         end
+
         function [well1Index, well2Index] = getinjcells(simcase)
             SPEcase = simcase.SPEcase;
             G = simcase.G;

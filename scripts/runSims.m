@@ -16,20 +16,21 @@ mrstVerbose off
 % schedulecases = {'simple-coarse', 'simple-std'};
 
 SPEcase = 'A';
-gridcases = {'5tetRef10'};
+gridcases = {'5tetRef2'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
-pdiscs = {'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa'};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = 'test';
+tagcase = '';
 
-resetData = true;
-resetAssembly = true;
-do.plotStates = true;
-do.multiphase = true;
-useJutulIfPossible = false;
-direct_solver = false; %may not be respected if backslashThreshold is not met
+resetData           = false;
+resetAssembly       = false;
+do.plotStates       = false;
+do.plotFlux         = true;
+do.multiphase       = false;
+useJutulIfPossible  = false;
+direct_solver       = false; %may not be respected if backslashThreshold is not met
 
 timings = struct();
 for ideck = 1:numel(deckcases)
@@ -62,6 +63,9 @@ for ideck = 1:numel(deckcases)
                     if do.plotStates
                         simcase.plotStates('lockCaxis', false);
                         % clim([0 6e-7]);
+                    end
+                    if do.plotFlux
+                        simcase.plotFlux();
                     end
                 end
             end

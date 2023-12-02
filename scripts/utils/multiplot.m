@@ -9,7 +9,8 @@ function multiplot(data, varargin)
                  'cblabel'   , [], ...
                  'cmap'      , [],...
                  'plotgrid'  , false, ...
-                 'diff'      , false);
+                 'diff'      , false, ...
+                 'bigGrid'   , true);
     opt = merge_options(opt, varargin{:});
      
 
@@ -20,6 +21,8 @@ function multiplot(data, varargin)
     %get min and max value
     minV = 0; 
     maxV = 0;
+    diagminV = 0;
+    diagmaxV = 0;
     
     for i = 1:numRows
         if opt.diff
@@ -41,6 +44,24 @@ function multiplot(data, varargin)
                 stateMax    = max(statedata);
                 minV        = min(minV, stateMin);
                 maxV        = max(maxV, stateMax);
+            end
+        end
+    end
+    if opt.diff %diag
+        for i = 1:numRows
+            frame = data{i, i};
+            if ~isempty(frame) && isfield(frame, 'statedata') 
+                G = frame.G;
+                if isfield(frame, 'cells')
+                    cells = frame.cells;
+                else
+                    cells = 1:G.cells.num;
+                end
+                statedata   = frame.statedata(cells);
+                stateMin    = min(statedata);
+                stateMax    = max(statedata);
+                diagminV    = min(diagminV, stateMin);
+                diagmaxV    = max(diagmaxV, stateMax);
             end
         end
     end
@@ -66,14 +87,18 @@ function multiplot(data, varargin)
             frame = data{i, j};
             p = (i-1)*numCols + j;
             if isfield(frame, 'span')
-                h(p) = nexttile(p, frame.span);
-                plotGrid(frame.G, 'facealpha', 0);axis tight;
-                if G.griddim == 3 %change view if on 3D grid
-                    view(0,0);
-                end
-                title(frame.title);
-                if opt.equal
-                    axis equal;
+                if opt.bigGrid
+                    h(p) = nexttile(p, frame.span);
+                    plotGrid(frame.G, 'facealpha', 0);axis tight;
+                    if G.griddim == 3 %change view if on 3D grid
+                        view(0,0);
+                    end
+                    title(frame.title);
+                    if opt.equal
+                        axis equal;
+                    end
+                else
+                    continue;
                 end
             else
                 if ~isempty(frame)
@@ -123,6 +148,8 @@ function multiplot(data, varargin)
                     end
                     if ~(opt.diff && j == i)
                         clim(h(p), [minV maxV]);%comparable colors on all plots
+                    elseif opt.diff && j == i
+                        clim(h(p), [diagminV, diagmaxV]);
                     end
     
                 else
@@ -138,8 +165,16 @@ function multiplot(data, varargin)
         if ~isempty(opt.cblabel)
             ylabel(cb, opt.cblabel);
         end
+        if opt.diff
+            cb = colorbar(h(1));
+            cb.Layout.Tile = 'east';
+        end
     end
     if opt.saveplot
+        if ~exist(opt.savefolder, 'dir')
+            mkdir(opt.savefolder)
+            disp(['Folder ', opt.savefolder, ' created.']);
+        end
         savepath = fullfile(opt.savefolder, opt.savename);
         savepath = replace(savepath, '.', '_');
         saveas(f, savepath, 'png');

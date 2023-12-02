@@ -1,4 +1,6 @@
-function cv = CellVelocity(states, step, G, phase, direction)
+function cv = CellVelocity(states, step, G, phase, varargin)
+    opt = struct('direction', []);
+    opt = merge_options(opt, varargin{:});
     switch phase
         case 'w'
             phase = 1;
@@ -7,9 +9,10 @@ function cv = CellVelocity(states, step, G, phase, direction)
     end
     
     cv = faceFlux2cellVelocity(G, states{step}.flux(:, phase));
-    if nargin < 5
+    if isempty(opt.direction)
         cv = vecnorm(cv, 2, 2);
     else
-        cv = cv(:, direction);
+        assert(isnumeric(opt.direction))
+        cv = cv(:, opt.direction);
     end
 end
