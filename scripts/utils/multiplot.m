@@ -76,9 +76,9 @@ function multiplot(data, varargin)
     
     % Create a figure with the desired size
     f = figure('Position', [screenSize(3)*0.05 screenSize(4)*0.05 figWidth figHeight]);
-    t = tiledlayout(numRows, numCols, 'Padding', 'compact', 'TileSpacing', 'loose');
+    t = tiledlayout(numRows, numCols, 'Padding', 'compact', 'TileSpacing', 'compact');
     if ~isempty(opt.title)
-        title(t, opt.title)
+        title(t, opt.title, 'fontsize', 25)
     end
 
     for i = 1:numRows
@@ -93,7 +93,7 @@ function multiplot(data, varargin)
                     if G.griddim == 3 %change view if on 3D grid
                         view(0,0);
                     end
-                    title(frame.title);
+                    title(frame.title, 'FontSize', 20);
                     if opt.equal
                         axis equal;
                     end
@@ -105,12 +105,12 @@ function multiplot(data, varargin)
                     h(p) = nexttile(p);
                     % Add title if supplied
                     if isfield(frame, 'title') && ~isempty(frame.title)
-                        title(frame.title);
+                        title(frame.title, 'FontSize',20);
                     end
     
                     % Add y-label if supplied
                     if isfield(frame, 'ylabel') && ~isempty(frame.ylabel)
-                        ylh = ylabel(h(p), frame.ylabel, FontSize=12, FontWeight='bold');
+                        ylh = ylabel(h(p), frame.ylabel, FontSize=18, FontWeight='bold');
                         set(ylh, 'Visible', 'on'); % Ensure the label is visible
                         % Adjust the position of the ylabel if necessary
                         set(ylh, 'Position', [-0.11, 0.5], 'Units', 'Normalized');
@@ -160,13 +160,13 @@ function multiplot(data, varargin)
         end
     end
     if opt.colorbar
-        cb = colorbar(h(2));
+        cb = colorbar(h(2), 'FontSize',12);
         cb.Layout.Tile = 'east';
         if ~isempty(opt.cblabel)
             ylabel(cb, opt.cblabel);
         end
         if opt.diff
-            cb = colorbar(h(1));
+            cb = colorbar(h(1), 'FontSize',12);
             cb.Layout.Tile = 'east';
         end
     end
@@ -178,6 +178,6 @@ function multiplot(data, varargin)
         savepath = fullfile(opt.savefolder, opt.savename);
         savepath = replace(savepath, '.', '_');
         saveas(f, savepath, 'png');
-        % exportgraphics(f, strcat(savepath, '.eps'));
+        exportgraphics(t, strcat(savepath, '.pdf'));
     end
 end

@@ -28,7 +28,7 @@ function displayName = displayNameGrid(gridcase, specase)
     Bmap('semi263x154_0.3') = 'SS-F';
     Bmap('5tetRef2-stretch') = 'UU-M-Astretch';
     Bmap('5tetRef1-stretch') = 'UU-F-Astretch';
-    
+    Bmap('5tetRef6-stretch') = 'UU-C-Astretch';
 
     if strcmp(lower(specase), 'a')
         if isKey(Amap, gridcase)
