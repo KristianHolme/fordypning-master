@@ -113,7 +113,7 @@ function multiplot(data, varargin)
                         ylh = ylabel(h(p), frame.ylabel, FontSize=18, FontWeight='bold');
                         set(ylh, 'Visible', 'on'); % Ensure the label is visible
                         % Adjust the position of the ylabel if necessary
-                        set(ylh, 'Position', [-0.11, 0.5], 'Units', 'Normalized');
+                        set(ylh, 'Position', [-0.10, 0.5], 'Units', 'Normalized');
                     end
                     
                     statedata   = frame.statedata;
