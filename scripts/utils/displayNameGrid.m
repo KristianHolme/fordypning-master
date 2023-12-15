@@ -14,6 +14,8 @@ function displayName = displayNameGrid(gridcase, specase)
     Amap('struct220x90') = 'S-M/F';
     Amap('struct340x150') = 'S-F';
     Amap('struct193x83') = 'S-M';
+    Amap('5tetRef10') = 'UU-superCoarse';
+
     
     Bmap = containers.Map;
     Bmap('5tetRef0.4') = 'UU-F';%59k
