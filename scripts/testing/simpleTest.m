@@ -63,7 +63,7 @@ function simpleTest(simcase, varargin)
     fig = figure('Visible','on');
     plotToolbar(G, state);
     title(opt.title);
-    view(0,0);axis tight;colorbar;
+    view(0,0);axis tight;colorbar('location', 'southoutside');
     if strcmp(opt.direction, 'lr')
         maxp = 2.8;
     else
@@ -75,6 +75,11 @@ function simpleTest(simcase, varargin)
         filename = fullfile('plots/linearPressuretest', filename);
         saveas(fig, filename);
     end
+
+    % figure
+    % plotToolbar(G, abs(state{1}.pressure - G.cells.centroids(:,1)));
+    % view(0,0);axis tight;colorbar;
+    % title(pdisc);
 end
 
 function bc = linearPressureBC(G, dir)

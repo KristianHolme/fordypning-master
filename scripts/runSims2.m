@@ -1,4 +1,4 @@
-function timings = runSims2(server)
+    function timings = runSims2(server)
     mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
         ad-blackoil postprocessing diagnostics prosjektOppgave...
         deckformat gmsh nfvm mpfa
@@ -8,26 +8,26 @@ function timings = runSims2(server)
     switch  server
         case 1
             SPEcase = 'A';
-            gridcases = {'5tetRef1'};
+            gridcases = {'5tetRef10'};
             schedulecases = {''};
-            pdiscs = {'hybrid-mpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
             uwdiscs = {''};
-            deckcases = {'RS'};
+            deckcases = {'RS_noCAP'};
             tagcase = '';
             resetData = true;
-            resetAssembly = false;
+            resetAssembly = true;
             Jutul = false;
             direct_solver = false;
         case 2
             SPEcase = 'A';
-            gridcases = {'6tetRef1'};
+            gridcases = {'5tetRef10'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
-            tagcase = '';
-            resetData = false;
-            resetAssembly = false;
+            tagcase = 'TIMED';
+            resetData = true;
+            resetAssembly = true;
             Jutul = false;
             direct_solver = false;
         case 3

@@ -76,7 +76,7 @@ function multiplot(data, varargin)
     
     % Create a figure with the desired size
     f = figure('Position', [screenSize(3)*0.05 screenSize(4)*0.05 figWidth figHeight]);
-    t = tiledlayout(numRows, numCols, 'Padding', 'compact', 'TileSpacing', 'compact');
+    t = tiledlayout(numRows, numCols, 'Padding', 'loose', 'TileSpacing', 'compact');
     if ~isempty(opt.title)
         title(t, opt.title, 'fontsize', 25)
     end
@@ -127,7 +127,7 @@ function multiplot(data, varargin)
     
                     plotCellData(G, statedata, cells, 'edgealpha', 0);
                     injcells = intersect(injcells, find(cells));
-                    plotGrid(G, injcells, 'facecolor', 'red');
+                    % plotGrid(G, injcells, 'facecolor', 'red');
                     if opt.plotgrid || (isfield(frame, 'plotgrid') && frame.plotGrid)
                         plotGrid(G, cells, 'facealpha', 0);
                     end
@@ -179,5 +179,5 @@ function multiplot(data, varargin)
         savepath = replace(savepath, '.', '_');
         saveas(f, savepath, 'png');
         exportgraphics(t, strcat(savepath, '.pdf'));
-    end
+     end
 end

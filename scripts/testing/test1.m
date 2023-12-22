@@ -30,19 +30,19 @@ wth = wt/3600;
 
 %% SimpleTest linear pressuretest
 saveplot = false;
-grid = 'semi188x38_0.3';
+grid = 'skewed3D';
 simcase{1} = Simcase('gridcase', grid, ...
     'pdisc', '');
 simcase{2} = Simcase('gridcase', grid, ...
-    'pdisc', 'hybrid-avgmpfa');
-simcase{3} = Simcase('gridcase', grid, ...
-    'pdisc', 'hybrid-ntpfa');
+    'pdisc', 'hybrid-mpfa');
+% simcase{3} = Simcase('gridcase', grid, ...
+%     'pdisc', 'hybrid-ntpfa');
 % simcase{4} = Simcase('gridcase', grid, ...
 %     'pdisc', 'hybrid-mpfa');
 for i = 1:numel(simcase)
-    simpleTest(simcase{i}, 'direction', 'tb', ...
+    simpleTest(simcase{i}, 'direction', 'lr', ...
         'paddingLayers', -1, 'saveplot', saveplot, ...
-        'uniformK', false);
+        'uniformK', true);
 end
 
 % plotCellData(simcase.G, simcase.G.cells.volumes);view(0,0);
@@ -117,13 +117,13 @@ plotGrid(simcase.G, bcCells);
 savegridplot = true;
 plotfacies = true;
 edgealpha = 1;
-SPEcase = 'B';
+SPEcase = 'A';
 if strcmp(SPEcase, 'B')
     scalingfactor = 0.3;
 else
     scalingfactor = 0.8;
 end
-gridcase = '5tetRef2-stretch';
+gridcase = 'struct193x83';
 % gridcase = '5tetRef0.8';
 simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase);
 screenSize = get(0, 'ScreenSize');
@@ -136,7 +136,7 @@ if plotfacies
 else
     plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
 end
-title(displayNameGrid(gridcase, SPEcase))
+title(displayNameGrid(gridcase, SPEcase), 'fontsize', 25)
 
 set(gca, 'Position', [0.02,0.1,0.97,0.82])
 
@@ -146,16 +146,19 @@ ax = gca;
 % plotGrid(simcase.G, cellBlocks{1});
 if savegridplot
     name = replace([SPEcase, '_', displayNameGrid(gridcase, SPEcase), '_', gridcase], '.', '-');
-    saveas(f, fullfile('plots\grids', name), 'png')
+    % saveas(f, fullfile('plots\grids', name), 'pdf')
+    exportgraphics(ax, fullfile('plots\grids', [name, '.pdf']));
 end
 
 %% Print number of cells
 % gridcases = {'5tetRef0.4','5tetRef0.5','5tetRef0.7','5tetRef1', '5tetRef2', '5tetRef3', '6tetRef1','6tetRef2', '6tetRef4',...
 %     'struct193x83', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};SPEcase = 'A';
-% gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'};SPEcase = 'A';
+% gridcases = {'6tetRef3', '5tetRef3', '5tetRef2', '5tetRef1', 'semi263x154_0.3', 'struct340x150'};SPEcase = 'A';
+gridcases = {'5tetRef10'};SPEcase = 'A';
+
 
 % gridcases = {'5tetRef0.175','5tetRef0.21', '5tetRef0.3', '5tetRef0.4','5tetRef0.8', '5tetRef2', '5tetRef10'};SPEcase = 'B'; %B grids
-% gridcases = {'5tetRef0.4','5tetRef0.8', '5tetRef2', '5tetRef10'};SPEcase = 'B'; %B grids
+% gridcases = {'6tetRef0.4', '5tetRef0.4','5tetRef0.8', '5tetRef2', 'semi263x154_0.3', 'struct420x141'};SPEcase = 'B'; %B grids
 % gridcases = {};
 % ress = {};
 
@@ -170,10 +173,10 @@ end
 %         ress{end+1} = tokens{1}{1};
 %     end
 % end
-ress = {'336x141','420x122','420x141','840x100','840x110','840x120',...
-'840x122','840x141','84x12'};SPEcase = 'B';
-
-gridcases = cellfun(@(x) ['struct' x], ress, 'UniformOutput', false);
+% ress = {'336x141','420x122','420x141','840x100','840x110','840x120',...
+% '840x122','840x141','84x12'};SPEcase = 'B';
+% 
+% gridcases = cellfun(@(x) ['struct' x], ress, 'UniformOutput', false);
 for i = 1:numel(gridcases)
     gridcase = gridcases{i};
     simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase);

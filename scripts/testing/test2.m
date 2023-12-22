@@ -1,6 +1,58 @@
 clear all
 close all
 %%
+%% Plot grid
+savegridplot = true;
+plotfacies = true;
+ploterr = false;
+edgealpha = 1;
+SPEcase = 'A';
+if strcmp(SPEcase, 'B')
+    scalingfactor = 0.3;
+else
+    scalingfactor = 0.8;
+end
+gridcase = 'struct193x83';
+% gridcase = '5tetRef2';
+simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase);
+[err, errvect, fwerr] = simcase.computeStaticIndicator;
+screenSize = get(0, 'ScreenSize');
+f = figure('Position', [screenSize(3)*0.05 screenSize(4)*0.05 screenSize(3)*0.90 screenSize(4)*scalingfactor]);
+
+inj1 = getinjcells(simcase);
+% plotGrid(simcase.G, inj1, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
+if plotfacies
+    apx = '_facies';
+    plotCellData(simcase.G, simcase.G.cells.tag, 'edgealpha', edgealpha);view(0,0);axis tight;axis equal;
+elseif ploterr
+    apx = '_err';
+    plotCellData(simcase.G, fwerr, 'edgealpha', edgealpha);view(0,0);axis tight;axis equal;
+else
+    apx = '';
+    plotGrid(simcase.G, 'faceAlpha', 0);view(0,0);axis tight;axis equal;
+end
+title(displayNameGrid(gridcase, SPEcase), 'fontsize', 25)
+
+set(gca, 'Position', [0.02,0.1,0.97,0.82])
+
+
+ax = gca;
+% ax.InnerPosition = [0.1 0.3 0.9 0.95];
+% plotGrid(simcase.G, cellBlocks{1});
+if savegridplot
+    name = replace([SPEcase, '_', displayNameGrid(gridcase, SPEcase), '_', gridcase, apx], '.', '-');
+    % saveas(f, fullfile('plots\grids', name), 'pdf')
+    exportgraphics(ax, fullfile('plots\grids', [name, '.pdf']), 'ContentType','vector');
+end
+
+
+%% Grid mesh illustration
+FDgrid = gmshToMRST('.\..\div\FD.m');
+Dgrid = gmshToMRST('.\..\div\D.m');
+plotGrid(FDgrid);axis tight;axis equal;
+xticks([]);
+yticks([]);
+%%
 
 plotToolbar(G, state.rs);view(0,0);
 dmax = max(state.rs);

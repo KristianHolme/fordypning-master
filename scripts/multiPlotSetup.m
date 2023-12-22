@@ -5,8 +5,9 @@ close all;
 getData = @(states, step, G) states{step}.rs; cmap=''; dataname = 'rs';
 % getData = @(states, step, G) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation';
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';
+% getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap='';
 %%
-SPEcase = 'A';
+SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
     scaling = hour; unit = 'h';
     steps = [30, 144, 720];
@@ -19,12 +20,14 @@ end
 %A
 % gridcases = {'5tetRef2', 'semi203x72_0.3', 'struct193x83'}; filename = 'MgridtypeComp';
 % gridcases = {'5tetRef1', 'semi263x154_0.3', 'struct340x150'}; filename = 'FgridtypeComp';
-% gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'}; filename = 'UU_refine_disc';
+% gridcases = { '5tetRef3', '5tetRef2','5tetRef1'}; filename = 'UU_refine_disc';
 % gridcases = {'6tetRef2', '5tetRef2'}; filename = 'meshAlgComparisonRef2';
 % gridcases = {'6tetRef1', '5tetRef1'}; filename = 'meshAlgComparisonRef1';
 % gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
-gridcases = {'semi203x72_0.3'}; filename = 'SS_M';
+% gridcases = {'semi203x72_0.3'}; filename = 'SS_M';
+% gridcases = {'5tetRef10'};filename = 'coarse_nocap';
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
 
 
@@ -36,10 +39,11 @@ gridcases = {'semi203x72_0.3'}; filename = 'SS_M';
 % gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
 % gridcases = {'semi263x154_0.3','semi203x72_0.3',  'semi188x38_0.3'};filename = 'SS_refine_alldiscs';
 % gridcases = {'5tetRef0.8', '5tetRef2-stretch'};filename = 'UU_M_stretch_comp';
-% gridcases = {'5tetRef0.4', '5tetRef1-stretch'};filename = 'UU_F_stretch_comp';
+gridcases = {'6tetRef0.4', '5tetRef0.4', '5tetRef1-stretch'};filename = 'FmeshalgStretch';
 % gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
-gridcases = {'struct420x141'};
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+% gridcases = {'struct420x141'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+pdiscs = {''};
 
 subname = ''; %'', 'uppermiddle', 
 [p1, p2] = getBoxPoints(subname, SPEcase, 3);
@@ -70,7 +74,7 @@ for istep = 1:numel(steps)
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step
-                statedata = getData(states, step, G);
+                statedata = getData(states, step, G, simcase);
                 [inj1, inj2] = simcase.getinjcells;
                 data{i, j, istep}.statedata = statedata;
                 data{i, j, istep}.injcells = [inj1, inj2];
@@ -92,13 +96,25 @@ times = cumsum(simcase.schedule.step.val);
 for istep = 1:numel(steps)
     step = steps(istep);
     plottitle = [dataname, ' at t=', num2str(round(times(step)/scaling)), unit];
-    multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
+    % multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
+    %     'savename', [filename, '_step', num2str(step)], ...
+    %     'saveplot', saveplot, 'cmap', cmap, 'equal', false, 'plotgrid', plotgrid);   
+    multiplot(data(:, :, istep), 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step)], ...
-        'saveplot', saveplot, 'cmap', cmap, 'equal', false, 'plotgrid', plotgrid);   
+        'saveplot', saveplot, 'cmap', cmap, 'equal', false, 'plotgrid', plotgrid); 
 end
 %% Setup full error plot/diff
 % gridcase = '5tetRef0.4';
-gridcase = '5tetRef1';
+% gridcase = '5tetRef1';
+gridcase = 'semi263x154_0.3';
+% gridcase = '6tetRef0.4';
+% gridcase = '5tetRef0.4';
+% gridcase = '5tetRef1-stretch';
+
+
+% steps = [360];
+
+
 filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
@@ -183,10 +199,15 @@ for istep = 1:numel(steps)
         'diff', true, 'bigGrid', bigGrid);   
 end
 %% Setup time evolution plot
-gridcases = {'5tetRef0.4', '5tetRef1-stretch'}; pdiscs = {'hybrid-mpfa', 'hybrid-mpfa'};%one for each grid
+% gridcases = {'5tetRef0.4', '5tetRef1-stretch'}; pdiscs = {'hybrid-mpfa', 'hybrid-mpfa'};%one for each grid
 % gridcases = {'5tetRef10', '5tetRef10'}; pdiscs = {'', 'hybrid-ntpfa'};
 % gridcases = {'5tetRef0.4', '6tetRef0.4'}; pdiscs = {'', ''};
-% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+
+% gridcases = { '5tetRef3', '5tetRef2','5tetRef1'}; pdiscs = {'','',''};
+% gridcases = {'5tetRef2', '5tetRef0.8', '5tetRef0.4'}; pdiscs = {'hybrid-avgmpfa','hybrid-avgmpfa','hybrid-avgmpfa'};
+gridcases = {'semi188x38_0.3','semi203x72_0.3','semi263x154_0.3'};pdiscs = {'','',''};
+% gridcases = {'5tetRef10', '5tetRef10', '5tetRef10'}; pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 
 filename =[SPEcase, '_timeEvo_', dataname, '_', strjoin(cellfun(@(x, y) [x '-' shortDiscName(y)], gridcases, pdiscs, 'UniformOutput', false), '_')];
 assert(numel(pdiscs)==numel(gridcases))
@@ -231,5 +252,6 @@ end
 %% Plotting timeEvo
 
 plottitle = ['time evolution of ', dataname];
-multiplot(data, 'title', plottitle, 'savefolder', savefolder, ...
-        'savename', filename, 'saveplot', saveplot, 'cmap', cmap, 'equal', strcmp(SPEcase, 'A'));
+% multiplot(data, 'title', plottitle, 'savefolder', savefolder, ...
+        % 'savename', filename, 'saveplot', saveplot, 'cmap', cmap, 'equal', strcmp(SPEcase, 'A'));
+multiplot(data, 'savefolder', savefolder, 'savename', filename, 'saveplot', saveplot, 'cmap', cmap, 'equal', strcmp(SPEcase, 'A'));
