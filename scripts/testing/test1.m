@@ -30,11 +30,12 @@ wth = wt/3600;
 
 %% SimpleTest linear pressuretest
 saveplot = false;
-grid = 'skewed3D';
+phases = 1;
+grid = '5tetRef10';
 simcase{1} = Simcase('gridcase', grid, ...
     'pdisc', '');
 simcase{2} = Simcase('gridcase', grid, ...
-    'pdisc', 'hybrid-mpfa');
+    'pdisc', 'hybrid-ntpfa');
 % simcase{3} = Simcase('gridcase', grid, ...
 %     'pdisc', 'hybrid-ntpfa');
 % simcase{4} = Simcase('gridcase', grid, ...
@@ -42,7 +43,7 @@ simcase{2} = Simcase('gridcase', grid, ...
 for i = 1:numel(simcase)
     simpleTest(simcase{i}, 'direction', 'lr', ...
         'paddingLayers', -1, 'saveplot', saveplot, ...
-        'uniformK', true);
+        'uniformK', false, 'phases', phases);
 end
 
 % plotCellData(simcase.G, simcase.G.cells.volumes);view(0,0);
@@ -190,15 +191,17 @@ for i = 1:numel(state)
     state{i}.pressureDiff = state{i}.pressure - initpressure;
 end
 %% Plot perm
-SPEcase = 'B';
-gridcase = '5tetRef0.1';%193x83
+SPEcase = 'A';
+gridcase = '5tetRef10';%193x83
 screenSize = get(0, 'ScreenSize');
 figWidth = screenSize(3)*0.7;
 figHeight = screenSize(4)*0.7;
 simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'usedeck', true, 'deckcase', 'RS');
 figure('Position', [screenSize(3)*0.1 screenSize(4)*0.1 figWidth figHeight]);
-plotToolbar(simcase.G, simcase.rock.perm);view(0,0);
+plotToolbar(simcase.G, simcase.rock.perm, 'outline', true);view(0,0);axis tight;
 %% Plot poro
 plotToolbar(simcase.G, simcase.rock.poro);view(0,0);
 %% Plot
 simcase.plotStates
+%%
+plotCellData(simcase.G, simcase.rock.poro);view(0,0);axis equal;axis tight;

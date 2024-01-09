@@ -5,7 +5,8 @@ function simpleTest(simcase, varargin)
         'title', '', ...
         'paddingLayers', 1, ...
         'myRatio', [], ...
-        'saveplot', false);%direction of linear test, "tp" (top-bottom), lr (left-right)
+        'saveplot', false, ...
+        'phases', 1);%direction of linear test, "tp" (top-bottom), lr (left-right)
     if isempty(simcase.pdisc)
         pdisc = 'tpfa';
     else
@@ -24,16 +25,26 @@ function simpleTest(simcase, varargin)
     simcase.rock = rock;
 
     % fluid = initSimpleADIFluid('phases', 'W', 'mu', 1*centi*poise, 'rho', 1000);
-    fluid = initSimpleADIFluid('phases', 'WO', 'rho', [1000, 100]);
+    if opt.phases == 1
+        fluid = initSimpleADIFluid('phases', 'W', 'rho', 1000);
+        waterpresent = true;
+        oilpresent = false;
+        state0 = initResSol(G, 1*barsa, 1);
+        opt.title = '1 phase. ';
+    elseif opt.phases == 2
+        fluid = initSimpleADIFluid('phases', 'WO', 'rho', [1000, 1000]);
+        waterpresent = true;
+        oilpresent = true;
+        state0 = initResSol(G, 1*barsa, [1,0]);
+        opt.title = '2 phases. ';
+    end
     gravity off
-    tpfamodel = GenericBlackOilModel(G, rock, fluid, 'water', true, 'oil', true, 'gas', false);
-    % state0 = initResSol(G, 0.0);
-    state0 = initResSol(G, 1*barsa, [1,0]);
+    tpfamodel = GenericBlackOilModel(G, rock, fluid, 'water', waterpresent, 'oil', oilpresent, 'gas', false);
     
     df = struct('W', [], 'bc', [], 'src', []);
 
     if strcmp(opt.type, 'linear')
-        bc = linearPressureBC(G, opt.direction);
+        bc = linearPressureBC(G, opt.direction, opt.phases);
         df.bc = bc;
     end
     schedule = simpleSchedule(1, 'W', df.W, 'bc', df.bc, 'src', df.src);
@@ -56,6 +67,7 @@ function simpleTest(simcase, varargin)
 
 
     end
+    opt.title = [opt.title, shortDiscName(pdisc)];
 
     [wellSols, state, report]  = simulateScheduleAD(state0, model, schedule);
     % state{1}.error = G.cells.centroids(:,3) - state{1}.pressure;
@@ -63,7 +75,16 @@ function simpleTest(simcase, varargin)
     fig = figure('Visible','on');
     plotToolbar(G, state);
     title(opt.title);
-    view(0,0);axis tight;colorbar('location', 'southoutside');
+    view(0,0);
+    switch opt.direction
+        case 'lr'
+            loc = 'southoutside';
+            cbarDirection = 'normal';
+        case 'tb'
+            loc = 'eastoutside';
+            cbarDirection = 'reverse';
+    end
+    axis tight;colorbar('location', loc, Direction=cbarDirection);
     if strcmp(opt.direction, 'lr')
         maxp = 2.8;
     else
@@ -82,44 +103,49 @@ function simpleTest(simcase, varargin)
     % title(pdisc);
 end
 
-function bc = linearPressureBC(G, dir)
-        if strcmp(dir, 'tb')
-            dir = 3;
-        elseif strcmp(dir, 'lr')
-            dir = 1;
-        end
-        tol = 1e-12;
-        minVal = min(G.faces.centroids(:, dir));
-        maxVal = max(G.faces.centroids(:, dir));
+function bc = linearPressureBC(G, dir, phases)
+    if strcmp(dir, 'tb')
+        dir = 3;
+    elseif strcmp(dir, 'lr')
+        dir = 1;
+    end
+    tol = 1e-12;
+    minVal = min(G.faces.centroids(:, dir));
+    maxVal = max(G.faces.centroids(:, dir));
 
-        minFaces = find(abs(G.faces.centroids(:, dir)-minVal) < tol);
-        if dir == 3
-            downVector = [0,0,1];
-            bf = boundaryFaces(G);
-            bfCoords = G.faces.centroids(bf, :);
+    minFaces = find(abs(G.faces.centroids(:, dir)-minVal) < tol);
+    if dir == 3
+        downVector = [0,0,1];
+        bf = boundaryFaces(G);
+        bfCoords = G.faces.centroids(bf, :);
 
-            lowFaces = bfCoords(:, 3) > 1;
+        lowFaces = bfCoords(:, 3) > 1;
 
-            bf = bf(lowFaces);
-            bfCoords = G.faces.centroids(bf, :);
-            
-            
-            minside = min(G.faces.centroids(:, 1));
-            maxside = max(G.faces.centroids(:, 1));
-            bfCoords = G.faces.centroids(bf, :);
-            notTop = abs(bfCoords(:, 3) - minVal) > tol;
-            notLeft = abs(bfCoords(:, 1) - minside) > tol;
-            notRight = abs(bfCoords(:, 1) - maxside) > tol;
-            notFront = abs(bfCoords(:, 2)) > tol;
-            notBack = abs(bfCoords(:, 2) - 0.01) > tol;
-            candidates = notTop & notLeft & notRight & notFront &notBack;
-            
-            maxFaces = bf(candidates);
-            maxVal = G.faces.centroids(maxFaces,3);
-        else
-            maxFaces = find(abs(G.faces.centroids(:, dir)-maxVal) < tol);
-        end
-        bc = [];
-        bc = addBC(bc, minFaces, 'pressure', minVal, 'sat', [1,0]);
-        bc = addBC(bc, maxFaces, 'pressure', maxVal, 'sat', [1,0]);
+        bf = bf(lowFaces);
+        bfCoords = G.faces.centroids(bf, :);
+        
+        
+        minside = min(G.faces.centroids(:, 1));
+        maxside = max(G.faces.centroids(:, 1));
+        bfCoords = G.faces.centroids(bf, :);
+        notTop = abs(bfCoords(:, 3) - minVal) > tol;
+        notLeft = abs(bfCoords(:, 1) - minside) > tol;
+        notRight = abs(bfCoords(:, 1) - maxside) > tol;
+        notFront = abs(bfCoords(:, 2)) > tol;
+        notBack = abs(bfCoords(:, 2) - 0.01) > tol;
+        candidates = notTop & notLeft & notRight & notFront &notBack;
+        
+        maxFaces = bf(candidates);
+        maxVal = G.faces.centroids(maxFaces,3);
+    else
+        maxFaces = find(abs(G.faces.centroids(:, dir)-maxVal) < tol);
+    end
+    bc = [];
+    if phases == 1
+        sat = 1;
+    else
+        sat = [1,0];
+    end
+    bc = addBC(bc, minFaces, 'pressure', minVal, 'sat', sat);
+    bc = addBC(bc, maxFaces, 'pressure', maxVal, 'sat', sat);
 end
