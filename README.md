@@ -8,6 +8,7 @@
     - spe11utils_folder: folder of the spe11-utils repo (cloned from SINTEF-MRST-BitBucket)
     - decksave_folder: folder to save deck files to (as .mat-files). for example spe11utils_folder\deck, leave as empty string if you don't mind converting from the .DATA file each time (usually doesn't take a lot of time)
     - repo_folder: the folder where this repo is cloned.
+    - geo_folder: the folder containing the spe11a.geo file.
 - Run setup.m
     - This adds the scripts-folder as an mrst module called prosjektOppgave and adds it to the path
 - Now you should be able run simulations, for example by running 'remoteSims(1)' to run whatever is setup as scenario 1 in 'remoteSims.m', or by modifying f.ex. 'runSims.m' 

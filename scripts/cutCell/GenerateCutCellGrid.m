@@ -12,7 +12,11 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
     G = computeGeometry(G);  
 
     % Read geodata and add facies and boundary
-    fn = 'C:\Users\holme\Documents\Prosjekt\Prosjektoppgave\src\11thSPE-CSP\geometries\spe11a.geo';
+    
+    configFile = fileread('config.JSON');
+    config = jsondecode(configFile);
+    fn = fullfile(config.geo_folder, 'spe11a.geo')
+    %fn = 'C:\Users\holme\Documents\Prosjekt\Prosjektoppgave\src\11thSPE-CSP\geometries\spe11a.geo';
     geodata = readGeo(fn);
     %assign loops to Fascies
     geodata.Facies{1} = [7, 8, 9, 32];
