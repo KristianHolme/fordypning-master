@@ -1,5 +1,12 @@
 clear all 
 close all
+%%
+gridcase = 'cut144x48';
+simcase = Simcase('gridcase', gridcase);
+G = simcase.G;
+ortherr = simcase.computeStaticIndicator;
+plotToolbar(simcase.G, ortherr);view(0,0);
+colorbar
 %% Fra August
 N = [20 20 10]/5;
 L = [20 20 5];
@@ -85,6 +92,7 @@ dir = [0 0 1];
 
 % Gcut = computeGeometry(Gcut);
 % Gcut = repairNormals(Gcut);
+Gcut = Gpresplit;
 for ifacies = 1:7
     loops = geodata.Facies{ifacies};
     numLoops = numel(loops);
@@ -107,4 +115,185 @@ for ifacies = 1:7
         % Gcut = repairNormals(Gcut, 'facealpha', 0);
         % plotGrid(Gcut);axis equal tight;
     end
+end
+
+%% Pre split cells, so nodes are never inside cells
+% plot(0,0);
+% hold on;
+% plot(2.8, 1.2);
+% Gcut = G;
+% dir = [0 0 1];
+disp("Presplitting grid the new way...")
+tic();
+eps = 1e-10;
+numpoints = numel(geodata.Point);
+Gcut = G;
+dir = [0 0 1];
+splits = {};
+for ipoint = 1:numpoints
+    
+    point = geodata.Point{ipoint};
+    % plot(point(1), point(2), 'ro');
+    c = findEnclosingCell(Gcut, point);
+    if c == 0
+        if ipoint == numpoints
+            break
+        else
+            continue
+        end
+    end
+    faceCentroids = Gcut.faces.centroids(Gcut.cells.faces(Gcut.cells.facePos(c):Gcut.cells.facePos(c+1)-1), :);
+    faceymax = max(faceCentroids(:, 2));
+    faceymin = min(faceCentroids(:, 2));
+    facexmax = max(faceCentroids(:, 1));
+    facexmin = min(faceCentroids(:, 1));
+
+    ydist = min(faceymax - point(2), point(2)-faceymin);
+    xdist = min(facexmax - point(1), point(1)-facexmin);
+    [dist, splitdir] = min([xdist, ydist]);
+    if dist ~= 0
+        %Split cell
+        if splitdir == 1
+            splitpoints = [facexmin-eps point(2) 0; 
+                           facexmax+eps point(2) 0];
+        elseif splitdir == 2
+            splitpoints = [point(1) faceymin-eps 0; 
+                           point(1) faceymax+eps 0];
+        end
+        splits{end+1} = splitpoints;
+        % Gcut = sliceGrid(Gcut, splitpoints, 'cutDir', dir);
+        % Gcut = repairNormals(computeGeometry(Gcut));
+        % Gcut = repairNormals(Gcut);
+        % plotGrid(Gcut, 'facealpha', 0, 'edgealpha', 0.2);
+    end
+end
+dd = repmat({dir}, 1, numel(splits));
+Gcut = sliceGrid(Gcut, splits, 'cutDir', dd);
+t = toc();
+sprintf("Done in %0.2f s", t)
+
+%% Main Cut based on individual lines
+
+dir = [0 0 1];
+disp("Main splitting...");
+tic();
+% Gcut = computeGeometry(Gcut);
+% Gcut = repairNormals(Gcut);
+Gcut = Gpresplit;
+numlines = numel(geodata.Line);
+f = waitbar(0, 'Starting');
+for iline = 1:numlines
+    % dispif(iline >= 1, '%d\n', iline);
+    waitbar(iline/numlines, f, sprintf('Splitting progress: %d %%. (%d/%d).', floor(iline/numlines*100), iline, numlines))
+    if ismember(iline, geodata.BoundaryLines)%skip boundarylines
+        continue
+    end
+    line = geodata.Line{iline};
+    points = geodata.Point(line);
+    points = cell2mat(points(:));
+
+    % xpts = points(:,1 );
+    % ypts = points(:,2 );
+    % plot(xpts, ypts, 'ro');
+    % hold off;
+
+    try
+        [Gcut, ix] = sliceGrid(Gcut, points, 'cutDir', dir);
+        % Gcut = repairNormals(Gcut);
+        % plotGrid(Gcut, 'facealpha', 0);axis equal tight;
+        % axis([0 2.8 0 1.2]);
+        % hold on;
+    catch
+        sprintf("failed for line %d", iline);
+    end
+end
+close(f);
+t = toc();
+fprintf("Done in %0.2f s\n", t);
+
+%% New Main Cut based on individual lines
+
+dir = [0 0 1];
+disp("New Main splitting...");
+tic();
+numlines = numel(geodata.Line);
+Gcut = Gpresplit;
+pp = {};
+for iline = 1:numlines
+    if ismember(iline, geodata.BoundaryLines)%skip boundarylines
+        continue
+    end
+    line = geodata.Line{iline};
+    points = geodata.Point(line);
+    points = cell2mat(points(:));
+
+    % xpts = points(:,1 );
+    % ypts = points(:,2 );
+    % plot(xpts, ypts, 'ro');
+    % hold off;
+
+    pp{end+1} = points;
+end
+dd = repmat({dir}, 1, numel(pp));
+Gcut = sliceGrid(Gcut, pp, 'cutDir', dd);
+t = toc();
+fprintf("Done in %0.2f s\n", t);
+%% Plot loops
+% plot(0,0);
+% axis([0 2.8 0 1.2]);
+% axis equal;
+% plotGrid(Gcut, 'facealpha', 0);axis tight;
+
+for ifacies = 1:7
+    loops = geodata.Facies{ifacies};
+    numLoops = numel(loops);
+    for iLoop = 1:numLoops
+        loop = loops(iLoop);
+        pointsinds = cell2mat(geodata.Line(abs(geodata.Loop{loop})));
+        pointsinds = unique(pointsinds(:), "stable");
+        pointsinds(end+1) = pointsinds(1);
+        points = geodata.Point(pointsinds);
+        points = cell2mat(points(:));
+        xpts = points(:,1 );
+        ypts = points(:,2 );
+        plot(xpts, ypts, '-o');
+        axis([-0.1 2.9 -0.1 1.3]);
+        ax = gca;
+        ax.TickLength = [0,0];
+        hold off
+    end
+end
+%% Stats for main splitter
+stats = cell2mat(sliceStats(:));
+plot(stats(:,1), stats(:,2))
+timepercell = stats(end, 2)/stats(end, 1);%~0.004 s per cell
+%over two hours for two million cells
+%% Stats for presplitter
+stats = cell2mat(presplitstats(:));
+plot(stats(:,1), stats(:,2))
+timepercell = stats(end, 2)/stats(end, 1);%~0.004 s per cell
+%over two hours for two million cells
+%% Rename variables in stored grids from Gcut to G
+% Specify the directory where your .mat files are located
+directoryPath = 'grid-files\cutcell';
+
+% Get a list of all .mat files in the directory
+matFiles = dir(fullfile(directoryPath, '*.mat'));
+
+% Loop through each .mat file
+for i = 1:numel(matFiles)
+    matFileName = matFiles(i).name;
+    fullPath = fullfile(directoryPath, matFileName);
+    
+    % Load the .mat file
+    load(fullPath, 'Gcut');
+    
+    % Rename the variable to 'G'
+    G = Gcut;
+    
+    % Save it back to the same file
+    save(fullPath, 'G');
+    
+    % Clear the variables from the workspace
+    clear('G', 'Gcut');
 end

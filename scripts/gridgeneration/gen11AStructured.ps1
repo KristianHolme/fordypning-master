@@ -2,7 +2,7 @@ param(
     [int[]]$nxValues,
     [int[]]$nyValues
 )
-
+# should be called from the geometries folder?
 # Loop through all combinations of nx and ny values
 foreach ($nx in $nxValues) {
     foreach ($ny in $nyValues) {

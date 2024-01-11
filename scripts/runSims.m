@@ -15,11 +15,11 @@ mrstVerbose off
 % 'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-SPEcase = 'B';
-gridcases = {'5tetRef0.4'};
+SPEcase = 'A';
+gridcases = {'cut1x1'};
 schedulecases = {''};%defaults to schedule from deck
-deckcases = {'RS_noCAP'}; % can be changed to 'IMMISCIBLE'
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
+pdiscs = {''};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';
@@ -28,7 +28,7 @@ resetData           = false;
 resetAssembly       = false;
 do.plotStates       = true;
 do.plotFlux         = false;
-do.multiphase       = false;
+do.multiphase       = true;
 useJutulIfPossible  = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 

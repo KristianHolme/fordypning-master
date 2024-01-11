@@ -61,8 +61,24 @@ function G = setupGrid(simcase, varargin)
             if ~isfile(matFile)
                 error([matFile, ' not found']);
             end
+        elseif contains(gridcase, 'cut')
+            params = cellfun(@str2double, split(gridcase(4:end), 'x'));
+            amatFile = fullfile(gridFolder, 'cutcell', ['cutcell_', gridcase(4:end), '.mat']);
+            if ~isfile(amatFile)
+                GenerateCutCellGrid(params(1), params(2))
+            end
+            if strcmp(simcase.SPEcase, 'B')%stretch A-grid
+                matFile = fullfile(gridFolder, 'cutcell', ['cutcell_', gridcase(4:end), '_B.mat']);
+                if ~isfile(matFile)
+                    load(amatFile)
+                    G = StretchGrid(RotateGrid(G));
+                    save(matFile, 'G');
+                end
+            else
+                matFile = amatFile;
+            end
         end
-       load(matFile);
+        load(matFile);
         G = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
         G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
         G.cells.indexMap = (1:G.cells.num)';

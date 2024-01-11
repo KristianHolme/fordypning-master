@@ -8,38 +8,38 @@
     switch  server
         case 1
             SPEcase = 'A';
-            gridcases = {'5tetRef10'};
-            schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-            uwdiscs = {''};
-            deckcases = {'RS_noCAP'};
-            tagcase = '';
-            resetData = true;
-            resetAssembly = true;
-            Jutul = false;
-            direct_solver = false;
-        case 2
-            SPEcase = 'A';
-            gridcases = {'5tetRef10'};
-            schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-            uwdiscs = {''};
-            deckcases = {'RS'};
-            tagcase = 'TIMED';
-            resetData = true;
-            resetAssembly = true;
-            Jutul = false;
-            direct_solver = false;
-        case 3
-            SPEcase = 'B';
-            gridcases = {'5tetRef1-stretch'};
+            gridcases = {'cut1x1'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
-            resetAssembly = true;
+            resetAssembly = false;
+            Jutul = false;
+            direct_solver = false;
+        case 2
+            SPEcase = 'A';
+            gridcases = {'cut144x48'};
+            schedulecases = {''};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+            uwdiscs = {''};
+            deckcases = {'RS'};
+            tagcase = '';
+            resetData = false;
+            resetAssembly = false;
+            Jutul = false;
+            direct_solver = false;
+        case 3
+            SPEcase = 'A';
+            gridcases = {'cut210x70'};
+            schedulecases = {''};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+            uwdiscs = {''};
+            deckcases = {'RS'};
+            tagcase = '';
+            resetData = false;
+            resetAssembly = false;
             Jutul = false;
             direct_solver = false;
             mrstVerbose off;
@@ -48,7 +48,7 @@
             gridcases = {'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
             schedulecases = {''};
             pdiscs = {''};
-            uwdiscs = {'WENO'};
+            uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
             resetData = false;
