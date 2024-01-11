@@ -1,12 +1,13 @@
 clear all 
 close all
 %%
-gridcase = 'cut10x30';
+gridcase = 'cut1080x463';
 simcase = Simcase('gridcase', gridcase);
 G = simcase.G;
-ortherr = simcase.computeStaticIndicator;
-plotToolbar(simcase.G, ortherr);view(0,0);
-colorbar
+plotToolbar(G, G.cells.tag);
+% ortherr = simcase.computeStaticIndicator;
+% plotToolbar(simcase.G, ortherr);view(0,0);
+% colorbar
 %% Fra August
 N = [20 20 10]/5;
 L = [20 20 5];

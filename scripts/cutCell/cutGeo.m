@@ -35,8 +35,8 @@ Gpresplit = loadPresplit('nx', nx, 'ny', ny);
 [Gcut, t] = CutCellGeo(Gpresplit, geodata, 'verbose', true);
 % sliceStats{end+1} = [nx*ny, t];
 %% Load cutcell grid
-nx = 280*2;
-ny = 120*2;
+nx = 28;
+ny = 12;
 Gcut = loadCutCell('nx', nx, 'ny', ny);
 %% Tag by layer
 Gcc = TagbyFacies(Gcut, geodata);
