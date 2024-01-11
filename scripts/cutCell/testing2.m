@@ -1,7 +1,7 @@
 clear all 
 close all
 %%
-gridcase = 'cut144x48';
+gridcase = 'cut10x30';
 simcase = Simcase('gridcase', gridcase);
 G = simcase.G;
 ortherr = simcase.computeStaticIndicator;
