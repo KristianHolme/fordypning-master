@@ -1,5 +1,7 @@
-function G = TagbyFacies(G, geodata)
+function G = TagbyFacies(G, geodata, varargin)
 %use inpolygon to find facies of each cell
+    opt = struct('verbose', false');
+    opt = merge_options(opt, varargin{:});
     tic()
     G.cells.tag = zeros(G.cells.num, 1);
     for ifacies = 1:7
@@ -20,4 +22,5 @@ function G = TagbyFacies(G, geodata)
         end
     end
     t = toc();
+    dispif(opt.verbose, "Tagging facies done in %0.2f s", t);
 end

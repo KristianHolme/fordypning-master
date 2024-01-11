@@ -15,7 +15,7 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
     
     configFile = fileread('config.JSON');
     config = jsondecode(configFile);
-    fn = fullfile(config.geo_folder, 'spe11a.geo')
+    fn = fullfile(config.geo_folder, 'spe11a.geo');
     %fn = 'C:\Users\holme\Documents\Prosjekt\Prosjektoppgave\src\11thSPE-CSP\geometries\spe11a.geo';
     geodata = readGeo(fn);
     %assign loops to Fascies
@@ -32,5 +32,4 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         G = PointSplit(G, geodata.Point, 'verbose', opt.verbose, 'waitbar', opt.waitbar, 'save', opt.save, 'savedir', fullfile(opt.savedir, 'presplit'));
     end
     G = CutCellGeo(G, geodata, 'verbose', opt.verbose, 'save', opt.save, 'savedir', opt.savedir);
-
 end

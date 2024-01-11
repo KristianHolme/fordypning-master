@@ -1,4 +1,4 @@
-function timings = remoteSims(server)
+function timings = MarkovSims(server)
     mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
         ad-blackoil postprocessing diagnostics prosjektOppgave...
         deckformat gmsh nfvm mpfa
@@ -33,10 +33,10 @@ function timings = remoteSims(server)
             Jutul = false;
             direct_solver = false;
         case 3
-            SPEcase = 'A';
-            gridcases = {'struct193x83', 'struct220x90', 'struct340x150'};
+            SPEcase = 'B';
+            gridcases = {'cut144x48'};
             schedulecases = {''};
-            pdiscs = {'hybrid-mpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';
@@ -47,9 +47,9 @@ function timings = remoteSims(server)
             direct_solver = false;
         case 4
             SPEcase = 'B';
-            gridcases = {'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
+            gridcases = {'cut210x70'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa','hybrid-ntpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
             uwdiscs = {''};
             deckcases = {'RS'};
             tagcase = '';

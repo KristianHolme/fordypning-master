@@ -1,62 +1,62 @@
-    function timings = runSims2(server)
+function timings = runSims2(server)
     mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-        ad-blackoil postprocessing diagnostics prosjektOppgave...
-        deckformat gmsh nfvm mpfa
+    ad-blackoil postprocessing diagnostics prosjektOppgave...
+    deckformat gmsh nfvm mpfa
     % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
     % schedulecases = {'simple-coarse', 'simple-std'};
     mrstVerbose off
     switch  server
-        case 1
-            SPEcase = 'A';
-            gridcases = {'cut1x1'};
-            schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-            uwdiscs = {''};
-            deckcases = {'RS'};
-            tagcase = '';
-            resetData = false;
-            resetAssembly = false;
-            Jutul = false;
-            direct_solver = false;
-        case 2
-            SPEcase = 'A';
-            gridcases = {'cut144x48'};
-            schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-            uwdiscs = {''};
-            deckcases = {'RS'};
-            tagcase = '';
-            resetData = false;
-            resetAssembly = false;
-            Jutul = false;
-            direct_solver = false;
-        case 3
-            SPEcase = 'A';
-            gridcases = {'cut210x70'};
-            schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-            uwdiscs = {''};
-            deckcases = {'RS'};
-            tagcase = '';
-            resetData = false;
-            resetAssembly = false;
-            Jutul = false;
-            direct_solver = false;
-            mrstVerbose off;
-        case 4
-            SPEcase = 'B';
-            gridcases = {'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
-            schedulecases = {''};
-            pdiscs = {''};
-            uwdiscs = {''};
-            deckcases = {'RS'};
-            tagcase = '';
-            resetData = false;
-            resetAssembly = false;
-            Jutul = false;
-            direct_solver = false;
+    case 1
+        SPEcase = 'A';
+        gridcases = {'cut1x1'};
+        schedulecases = {''};
+        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+        uwdiscs = {''};
+        deckcases = {'RS'};
+        tagcase = '';
+        resetData = false;
+        resetAssembly = false;
+        Jutul = false;
+        direct_solver = false;
+    case 2
+        SPEcase = 'A';
+        gridcases = {'cut144x48'};
+        schedulecases = {''};
+        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+        uwdiscs = {''};
+        deckcases = {'RS'};
+        tagcase = '';
+        resetData = false;
+        resetAssembly = false;
+        Jutul = false;
+        direct_solver = false;
+    case 3
+        SPEcase = 'A';
+        gridcases = {'cut210x70'};
+        schedulecases = {''};
+        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+        uwdiscs = {''};
+        deckcases = {'RS'};
+        tagcase = '';
+        resetData = false;
+        resetAssembly = false;
+        Jutul = false;
+        direct_solver = false;
+        mrstVerbose off;
+    case 4
+        SPEcase = 'B';
+        gridcases = {'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
+        schedulecases = {''};
+        pdiscs = {''};
+        uwdiscs = {''};
+        deckcases = {'RS'};
+        tagcase = '';
+        resetData = false;
+        resetAssembly = false;
+        Jutul = false;
+        direct_solver = false;
     end
-    
+
     timings = struct();
     for ideck = 1:numel(deckcases)
         deckcase = deckcases{ideck};
@@ -69,11 +69,11 @@
                     for iuwdisc = 1:numel(uwdiscs)
                         uwdisc = uwdiscs{iuwdisc};
                         simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                                        'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                        'pdisc', pdisc, 'uwdisc', uwdisc);
+                            'schedulecase', schedulecase, 'tagcase', tagcase, ...
+                            'pdisc', pdisc, 'uwdisc', uwdisc);
 
                         [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
-                                            'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
+                            'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
                         disp(['Done with: ', simcase.casename]);
                         timings.(timingName(simcase.casename)) = time;
 
@@ -83,3 +83,4 @@
         end
     end
     disp(timings);
+end

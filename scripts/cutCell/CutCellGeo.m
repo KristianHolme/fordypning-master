@@ -23,7 +23,7 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
     dd = repmat({dir}, 1, numel(pp));
     Gcut = sliceGrid(Gcut, pp, 'cutDir', dd);
     t = toc();
-    Gcut = TagbyFacies(Gcut, geodata);%Tag facies
+    Gcut = TagbyFacies(Gcut, geodata, 'verbose', opt.verbose);%Tag facies
     dispif(opt.verbose, sprintf("Done in %0.2f s\n", t));
     if opt.save
         nx = G.cartDims(1);

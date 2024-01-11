@@ -65,7 +65,7 @@ function G = setupGrid(simcase, varargin)
             params = cellfun(@str2double, split(gridcase(4:end), 'x'));
             amatFile = fullfile(gridFolder, 'cutcell', ['cutcell_', gridcase(4:end), '.mat']);
             if ~isfile(amatFile)
-                GenerateCutCellGrid(params(1), params(2))
+                GenerateCutCellGrid(params(1), params(2), 'verbose', true)
             end
             if strcmp(simcase.SPEcase, 'B')%stretch A-grid
                 matFile = fullfile(gridFolder, 'cutcell', ['cutcell_', gridcase(4:end), '_B.mat']);
