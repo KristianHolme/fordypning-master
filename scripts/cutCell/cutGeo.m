@@ -35,15 +35,15 @@ Gpresplit = loadPresplit('nx', nx, 'ny', ny);
 [Gcut, t] = CutCellGeo(Gpresplit, geodata, 'verbose', true);
 % sliceStats{end+1} = [nx*ny, t];
 %% Load cutcell grid
-nx = 28;
-ny = 12;
+nx = 144;
+ny = 48;
 Gcut = loadCutCell('nx', nx, 'ny', ny);
 %% Tag by layer
 Gcc = TagbyFacies(Gcut, geodata);
 %% Plot tag
 plotCellData(Gcut, Gcut.cells.tag)
 %%
-gridcase = 'struct280x120';
+gridcase = 'cut144x48';
 simcase = Simcase('gridcase', gridcase);
 figure
 plotCellData(simcase.G, simcase.G.cells.tag);view(0,0);
