@@ -1,5 +1,10 @@
 function result = readGeo(filename)
     % Open the file
+    if isempty(filename)
+        configFile = fileread('config.JSON');
+        config = jsondecode(configFile);
+        filename = fullfile(config.geo_folder, 'spe11a.geo');
+    end
     fid = fopen(filename, 'r');
     if fid == -1
         error('File cannot be opened: %s', filename);
