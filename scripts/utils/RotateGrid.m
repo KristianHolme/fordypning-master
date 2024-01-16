@@ -4,6 +4,9 @@ function G = RotateGrid(G)
     T = [1, 0, 0; 0, 0, 1; 0, -1, 0];
     
     pointSets = {'cells.centroids', 'faces.centroids', 'nodes.coords'};
+    if isfield(G, 'parent')
+        pointSets{3} = 'parent.nodes.coords';
+    end
     
     for i = 1:length(pointSets)
         pointSet = pointSets{i};

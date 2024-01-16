@@ -3,7 +3,9 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         'savedir', 'grid-files/cutcell', ...
         'verbose', false, ...
         'waitbar', true, ...
-        'presplit', true);
+        'presplit', true, ...
+        'recombine', true, ...
+        'bufferVolumeSlice', false);
     opt = merge_options(opt, varargin{:});
 
     Lx = 2.8;
@@ -28,8 +30,40 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
     geodata.Facies{2} = [26, 27, 28, 29, 30];
     geodata.BoundaryLines = unique([1, 2, 12, 11, 9, 8, 10, 7, 6, 5, 3, 4, 24, 23, 22, 21, 20, 19, 18, 17, 16, 14, 15, 13]);
     
+    if opt.bufferVolumeSlice
+        G = sliceGrid(G, {[0.00016666666666, 0.5, 0], [2.79983333333, 0.5, 0]}, 'normal', [1 0 0]);
+    end
     if opt.presplit
         G = PointSplit(G, geodata.Point, 'verbose', opt.verbose, 'waitbar', opt.waitbar, 'save', opt.save, 'savedir', fullfile(opt.savedir, 'presplit'));
     end
-    G = CutCellGeo(G, geodata, 'verbose', opt.verbose, 'save', opt.save, 'savedir', opt.savedir);
+    G = CutCellGeo(G, geodata, 'verbose', opt.verbose, 'save', opt.save, 'savedir', opt.savedir, ...
+        'presplit', opt.presplit, 'bufferVolumeSlice', opt.bufferVolumeSlice);
+    
+    G = removeCells(G, G.cells.tag == 7); %remove here, RemoveCells doesnt work on CG
+    G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
+    if opt.recombine
+        t = tic();
+        partition = PartitionByTag(G);
+        compressedPartition = compressPartition(partition);
+        CG = generateCoarseGrid(G, compressedPartition);
+        CG = coarsenGeometry(CG);
+        % CGcellToGCell = unique(partition);
+        CG.cells.tag = G.cells.tag(unique(partition));
+        % CG = TagbyFacies(CG, geodata);
+        t = toc(t);
+        dispif(opt.verbose, "Partition and coarsen in %0.2f s\n", t);
+        G = CG;
+        if opt.save
+            if opt.presplit
+                fn = sprintf('presplit_cutcell_CG_%dx%d.mat', nx, ny);
+            else
+                fn = sprintf('cutcell_CG_%dx%d.mat', nx, ny);
+            end
+            if opt.bufferVolumeSlice
+                fn = ['buff_', fn];
+            end
+            
+            save(fullfile(opt.savedir, fn), "G");
+        end
+    end
 end

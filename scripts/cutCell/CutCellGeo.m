@@ -3,7 +3,9 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
     opt = struct('dir', [0 0 1], ...
                  'verbose', false, ...
                  'save', true, ...
-                 'savedir', 'grid-files\cutcell');
+                 'savedir', 'grid-files\cutcell', ...
+                 'presplit', true, ...
+                 'bufferVolumeSlice', false);
     opt = merge_options(opt, varargin{:});
     dir = opt.dir;
     dispif(opt.verbose, "Main splitting...\n");
@@ -29,6 +31,12 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
         nx = G.cartDims(1);
         ny = G.cartDims(2);
         fn = sprintf('cutcell_%dx%d.mat', nx, ny);
+        if opt.presplit
+            fn = ['presplit_', fn];
+        end
+        if opt.bufferVolumeSlice
+            fn = ['buff_', fn];
+        end
         G = Gcut;
         save(fullfile(opt.savedir, fn), "G");
     end

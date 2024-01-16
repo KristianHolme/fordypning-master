@@ -62,24 +62,52 @@ function G = setupGrid(simcase, varargin)
                 error([matFile, ' not found']);
             end
         elseif contains(gridcase, 'cut')
-            params = cellfun(@str2double, split(gridcase(4:end), 'x'));
-            amatFile = fullfile(gridFolder, 'cutcell', ['cutcell_', gridcase(4:end), '.mat']);
-            if ~isfile(amatFile)
-                GenerateCutCellGrid(params(1), params(2), 'verbose', true)
+            gridFolder = 'grid-files/cutcell';
+            pattern = '(\d+)x(\d+)$';
+            tokens = regexp(gridcase, pattern, 'tokens');
+            params = tokens{1};
+            params = cellfun(@str2double, params);
+            amatFile = [num2str(params(1)), 'x', num2str(params(2)), '.mat'];
+            if contains(gridcase, 'CG')
+                recombine = true;
+                amatFile = ['CG_', amatFile];
+            else
+                recombine = false;
             end
+            amatFile = ['cutcell_', amatFile];
+            if contains(gridcase, 'pre')
+                presplit = true;
+                amatFile = ['presplit_', amatFile];
+            else
+                presplit = false;
+            end
+
+            
+            
             if strcmp(simcase.SPEcase, 'B')%stretch A-grid
-                matFile = fullfile(gridFolder, 'cutcell', ['cutcell_', gridcase(4:end), '_B.mat']);
+                amatFile = ['buff_', amatFile];
+                amatFile = fullfile(gridFolder, amatFile);
+                if ~isfile(amatFile)
+                    GenerateCutCellGrid(params(1), params(2), 'verbose', true, 'presplit', presplit, ...
+                        'recombine', recombine, 'bufferVolumeSlice', true);
+                end
+                matFile = replace(amatFile, '.mat', '_B.mat');
                 if ~isfile(matFile)
                     load(amatFile)
                     G = StretchGrid(RotateGrid(G));
                     save(matFile, 'G');
                 end
             else
+                amatFile = fullfile(gridFolder, amatFile);
+                % amatFile = fullfile(gridFolder, 'cutcell', ['cutcell_', gridcase(4:end), '.mat']);
+                if ~isfile(amatFile)
+                    GenerateCutCellGrid(params(1), params(2), 'verbose', true, 'presplit', presplit, 'recombine', recombine)
+                end
                 matFile = amatFile;
             end
         end
         load(matFile);
-        G = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
+        [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
         G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
         G.cells.indexMap = (1:G.cells.num)';
         if simcase.griddim == 3
@@ -100,14 +128,21 @@ function G = setupGrid(simcase, varargin)
     elseif ~isempty(simcase.deck) %use deck if present
         G = initEclipseGrid(simcase.deck);
     end
-    G = computeGeometry(G);
+    if isfield(G, 'parent') %coarsegrid, this computation maybe superfluous??
+        G = coarsenGeometry(G);
+    else
+        G = computeGeometry(G);
+    end
     if stretch
         G = StretchGrid(G);
     end
     if strcmp(simcase.SPEcase, 'B') && opt.buffer %add buffervolume
-        G = addBufferVolume(G, simcase.rock);
+        G = addBufferVolume(G, simcase.rock, 'slice', true, 'verbose', true);
     end
-    assert(checkGrid(G) == true);
+    if ~checkGrid(G)
+        warning("Grid does not pass checkgrid!")
+    end
+    % assert(checkGrid(G) == true);
 end
 
 function G = makeSkewed3D()

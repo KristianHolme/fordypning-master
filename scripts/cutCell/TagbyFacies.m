@@ -22,5 +22,5 @@ function G = TagbyFacies(G, geodata, varargin)
         end
     end
     t = toc();
-    dispif(opt.verbose, "Tagging facies done in %0.2f s", t);
+    dispif(opt.verbose, "Tagging facies done in %0.2f s\n", t);
 end

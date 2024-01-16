@@ -24,6 +24,7 @@ classdef Simcase < handle
         user
         dataOutputDir
         spe11utilsDir
+        spe11decksDir
         decksaveDir
         repoDir
         griddim
@@ -77,6 +78,7 @@ classdef Simcase < handle
             simcase.spe11utilsDir = config.spe11utils_folder;
             simcase.decksaveDir = config.decksave_folder;
             simcase.repoDir = config.repo_folder;
+            simcase.spe11decksDir = config.spe11decks_folder;
 
             simcase.updateprop = true;
             simcase.resetprop  = true;
@@ -213,7 +215,11 @@ classdef Simcase < handle
             deck = simcase.deck;
             if isempty(deck)
                 deckname = simcase.deckcase;
-                if contains(deckname, 'pyopm')%pyopm deck
+                if contains(deckname, 'B_ISO_SMALL')
+                    deckname = 'CSP11B_DISGAS.DATA';
+                    deckFolder = fullfile(simcase.spe11decksDir, 'csp11b', 'isothermal', '130_62');
+
+                elseif contains(deckname, 'pyopm')%pyopm deck
                     deckname = replace(deckname, 'pyopm-', '');
                     folderFromSrc = fullfile('pyopmcsp11\decks\',simcase.SPEcase, deckname, 'preprocessing');
                     deckname = 'CSP11A.DATA';
@@ -347,7 +353,10 @@ classdef Simcase < handle
             if simcase.griddim==3
                 view(0,0);
             end
-            axis tight;axis equal;
+            axis tight;
+            if strcmp(simcase.SPEcase, 'A')
+                axis equal;
+            end
             colorbar;
             title(simcase.casename, 'Interpreter','none');
         end

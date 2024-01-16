@@ -90,10 +90,18 @@ end
 %% Main cutting
 
 dir = [0 0 1];
+G = cartGrid([4 4], [2.8 1.2]);
+G.nodes.coords(:,3) = 0;
+G = repairNormals(computeGeometry(G));
+G = repairNormals(G);
 
-% Gcut = computeGeometry(Gcut);
-% Gcut = repairNormals(Gcut);
-Gcut = Gpresplit;
+% p = [0 0 0; 1 1 0; 2.8 1.2 0];
+% Gcut = sliceGrid(G, p, 'cutDir', dir);
+% plotGrid(Gcut);
+%% Main cutting
+G = computeGeometry(G);
+% G = repairNormals(G);
+Gcut = G;
 for ifacies = 1:7
     loops = geodata.Facies{ifacies};
     numLoops = numel(loops);
@@ -101,7 +109,7 @@ for ifacies = 1:7
         loop = loops(iLoop);
         pointsinds = cell2mat(geodata.Line(abs(geodata.Loop{loop})));
         pointsinds = unique(pointsinds(:), "stable");
-        pointsinds(end+1) = pointsinds(1);
+        % pointsinds(end+1) = pointsinds(1);
         points = geodata.Point(pointsinds);
         points = cell2mat(points(:));
         plot(0,0);
@@ -259,9 +267,11 @@ for ifacies = 1:7
         ypts = points(:,2 );
         plot(xpts, ypts, '-o');
         axis([-0.1 2.9 -0.1 1.3]);
+        axis equal;
         ax = gca;
         ax.TickLength = [0,0];
-        hold off
+        hold on
+        disp(loop)
     end
 end
 %% Stats for main splitter

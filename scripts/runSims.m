@@ -15,17 +15,17 @@ mrstVerbose off
 % 'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-SPEcase = 'A';
-gridcases = {'cut1x1'};
+SPEcase = 'B';
+gridcases = {'pre_cut_130x62'};
 schedulecases = {''};%defaults to schedule from deck
-deckcases = {'RS'}; % can be changed to 'IMMISCIBLE'
+deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
 pdiscs = {''};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';
 
-resetData           = false;
-resetAssembly       = false;
+resetData           = true;
+resetAssembly       = true;
 do.plotStates       = true;
 do.plotFlux         = false;
 do.multiphase       = true;

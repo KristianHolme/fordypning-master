@@ -7,26 +7,26 @@ function timings = runSims2(server)
     mrstVerbose off
     switch  server
     case 1
-        SPEcase = 'A';
-        gridcases = {'cut1x1'};
+        SPEcase = 'B';
+        gridcases = {''};
         schedulecases = {''};
-        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+        pdiscs = {''};
         uwdiscs = {''};
-        deckcases = {'RS'};
+        deckcases = {'B_ISO_SMALL'};
         tagcase = '';
         resetData = false;
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
     case 2
-        SPEcase = 'A';
-        gridcases = {'cut144x48'};
+        SPEcase = 'B';
+        gridcases = {'pre_cut_130x62'};
         schedulecases = {''};
-        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+        pdiscs = {''};
         uwdiscs = {''};
-        deckcases = {'RS'};
+        deckcases = {'B_ISO_SMALL'};
         tagcase = '';
-        resetData = false;
+        resetData = true;
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
