@@ -1,7 +1,7 @@
 function G = setupGrid(simcase, varargin)
     opt = struct('buffer', true);
     opt = merge_options(opt, varargin{:});
-
+    sliceForBuffer = false;
     gridcase = simcase.gridcase;
     specase = lower(simcase.SPEcase);
     if contains(gridcase, 'stretch')
@@ -33,6 +33,7 @@ function G = setupGrid(simcase, varargin)
                 G = gmshToMRST(mFile);
                 save(matFile, "G")
             end
+            sliceForBuffer = true;
                    
             
         elseif contains(gridcase, 'struct')
@@ -45,6 +46,7 @@ function G = setupGrid(simcase, varargin)
                 G = gmshToMRST(mFile);
                 save(matFile, "G")
             end
+            sliceForBuffer = true;
         elseif contains(gridcase, 'skewed3D')
             G = makeSkewed3D();
             return
@@ -127,6 +129,10 @@ function G = setupGrid(simcase, varargin)
         
     elseif ~isempty(simcase.deck) %use deck if present
         G = initEclipseGrid(simcase.deck);
+        G = computeGeometry(G);
+        if max(G.cells.volumes) > 100800
+            return
+        end
     end
     if isfield(G, 'parent') %coarsegrid, this computation maybe superfluous??
         G = coarsenGeometry(G);
@@ -136,8 +142,20 @@ function G = setupGrid(simcase, varargin)
     if stretch
         G = StretchGrid(G);
     end
+    
     if strcmp(simcase.SPEcase, 'B') && opt.buffer %add buffervolume
-        G = addBufferVolume(G, simcase.rock, 'slice', true, 'verbose', true);
+        if ~isfield(G.cells, 'tag')
+            G.cells.tag = simcase.rock.regions.saturation;
+            if max(simcase.rock.poro) > 1 %poro is adjusted instead of volume?
+                opt.buffer = false;
+            end
+        end
+        if opt.buffer
+            if sliceForBuffer
+                [G, simcase] = bufferSlice(G, simcase);
+            end
+            G = addBufferVolume(G, 'verbose', true);
+        end
     end
     if ~checkGrid(G)
         warning("Grid does not pass checkgrid!")

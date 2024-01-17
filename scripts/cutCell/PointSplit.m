@@ -7,7 +7,8 @@ function [G, t] = PointSplit(G, points, varargin)
         'verbose', false, ...
         'waitbar', true, ...
         'save', false, ...
-        'savedir', 'grid-files/cutcell/presplit');
+        'savedir', 'grid-files/cutcell/presplit', ...
+        'bufferVolumeSlice', false);
     opt = merge_options(opt, varargin{:});
 
     dispif(opt.verbose, "Presplitting grid the old way.\nEstimated time: %0.2f s\n", 0.004*prod(G.cartDims));
@@ -55,7 +56,10 @@ function [G, t] = PointSplit(G, points, varargin)
     if opt.save
         nx = G.cartDims(1);
         ny = G.cartDims(2);
-        fn = sprintf("presplit_%dx%d.mat", nx, ny);
+        fn = sprintf('presplit_%dx%d.mat', nx, ny);
+        if opt.bufferVolumeSlice
+            fn = ['buff_', fn];
+        end
         savepth = fullfile(opt.savedir, fn);
         save(savepth, 'G');
     end

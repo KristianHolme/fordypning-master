@@ -16,7 +16,7 @@ mrstVerbose off
 % schedulecases = {'simple-coarse', 'simple-std'};
 
 SPEcase = 'B';
-gridcases = {'pre_cut_130x62'};
+gridcases = {'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
 pdiscs = {''};
@@ -28,7 +28,7 @@ resetData           = true;
 resetAssembly       = true;
 do.plotStates       = true;
 do.plotFlux         = false;
-do.multiphase       = true;
+do.multiphase       = false;
 useJutulIfPossible  = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 

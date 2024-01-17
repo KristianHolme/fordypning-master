@@ -27,14 +27,7 @@ function [state0, model, schedule, nls] = setupSim(simcase, varargin)
                 simcase3d.G = [];
                 [state0, ~, ~, ~] = setupSim(simcase3d);
             else
-                % state00 = initResSol(G, 1*atm, [1, 0]);
-                % regions = getInitializationRegionsDeck(model, deck);
-                % [state0, p] = initStateBlackOilAD(model, regions);
-                % sat = [1,0];
                 p_datum = 1.1e5;
-                % g = model.gravity(3);
-                % p_res = p_ref + g*G.cells.centroids(:, 3).* model.fluid.rhoOS;
-                % state0 = initResSol(G, p_res, sat);
         
                 rsvd = [0,0;100,0];
                 depth_datum = 0.0;
@@ -64,18 +57,47 @@ function [state0, model, schedule, nls] = setupSim(simcase, varargin)
             state0 = initResSol(G, 1*atm, [1, 0]);
         end
     elseif strcmp(simcase.SPEcase, 'B')
-        %solve ode to get pressure and interpolate to get initial pressure
-        rho = @(p) model.fluid.rhoOS/model.fluid.bO(p, 0, 1);
-        well1Depth = 900;
-        equil = ode23(@(z, p) 9.81 .*rho(p), [well1Depth, 0], 300*barsa); %gives pressure at top is 2.0754e+07
-        topPressure = equil.y(end);
-        equil = ode23(@(z, p) 9.81 .*rho(p), [0, sort(unique(G.cells.centroids(:, 3)'))], topPressure);
-        z_values = equil.x;
-        pressure_values = equil.y;
-        pressure_interp_func = @(z) interp1(z_values, pressure_values, z, 'linear');
-        state0.pressure = pressure_interp_func(G.cells.centroids(:,3));
-        state0.rs = zeros(G.cells.num, 1);
-        state0.s = [ones(G.cells.num, 1), zeros(G.cells.num, 1)];
+        if ~isempty(simcase.gridcase)
+            p_datum = 19620000;%why this value, why not 2.0754e+07?
+    
+            rsvd = [0,0;1200,0];
+            depth_datum = 0.0;
+            F = griddedInterpolant(rsvd(:, 1), rsvd(:, 2), 'linear', 'nearest');
+            rs = @(p, z) F(z);
+            rv = [];
+            
+            act = [model.water & model.oil, model.oil & model.gas];
+            contacts = [10000, 0];
+            contacts_pc = [0,0];
+            numRegions = 6;
+            regions = cell(numRegions, 1);
+            for ireg = 1:numRegions
+                cells = find(G.cells.tag == ireg);
+                region = getInitializationRegionsBlackOil(model, contacts(act),...
+                    'cells', cells, 'datum_pressure', p_datum, ...
+                    'datum_depth', depth_datum, 'contacts_pc', contacts_pc(act), ...
+                    'rs', rs, 'rv', rv);
+                regions{ireg} = region;
+            end
+    
+            state0 = initStateBlackOilAD(model, regions);
+
+        elseif simcase.usedeck
+            state0 = initStateDeck(model, deck);
+        else
+            %solve ode to get pressure and interpolate to get initial pressure
+            rho = @(p) model.fluid.rhoOS/model.fluid.bO(p, 0, 1);
+            well1Depth = 900;
+            equil = ode23(@(z, p) 9.81 .*rho(p), [well1Depth, 0], 300*barsa); %gives pressure at top is 2.0754e+07
+            topPressure = equil.y(end);
+            equil = ode23(@(z, p) 9.81 .*rho(p), [0, sort(unique(G.cells.centroids(:, 3)'))], topPressure);
+            z_values = equil.x;
+            pressure_values = equil.y;
+            pressure_interp_func = @(z) interp1(z_values, pressure_values, z, 'linear');
+            state0.pressure = pressure_interp_func(G.cells.centroids(:,3));
+            state0.rs = zeros(G.cells.num, 1);
+            state0.s = [ones(G.cells.num, 1), zeros(G.cells.num, 1)];
+        end
     end
     linearSolverArguments = {'BackslashThreshold', 10000};
     nls = getNonLinearSolver(model, 'LinearSolverArguments', linearSolverArguments);

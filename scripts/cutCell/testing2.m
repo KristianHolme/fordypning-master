@@ -253,15 +253,18 @@ fprintf("Done in %0.2f s\n", t);
 % axis equal;
 % plotGrid(Gcut, 'facealpha', 0);axis tight;
 
+
+data = geodata;
+% data = geodata;
 for ifacies = 1:7
-    loops = geodata.Facies{ifacies};
+    loops = data.Facies{ifacies};
     numLoops = numel(loops);
     for iLoop = 1:numLoops
         loop = loops(iLoop);
-        pointsinds = cell2mat(geodata.Line(abs(geodata.Loop{loop})));
+        pointsinds = cell2mat(data.Line(abs(data.Loop{loop})));
         pointsinds = unique(pointsinds(:), "stable");
         pointsinds(end+1) = pointsinds(1);
-        points = geodata.Point(pointsinds);
+        points = data.Point(pointsinds);
         points = cell2mat(points(:));
         xpts = points(:,1 );
         ypts = points(:,2 );

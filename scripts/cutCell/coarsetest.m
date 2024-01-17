@@ -19,6 +19,7 @@ nx = 130;
 ny = 62;
 Gcut = loadCutCell(nx, ny);
 Gpre = loadPresplit(nx, ny);
+% GenerateCutCellGrid(nx, ny, 'presplit', true, 'bufferVolumeSlice', false)
 %%
 t = tic();
 partition = PartitionByTag(Gcut);
@@ -30,6 +31,9 @@ CG.cells.tag = Gcut.cells.tag(unique(partition));
 % CG = TagbyFacies(CG, geodata);
 t = toc(t);
 fprintf("Partition and coarsen in %0.2f s\n", t);
+%%
+plotCellData(Gcut, Gcut.cells.tag)
+outlineCoarseGrid(Gcut, compressedPartition);
 %%
 G = RegularizeCoarseGrid(CG);
 %%

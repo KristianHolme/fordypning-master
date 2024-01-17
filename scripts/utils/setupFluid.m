@@ -2,12 +2,6 @@ function fluid = setupFluid(simcase, varargin)
     opt = struct('deck', []);
     opt = merge_options(opt, varargin{:});
 
-    
-    faciesSwimm     = [0.32; 0.14; 0.12; 0.12; 0.12; 0.10; NaN];
-    faciesPentry    = [1500; 300; 100; 25; 10; 1;NaN]*Pascal;
-    faciesDw        = [1;1;1;1;1;1;1]*1e-9; %m^2s^-1
-    faciesDg        = [1;1;1;1;1;1;1]*1.6e-5; %m^2s^-1
-
     fluidcase = simcase.fluidcase;
     if strcmp(fluidcase, 'simple')
         fluid = initSimpleADIFluid('phases', 'WG', ...

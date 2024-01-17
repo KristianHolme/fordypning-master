@@ -156,9 +156,10 @@ end
 %     'struct193x83', 'struct340x150','semi188x38_0.3', 'semi263x154_0.3', 'semi203x72_0.3'};SPEcase = 'A';
 % gridcases = {'6tetRef3', '5tetRef3', '5tetRef2', '5tetRef1', 'semi263x154_0.3', 'struct340x150'};SPEcase = 'A';
 % gridcases = {'5tetRef10'};SPEcase = 'A';
+gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'};SPEcase = 'A';
 
-
-gridcases = {'5tetRef0.175','5tetRef0.21', '5tetRef0.3', '5tetRef0.4','5tetRef0.8', '5tetRef2', '5tetRef10'};SPEcase = 'B'; %B grids
+% gridcases = {'5tetRef0.3', '5tetRef0.4','5tetRef0.8', '5tetRef2', '5tetRef10'};SPEcase = 'B'; %B grids
+% gridcases = {'5tetRef1', '5tetRef1.2','5tetRef1.3'};SPEcase = 'B'; %B test
 % gridcases = {'6tetRef0.4', '5tetRef0.4','5tetRef0.8', '5tetRef2', 'semi263x154_0.3', 'struct420x141'};SPEcase = 'B'; %B grids
 % gridcases = {};
 % ress = {};
