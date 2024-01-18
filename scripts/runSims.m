@@ -17,6 +17,7 @@ mrstVerbose off
 
 SPEcase = 'B';
 gridcases = {'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
+gridases = {''};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
 pdiscs = {''};
@@ -29,6 +30,7 @@ resetAssembly       = true;
 do.plotStates       = true;
 do.plotFlux         = false;
 do.multiphase       = false;
+do.dispTime         = false;
 useJutulIfPossible  = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 
@@ -59,6 +61,9 @@ for ideck = 1:numel(deckcases)
                         timingname = replace(timingname, '-', '_');
                         timingname = replace(timingname, '.', '_');
                         timings.(timingname) = time;
+                    end
+                    if do.dispTime
+                        fprintf('Timing: %s: %0.2f\n', simcase.gridcase, simcase.getWallTime);
                     end
                     if do.plotStates
                         simcase.plotStates('lockCaxis', false);

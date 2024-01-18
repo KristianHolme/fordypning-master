@@ -47,7 +47,7 @@ function result = readGeo(filename, varargin)
     if ~isempty(datahorz)
         datahorz = vertcat(datahorz{:});
         datahorz(:,2) = cellfun(@(s) str2num(s), datahorz(:,2), 'UniformOutput', false);
-        result.horizons = datahorz;
+        result.horz = datahorz;
     end
     if opt.assignextra
     %assign loops to Fascies
