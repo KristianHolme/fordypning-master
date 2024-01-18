@@ -17,19 +17,19 @@ mrstVerbose off
 
 SPEcase = 'B';
 gridcases = {'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
-gridases = {''};
+gridcases = {''};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
 pdiscs = {''};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = '';
+tagcase = 'normalRock';
 
-resetData           = true;
+resetData           = false;
 resetAssembly       = true;
 do.plotStates       = true;
 do.plotFlux         = false;
-do.multiphase       = false;
+do.multiphase       = true;
 do.dispTime         = false;
 useJutulIfPossible  = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met

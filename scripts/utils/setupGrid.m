@@ -146,7 +146,7 @@ function G = setupGrid(simcase, varargin)
     if strcmp(simcase.SPEcase, 'B') && opt.buffer %add buffervolume
         if ~isfield(G.cells, 'tag')
             G.cells.tag = simcase.rock.regions.saturation;
-            if max(simcase.rock.poro) > 1 %poro is adjusted instead of volume?
+            if max(simcase.rock.poro) > 1 %poro is adjusted instead of volume
                 opt.buffer = false;
             end
         end

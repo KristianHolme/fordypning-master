@@ -2,10 +2,18 @@ function G = RotateGrid(G)
     % Rotation matrix to rotate 90 degrees about X-axis
     % Transformation matrix to rotate -90 degrees about X-axis
     T = [1, 0, 0; 0, 0, 1; 0, -1, 0];
-    
-    pointSets = {'cells.centroids', 'faces.centroids', 'nodes.coords'};
-    if isfield(G, 'parent')
-        pointSets{3} = 'parent.nodes.coords';
+
+    if isfield(G, 'cells')%G is a grid
+        pointSets = {'cells.centroids', 'faces.centroids', 'nodes.coords'};
+        if isfield(G, 'parent')
+            pointSets{3} = 'parent.nodes.coords';
+        end
+    elseif isfield(G, 'Point')%input is geodata
+        G.Point = vertcat(G.Point{:});
+        pointSets = {'Point'};
+    else
+        warning("Input is not grid or geodata!, returning input...")
+        return
     end
     
     for i = 1:length(pointSets)
@@ -25,6 +33,11 @@ function G = RotateGrid(G)
         % Update the field in G
         G = setfield(G, subfields{:}, rotatedPoints);
     end
-    G.type{end+1} = 'RotateGrid';
+    if isfield(G, 'type')
+        G.type{end+1} = 'RotateGrid';
+    else
+        G.Point = mat2cell(G.Point, ones(1, size(G.Point, 1)), 3);
+    end
+
 end
 

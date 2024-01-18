@@ -1,18 +1,18 @@
 function timings = MarkovSims(server)
     mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
         ad-blackoil postprocessing diagnostics prosjektOppgave...
-        deckformat gmsh nfvm mpfa
+        deckformat gmsh nfvm mpfa coarsegrid
     % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
     % schedulecases = {'simple-coarse', 'simple-std'};
     mrstVerbose off
     switch  server
         case 1
-            SPEcase = 'A';
-            gridcases = {'cut144x48'};
+            SPEcase = 'B';
+            gridcases = {''};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+            pdiscs = {'', 'hybrid-ntpfa'};
             uwdiscs = {''};
-            deckcases = {'RS'};
+            deckcases = {'B_ISO_SMALL'};
             tagcase = '';
             resetData = false;
             resetAssembly = true;
@@ -20,12 +20,12 @@ function timings = MarkovSims(server)
             Jutul = false;
             direct_solver = false;
         case 2
-            SPEcase = 'A';
-            gridcases = {'cut210x70'};
+            SPEcase = 'B';
+            gridcases = {''};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+            pdiscs = {'hybrid-avgmpfa', 'hybrid-mpfa'};
             uwdiscs = {''};
-            deckcases = {'RS'};
+            deckcases = {'B_ISO_SMALL'};
             tagcase = '';
             resetData = false;
             resetAssembly = true;
@@ -34,12 +34,12 @@ function timings = MarkovSims(server)
             direct_solver = false;
         case 3
             SPEcase = 'B';
-            gridcases = {'cut144x48'};
+            gridcases = {''};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+            pdiscs = {''};
             uwdiscs = {''};
             deckcases = {'RS'};
-            tagcase = '';
+            tagcase = 'normalRock';
             resetData = false;
             resetAssembly = true;
             do.multiphase = true;

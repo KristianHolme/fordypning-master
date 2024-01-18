@@ -1,7 +1,9 @@
 function G = TagbyFacies(G, geodata, varargin)
-%use inpolygon to find facies of each cell
-    opt = struct('verbose', false');
+%use inpolygon to fvertIxind facies of each cell
+    opt = struct('verbose', false, ...
+                 'vertIx', 2);
     opt = merge_options(opt, varargin{:});
+    vertIx = opt.vertIx;
     tic()
     G.cells.tag = zeros(G.cells.num, 1);
     for ifacies = 1:7
@@ -14,9 +16,9 @@ function G = TagbyFacies(G, geodata, varargin)
             points = geodata.Point(pointsinds);
             points = cell2mat(points(:));
             centroidxs = G.cells.centroids(:,1);
-            centroidys = G.cells.centroids(:,2);
+            centroidys = G.cells.centroids(:,vertIx);
             polyxs = points(:,1);
-            polyys = points(:, 2);
+            polyys = points(:, vertIx);
             in = inpolygon(centroidxs, centroidys, polyxs, polyys);
             G.cells.tag(in) = ifacies;
         end

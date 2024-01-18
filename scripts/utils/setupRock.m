@@ -5,6 +5,15 @@ function rock = setupRock(simcase)
         rock = makeRock(G, 100*milli*darcy, .2);
         return
     end
+    if strcmp(simcase.tagcase, 'normalRock')
+        rock = initEclipseRock(simcase.deck);
+        active = G.cells.indexMap;
+        rock = compressRock(rock, active);
+        G.cells.tag = rock.regions.saturation;
+        % geodata = readGeo('./scripts/cutcell/geo/spe11a.geo', 'assignExtra', true);
+        % geodata = StretchGeo(RotateGrid(geodata));
+        % G = TagbyFacies(G, geodata, 'vertIx', 3); %tagging grid in xz plane
+    end
     if isfield(G.cells, 'tag')
         if strcmp(simcase.SPEcase, 'A')
             faciesPerm      = [4e-11; 5e-10;1e-9; 2.0e-9; 4e-9; 1e-8; 0.0];
