@@ -8,26 +8,26 @@ function timings = MarkovSims(server)
     switch  server
         case 1
             SPEcase = 'B';
-            gridcases = {''};
+            gridcases = {'pre_cut_130x62'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-ntpfa'};
             uwdiscs = {''};
             deckcases = {'B_ISO_SMALL'};
             tagcase = '';
-            resetData = false;
+            resetData = true;
             resetAssembly = true;
             do.multiphase = true;
             Jutul = false;
             direct_solver = false;
         case 2
             SPEcase = 'B';
-            gridcases = {''};
+            gridcases = {'pre_cut_130x62'};
             schedulecases = {''};
             pdiscs = {'hybrid-avgmpfa', 'hybrid-mpfa'};
             uwdiscs = {''};
             deckcases = {'B_ISO_SMALL'};
             tagcase = '';
-            resetData = false;
+            resetData = true;
             resetAssembly = true;
             do.multiphase = true;
             Jutul = false;

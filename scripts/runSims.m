@@ -4,7 +4,7 @@ close all
 %%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa
+    deckformat gmsh nfvm mpfa msrsb
 mrstVerbose off
 %%
 % deckcases = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV', 'pyopm-Finer', 'pyopm-Coarser'};
@@ -16,14 +16,14 @@ mrstVerbose off
 % schedulecases = {'simple-coarse', 'simple-std'};
 
 SPEcase = 'B';
-gridcases = {'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
+% gridcases = {'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 gridcases = {''};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
 pdiscs = {''};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = 'normalRock';
+tagcase = 'normalRock';%normalRock
 
 resetData           = false;
 resetAssembly       = true;

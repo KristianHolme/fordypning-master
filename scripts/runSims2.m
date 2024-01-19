@@ -20,12 +20,12 @@ function timings = runSims2(server)
         direct_solver = false;
     case 2
         SPEcase = 'B';
-        gridcases = {'pre_cut_130x62'};
+        gridcases = {''};
         schedulecases = {''};
         pdiscs = {''};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
-        tagcase = '';
+        tagcase = 'normalRock';
         resetData = true;
         resetAssembly = false;
         Jutul = false;

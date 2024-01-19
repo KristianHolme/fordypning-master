@@ -22,11 +22,16 @@ function [G, t] = PointSplit(G, points, varargin)
     dispif(opt.verbose, "Presplitting grid the old way.\nEstimated time: %0.2f s\n", 0.004*prod(G.cartDims));
     tic();
     eps = 1e-10; %to make sure points are not inside cell. Maybe not necessary
+    epsfactor = 0.01;
     numpoints = numel(points);
-    f = waitbar(0, 'Starting');
+    if opt.waitbar
+        f = waitbar(0, 'Starting');
+    end
     
     for ipoint = 1:numpoints
-        waitbar(ipoint/numpoints, f, sprintf('Splitting progress: %d %%. (%d/%d).', floor(ipoint/numpoints*100), ipoint, numpoints))
+        if opt.waitbar
+            waitbar(ipoint/numpoints, f, sprintf('Splitting progress: %d %%. (%d/%d).', floor(ipoint/numpoints*100), ipoint, numpoints))
+        end
         point = points{ipoint};
         cell = findEnclosingCell(G, point);
         if cell == 0
@@ -40,36 +45,65 @@ function [G, t] = PointSplit(G, points, varargin)
         faceCentroids = G.faces.centroids(faces, :);
         faceNormals = G.faces.normals(faces, :);
         faceAreas = G.faces.areas(faces,:);
-        [faceymax, faceymaxIx] = max(faceCentroids(:, vertIx));
-        [faceymin, faceyminIx] = min(faceCentroids(:, vertIx));
-        [facexmax, facexmaxIx] = max(faceCentroids(:, 1));
-        [facexmin, facexminIx] = min(faceCentroids(:, 1));
+
+        upvector = [0 0 0];
+        upvector(vertIx) = 1;
+        sidefaces = dot(faceNormals, repmat(upvector, numel(faces), 1), 2) == 0;
+        topbotfaces = find(~sidefaces);
+        sidefaces = find(sidefaces);
+
+        [faceymax, faceymaxIx] = max(faceCentroids(topbotfaces, vertIx));
+        [faceymin, faceyminIx] = min(faceCentroids(topbotfaces, vertIx));
+        [facexmax, facexmaxIx] = max(faceCentroids(sidefaces, 1));
+        [facexmin, facexminIx] = min(faceCentroids(sidefaces, 1));
+
+        faceymaxIx = topbotfaces(faceymaxIx);
+        faceyminIx = topbotfaces(faceyminIx);
+        facexmaxIx = sidefaces(facexmaxIx);
+        facexminIx = sidefaces(facexminIx);
         
-    
-        
-        offsetup = abs( dot(point-faceCentroids(faceymaxIx, vertIx), faceNormals(faceymaxIx,:)/faceAreas(faceymaxIx)) );
-                offsetdown = faceCentroids(faceymaxIx, vertIx) - faceCentroids(faceyminIx, vertIx) - offsetup;
-        ydist = min(offsetup, offsetdown);
+        offsetup = abs( dot(point-faceCentroids(faceymaxIx, :), faceNormals(faceymaxIx,:)/faceAreas(faceymaxIx)) );
+        offsetdown = abs( dot(point-faceCentroids(faceyminIx, :), faceNormals(faceyminIx,:)/faceAreas(faceyminIx)) );
+        % offsetdown = faceCentroids(faceymaxIx, vertIx) - faceCentroids(faceyminIx, vertIx) - offsetup;
+        [ydist, closestydir] = min([offsetup, offsetdown]);
         xdist = min(facexmax - point(1), point(1)-facexmin);
         [dist, splitdir] = min([xdist, ydist]);
         if dist ~= 0
+            dispif(opt.verbose, "point %d\n", ipoint);
             %Split cell
             if splitdir == 1
+                eps = (facexmax - facexmin)*epsfactor;
                 offset = point(vertIx) - interp1([facexmin, facexmax], ...
                 [faceCentroids(facexminIx, vertIx), faceCentroids(facexmaxIx, vertIx)], ...
                 point(1), 'linear');
+                if closestydir == 1
+                    closestnormal = faceNormals(faceymaxIx,:);
+                else
+                    closestnormal = faceNormals(faceyminIx,:);
+                end
+                closestnormal = closestnormal*sign(closestnormal(vertIx));
+                slope = closestnormal(1)/closestnormal(vertIx);
                 splitpoints = [facexmin-eps 0 0; 
                                facexmax+eps 0 0];
-                splitpoints(:, vertIx) = [faceCentroids(facexminIx, vertIx) + offset;faceCentroids(facexmaxIx, vertIx) + offset];
+                splitpoints(:, vertIx) = [point(vertIx) + (point(1)-facexmin)*slope; point(vertIx) - (facexmax - point(1))*slope];
+                % splitpoints(:, vertIx) = [faceCentroids(facexminIx, vertIx) + offset;faceCentroids(facexmaxIx, vertIx) + offset];
             elseif splitdir == 2
+                eps = (faceymax - faceymin)*epsfactor;
                 splitpoints = [point(1), 0, 0; 
                                point(1), 0, 0];
                 splitpoints(:, vertIx) = [point(vertIx)-offsetdown-eps;point(vertIx)+offsetup+eps];
             end
+            clf;
+            plotGrid(G, [cell; getCellNeighbors(G, cell)]);
+            hold on;plot3(splitpoints(:,1), splitpoints(:,2), splitpoints(:,3));
+            plot3(point(1), point(2), point(3), 'ro');
             G = sliceGrid(G, splitpoints, 'cutDir', dir);
+            plotGrid(G, [cell; getCellNeighbors(G, cell)]);
         end
     end
-    close(f);
+    if opt.waitbar
+        close(f);
+    end
     t = toc();
     dispif(opt.verbose, sprintf("Done in %0.2f s\n", t));
     G.type{end+1} = 'PointSplit';

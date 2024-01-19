@@ -13,7 +13,8 @@ if strcmp(SPEcase, 'A')
     steps = [30, 144, 720];
 else 
     scaling = SPEyear;unit='y';
-    steps = [40, 150, 360];
+    % steps = [40, 150, 360];
+    steps = [4];
 end
 %% Setup grid v disc
 
@@ -39,7 +40,7 @@ end
 % gridcases = {'5tetRef2', '5tetRef2-2D'}; filename = 'UUgriddimComp';
 % gridcases = {'semi263x154_0.3','semi203x72_0.3',  'semi188x38_0.3'};filename = 'SS_refine_alldiscs';
 % gridcases = {'5tetRef0.8', '5tetRef2-stretch'};filename = 'UU_M_stretch_comp';
-gridcases = {'6tetRef0.4', '5tetRef0.4', '5tetRef1-stretch'};filename = 'FmeshalgStretch';
+% gridcases = {'6tetRef0.4', '5tetRef0.4', '5tetRef1-stretch'};filename = 'FmeshalgStretch';
 % gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
 % gridcases = {'struct420x141'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
@@ -56,7 +57,7 @@ plotgrid = false;
 saveplot = true;
 
 filename = [SPEcase, '_', dataname, '_', filename];
-savefolder=fullfile('plots\multiplot', subname);
+savefolder=fullfile('plots/multiplot', subname);
 
 numGrids = numel(gridcases);
 numDiscs = numel(pdiscs);
@@ -106,26 +107,27 @@ end
 %% Setup full error plot/diff
 % gridcase = '5tetRef0.4';
 % gridcase = '5tetRef1';
-gridcase = 'semi263x154_0.3';
+% gridcase = 'semi263x154_0.3';
 % gridcase = '6tetRef0.4';
 % gridcase = '5tetRef0.4';
 % gridcase = '5tetRef1-stretch';
-
+gridcase = '';
 
 % steps = [360];
 
 
 filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
-deckcase = 'RS';
-tagcases = {''};%one for each pdisc or one for all cases
+pdiscs = {'', ''};
+deckcase = 'B_ISO_SMALL';
+tagcases = {'', 'normalRock'};%one for each pdisc or that applies to all pdiscs
 
 
 saveplot = true;
 bigGrid = false;
-savefolder = ['plots\differenceplots\', SPEcase, '\', displayNameGrid(gridcase, SPEcase)];
+savefolder = ['plots/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
 numDiscs = numel(pdiscs);
 %% Load data diff
 if numel(tagcases) ~= numDiscs
@@ -216,7 +218,7 @@ tagcase = '';
 
 
 saveplot = true;
-savefolder = 'plots\timeEvolution';
+savefolder = 'plots/timeEvolution';
 
 numcases = numel(pdiscs);
 %% Load timeEvo data

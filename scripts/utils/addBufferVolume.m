@@ -1,4 +1,4 @@
-function G = addBufferVolume(G, varargin)
+function G = addBufferVolume(G, rock, varargin)
     % adds buffervolume on left and right boundary of G
     % need to have G.tag to indicate facies
 
@@ -29,7 +29,7 @@ function G = addBufferVolume(G, varargin)
             assert(facies ~=6 )
             if ismember(facies, [2, 3, 4, 5])
                 extraVolume = faceArea*areaVolumeConstant/eps;
-                G.cells.volumes(cell) = G.cells.volumes(cell) + extraVolume;
+                G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
             end
         end
     end

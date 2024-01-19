@@ -154,7 +154,7 @@ function G = setupGrid(simcase, varargin)
             if sliceForBuffer
                 [G, simcase] = bufferSlice(G, simcase);
             end
-            G = addBufferVolume(G, 'verbose', true);
+            G = addBufferVolume(G, simcase.rock,'verbose', true);
         end
     end
     if ~checkGrid(G)

@@ -19,11 +19,13 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
         end
         line = geodata.Line{iline};
         points = geodata.Point(line);
-        points = cell2mat(points(:));    
+        points = cell2mat(points(:));
+        [Gcut, gix] = sliceGrid(Gcut, points, 'cutDir', dir);
+        
         pp{end+1} = points;
     end
     dd = repmat({dir}, 1, numel(pp));
-    Gcut = sliceGrid(Gcut, pp, 'cutDir', dd);
+    % Gcut = sliceGrid(Gcut, pp, 'cutDir', dd);
     t = toc();
     Gcut = TagbyFacies(Gcut, geodata, 'verbose', opt.verbose);%Tag facies
     dispif(opt.verbose, sprintf("Done in %0.2f s\n", t));

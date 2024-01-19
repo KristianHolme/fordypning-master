@@ -255,6 +255,7 @@ fprintf("Done in %0.2f s\n", t);
 
 
 data = geodata;
+vertIx = 3;
 % data = geodata;
 for ifacies = 1:7
     loops = data.Facies{ifacies};
@@ -267,7 +268,7 @@ for ifacies = 1:7
         points = data.Point(pointsinds);
         points = cell2mat(points(:));
         xpts = points(:,1 );
-        ypts = points(:,3 );%2 if A(x-y), 3 if B (x-z)
+        ypts = points(:,vertIx );%2 if A(x-y), 3 if B (x-z)
         plot(xpts, ypts, '-o');
         % axis([-0.1 2.9 -0.1 1.3]);
         axis equal;
