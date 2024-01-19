@@ -12,7 +12,7 @@ function [G, t] = PointSplit(G, points, varargin)
     opt = merge_options(opt, varargin{:});
     
     dir = opt.dir;
-    if dir == [0 1 0]
+    if all(dir == [0 1 0])
         %we are in B and n xz-plane
         vertIx = 3;
     else
@@ -93,12 +93,12 @@ function [G, t] = PointSplit(G, points, varargin)
                                point(1), 0, 0];
                 splitpoints(:, vertIx) = [point(vertIx)-offsetdown-eps;point(vertIx)+offsetup+eps];
             end
-            clf;
-            plotGrid(G, [cell; getCellNeighbors(G, cell)]);
-            hold on;plot3(splitpoints(:,1), splitpoints(:,2), splitpoints(:,3));
-            plot3(point(1), point(2), point(3), 'ro');
+            % clf;
+            % plotGrid(G, [cell; getCellNeighbors(G, cell)]);
+            % hold on;plot3(splitpoints(:,1), splitpoints(:,2), splitpoints(:,3));
+            % plot3(point(1), point(2), point(3), 'ro');
             G = sliceGrid(G, splitpoints, 'cutDir', dir);
-            plotGrid(G, [cell; getCellNeighbors(G, cell)]);
+            % plotGrid(G, [cell; getCellNeighbors(G, cell)]);
         end
     end
     if opt.waitbar

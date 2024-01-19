@@ -63,6 +63,8 @@ function G = setupGrid(simcase, varargin)
             if ~isfile(matFile)
                 error([matFile, ' not found']);
             end
+        elseif contains(gridcase, 'cp')
+            matFile = fullfile('grid-files/cutcell/', [gridcase, '.mat']);
         elseif contains(gridcase, 'cut')
             gridFolder = 'grid-files/cutcell';
             pattern = '(\d+)x(\d+)$';
@@ -122,7 +124,7 @@ function G = setupGrid(simcase, varargin)
                 G = makeLayeredGrid(G, depth);
                 G = computeGeometry(G);
             end
-            if ~ismember(G.type, 'RotateGrid')
+            if ~any(ismember(G.type, 'RotateGrid')) && ~(max(G.cells.centroids(:,3)) > 1000)
                 G = RotateGrid(G);%rotategrid to Z axis
             end
         end

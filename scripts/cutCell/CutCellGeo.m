@@ -3,10 +3,11 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
     opt = struct('dir', [0 0 1], ...
                  'verbose', false, ...
                  'save', true, ...
-                 'savedir', 'grid-files\cutcell', ...
+                 'savedir', 'grid-files/cutcell', ...
                  'presplit', true, ...
-                 'bufferVolumeSlice', false);
-    opt = merge_options(opt, varargin{:});
+                 'bufferVolumeSlice', false, ...
+                 'extendSliceFactor', 0.0);
+    [opt, extra] = merge_options(opt, varargin{:});
     dir = opt.dir;
     dispif(opt.verbose, "Main splitting...\n");
     tic();
@@ -20,8 +21,13 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
         line = geodata.Line{iline};
         points = geodata.Point(line);
         points = cell2mat(points(:));
-        [Gcut, gix] = sliceGrid(Gcut, points, 'cutDir', dir);
-        
+        for i=1:2
+            vec =  points(i, :) - points(end+1-i, :);
+            vec = vec/norm(vec);
+            points(i,:) = points(i,:) + opt.extendSliceFactor* vec;
+        end
+        [Gcut, gix] = sliceGrid(Gcut, points, 'cutDir', dir, extra{:});
+
         pp{end+1} = points;
     end
     dd = repmat({dir}, 1, numel(pp));

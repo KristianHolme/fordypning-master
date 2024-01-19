@@ -29,6 +29,7 @@ function G = addBufferVolume(G, rock, varargin)
             assert(facies ~=6 )
             if ismember(facies, [2, 3, 4, 5])
                 extraVolume = faceArea*areaVolumeConstant/eps;
+                oldVolume = G.cells.volumes(cell);
                 G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
             end
         end

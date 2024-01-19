@@ -17,13 +17,13 @@ mrstVerbose off
 
 SPEcase = 'B';
 % gridcases = {'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
-gridcases = {''};
+gridcases = {'cp_pre_cut_130x62'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
 pdiscs = {''};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = 'normalRock';%normalRock
+tagcase = '';%normalRock
 
 resetData           = false;
 resetAssembly       = true;
