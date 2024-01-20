@@ -6,7 +6,7 @@ getData = @(states, step, G) states{step}.rs; cmap=''; dataname = 'rs';
 % getData = @(states, step, G) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation';
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';
 % getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap='';
-%%
+%% SPEcase, steps
 SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
     scaling = hour; unit = 'h';
@@ -111,7 +111,7 @@ end
 % gridcase = '6tetRef0.4';
 % gridcase = '5tetRef0.4';
 % gridcase = '5tetRef1-stretch';
-gridcase = '';
+gridcase = 'pre_cut_130x62';
 
 % steps = [360];
 
@@ -120,9 +120,9 @@ filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
-pdiscs = {'', ''};
+pdiscs = {'', 'hybrid-ntpfa'};
 deckcase = 'B_ISO_SMALL';
-tagcases = {'', 'normalRock'};%one for each pdisc or that applies to all pdiscs
+tagcases = {''};%one for each pdisc or that applies to all pdiscs
 
 
 saveplot = true;

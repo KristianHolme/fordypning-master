@@ -78,7 +78,7 @@ function multiplot(data, varargin)
     f = figure('Position', [screenSize(3)*0.05 screenSize(4)*0.05 figWidth figHeight]);
     t = tiledlayout(numRows, numCols, 'Padding', 'loose', 'TileSpacing', 'compact');
     if ~isempty(opt.title)
-        title(t, opt.title, 'fontsize', 25)
+        title(t, opt.title, 'fontsize', 25, 'interpreter', 'none')
     end
 
     for i = 1:numRows

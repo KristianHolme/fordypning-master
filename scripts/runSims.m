@@ -16,21 +16,21 @@ mrstVerbose off
 % schedulecases = {'simple-coarse', 'simple-std'};
 
 SPEcase = 'B';
-% gridcases = {'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
-gridcases = {'cp_pre_cut_130x62'};
+% gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
+gridcases = {''};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
-pdiscs = {''};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';%normalRock
 
 resetData           = false;
 resetAssembly       = true;
-do.plotStates       = true;
+do.plotStates       = false;
 do.plotFlux         = false;
-do.multiphase       = true;
-do.dispTime         = false;
+do.multiphase       = false;
+do.dispTime         = true;
 useJutulIfPossible  = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 
@@ -63,7 +63,7 @@ for ideck = 1:numel(deckcases)
                         timings.(timingname) = time;
                     end
                     if do.dispTime
-                        fprintf('Timing: %s: %0.2f\n', simcase.gridcase, simcase.getWallTime);
+                        fprintf('Timing: %s: %0.2f\n', simcase.casename, simcase.getWallTime);
                     end
                     if do.plotStates
                         simcase.plotStates('lockCaxis', false);
