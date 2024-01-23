@@ -99,9 +99,10 @@ G = repairNormals(G);
 % Gcut = sliceGrid(G, p, 'cutDir', dir);
 % plotGrid(Gcut);
 %% Main cutting
-G = computeGeometry(G);
+Gpre = computeGeometry(Gpre);
 % G = repairNormals(G);
-Gcut = G;
+dir = [0 1 0];
+Gcut = Gpre;
 for ifacies = 1:7
     loops = geodata.Facies{ifacies};
     numLoops = numel(loops);
@@ -253,29 +254,31 @@ fprintf("Done in %0.2f s\n", t);
 % axis equal;
 % plotGrid(Gcut, 'facealpha', 0);axis tight;
 
-
-data = geodata;
+hold on;
+data = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);;
 vertIx = 3;
-% data = geodata;
 for ifacies = 1:7
     loops = data.Facies{ifacies};
     numLoops = numel(loops);
     for iLoop = 1:numLoops
         loop = loops(iLoop);
+        disp(loop);
         pointsinds = cell2mat(data.Line(abs(data.Loop{loop})));
         pointsinds = unique(pointsinds(:), "stable");
         pointsinds(end+1) = pointsinds(1);
         points = data.Point(pointsinds);
         points = cell2mat(points(:));
         xpts = points(:,1 );
-        ypts = points(:,vertIx );%2 if A(x-y), 3 if B (x-z)
-        plot(xpts, ypts, '-o');
+        ypts = points(:,2 );%2 if A(x-y), 3 if B (x-z)
+        zpts = points(:,3);
+        % plot3(xpts, ypts, zpts, '-o');
+        plot(xpts, ypts, 'o');
         % axis([-0.1 2.9 -0.1 1.3]);
-        axis equal;
+        % axis equal;
         ax = gca;
         ax.TickLength = [0,0];
         hold on
-        disp(loop)
+        
     end
 end
 %% Stats for main splitter

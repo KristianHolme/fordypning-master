@@ -1,32 +1,32 @@
 function timings = runSims2(server)
     mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa
+    deckformat gmsh nfvm mpfa coarsegrid
     % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
     % schedulecases = {'simple-coarse', 'simple-std'};
     mrstVerbose off
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {''};
+        gridcases = {'horz_pre_cut_130x62'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
-        resetData = true;
+        resetData = false;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
     case 2
         SPEcase = 'B';
-        gridcases = {''};
+        gridcases = {'horz_pre_cut_130x62'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
-        tagcase = 'normalRock';
-        resetData = true;
+        tagcase = 'upscale';
+        resetData = false;
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;

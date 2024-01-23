@@ -6,7 +6,9 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
                  'savedir', 'grid-files/cutcell', ...
                  'presplit', true, ...
                  'bufferVolumeSlice', false, ...
-                 'extendSliceFactor', 0.0);
+                 'extendSliceFactor', 0.0, ...
+                 'type', 'cartesian', ...
+                 'vertIx', 2);
     [opt, extra] = merge_options(opt, varargin{:});
     dir = opt.dir;
     dispif(opt.verbose, "Main splitting...\n");
@@ -14,9 +16,16 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
     numlines = numel(geodata.Line);
     pp = {};
     Gcut = G;
+    isCut = false(1, numlines);
     for iline = 1:numlines
-        if ismember(iline, geodata.BoundaryLines)%skip boundarylines
+        if isCut(iline)
             continue
+        elseif ismember(iline, geodata.BoundaryLines)%skip boundarylines
+            continue
+        elseif isfield(geodata, 'includeLines') && ~ismember(iline, geodata.includeLines)
+            continue
+        else
+            isCut(iline) = true;
         end
         line = geodata.Line{iline};
         points = geodata.Point(line);
@@ -33,14 +42,15 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
     dd = repmat({dir}, 1, numel(pp));
     % Gcut = sliceGrid(Gcut, pp, 'cutDir', dd);
     t = toc();
-    Gcut = TagbyFacies(Gcut, geodata, 'verbose', opt.verbose);%Tag facies
+    Gcut = TagbyFacies(Gcut, geodata, 'verbose', opt.verbose, 'vertIx', opt.vertIx);%Tag facies
+    Gcut = getBufferCells(Gcut); %find buffercells
     dispif(opt.verbose, sprintf("Done in %0.2f s\n", t));
     if opt.save
         nx = G.cartDims(1);
-        ny = G.cartDims(2);
-        fn = sprintf('cutcell_%dx%d.mat', nx, ny);
+        ny = G.cartDims(opt.vertIx);
+        fn = sprintf('%s_cutcell_%dx%d.mat', opt.type, nx, ny);
         if opt.presplit
-            fn = ['presplit_', fn];
+            fn = sprintf('%s_presplit_cutcell_%dx%d.mat', opt.type, nx, ny);
         end
         if opt.bufferVolumeSlice
             fn = ['buff_', fn];

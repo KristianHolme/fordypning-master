@@ -34,6 +34,14 @@ function model = setupModel(simcase, varargin)
     if ~isempty(simcase.uwdisc) && contains(simcase.uwdisc, 'WENO')
         model = setWENODiscretization(model);
     end
+    if contains(simcase.tagcase, 'upscale')
+        partition = PartitionByTag(G);
+        model = upscaleModelTPFA(model, partition);
+        [~, CGcellToGCell] = unique(partition, 'first');
+        model.G.cells.tag = G.cells.tag(CGcellToGCell);
+
+        simcase.G = model.G;
+    end
 
     model.OutputStateFunctions{end+1} = 'CapillaryPressure';
     model.OutputStateFunctions{end+1} = 'ComponentMobility';

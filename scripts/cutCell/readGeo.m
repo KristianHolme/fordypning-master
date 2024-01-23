@@ -41,14 +41,6 @@ function result = readGeo(filename, varargin)
         % Assign the value
         result.(fieldName){index} = value;
     end
-
-    %Read horizons if present
-    datahorz = regexp(text, '\"([A-Za-z]\d*(\.\d+)?)\", \d+\) = \{([\d, ]+)\}', 'tokens');
-    if ~isempty(datahorz)
-        datahorz = vertcat(datahorz{:});
-        datahorz(:,2) = cellfun(@(s) str2num(s), datahorz(:,2), 'UniformOutput', false);
-        result.horz = datahorz;
-    end
     if opt.assignextra
     %assign loops to Fascies
         result.Facies{1} = [7, 8, 9, 32];
@@ -60,4 +52,24 @@ function result = readGeo(filename, varargin)
         result.Facies{2} = [26, 27, 28, 29, 30];
         result.BoundaryLines = unique([1, 2, 12, 11, 9, 8, 10, 7, 6, 5, 3, 4, 24, 23, 22, 21, 20, 19, 18, 17, 16, 14, 15, 13]);
     end
+
+    %Read horizons if present
+    datahorz = regexp(text, '\"([H]\d*(\.\d+)?)\", \d+\) = \{([\d, ]+)\}', 'tokens');
+    if ~isempty(datahorz)
+        datahorz = vertcat(datahorz{:});
+        datahorz(:,2) = cellfun(@(s) str2num(s), datahorz(:,2), 'UniformOutput', false);
+        result.horz = datahorz;
+    end
+    %Read faults if present
+    datafaults = regexp(text, '\"([F]\d*(\.\d+)?)\", \d+\) = \{([\d, ]+)\}', 'tokens');
+    if ~isempty(datafaults)
+        datafaults = vertcat(datafaults{:});
+        datafaults(:,2) = cellfun(@(s) str2num(s), datafaults(:,2), 'UniformOutput', false);
+        result.Fault = datafaults;
+        faultlines = horzcat(result.Fault{:,2});
+        %add all lines thats not faults to Boundarylines
+        result.includeLines = faultlines;
+    end
+
+   
 end

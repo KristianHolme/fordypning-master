@@ -2,22 +2,25 @@ clear all;close all;
 %% Plotting parameters
 set(groot, 'defaultLineLineWidth', 2);
 %%
-SPEcase = 'A';
+SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
     xscaling = hour; unit = 'h';
     steps = 40;
     maxsteps = 720;
 else 
     xscaling = SPEyear;unit='y';
-    steps = 60;
-    totsteps = 360;
+    % steps = 60;
+    % totsteps = 360;
+    totsteps = 4;
+    steps = 4;
 end
 %% Cases to get data from
 gridcases = {'5tetRef1', 'semi263x154_0.3', 'struct340x150'};
 gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'};
+gridcases = {'struct130x62', 'pre_cut_130x62'};
 schedulecases = {''};
-deckcases = {'RS'};
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+deckcases = {'B_ISO_SMALL'};
+pdiscs = {''};
 tagcase = '';
 
 

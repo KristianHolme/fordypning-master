@@ -5,21 +5,48 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
     deckformat gmsh nfvm mpfa coarsegrid
 %%
-geodata = readGeo('');
-geodata.Facies{1} = [7, 8, 9, 32];
-geodata.Facies{7} = [1, 31];
-geodata.Facies{5} = [2, 3, 4, 5, 6];
-geodata.Facies{4} = [10, 11, 12, 13, 14, 15, 22];
-geodata.Facies{3} = [16, 17, 18, 19, 20, 21];
-geodata.Facies{6} = [23, 24, 25];
-geodata.Facies{2} = [26, 27, 28, 29, 30];
-geodata.BoundaryLines = unique([1, 2, 12, 11, 9, 8, 10, 7, 6, 5, 3, 4, 24, 23, 22, 21, 20, 19, 18, 17, 16, 14, 15, 13]);
+geodata = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
+
 %%
 nx = 130;
 ny = 62;
 Gcut = loadCutCell(nx, ny);
 Gpre = loadPresplit(nx, ny);
+CG = loadCG(nx, ny);
 % GenerateCutCellGrid(nx, ny, 'presplit', true, 'bufferVolumeSlice', false)
+%% Histogram
+bins = 30;
+G1 = Gcut;
+G2 = CG;
+T = tiledlayout(2,1);
+
+nexttile;
+h1 = histogram(log10(G1.cells.volumes));
+title(sprintf('Cut-cell before recombination. Total cells:%d', G1.cells.num));
+xlabel('log10(cell columes)');
+
+nexttile;
+h2 = histogram(log10(G2.cells.volumes));
+title(sprintf('After recombination. Total cells:%d', G2.cells.num));
+xlabel('log10(cell columes)');
+
+
+% Set the same Y-axis limits for both plots
+maxY = max([h1.Values, h2.Values]);
+nexttile(1);
+ylim([0 maxY]);
+nexttile(2);
+ylim([0 maxY]);
+
+% Set the same X-axis limits for both plots
+maxval = max([G1.cells.volumes; G2.cells.volumes]);
+minval = min([G1.cells.volumes; G2.cells.volumes]);
+xMin = log10(minval);
+xMax = log10(maxval);
+nexttile(1);
+xlim([xMin, xMax]);
+nexttile(2);
+xlim([xMin, xMax]);
 %%
 t = tic();
 partition = PartitionByTag(Gcut);
@@ -27,10 +54,13 @@ compressedPartition = compressPartition(partition);
 CG = generateCoarseGrid(Gcut, compressedPartition);
 CG = coarsenGeometry(CG);
 CGcellToGcutCell = unique(partition);
-CG.cells.tag = Gcut.cells.tag(unique(partition));
-% CG = TagbyFacies(CG, geodata);
+CG.cells.tag = Gcut.cells.tag(CGcellToGcutCell);
 t = toc(t);
 fprintf("Partition and coarsen in %0.2f s\n", t);
+
+%%
+GenerateCutCellGrid(130, 62, 'bufferVolumeSlice', true, 'verbose', true);
+
 %%
 plotCellData(Gcut, Gcut.cells.tag)
 outlineCoarseGrid(Gcut, compressedPartition);

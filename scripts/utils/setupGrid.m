@@ -85,7 +85,11 @@ function G = setupGrid(simcase, varargin)
             else
                 presplit = false;
             end
-
+            if contains(gridcase, 'cart')
+                amatFile = ['cartesian_', amatFile];
+            elseif contains(gridcase, 'horz')
+                amatFile = ['horizon_', amatFile];
+            end
             
             
             if strcmp(simcase.SPEcase, 'B')%stretch A-grid
@@ -98,7 +102,9 @@ function G = setupGrid(simcase, varargin)
                 matFile = replace(amatFile, '.mat', '_B.mat');
                 if ~isfile(matFile)
                     load(amatFile)
-                    G = StretchGrid(RotateGrid(G));
+                    if max(G.cells.centroids(:,1)) < 1000 %horizongrids are already in B geometry
+                        G = StretchGrid(RotateGrid(G));
+                    end
                     save(matFile, 'G');
                 end
             else
@@ -111,9 +117,13 @@ function G = setupGrid(simcase, varargin)
             end
         end
         load(matFile);
-        [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
-        G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
-        G.cells.indexMap = (1:G.cells.num)';
+        if ~isempty(simcase.tagcase) && contains(simcase.tagcase, 'allcells')
+            %dont remove cells
+        else
+            [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
+            G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
+            G.cells.indexMap = (1:G.cells.num)';
+        end
         if simcase.griddim == 3
             if strcmp(simcase.SPEcase, 'A')
                 depth = 0.01;

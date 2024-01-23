@@ -111,7 +111,7 @@ end
 % gridcase = '6tetRef0.4';
 % gridcase = '5tetRef0.4';
 % gridcase = '5tetRef1-stretch';
-gridcase = 'pre_cut_130x62';
+gridcase = 'horz_pre_cut_130x62';
 
 % steps = [360];
 
@@ -127,7 +127,7 @@ tagcases = {''};%one for each pdisc or that applies to all pdiscs
 
 saveplot = true;
 bigGrid = false;
-savefolder = ['plots/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
+savefolder = ['./../plotsMaster/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
 numDiscs = numel(pdiscs);
 %% Load data diff
 if numel(tagcases) ~= numDiscs

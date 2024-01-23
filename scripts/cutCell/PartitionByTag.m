@@ -1,7 +1,11 @@
 function partition = PartitionByTag(G)
+    
 
-    volMax = max(G.cells.volumes);
+    maincells = true(G.cells.num, 1);
+    maincells(G.bufferCells) = false;
+    volMax = max(G.cells.volumes(maincells));
     volLim = volMax/5;
+
     smallcellsLog = G.cells.volumes < volLim & G.cells.volumes > 0;
     nbs = getNeighbourship(G);
     smallCells = find(smallcellsLog);
@@ -31,11 +35,12 @@ function partition = PartitionByTag(G)
         end
     
         partition(partition == c) = partition(finalneighbor); %cell and other cells assigned to it, gets reassigned
+        
         % clf(gcf);
         % plotCellData(G, G.cells.tag);
         % plotGrid(G, c, 'facecolor', 'red');
         % 
         % plotGrid(G, [c, finalneighbor], 'facealpha', 0, 'linewidth', 3, 'edgecolor', 'red');
     end
-
+    partition = compressPartition(partition);
 end

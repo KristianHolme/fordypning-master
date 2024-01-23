@@ -8,7 +8,8 @@ function [G, t] = PointSplit(G, points, varargin)
         'waitbar', true, ...
         'save', false, ...
         'savedir', 'grid-files/cutcell/presplit', ...
-        'bufferVolumeSlice', false);
+        'bufferVolumeSlice', false, ...
+        'type', 'cartesian');
     opt = merge_options(opt, varargin{:});
     
     dir = opt.dir;
@@ -18,7 +19,7 @@ function [G, t] = PointSplit(G, points, varargin)
     else
         vertIx = 2;
     end
-
+    G.minOrgVol = min(G.cells.volumes); %save the smallest volumes
     dispif(opt.verbose, "Presplitting grid the old way.\nEstimated time: %0.2f s\n", 0.004*prod(G.cartDims));
     tic();
     eps = 1e-10; %to make sure points are not inside cell. Maybe not necessary
@@ -110,7 +111,7 @@ function [G, t] = PointSplit(G, points, varargin)
     if opt.save
         nx = G.cartDims(1);
         ny = G.cartDims(vertIx);
-        fn = sprintf('presplit_%dx%d.mat', nx, ny);
+        fn = sprintf('%s_presplit_%dx%d.mat', opt.type, nx, ny);
         if opt.bufferVolumeSlice
             fn = ['buff_', fn];
         end
