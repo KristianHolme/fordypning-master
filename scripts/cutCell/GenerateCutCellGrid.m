@@ -6,7 +6,8 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         'presplit', true, ...
         'recombine', true, ...
         'bufferVolumeSlice', false, ...
-        'type', 'cartesian');
+        'type', 'cartesian', ...
+        'removeInactive', true);
     opt = merge_options(opt, varargin{:});
 
     switch opt.type
@@ -16,10 +17,11 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         case 'horizon'
             G = makeHorizon(nx, ny, opt);
     end
-
-    G = removeCells(G, G.cells.tag == 7); %remove here, RemoveCells doesnt work on CG
-    G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
-    G.cells.indexMap = (1:G.cells.num)';
+    if opt.removeInactive
+        G = removeCells(G, G.cells.tag == 7); %remove here, RemoveCells doesnt work on CG
+        G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
+        G.cells.indexMap = (1:G.cells.num)';
+    end
     if opt.recombine
         t = tic();
         partition = PartitionByTag(G);

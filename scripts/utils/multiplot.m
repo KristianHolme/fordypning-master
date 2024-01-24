@@ -175,8 +175,8 @@ function multiplot(data, varargin)
             mkdir(opt.savefolder)
             disp(['Folder ', opt.savefolder, ' created.']);
         end
+        opt.savename = replace(opt.savename, '.', '_');
         savepath = fullfile(opt.savefolder, opt.savename);
-        savepath = replace(savepath, '.', '_');
         saveas(f, savepath, 'png');
         exportgraphics(t, strcat(savepath, '.pdf'));
      end

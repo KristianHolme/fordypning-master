@@ -12,25 +12,29 @@ nx = 130;
 ny = 62;
 Gcut = loadCutCell(nx, ny);
 Gpre = loadPresplit(nx, ny);
-CG = loadCG(nx, ny);
+% CG = loadCG(nx, ny);
 % GenerateCutCellGrid(nx, ny, 'presplit', true, 'bufferVolumeSlice', false)
 %% Histogram
 bins = 30;
-G1 = Gcut;
-G2 = CG;
+G1 = G;
+G2 = Gcut;
 T = tiledlayout(2,1);
 
 nexttile;
 h1 = histogram(log10(G1.cells.volumes));
-title(sprintf('Cut-cell before recombination. Total cells:%d', G1.cells.num));
-xlabel('log10(cell columes)');
+title(sprintf('Background. Total cells:%d', G1.cells.num));
+xlabel('log10(cell volumes)');
 
 nexttile;
 h2 = histogram(log10(G2.cells.volumes));
-title(sprintf('After recombination. Total cells:%d', G2.cells.num));
-xlabel('log10(cell columes)');
+title(sprintf('Cut-cell. Total cells:%d', G2.cells.num));
+xlabel('log10(cell volumes)');
 
 
+%% Save hist
+exportgraphics(T, './../plotsMaster/histograms/cartesian_cut_orig_28x12.pdf');
+
+%%
 % Set the same Y-axis limits for both plots
 maxY = max([h1.Values, h2.Values]);
 nexttile(1);
@@ -59,7 +63,8 @@ t = toc(t);
 fprintf("Partition and coarsen in %0.2f s\n", t);
 
 %%
-GenerateCutCellGrid(130, 62, 'bufferVolumeSlice', true, 'verbose', true);
+Gcut = GenerateCutCellGrid(28, 12, 'bufferVolumeSlice', false, 'verbose', true, ...
+    'recombination', false, 'save', true);
 
 %%
 plotCellData(Gcut, Gcut.cells.tag)
@@ -99,6 +104,11 @@ for i = 1:CG.cells.num
     ;
 end
 
+%%
+Lx = 2.8;
+Ly = 1.2;
+G = cartGrid([nx ny 1], [Lx, Ly 0.01]);
+G = computeGeometry(G);
 %%
 VizCoarse(CG);
 %%

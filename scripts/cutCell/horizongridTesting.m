@@ -34,7 +34,7 @@ plotCellData(Gcut, Gcut.cells.tag);view(0,0);
 
 %%
 Gcut = GenerateCutCellGrid(130, 62, 'type', 'horizon', 'recombine', false, 'save', true, ...
-    'bufferVolumeSlice', false);
+    'bufferVolumeSlice', true, 'removeInactive', true);
 %% Test partitioning
 load("grid-files/cutcell/horizon_presplit_cutcell_130x62.mat");
 [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
@@ -53,17 +53,22 @@ fprintf("Partition and coarsen in %0.2f s\n", t);
 
 %% Histogram
 bins = 30;
+
 T = tiledlayout(2,1);
 
 nexttile;
-h1 = histogram(log10(Gcut.cells.volumes));
-title(sprintf('Cut-cell. Total cells:%d', Gcut.cells.num));
-xlabel('log10(cell columes)');
+h1 = histogram(log10(G.cells.volumes));
+title(sprintf('Background grid. Total cells:%d', G.cells.num));
+xlabel('log10(cell volumes)');
 
 nexttile;
-h2 = histogram(log10(G.cells.volumes));
-title(sprintf('Original. Total cells:%d', G.cells.num));
-xlabel('log10(cell columes)');
+h2 = histogram(log10(Gcut.cells.volumes));
+title(sprintf('Cut-cell. Total cells:%d', Gcut.cells.num));
+xlabel('log10(cell volumes)');
+
+%% Save hist
+exportgraphics(T, './../plotsMaster/histograms/horizon_cut_orig_28x12.pdf');
+
 
 %%
 % Set the same Y-axis limits for both plots

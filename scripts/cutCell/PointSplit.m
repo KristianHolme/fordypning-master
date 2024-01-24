@@ -33,7 +33,7 @@ function [G, t] = PointSplit(G, points, varargin)
         if opt.waitbar
             waitbar(ipoint/numpoints, f, sprintf('Splitting progress: %d %%. (%d/%d).', floor(ipoint/numpoints*100), ipoint, numpoints))
         end
-        point = points{ipoint};
+        point = points{ipoint};%adjust depth to guarantee point is inside?
         cell = findEnclosingCell(G, point);
         if cell == 0
             if ipoint == numpoints
@@ -63,8 +63,10 @@ function [G, t] = PointSplit(G, points, varargin)
         facexmaxIx = sidefaces(facexmaxIx);
         facexminIx = sidefaces(facexminIx);
         
-        offsetup = abs( dot(point-faceCentroids(faceymaxIx, :), faceNormals(faceymaxIx,:)/faceAreas(faceymaxIx)) );
-        offsetdown = abs( dot(point-faceCentroids(faceyminIx, :), faceNormals(faceyminIx,:)/faceAreas(faceyminIx)) );
+        offsetup = pointToPlaneDistance(point, faceCentroids(faceymaxIx, :), faceNormals(faceymaxIx,:)/faceAreas(faceymaxIx), vertIx);
+        offsetdown = pointToPlaneDistance(point, faceCentroids(faceyminIx, :), faceNormals(faceyminIx,:)/faceAreas(faceyminIx), vertIx);
+        offsetupold = abs( dot(point-faceCentroids(faceymaxIx, :), faceNormals(faceymaxIx,:)/faceAreas(faceymaxIx)) );
+        offsetdownold = abs( dot(point-faceCentroids(faceyminIx, :), faceNormals(faceyminIx,:)/faceAreas(faceyminIx)) );
         % offsetdown = faceCentroids(faceymaxIx, vertIx) - faceCentroids(faceyminIx, vertIx) - offsetup;
         [ydist, closestydir] = min([offsetup, offsetdown]);
         xdist = min(facexmax - point(1), point(1)-facexmin);
@@ -86,7 +88,7 @@ function [G, t] = PointSplit(G, points, varargin)
                 slope = closestnormal(1)/closestnormal(vertIx);
                 splitpoints = [facexmin-eps 0 0; 
                                facexmax+eps 0 0];
-                splitpoints(:, vertIx) = [point(vertIx) + (point(1)-facexmin)*slope; point(vertIx) - (facexmax - point(1))*slope];
+                splitpoints(:, vertIx) = [point(vertIx) + (point(1)-facexmin+eps)*slope; point(vertIx) - (facexmax + eps - point(1))*slope];
                 % splitpoints(:, vertIx) = [faceCentroids(facexminIx, vertIx) + offset;faceCentroids(facexmaxIx, vertIx) + offset];
             elseif splitdir == 2
                 eps = (faceymax - faceymin)*epsfactor;
@@ -95,11 +97,12 @@ function [G, t] = PointSplit(G, points, varargin)
                 splitpoints(:, vertIx) = [point(vertIx)-offsetdown-eps;point(vertIx)+offsetup+eps];
             end
             % clf;
-            % plotGrid(G, [cell; getCellNeighbors(G, cell)]);
+            % plotGrid(G, [cell; getCellNeighbors(G, cell)]);view(0,0);
             % hold on;plot3(splitpoints(:,1), splitpoints(:,2), splitpoints(:,3));
             % plot3(point(1), point(2), point(3), 'ro');
             G = sliceGrid(G, splitpoints, 'cutDir', dir);
             % plotGrid(G, [cell; getCellNeighbors(G, cell)]);
+            ;%to have breakpoint when plotting
         end
     end
     if opt.waitbar
@@ -118,4 +121,25 @@ function [G, t] = PointSplit(G, points, varargin)
         savepth = fullfile(opt.savedir, fn);
         save(savepth, 'G');
     end
+end
+
+function distance = pointToPlaneDistance(point, planePoint, normal, vertIx)
+    % point: The point from which distance is calculated [x1, y1, z1]
+    % planePoint: A point on the plane [x0, y0, z0]
+    % normal: The normal vector of the plane [a, b, c]
+    if vertIx == 2
+        point = swapcoords(point);
+        planePoint = swapcoords(planePoint);
+        normal = swapcoords(normal);
+    end
+    % Extract coordinates and normal components
+    x1 = point(1); y1 = point(2); z1 = point(3);
+    x0 = planePoint(1); y0 = planePoint(2); z0 = planePoint(3);
+    a = normal(1); b = normal(2); c = normal(3);
+
+    distance = z1 - ( ( a*(x1-x0) + b*(y1-y0) )/(-c) + z0 );
+    distance = abs(distance);
+end
+function x = swapcoords(x)
+    x = [1 0 0;0 0 1;0 1 0]*x;
 end

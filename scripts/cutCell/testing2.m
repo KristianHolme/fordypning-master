@@ -255,14 +255,15 @@ fprintf("Done in %0.2f s\n", t);
 % plotGrid(Gcut, 'facealpha', 0);axis tight;
 
 hold on;
-data = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);;
+% data = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);;
+data = geodata;
 vertIx = 3;
 for ifacies = 1:7
     loops = data.Facies{ifacies};
     numLoops = numel(loops);
     for iLoop = 1:numLoops
         loop = loops(iLoop);
-        disp(loop);
+        % disp(loop);
         pointsinds = cell2mat(data.Line(abs(data.Loop{loop})));
         pointsinds = unique(pointsinds(:), "stable");
         pointsinds(end+1) = pointsinds(1);
@@ -271,8 +272,8 @@ for ifacies = 1:7
         xpts = points(:,1 );
         ypts = points(:,2 );%2 if A(x-y), 3 if B (x-z)
         zpts = points(:,3);
-        % plot3(xpts, ypts, zpts, '-o');
-        plot(xpts, ypts, 'o');
+        plot3(xpts, ypts, zpts, 'o');
+        % plot(xpts, ypts, 'o');
         % axis([-0.1 2.9 -0.1 1.3]);
         % axis equal;
         ax = gca;
