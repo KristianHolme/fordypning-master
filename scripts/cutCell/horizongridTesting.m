@@ -2,8 +2,8 @@ clear all
 close all
 %%
 gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737];
-nx = 130;
-totys = 62;
+nx = 28;
+totys = 12;
 nys = round(totys*gridfractions);
 
 G = makeHorizonGrid(nx, nys, 'save', false);
@@ -42,7 +42,7 @@ G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
 G.cells.indexMap = (1:G.cells.num)';
 Gcut = G;
 t = tic();
-partition = PartitionByTag(Gcut);
+partition = PartitionByTag(Gcut, 'method', 'convexity');
 compressedPartition = compressPartition(partition);
 CG = generateCoarseGrid(Gcut, compressedPartition);
 CG = coarsenGeometry(CG);

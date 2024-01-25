@@ -36,6 +36,7 @@ Ground.nodes.coords = gridpoints;
 % plotGrid(Ground, 'facecolor', 'none', 'edgecolor', 'red', 'edgealpha', 0.3);view(0,0);
 G = computeGeometry(Ground);
 %% Presplit fault points
+G = Gdeck;
 cellpoints = arrayfun(@(curve)curveToPoints(curve, geodata), geodata.includeLines, UniformOutput=false);
 points = unique(vertcat(cellpoints{:}), 'rows');
 numPoints = size(points, 1);
