@@ -21,7 +21,7 @@ points = unique(vertcat(cellpoints{:}), 'rows');
 numPoints = size(points, 1);
 cellpoints = mat2cell(points, ones(numPoints, 1), 3);
 
-Gpre = PointSplit(G, cellpoints, 'dir', [0 1 0], 'verbose', true, 'waitbar', false);
+Gpre = PointSplit(G, cellpoints, 'dir', [0 1 0], 'verbose', false, 'waitbar', false);
 %%
 plotGrid(Gpre);view(0,0);
 %% Cut
@@ -33,23 +33,30 @@ Gcut = TagbyFacies(Gcut, geodata, 'vertIx', 3);
 plotCellData(Gcut, Gcut.cells.tag);view(0,0);
 
 %%
-Gcut = GenerateCutCellGrid(130, 62, 'type', 'horizon', 'recombine', false, 'save', true, ...
-    'bufferVolumeSlice', true, 'removeInactive', true);
+nx = 130;
+ny = 62;
+buffer = true;
+G = GenerateCutCellGrid(nx, ny, 'type', 'horizon', 'recombine', true, 'save', true, ...
+    'bufferVolumeSlice', true, 'removeInactive', true, ...
+    'partitionMethod', 'convexity', ...
+    'verbose', true);
 %% Test partitioning
-load("grid-files/cutcell/horizon_presplit_cutcell_130x62.mat");
-[G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
-G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
-G.cells.indexMap = (1:G.cells.num)';
-Gcut = G;
+% load("grid-files/cutcell/horizon_presplit_cutcell_130x62.mat");
+% [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
+% G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
+% G.cells.indexMap = (1:G.cells.num)';
+% Gcut = G;
 t = tic();
-partition = PartitionByTag(Gcut, 'method', 'convexity');
+method = 'convexity';
+partition = PartitionByTag(Gcut, 'method', method, ...
+    'avoidBufferCells', buffer);
 compressedPartition = compressPartition(partition);
 CG = generateCoarseGrid(Gcut, compressedPartition);
 CG = coarsenGeometry(CG);
 [~, CGcellToGcutCell] = unique(partition, 'first');
 CG.cells.tag = Gcut.cells.tag(CGcellToGcutCell);
 t = toc(t);
-fprintf("Partition and coarsen in %0.2f s\n", t);
+fprintf("Partition and coarsen %dx%d grid using %s in %0.2f s\n", nx, ny, method, t);
 
 %% Histogram
 bins = 30;
@@ -68,6 +75,21 @@ xlabel('log10(cell volumes)');
 
 %% Save hist
 exportgraphics(T, './../plotsMaster/histograms/horizon_cut_orig_28x12.pdf');
+
+%% Plot partitions
+tot = 0;
+for ip=1:numel(unique(compressedPartition))
+    cells = find(compressedPartition == ip);
+    if numel(cells)==1
+        continue
+    end
+    tot = tot +1;
+    clf;
+    % plotGrid(Gcut, 'facealpha', 0);
+    plotGrid(Gcut, cells);view(0,0);
+    ;
+end
+
 
 
 %%

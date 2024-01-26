@@ -21,9 +21,10 @@ function G = getBufferCells(G)
             cell = max(G.faces.neighbors(face, :));
             facies = G.cells.tag(cell);
             assert(facies ~=6 )
-            if ismember(facies, [2, 3, 4, 5])
-                G.bufferCells(end+1) = cell;
-            end
+            
+            %tag all cells, even if added volume is zero
+            G.bufferCells(end+1) = cell;
+            
         end
     end
 end

@@ -7,24 +7,29 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         'recombine', true, ...
         'bufferVolumeSlice', false, ...
         'type', 'cartesian', ...
-        'removeInactive', true);
+        'removeInactive', true, ...
+        'partitionMethod', 'facearea');
     opt = merge_options(opt, varargin{:});
 
     switch opt.type
         case 'cartesian'
-            G = makeCartesian(nx, ny, opt);
+            G = makeCartesianCut(nx, ny, opt);
             
         case 'horizon'
-            G = makeHorizon(nx, ny, opt);
+            G = makeHorizonCut(nx, ny, opt);
     end
     if opt.removeInactive
         G = removeCells(G, G.cells.tag == 7); %remove here, RemoveCells doesnt work on CG
-        G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
+        keepCells = G.cells.tag ~= 7;
+        G.cells.tag = G.cells.tag(keepCells);
+        if isfield(G,'bufferCells')
+            G = getBufferCells(G);
+        end
         G.cells.indexMap = (1:G.cells.num)';
     end
     if opt.recombine
         t = tic();
-        partition = PartitionByTag(G);
+        partition = PartitionByTag(G, 'method', opt.partitionMethod);
         compressedPartition = compressPartition(partition);
         CG = generateCoarseGrid(G, compressedPartition);
         CG = coarsenGeometry(CG);
@@ -49,7 +54,7 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
     end
 end
 
-function G = makeCartesian(nx, ny, opt)
+function G = makeCartesianCut(nx, ny, opt)
     configFile = fileread('config.JSON');
     config = jsondecode(configFile);
     fn = fullfile(config.geo_folder, 'spe11a.geo');
@@ -76,7 +81,7 @@ function G = makeCartesian(nx, ny, opt)
 
 end
 
-function Gcut = makeHorizon(nx, totys, opt)
+function Gcut = makeHorizonCut(nx, totys, opt)
     geodata = readGeo('./scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
     geodata = RotateGrid(geodata);
     geodata = StretchGeo(geodata);
@@ -88,7 +93,7 @@ function Gcut = makeHorizon(nx, totys, opt)
     if opt.bufferVolumeSlice
         %slicing close to sides to create buffer volume cells
         G = sliceGrid(G, {[1, 0.5, 0], [8399, 0.5, 0]}, 'normal', [1 0 0]);
-        G = TagbyFacies(G, geodata);
+        G = TagbyFacies(G, geodata, 'vertIx', 3);
         G = getBufferCells(G);
     end
     

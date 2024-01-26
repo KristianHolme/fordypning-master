@@ -35,16 +35,18 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
             vec = vec/norm(vec);
             points(i,:) = points(i,:) + opt.extendSliceFactor* vec;
         end
-        [Gcut, gix] = sliceGrid(Gcut, points, 'cutDir', dir, extra{:});
+        % [Gcut, gix] = sliceGrid(Gcut, points, 'cutDir', dir, extra{:});
 
         pp{end+1} = points;
     end
     dd = repmat({dir}, 1, numel(pp));
-    % Gcut = sliceGrid(Gcut, pp, 'cutDir', dd);
+    Gcut = sliceGrid(Gcut, pp, 'cutDir', dd);
     t = toc();
+    dispif(opt.verbose, sprintf("Done in %0.2f s\n", t));
+    
     Gcut = TagbyFacies(Gcut, geodata, 'verbose', opt.verbose, 'vertIx', opt.vertIx);%Tag facies
     Gcut = getBufferCells(Gcut); %find buffercells
-    dispif(opt.verbose, sprintf("Done in %0.2f s\n", t));
+    
     if opt.save
         nx = G.cartDims(1);
         ny = G.cartDims(opt.vertIx);

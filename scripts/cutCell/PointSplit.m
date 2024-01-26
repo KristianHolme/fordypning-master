@@ -21,7 +21,7 @@ function [G, t] = PointSplit(G, points, varargin)
         vertIx = 2;
     end
     G.minOrgVol = min(G.cells.volumes); %save the smallest volumes
-    dispif(opt.verbose, "Presplitting grid the old way.\nEstimated time: %0.2f s\n", 0.004*prod(G.cartDims));
+    dispif(opt.verbose, "Presplitting grid.\nEstimated time: %0.2f s\n", 0.004*prod(G.cartDims));
     tic();
     
     epsfactor = opt.epsfactor; %factor to extend each slice to make sure the slice goes through each cell
@@ -73,7 +73,7 @@ function [G, t] = PointSplit(G, points, varargin)
         xdist = min(facexmax - point(1), point(1)-facexmin);
         [dist, splitdir] = min([xdist, ydist]);
         if dist ~= 0
-            dispif(opt.verbose, "point %d\n", ipoint);
+            % dispif(opt.verbose, "point %d\n", ipoint);
             %Split cell
             if splitdir == 1
                 eps = (facexmax - facexmin)*epsfactor;
