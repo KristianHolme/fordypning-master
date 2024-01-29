@@ -36,7 +36,7 @@ plotCellData(Gcut, Gcut.cells.tag);view(0,0);
 nx = 130;
 ny = 62;
 buffer = true;
-G = GenerateCutCellGrid(nx, ny, 'type', 'horizon', 'recombine', true, 'save', true, ...
+G = GenerateCutCellGrid(nx, ny, 'type', 'horizon', 'recombine', false, 'save', true, ...
     'bufferVolumeSlice', true, 'removeInactive', true, ...
     'partitionMethod', 'convexity', ...
     'verbose', true);
@@ -51,13 +51,11 @@ method = 'convexity';
 partition = PartitionByTag(Gcut, 'method', method, ...
     'avoidBufferCells', buffer);
 compressedPartition = compressPartition(partition);
-CG = generateCoarseGrid(Gcut, compressedPartition);
-CG = coarsenGeometry(CG);
-[~, CGcellToGcutCell] = unique(partition, 'first');
-CG.cells.tag = Gcut.cells.tag(CGcellToGcutCell);
+Gp = makePartitionedGrid(G, compressedPartition);
 t = toc(t);
 fprintf("Partition and coarsen %dx%d grid using %s in %0.2f s\n", nx, ny, method, t);
-
+%% 
+plotGrid(Gp);
 %% Histogram
 bins = 30;
 

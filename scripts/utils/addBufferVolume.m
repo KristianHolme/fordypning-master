@@ -20,22 +20,37 @@ function G = addBufferVolume(G, rock, varargin)
     xlimit = 8400;
     areaVolumeConstant = 5e4;
 
-    % G = getBufferCells(G);
-    G.bufferCells = [];
+    G = getBufferCells(G);
+    % G.bufferCells = [];
 
-    for iface = 1:numel(bf)
-        face = bf(iface);
+    for ic = 1:numel(G.bufferCells)
+        cell = G.bufferCells(ic);
+        % cell = max(G.faces.neighbors(face, :));
+        facies = G.cells.tag(cell);
+        assert(facies ~=6 )
+        face = G.bufferFaces(ic);
         faceArea = G.faces.areas(face);
-        if (abs(G.faces.centroids(face, 1)) < tol) || (abs(G.faces.centroids(face, 1) - xlimit) < tol)
-            cell = max(G.faces.neighbors(face, :));
-            facies = G.cells.tag(cell);
-            assert(facies ~=6 )
-            if ismember(facies, [2, 3, 4, 5])
-                G.bufferCells(end+1) = cell;
-                extraVolume = faceArea*areaVolumeConstant/eps;
-                oldVolume = G.cells.volumes(cell);
-                G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
-            end
+        if ismember(facies, [2, 3, 4, 5])
+            G.bufferCells(end+1) = cell;
+            extraVolume = faceArea*areaVolumeConstant/eps;
+            oldVolume = G.cells.volumes(cell);
+            G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
         end
     end
+
+    % for iface = 1:numel(bf)
+    %     face = bf(iface);
+    %     faceArea = G.faces.areas(face);
+    %     if (abs(G.faces.centroids(face, 1)) < tol) || (abs(G.faces.centroids(face, 1) - xlimit) < tol)
+    %         cell = max(G.faces.neighbors(face, :));
+    %         facies = G.cells.tag(cell);
+    %         assert(facies ~=6 )
+    %         if ismember(facies, [2, 3, 4, 5])
+    %             G.bufferCells(end+1) = cell;
+    %             extraVolume = faceArea*areaVolumeConstant/eps;
+    %             oldVolume = G.cells.volumes(cell);
+    %             G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
+    %         end
+    %     end
+    % end
 end
