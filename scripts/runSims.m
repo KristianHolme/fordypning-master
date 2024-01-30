@@ -17,7 +17,7 @@ mrstVerbose off
 
 SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
-gridcases = {'horz_pre_cut_CG_130x62'};
+gridcases = {'horz_pre_cut_PG_130x62'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
 pdiscs = {''};
@@ -25,7 +25,7 @@ uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';%normalRock
 
-resetData           = false;
+resetData           = true;
 resetAssembly       = true;
 do.plotStates       = true;
 do.plotFlux         = false;

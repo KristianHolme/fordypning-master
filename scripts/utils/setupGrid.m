@@ -72,9 +72,9 @@ function G = setupGrid(simcase, varargin)
             params = tokens{1};
             params = cellfun(@str2double, params);
             amatFile = [num2str(params(1)), 'x', num2str(params(2)), '.mat'];
-            if contains(gridcase, 'CG')
+            if contains(gridcase, 'PG')
                 recombine = true;
-                amatFile = ['CG_', amatFile];
+                amatFile = ['PG_', amatFile];
             else
                 recombine = false;
             end
@@ -150,6 +150,9 @@ function G = setupGrid(simcase, varargin)
         G = coarsenGeometry(G);
     else
         G = computeGeometry(G);
+        if all(G.cells.volumes<0)
+            G.cells.volumes = G.cells.volumes *-1
+        end
     end
     if stretch
         G = StretchGrid(G);

@@ -190,18 +190,7 @@ function ok = checkConvexMerge2(G, cells, vertIx)
 
 end
 
-function nodesInOrder = orderFaceNodes(G, faces, depthIx)
-    tol = 1e-10;
-    frontNodes = find(abs(G.nodes.coords(:,depthIx)) < tol); 
-    faceNodes = reshape(cell2mat(arrayfun(@(f)intersect(frontNodes,gridFaceNodes(G, f)), faces, UniformOutput=false)),2, [])';
-    numNodes = numel(unique(faceNodes(:)));
-    nodesInOrder = zeros(numNodes, 1);
-    g = graph(faceNodes(:,1), faceNodes(:,2));
-    nodesInOrder(1:2) = faceNodes(1,:);
-    for i=3:numNodes
-        nodesInOrder(i) = setdiff(neighbors(g, nodesInOrder(i-1)), nodesInOrder(i-2));
-    end
-end
+
 function ok = checkConvexMerge(G, cells, vertIx)
     tol = 1e-9;
     ok = true;
@@ -237,7 +226,7 @@ function ok = checkConvexMerge(G, cells, vertIx)
     
     %ok if crossproducts share sign or if normalcrossproducts are zero
     ok = all( (sign(normalsCrossProducts) == sign(centroidFaceCrossProducts)) | abs(normalsCrossProducts)<tol );
-    allfaces = zeros(G.faces.num, 1);allfaces(faces(2:end)) = 1:(numel(faces)-1);
+    % allfaces = zeros(G.faces.num, 1);allfaces(faces(2:end)) = 1:(numel(faces)-1);
     % clf;plotGrid(G, cells, 'facealpha', 0);plotFaceData(G, cells, allfaces);view(0,0);
 end
 
@@ -250,6 +239,19 @@ function ordering = orderFaces(G, faces)
     ordering(2) = neighbors(1, 1);
     for i=3:numfaces
         ordering(i) = setdiff(neighbors(ordering(i-1),:), ordering(i-2));
+    end
+end
+
+function nodesInOrder = orderFaceNodes(G, faces, depthIx)
+    tol = 1e-10;
+    frontNodes = find(abs(G.nodes.coords(:,depthIx)) < tol); 
+    faceNodes = reshape(cell2mat(arrayfun(@(f)intersect(frontNodes,gridFaceNodes(G, f)), faces, UniformOutput=false)),2, [])';
+    numNodes = numel(unique(faceNodes(:)));
+    nodesInOrder = zeros(numNodes, 1);
+    g = graph(faceNodes(:,1), faceNodes(:,2));
+    nodesInOrder(1:2) = faceNodes(1,:);
+    for i=3:numNodes
+        nodesInOrder(i) = setdiff(neighbors(g, nodesInOrder(i-1)), nodesInOrder(i-2));
     end
 end
 

@@ -10,7 +10,7 @@ function G = getBufferCells(G)
     
     
     xlimit = max(G.faces.centroids(:,1));
-    tol = 1.2e-4 * xlimit;
+    tol = 1e-10;
     areaVolumeConstant = 5e4;
 
     G.bufferCells = [];
@@ -18,7 +18,6 @@ function G = getBufferCells(G)
 
     for iface = 1:numel(bf)
         face = bf(iface);
-        faceArea = G.faces.areas(face);
         if (abs(G.faces.centroids(face, 1)) < tol) || (abs(G.faces.centroids(face, 1) - xlimit) < tol)
             cell = max(G.faces.neighbors(face, :));
             facies = G.cells.tag(cell);
@@ -26,8 +25,7 @@ function G = getBufferCells(G)
             
             %tag all cells, even if added volume is zero
             G.bufferCells(end+1) = cell;
-            G.bufferFaces(end+1) = face;
-            
+            G.bufferFaces(end+1) = face; 
         end
     end
 end

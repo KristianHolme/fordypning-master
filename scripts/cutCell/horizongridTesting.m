@@ -36,10 +36,13 @@ plotCellData(Gcut, Gcut.cells.tag);view(0,0);
 nx = 130;
 ny = 62;
 buffer = true;
-G = GenerateCutCellGrid(nx, ny, 'type', 'horizon', 'recombine', false, 'save', true, ...
+G = GenerateCutCellGrid(nx, ny, 'type', 'horizon', ...
+    'recombine', true, 'save', true, ...
     'bufferVolumeSlice', true, 'removeInactive', true, ...
     'partitionMethod', 'convexity', ...
     'verbose', true);
+%%
+plotCellData(G, G.cells.tag);view(0,0)
 %% Test partitioning
 % load("grid-files/cutcell/horizon_presplit_cutcell_130x62.mat");
 % [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
@@ -51,15 +54,17 @@ method = 'convexity';
 partition = PartitionByTag(Gcut, 'method', method, ...
     'avoidBufferCells', buffer);
 compressedPartition = compressPartition(partition);
-Gp = makePartitionedGrid(G, compressedPartition);
+Gp = makePartitionedGrid(Gcut, compressedPartition);
+Gp = TagbyFacies(Gp, geodata, 'vertIx', 3);
 t = toc(t);
 fprintf("Partition and coarsen %dx%d grid using %s in %0.2f s\n", nx, ny, method, t);
-%% 
-plotGrid(Gp);
+%%
+% figure
+plotCellData(Gp, Gp.cells.tag);view(0,0);
 %% Histogram
 bins = 30;
 
-T = tiledlayout(2,1);
+T = tiledlayout(3,1);
 
 nexttile;
 h1 = histogram(log10(G.cells.volumes));
@@ -71,8 +76,13 @@ h2 = histogram(log10(Gcut.cells.volumes));
 title(sprintf('Cut-cell. Total cells:%d', Gcut.cells.num));
 xlabel('log10(cell volumes)');
 
+nexttile;
+h3 = histogram(log10(Gp.cells.volumes));
+title(sprintf('Coarsened Cut-cell. Total cells:%d', Gp.cells.num));
+xlabel('log10(cell volumes)');
+
 %% Save hist
-exportgraphics(T, './../plotsMaster/histograms/horizon_cut_orig_28x12.pdf');
+exportgraphics(T, './../plotsMaster/histograms/horizon_orig_cut_part_28x12.pdf');
 
 %% Plot partitions
 tot = 0;

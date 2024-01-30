@@ -1,7 +1,9 @@
 clear all
 close all
 %%
-set(groot, 'defaultAxesView', [0, 0]);
+set(groot, 'defaultAxesView', [0, 90]);
+set(groot, 'DefaultLineLineWidth', 3);
+
 
 %% Load CP grid (from deck)
 simcase = Simcase('deckcase', 'B_ISO_SMALL', 'usedeck', true);
