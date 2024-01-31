@@ -2,8 +2,8 @@ clear all
 close all
 %%
 gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737];
-nx = 28;
-totys = 12;
+nx = 130;
+totys = 62;
 nys = round(totys*gridfractions);
 
 G = makeHorizonGrid(nx, nys, 'save', false);
@@ -36,13 +36,19 @@ plotCellData(Gcut, Gcut.cells.tag);view(0,0);
 nx = 130;
 ny = 62;
 buffer = true;
-G = GenerateCutCellGrid(nx, ny, 'type', 'horizon', ...
+% Gcut = GenerateCutCellGrid(nx, ny, 'type', 'horizon', ...
+%     'recombine', false, 'save', true, ...
+%     'bufferVolumeSlice', buffer, 'removeInactive', true, ...
+%     'partitionMethod', 'convexity', ...
+%     'verbose', true);
+Gp = GenerateCutCellGrid(nx, ny, 'type', 'horizon', ...
     'recombine', true, 'save', true, ...
-    'bufferVolumeSlice', true, 'removeInactive', true, ...
+    'bufferVolumeSlice', buffer, 'removeInactive', true, ...
     'partitionMethod', 'convexity', ...
     'verbose', true);
 %%
-plotCellData(G, G.cells.tag);view(0,0)
+% plotCellData(Gcut, G.cells.tag);view(0,0)
+plotCellData(Gcut, Gcut.cells.tag, 'facealpha', 0);plotGrid(Gcut, failed);
 %% Test partitioning
 % load("grid-files/cutcell/horizon_presplit_cutcell_130x62.mat");
 % [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
@@ -51,10 +57,9 @@ plotCellData(G, G.cells.tag);view(0,0)
 % Gcut = G;
 t = tic();
 method = 'convexity';
-partition = PartitionByTag(Gcut, 'method', method, ...
+[partition, failed] = PartitionByTag(Gcut, 'method', method, ...
     'avoidBufferCells', buffer);
-compressedPartition = compressPartition(partition);
-Gp = makePartitionedGrid(Gcut, compressedPartition);
+Gp = makePartitionedGrid(Gcut, partition);
 Gp = TagbyFacies(Gp, geodata, 'vertIx', 3);
 t = toc(t);
 fprintf("Partition and coarsen %dx%d grid using %s in %0.2f s\n", nx, ny, method, t);
@@ -69,20 +74,23 @@ T = tiledlayout(3,1);
 nexttile;
 h1 = histogram(log10(G.cells.volumes));
 title(sprintf('Background grid. Total cells:%d', G.cells.num));
-xlabel('log10(cell volumes)');
+xlabel('Log10(cell volumes)');
+ylabel('Frequency');
 
 nexttile;
 h2 = histogram(log10(Gcut.cells.volumes));
 title(sprintf('Cut-cell. Total cells:%d', Gcut.cells.num));
-xlabel('log10(cell volumes)');
+xlabel('Log10(cell volumes)');
+ylabel('Frequency');
 
 nexttile;
 h3 = histogram(log10(Gp.cells.volumes));
 title(sprintf('Coarsened Cut-cell. Total cells:%d', Gp.cells.num));
-xlabel('log10(cell volumes)');
+xlabel('Log10(cell volumes)');
+ylabel('Frequency');
 
 %% Save hist
-exportgraphics(T, './../plotsMaster/histograms/horizon_orig_cut_part_28x12.pdf');
+exportgraphics(T, sprintf('./../plotsMaster/histograms/horizon_orig_cut_part_%dx%d.pdf', nx, ny));
 
 %% Plot partitions
 tot = 0;
@@ -111,8 +119,8 @@ ylim([0 maxY]);
 % Set the same X-axis limits for both plots
 maxval = max([Gcut.cells.volumes; G.cells.volumes]);
 minval = min([Gcut.cells.volumes; G.cells.volumes]);
-xMin = log10(minval);
-xMax = log10(maxval);
+xMin = Log10(minval);
+xMax = Log10(maxval);
 nexttile(1);
 xlim([xMin, xMax]);
 nexttile(2);

@@ -150,9 +150,7 @@ function G = setupGrid(simcase, varargin)
         G = coarsenGeometry(G);
     else
         G = computeGeometry(G);
-        if all(G.cells.volumes<0)
-            G.cells.volumes = G.cells.volumes *-1
-        end
+        assert(all(G.cells.volumes > 0), 'negative volumes!')
     end
     if stretch
         G = StretchGrid(G);

@@ -43,14 +43,15 @@ end
 % gridcases = {'6tetRef0.4', '5tetRef0.4', '5tetRef1-stretch'};filename = 'FmeshalgStretch';
 % gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
 % gridcases = {'struct420x141'};
+gridcases = {'', 'horz_pre_cut_PG130x62', 'cart_pre_cut_PG130x62'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-pdiscs = {''};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
 subname = ''; %'', 'uppermiddle', 
 [p1, p2] = getBoxPoints(subname, SPEcase, 3);
 
 
-deckcase = 'RS';
+deckcase = 'B_ISO_SMALL';
 tagcase = '';
 
 plotgrid = false;
@@ -111,7 +112,8 @@ end
 % gridcase = '6tetRef0.4';
 % gridcase = '5tetRef0.4';
 % gridcase = '5tetRef1-stretch';
-gridcase = 'horz_pre_cut_130x62';
+gridcase = 'cart_pre_cut_PG_130x62';
+gridcase = 'horz_pre_cut_PG_130x62';
 
 % steps = [360];
 
@@ -120,7 +122,7 @@ filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
-pdiscs = {'', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa'};
 deckcase = 'B_ISO_SMALL';
 tagcases = {''};%one for each pdisc or that applies to all pdiscs
 

@@ -8,7 +8,7 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         'bufferVolumeSlice', false, ...
         'type', 'cartesian', ...
         'removeInactive', true, ...
-        'partitionMethod', 'facearea');
+        'partitionMethod', 'convexity');
     opt = merge_options(opt, varargin{:});
 
     switch opt.type
@@ -28,51 +28,9 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         G.cells.indexMap = (1:G.cells.num)';
     end
     if opt.recombine
-        if max(G.nodes.coords(:,2)) > 1.1
-            vertIx = 2;
-        else
-            vertIx = 3;
-        end
-        if max(G.nodes.coords(:,1))>1000
-            Bscale = true;
-        else
-            Bscale = false;
-        end
-        geodata = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
-        if Bscale
-            geodata = RotateGrid(geodata);
-            geodata = StretchGeo(geodata);
-        end
-        t = tic();
-        % % partition = PartitionByTag(G, 'method', opt.partitionMethod);
-        % % compressedPartition = compressPartition(partition);
-        % % CG = generateCoarseGrid(G, compressedPartition);
-        % % CG = coarsenGeometry(CG);
-        % % [~, CGcellToGCell] = unique(partition, 'first');
-        % % CG.cells.tag = G.cells.tag(CGcellToGCell);
-        % % % CG = TagbyFacies(CG, geodata);
-        method = 'convexity';
-        partition = PartitionByTag(G, 'method', method, ...
-            'avoidBufferCells', opt.bufferVolumeSlice);
-        compressedPartition = compressPartition(partition);
-        Gp = makePartitionedGrid(G, compressedPartition);
-        Gp = TagbyFacies(Gp, geodata, 'vertIx', vertIx);
-        t = toc(t);
-        dispif(opt.verbose, "Partition and coarsen in %0.2f s\n", t);
-        G = Gp;
-        if opt.save
-            if opt.presplit
-                fn = sprintf('%s_presplit_cutcell_PG_%dx%d.mat', opt.type, nx, ny);
-            else
-                fn = sprintf('%s_cutcell_PG_%dx%d.mat', opt.type, nx, ny);
-            end
-            if opt.bufferVolumeSlice
-                fn = ['buff_', fn];
-            end
-            
-            save(fullfile(opt.savedir, fn), "G");
-        end
+        G = Recombine(G, opt, nx, ny);
     end
+
     assert(checkGrid(G));
 end
 
@@ -136,4 +94,56 @@ function Gcut = makeHorizonCut(nx, totys, opt)
         'type', opt.type, ...
         'bufferVolumeSlice', opt.bufferVolumeSlice, ...
         'vertIx', 3);
+end
+
+function G = Recombine(G, opt, nx, ny)
+    if max(G.nodes.coords(:,2)) > 1.1
+        vertIx = 2;
+    else
+        vertIx = 3;
+    end
+    if max(G.nodes.coords(:,1))>1000
+        Bscale = true;
+    else
+        Bscale = false;
+    end
+    geodata = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
+    if Bscale
+        geodata = RotateGrid(geodata);
+        geodata = StretchGeo(geodata);
+    end
+    t = tic();
+    [partition, failed] = PartitionByTag(G, 'method', opt.partitionMethod, ...
+            'avoidBufferCells', opt.bufferVolumeSlice);
+
+    partitionIterations = 0;
+    maxPartitionIterations = 13;
+    while max(partition) < G.cells.num && partitionIterations <= maxPartitionIterations
+        partitionIterations = partitionIterations +1;
+
+        Gp = makePartitionedGrid(G, partition);
+        Gp = TagbyFacies(Gp, geodata, 'vertIx', vertIx);
+        G = Gp;
+        partition = PartitionByTag(G, 'method', opt.partitionMethod, ...
+            'avoidBufferCells', opt.bufferVolumeSlice);
+
+    end
+
+    t = toc(t);
+    dispif(opt.verbose, "Partition and coarsen(%d iterations) in %0.2f s\n", partitionIterations, t);
+
+
+    
+    if opt.save
+        if opt.presplit
+            fn = sprintf('%s_presplit_cutcell_PG_%dx%d.mat', opt.type, nx, ny);
+        else
+            fn = sprintf('%s_cutcell_PG_%dx%d.mat', opt.type, nx, ny);
+        end
+        if opt.bufferVolumeSlice
+            fn = ['buff_', fn];
+        end
+        
+        save(fullfile(opt.savedir, fn), "G");
+    end
 end

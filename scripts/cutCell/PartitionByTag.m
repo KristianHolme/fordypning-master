@@ -1,5 +1,5 @@
 function [partition, failed] = PartitionByTag(G, varargin)
-    opt = struct('method', 'facearea', ...
+    opt = struct('method', 'convexity', ...
         'vertIx', [], ...
         'avoidBufferCells', true);
     opt = merge_options(opt, varargin{:});
@@ -88,6 +88,25 @@ function [partition, failed] = ConvexityPartition(G, smallCells, nbs, vertIx, va
     opt = struct('ignoreCells', []);
     opt = merge_options(opt, varargin{:});
     partition = (1:G.cells.num)';
+    
+    [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs, vertIx, opt);
+
+    %try running again to see if we can catch more small cells
+    maxtries = 10;
+    tries = 1;
+
+    while ~isempty(failed) && tries <= maxtries
+        [partition, newfailed] = mainConvexPartition(partition, failed, G, nbs, vertIx, opt);
+        if numel(newfailed) == numel(failed) && all(newfailed == failed)
+            break
+        else
+            failed = newfailed;
+        end
+    end
+
+    
+end
+function [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs, vertIx, opt)
     failed = [];
     for ism = 1:numel(smallCells)
         c = smallCells(ism);
@@ -111,8 +130,8 @@ function [partition, failed] = ConvexityPartition(G, smallCells, nbs, vertIx, va
             finalneighborpartition = neighborPartitions;
         else
             f = gridCellFaces(G, cells); %faces in partition
-            nf = gridCellFaces(G, find(ismember(partition, neighborPartitions)));
-            faceneighbors = G.faces.neighbors(f,:); %neighbor cells
+            % nf = gridCellFaces(G, find(ismember(partition, neighborPartitions)));
+            % faceneighbors = G.faces.neighbors(f,:); %neighbor cells
             %for each neighboring partition:sum shared area and sort
             interfaceareas = arrayfun(@(nbp)sum(G.faces.areas(intersect(f, gridCellFaces(G, find(partition==nbp))))), neighborPartitions);
             [~,sortorder] = sort(interfaceareas, 'descend');
@@ -139,31 +158,31 @@ end
 
 function ok = checkConvexMerge2(G, cells, vertIx)
     tol = 1e-9;
-    ok = true;
+
     depthIx = 5-vertIx; %vertIx=3(z), depthIx is 2(y), and vice versa
-    cellcentroids = G.cells.centroids(cells,:);
-    volumes = G.cells.volumes(cells);
-    weights = volumes/sum(volumes);
 
     faces = unique(gridCellFaces(G, cells));
     externalfaces = xor(ismember(G.faces.neighbors(faces,1), cells), ismember(G.faces.neighbors(faces,2), cells));
     faces = faces(externalfaces);
-    normals = G.faces.normals(faces, :);
+    normals = G.faces.normals(faces, :) ./ G.faces.areas(faces);
     sideFaces = abs(normals(:,depthIx)) < tol;
     faces = faces(sideFaces); %now we have the interesting faces
 
     nodeOrdering = orderFaceNodes(G, faces, depthIx);
     %centroid of the cell connected to face of first node
+   
     startcc = G.cells.centroids(intersect(G.faces.neighbors(faces(1),:), cells),:);
     startcc(depthIx) = 0.0;%move to plane
     v1 = G.nodes.coords(nodeOrdering(1),:) - startcc;
     v2 = G.nodes.coords(nodeOrdering(2),:) - startcc;
+    % v1 = G.nodes.coords(nodeOrdering(1),:) - G.nodes.coords(nodeOrdering(2),:);
+    % v2 = G.nodes.coords(nodeOrdering(3),:) - G.nodes.coords(nodeOrdering(2),:);
     crossprod = cross(v1, v2);
-    sgn = sign(sum(crossprod));
-    if vertIx == 3 %TODO check if this logic is correct
-        sgn = sgn*-1;
-    end
-    if sgn == -1
+    sgn = sign(sum(crossprod)); %TODO maybe check against normal??
+    % if vertIx == 3 %TODO check if this logic is correct
+    %     sgn = sgn*-1;
+    % end
+    if sgn == 1
         nodeOrdering = nodeOrdering(end:-1:1);
     end
     %insert last node first and first node last to get looping
@@ -180,13 +199,15 @@ function ok = checkConvexMerge2(G, cells, vertIx)
 
     okangles = crossproducts > 0 | abs(crossproducts)<tol;
     ok = all(okangles);
-    if ok
-        color = 'green';
-    else
-        color = 'red';
-    end
-    % clf;plotGrid(G, cells, 'facealpha', 0, 'edgecolor', color, 'linewidth', 3);
-    ;
+    % if ok
+    %     color = 'green';
+    % else
+    %     color = 'red';
+    % end
+    % clf;
+    % scatter3(B(:,1), B(:,2), B(:,3), 500, 1:size(B,1), 'filled');hold on;colorbar;view(0,0);
+    % plotGrid(G, cells, 'facealpha', 0, 'edgecolor', color, 'linewidth', 3);
+    % ;
 
 end
 

@@ -11,7 +11,6 @@ function G = getBufferCells(G)
     
     xlimit = max(G.faces.centroids(:,1));
     tol = 1e-10;
-    areaVolumeConstant = 5e4;
 
     G.bufferCells = [];
     G.bufferFaces = [];

@@ -10,29 +10,41 @@ geodata = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.
 %%
 nx = 130;
 ny = 62;
-Gcut = loadCutCell(nx, ny);
-Gpre = loadPresplit(nx, ny);
-% CG = loadCG(nx, ny);
-% GenerateCutCellGrid(nx, ny, 'presplit', true, 'bufferVolumeSlice', false)
+buffer = false;
+% Gcut = GenerateCutCellGrid(nx, ny, 'type', 'cartesian', ...
+%     'recombine', false, 'save', true, ...
+%     'bufferVolumeSlice', buffer, 'removeInactive', true, ...
+%     'partitionMethod', 'convexity', ...
+%     'verbose', true);
+Gp = GenerateCutCellGrid(nx, ny, 'type', 'cartesian', ...
+    'recombine', true, 'save', true, ...
+    'bufferVolumeSlice', buffer, 'removeInactive', true, ...
+    'partitionMethod', 'convexity', ...
+    'verbose', true);
 %% Histogram
-bins = 30;
-G1 = G;
-G2 = Gcut;
-T = tiledlayout(2,1);
+T = tiledlayout(3,1);
 
 nexttile;
-h1 = histogram(log10(G1.cells.volumes));
-title(sprintf('Background. Total cells:%d', G1.cells.num));
-xlabel('log10(cell volumes)');
+h1 = histogram(log10(G.cells.volumes));
+title(sprintf('Background grid. Total cells:%d', G.cells.num));
+xlabel('Log10(cell volumes)');
+ylabel('Frequency');
 
 nexttile;
-h2 = histogram(log10(G2.cells.volumes));
-title(sprintf('Cut-cell. Total cells:%d', G2.cells.num));
-xlabel('log10(cell volumes)');
+h2 = histogram(log10(Gcut.cells.volumes));
+title(sprintf('Cut-cell. Total cells:%d', Gcut.cells.num));
+xlabel('Log10(cell volumes)');
+ylabel('Frequency');
+
+nexttile;
+h3 = histogram(log10(Gp.cells.volumes));
+title(sprintf('Coarsened Cut-cell. Total cells:%d', Gp.cells.num));
+xlabel('Log10(cell volumes)');
+ylabel('Frequency');
 
 
 %% Save hist
-exportgraphics(T, './../plotsMaster/histograms/cartesian_cut_orig_28x12.pdf');
+exportgraphics(T, sprintf('./../plotsMaster/histograms/cartesian_cut_part_%dx%d.pdf', nx, ny));
 
 %%
 % Set the same Y-axis limits for both plots

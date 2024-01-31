@@ -142,5 +142,5 @@ function distance = pointToPlaneDistance(point, planePoint, normal, vertIx)
     distance = abs(distance);
 end
 function x = swapcoords(x)
-    x = [1 0 0;0 0 1;0 1 0]*x;
+    x = [1 0 0;0 0 1;0 1 0]*x';
 end

@@ -26,14 +26,6 @@ function model = setupModel(simcase, varargin)
         model = selectModelFromDeck(G, rock, fluid, deck);
     end
 
-    if ~isempty(simcase.pdisc) && contains(simcase.pdisc, 'hybrid')
-        cellblocks = getCellblocks(simcase, varargin{:});
-        model = getHybridDisc(simcase, model, replace(simcase.pdisc, 'hybrid-', ''), ...
-            cellblocks, varargin{:});
-    end
-    if ~isempty(simcase.uwdisc) && contains(simcase.uwdisc, 'WENO')
-        model = setWENODiscretization(model);
-    end
     if contains(simcase.tagcase, 'upscale')
         partition = PartitionByTag(G);
         model = upscaleModelTPFA(model, partition);
@@ -42,6 +34,16 @@ function model = setupModel(simcase, varargin)
 
         simcase.G = model.G;
     end
+
+    if ~isempty(simcase.pdisc) && contains(simcase.pdisc, 'hybrid')
+        cellblocks = getCellblocks(simcase, varargin{:});
+        model = getHybridDisc(simcase, model, replace(simcase.pdisc, 'hybrid-', ''), ...
+            cellblocks, varargin{:});
+    end
+    if ~isempty(simcase.uwdisc) && contains(simcase.uwdisc, 'WENO')
+        model = setWENODiscretization(model);
+    end
+   
 
     model.OutputStateFunctions{end+1} = 'CapillaryPressure';
     model.OutputStateFunctions{end+1} = 'ComponentMobility';

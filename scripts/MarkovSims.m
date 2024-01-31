@@ -8,9 +8,9 @@ function timings = MarkovSims(server)
     switch  server
         case 1
             SPEcase = 'B';
-            gridcases = {'pre_cut_130x62'};
+            gridcases = {'horz_pre_cut_130x62'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-ntpfa'};
+            pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa'};
             uwdiscs = {''};
             deckcases = {'B_ISO_SMALL'};
             tagcase = '';
@@ -21,9 +21,9 @@ function timings = MarkovSims(server)
             direct_solver = false;
         case 2
             SPEcase = 'B';
-            gridcases = {'pre_cut_130x62'};
+            gridcases = {'cart_pre_cut_130x62'};
             schedulecases = {''};
-            pdiscs = {'hybrid-avgmpfa', 'hybrid-mpfa'};
+            pdiscs = {'', 'hybrid-ntpfa','hybrid-avgmpfa'};
             uwdiscs = {''};
             deckcases = {'B_ISO_SMALL'};
             tagcase = '';

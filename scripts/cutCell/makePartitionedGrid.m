@@ -21,6 +21,8 @@ function Gp = makePartitionedGrid(G, partition)
     nbs = getNeighbourship(G);
 
     handledBlocks = [];
+
+    %get partition-neighborship for faces
     partitionFaces = G.faces;
     for i =1:2
         nonzeros = partitionFaces.neighbors(:,i) ~= 0;
@@ -67,12 +69,18 @@ function Gp = makePartitionedGrid(G, partition)
     Gp.type{end+1} = 'makePartitionedGrid';
 
     Gp.faces.nodePos = Gp.faces.nodePos';
-    checkGrid(Gp);
+
+    Gp.cells.indexMap = (1:Gp.cells.num)';
+    if isfield(G, 'bufferCells')
+        Gp.bufferCells = partition(G.bufferCells)';
+        Gp.bufferFaces = [];
+    end
+
+    assert(checkGrid(Gp), 'grid does not pas checkGrid!');
 end
 
 function Gp = mergeFaces(G, Gp, partition, faces, cells)
     %merge coplanar faces between two partition blocks
-    tol = 1e-6;
     currentPartition = partition(cells(1));
     nbs = G.faces.neighbors(faces,:);
 
@@ -83,8 +91,6 @@ function Gp = mergeFaces(G, Gp, partition, faces, cells)
     neighborBlocks = nbs;
     neighborBlocks(nonNeg) = partition(nbs(nonNeg));
     uniqueNeighBorBlocks = unique(neighborBlocks);
-    
-    
 
     for in = 1:numel(uniqueNeighBorBlocks)
         nblock = uniqueNeighBorBlocks(in);
@@ -111,7 +117,7 @@ function Gp = mergeFaces(G, Gp, partition, faces, cells)
         nodecoords = G.nodes.coords(nodes,:);
         %------------
         % clf;
-        % scatter3(nodecoords(:,1),nodecoords(:,2), nodecoords(:,3), 1000, 'filled');hold on;
+        % scatter3(nodecoords(:,1),nodecoords(:,2), nodecoords(:,3), 500, (1:size(nodecoords,1))',  'filled');hold on;
         %-------------------------------------
         projcoords = (null(normal) .'*nodecoords')';
         chOrdering = convhull(projcoords);
@@ -124,7 +130,7 @@ function Gp = mergeFaces(G, Gp, partition, faces, cells)
         %----------------------
         v1 = facecentroid-nodecoords(2,:);
         v2 = facecentroid-nodecoords(3,:);
-        if sign(cross(v2, v1)*normal') == -1%make sure orientation is consistent
+        if sign(cross(v1, v2)*normal') == 1%make sure orientation is consistent
             nodecoords = nodecoords(end:-1:1, :);
             nodesOrdered = nodesOrdered(end:-1:1);
         end
@@ -139,12 +145,12 @@ function Gp = mergeFaces(G, Gp, partition, faces, cells)
         BA = A-B;
         BC = C-B;
         
-        roundpresicion = 10;
+        roundpresicion = 13;
         keepnodes = sign(round(cross(BA, BC,2)*(normal/area)', roundpresicion)) == 1;
         assert(sum(keepnodes)>2, 'not enough nodes')
         nodes = nodesOrdered(keepnodes);
 
-        nodes = nodes(end:-1:1);%revert direction, test?
+        nodes = nodes(end:-1:1);%revert direction to get positive computed cell volumes
         
         
         %------------
@@ -195,19 +201,19 @@ function nbs = handleBdry(G, nbs, faces, cc)
     bdryfaces = faces(any(nbs == 0,2));
     bdrynormals = G.faces.normals(bdryfaces,:);
     cc2fc = G.faces.centroids(bdryfaces,:) - cc;
-    bdrynormals = bdrynormals.*sign(sum(cc2fc .* bdrynormals,2));
     bdryareas = G.faces.areas(bdryfaces);
+    bdrynormals = ( bdrynormals.*sign(sum(cc2fc .* bdrynormals,2)) )./ bdryareas;
     face2bdryblock = [0];%block for each face
     bdryblockids = [0];
-    bdryblocknormals = bdrynormals(1,:)/bdryareas(1); %normal for each block
+    bdryblocknormals = bdrynormals(1,:); %normal for each block
     for ibf = 2:numel(bdryfaces)
-        match = abs(bdryblocknormals*bdrynormals(ibf,:)' - bdryareas(ibf)) < tol;
+        match = abs(bdryblocknormals*bdrynormals(ibf,:)' - 1) < tol;
         if any(match)
             assert(sum(match) == 1);
             face2bdryblock(ibf) = bdryblockids(match);
         else
             face2bdryblock(ibf) = min(bdryblockids) - 1;
-            bdryblocknormals(end+1,:) = bdrynormals(ibf,:)/bdryareas(ibf);
+            bdryblocknormals(end+1,:) = bdrynormals(ibf,:);
             bdryblockids(end+1) = face2bdryblock(ibf);
         end
     end

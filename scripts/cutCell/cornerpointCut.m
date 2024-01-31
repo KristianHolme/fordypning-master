@@ -2,7 +2,7 @@ clear all
 close all
 %%
 set(groot, 'defaultAxesView', [0, 90]);
-set(groot, 'DefaultLineLineWidth', 3);
+set(groot, 'DefaultLineLineWidth', 0.5);
 
 
 %% Load CP grid (from deck)
