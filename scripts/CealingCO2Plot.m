@@ -17,7 +17,6 @@ else
     totsteps = 360;
 end
 %% Setup Cealing CO2 plotting
-saveplot = true;
 % A
 % gridcases = {'6tetRef1', '5tetRef1'}; %RAPPORT 
 % gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'}; %RAPPORT
@@ -30,22 +29,26 @@ saveplot = true;
 % gridcases = {'6tetRef0.4', '5tetRef0.4', '5tetRef1-stretch'}; %RAPPORT
 % gridcases = {'5tetRef0.4', 'semi263x154_0.3', 'struct420x141'};%RAPPORT
 % gridcases = {'5tetRef0.4', '5tetRef0.8', '5tetRef2'}; %RAPPORT
-gridcases = {'semi188x38_0.3','semi203x72_0.3','semi263x154_0.3'}; %RAPPORT
+% gridcases = {'semi188x38_0.3','semi203x72_0.3','semi263x154_0.3'}; %RAPPORT
 % gridcases = {'6tetRef0.4', '5tetRef0.4', '5tetRef1-stretch', 'semi263x154_0.3','semi203x72_0.3',...
 %     'semi188x38_0.3','5tetRef0.4', '5tetRef0.8', '5tetRef2', 'struct420x141'};
 % gridcases = {'struct420x141'};
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+
+%Master B
+gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+gridcases = {'', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
 
 
-deckcase = 'RS';
+deckcase = 'B_ISO_SMALL';
 tagcase = '';
 
 labels = gridcases;
 plotTitle = 'CO2 in sealing units';
 ytxt = 'CO2 [kg]';
 xtxt = ['time [', unit, ']'];
-
+saveplot = true;
 
 %% Load simcases
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E"};
@@ -100,7 +103,7 @@ labels = [gridcasesDisp, pdiscsDisp];
 
 % Create the legend
 lgd = legend(handles, labels, 'NumColumns', 2);
-set(lgd, 'Interpreter', 'none', 'Location', 'southeast');
+set(lgd, 'Interpreter', 'none', 'Location', 'northwest');
 hold off
 title(plotTitle);
 fontsize(14, 'points'); 

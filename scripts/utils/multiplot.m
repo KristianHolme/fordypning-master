@@ -93,7 +93,7 @@ function multiplot(data, varargin)
                     if G.griddim == 3 %change view if on 3D grid
                         view(0,0);
                     end
-                    title(frame.title, 'FontSize', 20);
+                    title(frame.title, 'FontSize', 20, 'Interpreter','none');
                     if opt.equal
                         axis equal;
                     end
@@ -105,7 +105,7 @@ function multiplot(data, varargin)
                     h(p) = nexttile(p);
                     % Add title if supplied
                     if isfield(frame, 'title') && ~isempty(frame.title)
-                        title(frame.title, 'FontSize',20);
+                        title(frame.title, 'FontSize',20, 'Interpreter','none');
                     end
     
                     % Add y-label if supplied

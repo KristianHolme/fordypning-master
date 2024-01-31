@@ -20,14 +20,14 @@ SPEcase = 'B';
 gridcases = {'horz_pre_cut_PG_130x62'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
-pdiscs = {'', 'hybrid-avgmpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';%normalRock
 
 resetData           = false;
 resetAssembly       = true;
-do.plotStates       = true;
+do.plotStates       = false;
 do.plotFlux         = false;
 do.multiphase       = false;
 do.dispTime         = true;

@@ -17,7 +17,7 @@ end
 %% Cases to get data from
 gridcases = {'5tetRef1', 'semi263x154_0.3', 'struct340x150'};
 gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'};
-gridcases = {'struct130x62', 'pre_cut_130x62'};
+
 schedulecases = {''};
 deckcases = {'B_ISO_SMALL'};
 pdiscs = {''};

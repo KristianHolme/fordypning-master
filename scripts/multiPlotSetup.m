@@ -2,7 +2,7 @@ clear all;
 close all;
 %% Setup data
 % getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'flux';
-getData = @(states, step, G) states{step}.rs; cmap=''; dataname = 'rs';
+getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs';
 % getData = @(states, step, G) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation';
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';
 % getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap='';
@@ -43,7 +43,7 @@ end
 % gridcases = {'6tetRef0.4', '5tetRef0.4', '5tetRef1-stretch'};filename = 'FmeshalgStretch';
 % gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
 % gridcases = {'struct420x141'};
-gridcases = {'', 'horz_pre_cut_PG130x62', 'cart_pre_cut_PG130x62'};
+gridcases = {'', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
@@ -58,7 +58,7 @@ plotgrid = false;
 saveplot = true;
 
 filename = [SPEcase, '_', dataname, '_', filename];
-savefolder=fullfile('plots/multiplot', subname);
+savefolder=fullfile('./../plotsMaster/multiplot', subname);
 
 numGrids = numel(gridcases);
 numDiscs = numel(pdiscs);
@@ -112,9 +112,9 @@ end
 % gridcase = '6tetRef0.4';
 % gridcase = '5tetRef0.4';
 % gridcase = '5tetRef1-stretch';
-gridcase = 'cart_pre_cut_PG_130x62';
+% gridcase = 'cart_pre_cut_PG_130x62';
 gridcase = 'horz_pre_cut_PG_130x62';
-
+gridcase = '';
 % steps = [360];
 
 
