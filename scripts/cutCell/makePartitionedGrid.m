@@ -9,18 +9,18 @@ function Gp = makePartitionedGrid(G, partition)
     Gp.cells.centroids = zeros(Gp.cells.num, 3);
     Gp.nodes = G.nodes;
     Gp.faces.num = 0;
-    Gp.faces.nodes = [];
+    Gp.faces.nodes = {};
     Gp.faces.nodePos = [1];
-    Gp.faces.areas = [];
-    Gp.faces.centroids = [];
-    Gp.faces.normals = [];
-    Gp.faces.neighbors = [];
+    Gp.faces.areas = -1*ones(G.faces.num, 1);
+    Gp.faces.centroids = {};
+    Gp.faces.normals = {};
+    Gp.faces.neighbors = {};
     
     
 
     nbs = getNeighbourship(G);
-
-    handledBlocks = [];
+    handledBlocks = false(Gp.cells.num, 1);
+    curnumfaces = 0;
 
     %get partition-neighborship for faces
     partitionFaces = G.faces;
@@ -31,7 +31,7 @@ function Gp = makePartitionedGrid(G, partition)
 
     for ic = 1:Gp.cells.num
         currentPartition = ic;
-        handledBlocks(end+1) = currentPartition;
+        handledBlocks(currentPartition) = true;
         cells = find(partition == currentPartition);%all cells grouped with current cell
         Gp.cells.volumes(ic) = sum(G.cells.volumes(cells));
         volumeweights = G.cells.volumes(cells)/Gp.cells.volumes(ic);
@@ -41,14 +41,21 @@ function Gp = makePartitionedGrid(G, partition)
         neighbors = setdiff(neighbors,  cells);
         neighborPartitions = unique(partition(neighbors));%find partitions of neighbors
 
-        neighborPartitions = setdiff(neighborPartitions, handledBlocks);%dont want current cells to be found as neighbors
+        neighborPartitions = setdiff(neighborPartitions, find(handledBlocks));%dont want current cells to be found as neighbors
         faces = gridCellFaces(G, cells);
         faces = faces(any(ismember(partitionFaces.neighbors(faces,:), [neighborPartitions;0]), 2));
-        Gp = mergeFaces(G, Gp, partition, faces, cells);
+        [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfaces);
     end
     %fix negative neighbors
+    Gp.faces.neighbors = cell2mat(Gp.faces.neighbors');
     Gp.faces.neighbors(Gp.faces.neighbors < 0) = 0;
+    %reformat
+    Gp.faces.nodes = vertcat(Gp.faces.nodes{1:curnumfaces});
+    Gp.faces.areas = Gp.faces.areas(Gp.faces.areas ~= -1);
     Gp.faces.num = size(Gp.faces.areas,1);
+    Gp.faces.centroids = cell2mat(Gp.faces.centroids');
+    Gp.faces.normals = cell2mat(Gp.faces.normals');
+    
 
     %assign faces to cells
     faces = arrayfun(@(ic)find(sum(Gp.faces.neighbors == ic, 2)), 1:Gp.cells.num, UniformOutput=false);
@@ -79,41 +86,47 @@ function Gp = makePartitionedGrid(G, partition)
     assert(checkGrid(Gp), 'grid does not pas checkGrid!');
 end
 
-function Gp = mergeFaces(G, Gp, partition, faces, cells)
+function [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfaces)
     %merge coplanar faces between two partition blocks
     currentPartition = partition(cells(1));
     nbs = G.faces.neighbors(faces,:);
 
     nbs = handleBdry(G, nbs, faces, Gp.cells.centroids(currentPartition,:));
-
-    nbs = cell2mat(arrayfun(@(r)setdiff(nbs(r,:), cells), 1:size(nbs,1), UniformOutput=false))';
+    % nbs = cell2mat(arrayfun(@(r)setdiff(nbs(r,:), cells), 1:size(nbs,1), UniformOutput=false))';
+    nbs = nbs';
+    notInCells = ~ismember(nbs, cells);
+    nbs = nbs(notInCells);
+    
     nonNeg = nbs > 0;
     neighborBlocks = nbs;
     neighborBlocks(nonNeg) = partition(nbs(nonNeg));
     uniqueNeighBorBlocks = unique(neighborBlocks);
 
     for in = 1:numel(uniqueNeighBorBlocks)
+        curnumfaces = curnumfaces +1;
         nblock = uniqueNeighBorBlocks(in);
         f = faces(neighborBlocks == nblock);
         %assuming cells are convex, so faces are coplanar
 
         area = sum(G.faces.areas(f));
         areaweights = G.faces.areas(f)/area;
-        normal = mean(G.faces.normals(f,:), 1);
+        % normal = mean(G.faces.normals(f,:), 1);
+        normal = G.faces.normals(f(1),:);
         normal = area*normal/norm(normal); %TODO probably bad
         facecentroid = sum(areaweights.*G.faces.centroids(f,:),1);
         
-        Gp.faces.areas = [Gp.faces.areas;area];
+        Gp.faces.areas(curnumfaces) = area;
         celltoface = facecentroid - Gp.cells.centroids(currentPartition,:);
         %orient normal out of block
         normal = normal*sign(sum(celltoface .* normal,2));
-        Gp.faces.normals = [Gp.faces.normals;normal];
-        Gp.faces.neighbors = [ Gp.faces.neighbors;currentPartition, nblock];
-        Gp.faces.centroids = [Gp.faces.centroids;facecentroid];
+        Gp.faces.normals{curnumfaces} = normal;
+        Gp.faces.neighbors{curnumfaces} = [currentPartition, nblock];
+        Gp.faces.centroids{curnumfaces} = facecentroid;
 
         %find which nodes are necessary
         % nodesOrdered = orderNodes(G, f, facecentroid, normal);
-        nodes = gridFaceNodes(G, f);
+        % nodes = gridFaceNodes(G, f);
+        nodes = Faces2Nodes(f, G);
         nodecoords = G.nodes.coords(nodes,:);
         %------------
         % clf;
@@ -159,9 +172,18 @@ function Gp = mergeFaces(G, Gp, partition, faces, cells)
         % legend('all', 'convhull', 'final')
         %--------------
 
-        Gp.faces.nodes = [Gp.faces.nodes;nodes];
+        % Gp.faces.nodes = [Gp.faces.nodes;nodes];
+        Gp.faces.nodes{curnumfaces} = nodes; 
         Gp.faces.nodePos(end+1) = Gp.faces.nodePos(end) + numel(nodes);
     end
+end
+
+function n = Faces2Nodes(f, G)
+    ni = mcolon(G.faces.nodePos(f), ...
+                G.faces.nodePos(f+1)-1)';
+
+    % pos = cumsum([1; double(nnode(f))]);
+    n = G.faces.nodes(ni);
 end
 
 function nodes = orderNodes(G, faces, facecenter, facenormal)

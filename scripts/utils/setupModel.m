@@ -26,6 +26,15 @@ function model = setupModel(simcase, varargin)
         model = selectModelFromDeck(G, rock, fluid, deck);
     end
 
+    if ~isempty(simcase.pdisc) && contains(simcase.pdisc, 'cc')
+        if contains(simcase.pdisc, 'loc')
+            K_system = 'loc_xyz';
+        else
+            K_system = 'xyz';
+        end
+        model = setCCTransmissibility(model, K_system);
+    end
+
     if contains(simcase.tagcase, 'upscale')
         partition = PartitionByTag(G);
         model = upscaleModelTPFA(model, partition);

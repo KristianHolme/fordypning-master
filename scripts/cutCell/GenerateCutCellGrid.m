@@ -117,7 +117,7 @@ function G = Recombine(G, opt, nx, ny)
             'avoidBufferCells', opt.bufferVolumeSlice);
 
     partitionIterations = 0;
-    maxPartitionIterations = 13;
+    maxPartitionIterations = 5;
     while max(partition) < G.cells.num && partitionIterations <= maxPartitionIterations
         partitionIterations = partitionIterations +1;
 

@@ -43,7 +43,7 @@ end
 % gridcases = {'6tetRef0.4', '5tetRef0.4', '5tetRef1-stretch'};filename = 'FmeshalgStretch';
 % gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
 % gridcases = {'struct420x141'};
-gridcases = {'', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
@@ -52,7 +52,7 @@ subname = ''; %'', 'uppermiddle',
 
 
 deckcase = 'B_ISO_SMALL';
-tagcase = '';
+tagcases = {'', 'normalRock'};
 
 plotgrid = false;
 saveplot = true;
@@ -63,6 +63,9 @@ savefolder=fullfile('./../plotsMaster/multiplot', subname);
 numGrids = numel(gridcases);
 numDiscs = numel(pdiscs);
 %% Loading data grid vs pdisc
+if numel(tagcases) ~= numGrids
+    tagcases = repmat(tagcases, 1, numGrids);
+end
 data = cell(numDiscs, numGrids, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
@@ -71,7 +74,7 @@ for istep = 1:numel(steps)
         for j = 1:numGrids
             gridcase = gridcases{j};
             simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                                'tagcase', tagcase, ...
+                                'tagcase', tagcase{j}, ...
                                 'pdisc', pdisc);
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
@@ -122,7 +125,7 @@ filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
-pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa'};
+pdiscs = {'', 'cc'};
 deckcase = 'B_ISO_SMALL';
 tagcases = {''};%one for each pdisc or that applies to all pdiscs
 

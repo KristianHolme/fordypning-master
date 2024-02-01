@@ -8,9 +8,9 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+        gridcases = {'', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
         schedulecases = {''};
-        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+        pdiscs = {'cc'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
@@ -46,12 +46,12 @@ function timings = runSims2(server)
         mrstVerbose off;
     case 4
         SPEcase = 'B';
-        gridcases = {'struct130x62'};
+        gridcases = {''};
         schedulecases = {''};
-        pdiscs = {'hybrid-avgmpfa', 'hybrid-mpfa'};
+        pdiscs = {'hybrid-avgmpfa', 'hybrid-ntpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
-        tagcase = '';
+        tagcase = 'normalRock';
         resetData = true;
         resetAssembly = true;
         Jutul = false;

@@ -3,7 +3,7 @@ close all
 %%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa Jutul
+    deckformat gmsh nfvm mpfa
 mrstVerbose off
 %%
 SPEcase = 'B';
@@ -13,8 +13,8 @@ if strcmp(SPEcase, 'A')
     totsteps = 720;
 else 
     xscaling = SPEyear;unit='y';
-    steps = 360;
-    totsteps = 360;
+    steps = 4;
+    totsteps = 4;
 end
 %% Setup Cealing CO2 plotting
 % A
@@ -36,7 +36,7 @@ end
 
 %Master B
 gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
-gridcases = {'', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+gridcases = {'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
 
@@ -112,7 +112,7 @@ ylabel(ytxt);
 grid on;
 
 if saveplot
-    folder = 'plots/sealingCO2';
+    folder = './../plotsMaster/sealingCO2';
     filename = [SPEcase, '_', strjoin(gridcases, '_'), '-', strjoin(pdiscsDisp, '_')];
     exportgraphics(gcf, fullfile(folder, [filename, '.pdf']))%for color
     saveas(gcf, fullfile(folder, [filename, '.png']))
