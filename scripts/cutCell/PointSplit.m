@@ -21,6 +21,7 @@ function [G, t] = PointSplit(G, points, varargin)
         vertIx = 2;
     end
     G.minOrgVol = min(G.cells.volumes); %save the smallest volumes
+    G.maxOrgVol = max(G.cells.volumes);
     dispif(opt.verbose, "Presplitting grid.\nEstimated time: %0.2f s\n", 0.004*prod(G.cartDims));
     tic();
     

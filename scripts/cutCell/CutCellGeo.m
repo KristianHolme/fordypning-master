@@ -10,6 +10,10 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
                  'type', 'cartesian', ...
                  'vertIx', 2);
     [opt, extra] = merge_options(opt, varargin{:});
+    if ~isfield(G, 'minOrgVol')
+        G.minOrgVol = min(G.cells.volumes);
+        G.maxOrgVol = max(G.cells.volumes);
+    end
     dir = opt.dir;
     dispif(opt.verbose, "Main splitting...\n");
     tic();

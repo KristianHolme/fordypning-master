@@ -8,9 +8,9 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {'', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+        gridcases = {'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
         schedulecases = {''};
-        pdiscs = {'cc'};
+        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'cc'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
@@ -20,7 +20,7 @@ function timings = runSims2(server)
         direct_solver = false;
     case 2
         SPEcase = 'B';
-        gridcases = {'horz_pre_cut_130x62'};
+        gridcases = {'horz_pre_cut_130x62','cart_pre_cut_130x62' };
         schedulecases = {''};
         pdiscs = {''};
         uwdiscs = {''};

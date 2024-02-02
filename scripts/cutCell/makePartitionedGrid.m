@@ -15,10 +15,23 @@ function Gp = makePartitionedGrid(G, partition)
     Gp.faces.centroids = {};
     Gp.faces.normals = {};
     Gp.faces.neighbors = {};
+
+    nbs = getNeighbourship(G);
+    
+    if ~isfield(G.faces,'nodesByFace')
+        G.faces.nodesByFace = arrayfun(@(f)G.faces.nodes(G.faces.nodePos(f):G.faces.nodePos(f+1)-1), (1:G.faces.num)', UniformOutput=false);
+    else
+        Gp.faces.nodesByFace = {};
+    end
+    if ~isfield(G.cells,'neighbors')
+        G.cells.neighbors = arrayfun(@(c)getnbs(nbs,c), (1:G.cells.num)', UniformOutput=false);
+    else
+        Gp.cells.neighbors = {};
+    end
     
     
 
-    nbs = getNeighbourship(G);
+    
     handledBlocks = false(Gp.cells.num, 1);
     curnumfaces = 0;
 
@@ -37,7 +50,9 @@ function Gp = makePartitionedGrid(G, partition)
         volumeweights = G.cells.volumes(cells)/Gp.cells.volumes(ic);
         Gp.cells.centroids(ic,:) = mean(volumeweights'*G.cells.centroids(cells,:),1);
 
-        neighbors = cell2mat(arrayfun(@(c) getnbs(G, nbs, c), cells, UniformOutput=false));
+        % neighborsold = cell2mat(arrayfun(@(c) getnbs(nbs, c), cells, UniformOutput=false));
+        neighbors = vertcat(G.cells.neighbors{cells});
+        % assert(all(neighbors2 == neighbors))
         neighbors = setdiff(neighbors,  cells);
         neighborPartitions = unique(partition(neighbors));%find partitions of neighbors
 
@@ -58,8 +73,19 @@ function Gp = makePartitionedGrid(G, partition)
     
 
     %assign faces to cells
-    faces = arrayfun(@(ic)find(sum(Gp.faces.neighbors == ic, 2)), 1:Gp.cells.num, UniformOutput=false);
-    numfaces = arrayfun(@(el)numel(el{1}), faces)';
+    faces = cell(Gp.cells.num,1);
+    for ifa = 1:Gp.faces.num
+        nbs = Gp.faces.neighbors(ifa,:);
+        for in = 1:2
+            if nbs(in) == 0
+                continue
+            end
+            faces{nbs(in)} = [faces{nbs(in)};ifa];
+        end
+        % faces{ic} = find(sum(Gp.faces.neighbors == ic, 2));
+    end
+    % faces = arrayfun(@(ic)find(sum(Gp.faces.neighbors == ic, 2)), 1:Gp.cells.num, UniformOutput=false);
+    numfaces = arrayfun(@(el)numel(el{1}), faces);
     Gp.cells.facePos = cumsum([1;numfaces]);
     Gp.cells.faces = vertcat(faces{:});
 
@@ -178,13 +204,7 @@ function [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfa
     end
 end
 
-function n = Faces2Nodes(f, G)
-    ni = mcolon(G.faces.nodePos(f), ...
-                G.faces.nodePos(f+1)-1)';
 
-    % pos = cumsum([1; double(nnode(f))]);
-    n = G.faces.nodes(ni);
-end
 
 function nodes = orderNodes(G, faces, facecenter, facenormal)
     adjustfactor = 1e-12;
@@ -227,6 +247,7 @@ function nbs = handleBdry(G, nbs, faces, cc)
     bdrynormals = ( bdrynormals.*sign(sum(cc2fc .* bdrynormals,2)) )./ bdryareas;
     face2bdryblock = [0];%block for each face
     bdryblockids = [0];
+    minid = 0;
     bdryblocknormals = bdrynormals(1,:); %normal for each block
     for ibf = 2:numel(bdryfaces)
         match = abs(bdryblocknormals*bdrynormals(ibf,:)' - 1) < tol;
@@ -234,7 +255,8 @@ function nbs = handleBdry(G, nbs, faces, cc)
             assert(sum(match) == 1);
             face2bdryblock(ibf) = bdryblockids(match);
         else
-            face2bdryblock(ibf) = min(bdryblockids) - 1;
+            minid = minid -1;
+            face2bdryblock(ibf) = minid;
             bdryblocknormals(end+1,:) = bdrynormals(ibf,:);
             bdryblockids(end+1) = face2bdryblock(ibf);
         end
@@ -244,7 +266,7 @@ function nbs = handleBdry(G, nbs, faces, cc)
     nbs = nbs';
 end
 
-function n = getnbs(G, nbs, c)
+function n = getnbs(nbs, c)
     n = nbs(nbs(:, 1) == c | nbs(:, 2) == c, :);
     n = unique(n(:));
     n = n(n~=c);

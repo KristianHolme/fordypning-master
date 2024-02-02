@@ -10,11 +10,17 @@ function [partition, failed] = PartitionByTag(G, varargin)
             opt.vertIx = 2;
         end
     end
+
+    if ~isfield(G.faces,'nodesByFace')
+        G.faces.nodesByFace = arrayfun(@(f)G.faces.nodes(G.faces.nodePos(f):G.faces.nodePos(f+1)-1), (1:G.faces.num)', UniformOutput=false);
+    end
     
     maincells = true(G.cells.num, 1);
     maincells(G.bufferCells) = false;
-    volMax = max(G.cells.volumes(maincells));
-    volLim = volMax/5;
+    % volMax = max(G.cells.volumes(maincells));
+    volLim = G.maxOrgVol/4;
+    volLim2 = G.minOrgVol*10;
+    % volLim = volMax/5;
 
     smallcellsLog = G.cells.volumes < volLim & G.cells.volumes > 0;
     nbs = getNeighbourship(G);
@@ -122,7 +128,11 @@ function [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs
         
 
         neighborPartitions = neighborPartitions(convexok); %filter out neighbors that dont result in convexity
-
+        neighborVolumes = arrayfun(@(nbp)sum(G.cells.volumes(partition == nbp)), neighborPartitions);
+        currentPartitionVolume = sum(G.cells.volumes(partition == currentPartition));
+        potentialVolumes = neighborVolumes + currentPartitionVolume;
+        volumeok = potentialVolumes < G.maxOrgVol*2;
+        neighborPartitions = neighborPartitions(volumeok);
         if isempty(neighborPartitions)
             failed = [failed;c];
             continue
@@ -228,9 +238,9 @@ function ok = checkConvexMerge(G, cells, vertIx)
     normals = G.faces.normals(faces, :);
     sideFaces = abs(normals(:,depthIx)) < tol;
     faces = faces(sideFaces); %now we have the interesting faces
-    normals = normals(sideFaces, :);
-    sgn = ismember(G.faces.neighbors(faces,1), cells)*2 - 1;
-    normals = bsxfun(@times, normals, sgn); %outward normals, check!
+    % normals = normals(sideFaces, :);
+    % sgn = ismember(G.faces.neighbors(faces,1), cells)*2 - 1;
+    % normals = bsxfun(@times, normals, sgn); %outward normals, check!
 
     ordering = orderFaces(G, faces); %faces(i) is neighboring faces(i+1) and faces(i-1) (mod(numel(faces))(?)) 
     faces = faces(ordering);
@@ -242,7 +252,7 @@ function ok = checkConvexMerge(G, cells, vertIx)
     
     centroidToFace = G.faces.centroids(faces,:) - avgcentroid;%could use this to calculate ordering, but assuming convexity?
     normalsCrossProducts = sum(cross(normals(2:end,:), normals(1:end-1, :)),2);
-    dotProducts = dot(normals(2:end,:), normals(1:end-1, :), 2);
+    % dotProducts = dot(normals(2:end,:), normals(1:end-1, :), 2);
     centroidFaceCrossProducts = sum(cross(centroidToFace(2:end,:), centroidToFace(1:end-1, :)),2);
     
     %ok if crossproducts share sign or if normalcrossproducts are zero
@@ -252,7 +262,7 @@ function ok = checkConvexMerge(G, cells, vertIx)
 end
 
 function ordering = orderFaces(G, faces)
-    faceNodes = vertcat(arrayfun(@(f)gridFaceNodes(G, f), faces, UniformOutput=false));
+    faceNodes = vertcat(arrayfun(@(f)Faces2Nodes(f, G), faces, UniformOutput=false));
     neighbors = getFaceNeighbors(faceNodes);
     numfaces = numel(faces);
     ordering = zeros(numfaces, 1);
@@ -265,14 +275,37 @@ end
 
 function nodesInOrder = orderFaceNodes(G, faces, depthIx)
     tol = 1e-10;
-    frontNodes = find(abs(G.nodes.coords(:,depthIx)) < tol); 
-    faceNodes = reshape(cell2mat(arrayfun(@(f)intersect(frontNodes,gridFaceNodes(G, f)), faces, UniformOutput=false)),2, [])';
+    faceNodes = arrayfun(@(f)Faces2Nodes(f, G), faces, UniformOutput=false);
+    faceNodes = reshape(cell2mat(cellfun(@(fn)fn( abs(G.nodes.coords(fn,depthIx)) < tol ), faceNodes, UniformOutput=false)), 2,[])';
+
+    % frontNodes = find(abs(G.nodes.coords(:,depthIx)) < tol); 
+    % faceNodes = reshape(cell2mat(arrayfun(@(f)intersect(frontNodes,gridFaceNodes(G, f)), faces, UniformOutput=false)),2, [])';
+    % 
+    % faceNodes2 = reshape(cell2mat(arrayfun(@(f)intersect(frontNodes, Faces2Nodes(f, G)), faces, UniformOutput=false)),2, [])';
+    
+    
     numNodes = numel(unique(faceNodes(:)));
     nodesInOrder = zeros(numNodes, 1);
-    g = graph(faceNodes(:,1), faceNodes(:,2));
+    % g = graph(faceNodes(:,1), faceNodes(:,2));
     nodesInOrder(1:2) = faceNodes(1,:);
+    taken = false(size(faceNodes,1),1);
+    taken(1,:) = true;
+
+    % nodesInOrderOld = nodesInOrder;
     for i=3:numNodes
-        nodesInOrder(i) = setdiff(neighbors(g, nodesInOrder(i-1)), nodesInOrder(i-2));
+        % leftover = faceNodes(~takenrows,:);
+        prevnode = nodesInOrder(i-1);
+        % preprevnode = nodesInOrder(i-2);
+        nextIx = flip(faceNodes == prevnode, 2);
+        nextIx = nextIx & ~taken;
+        taken(nextIx(:,1)|nextIx(:,2),:) = true;
+        % prevnbs = neighbors(g, prevnode);
+        % nextnode = sum(prevnbs) - preprevnode;
+        
+        nextnode = faceNodes(nextIx);
+        
+        nodesInOrder(i) = nextnode;
+        % nodesInOrderOld(i) = setdiff(neighbors(g, nodesInOrderOld(i-1)), nodesInOrderOld(i-2));
     end
 end
 
