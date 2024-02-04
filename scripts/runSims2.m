@@ -8,21 +8,21 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+        gridcases = {'', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
         schedulecases = {''};
-        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'cc'};
+        pdiscs = {'ccloc'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
-        resetData = true;
+        resetData = false;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
     case 2
         SPEcase = 'B';
-        gridcases = {'horz_pre_cut_130x62','cart_pre_cut_130x62' };
+        gridcases = {'horz_pre_cut_130x62','cart_pre_cut_130x62'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'cc'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = 'upscale';
@@ -33,12 +33,12 @@ function timings = runSims2(server)
         mrstVerbose off;
     case 3
         SPEcase = 'B';
-        gridcases = {'cart_pre_cut_130x62'};
+        gridcases = {'struct130x62'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
-        tagcase = 'upscale';
+        tagcase = '';
         resetData = true;
         resetAssembly = true;
         Jutul = false;

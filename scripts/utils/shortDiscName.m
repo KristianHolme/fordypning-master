@@ -1,4 +1,12 @@
 function discname = shortDiscName(discname)
+    if contains(discname, 'cc')
+        if contains(discname, 'loc')
+            discname = 'TPFA-cc-loc';
+        else
+            discname = 'TPFA-cc';
+        end
+        return
+    end
     if isempty(discname)
         discname = 'tpfa';
     else
@@ -9,4 +17,5 @@ function discname = shortDiscName(discname)
     else
         discname = upper(discname);
     end
+    
 end

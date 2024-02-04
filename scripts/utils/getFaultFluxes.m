@@ -4,7 +4,7 @@ function data = getFaultFluxes(simcase, steps, varargin)
 
     G = simcase.model.G;
     dirName       = fullfile(simcase.dataOutputDir, simcase.casename);
-    filename      = fullfile(dirName, 'faultflux');
+    filename      = fullfile(dirName, 'faultflux.mat');
     if exist([filename, '.mat'], "file") && opt.loadifsaved
         disp("loading data...")
         load(filename)

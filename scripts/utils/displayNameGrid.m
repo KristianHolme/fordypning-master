@@ -31,6 +31,9 @@ function displayName = displayNameGrid(gridcase, specase)
     Bmap('5tetRef2-stretch') = 'UU-M-Astretch';
     Bmap('5tetRef1-stretch') = 'UU-F-Astretch';
     Bmap('5tetRef6-stretch') = 'UU-C-Astretch';
+    Bmap('') = 'deck';
+    Bmap('horz_pre_cut_PG_130x62') = 'Horizon-cut-part_small';
+    Bmap('cart_pre_cut_PG_130x62') = 'Cartesian-cut-part_small';
 
     if strcmp(lower(specase), 'a')
         if isKey(Amap, gridcase)

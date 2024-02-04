@@ -14,7 +14,7 @@ if strcmp(SPEcase, 'A')
 else 
     scaling = SPEyear;unit='y';
     % steps = [40, 150, 360];
-    steps = [4];
+    steps = [31];
 end
 %% Setup grid v disc
 
@@ -45,14 +45,14 @@ end
 % gridcases = {'struct420x141'};
 gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
 subname = ''; %'', 'uppermiddle', 
 [p1, p2] = getBoxPoints(subname, SPEcase, 3);
 
 
 deckcase = 'B_ISO_SMALL';
-tagcases = {'', 'normalRock'};
+tagcases = {''};
 
 plotgrid = false;
 saveplot = true;
@@ -74,7 +74,7 @@ for istep = 1:numel(steps)
         for j = 1:numGrids
             gridcase = gridcases{j};
             simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                                'tagcase', tagcase{j}, ...
+                                'tagcase', tagcases{j}, ...
                                 'pdisc', pdisc);
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
@@ -116,7 +116,7 @@ end
 % gridcase = '5tetRef0.4';
 % gridcase = '5tetRef1-stretch';
 % gridcase = 'cart_pre_cut_PG_130x62';
-gridcase = 'horz_pre_cut_PG_130x62';
+% gridcase = 'horz_pre_cut_PG_130x62';
 gridcase = '';
 % steps = [360];
 
@@ -125,7 +125,7 @@ filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
-pdiscs = {'', 'cc'};
+pdiscs = {'', 'cc', 'ccloc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 deckcase = 'B_ISO_SMALL';
 tagcases = {''};%one for each pdisc or that applies to all pdiscs
 

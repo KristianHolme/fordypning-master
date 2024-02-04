@@ -13,22 +13,28 @@ if strcmp(SPEcase, 'A')
     totsteps = 720;
 else 
     xscaling = SPEyear;unit='y';
-    steps = 4;
-    totsteps = 4;
+    steps = 31;
+    totsteps = 31;
 end
-%% Type of plot
-%CO2
+%% Set Sealing-CO2
 getData = @(simcase, steps)getSealingCO2(simcase, steps);
 plotTitle='CO2 in sealing units';
 ytxt = 'CO2 [kg]';
 folder = './../plotsMaster/sealingCO2';
-%%
-% faultfluxes
+filetag = 'sealingCO2';
+%% Set-Faultfluxes
 getData = @(simcase, steps)getFaultFluxes(simcase, steps);
-plotTitle='Fluxes over region bdrys';
+plotTitle='Fluxes over region bdrys (sum(abs(flux)))';
 ytxt = 'sum(abs(Fluxes))';
 folder = './../plotsMaster/faultfluxes';
-
+filetag = 'faultflux';
+steps = 22;
+%% Set BdryCO2
+getData = @(simcase, steps)getBufferCO2(simcase, steps);
+plotTitle='CO2 in buffer volumes';
+ytxt = 'CO2 [kg]';
+folder = './../plotsMaster/bufferCO2';
+filetag = 'bufferCO2';
 %% Setup Sealing CO2 plotting
 % A
 % gridcases = {'6tetRef1', '5tetRef1'}; %RAPPORT 
@@ -49,19 +55,19 @@ folder = './../plotsMaster/faultfluxes';
 
 %Master B
 gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
-gridcases = {'horz_pre_cut_130x62', 'cart_pre_cut_130x62'};
-pdiscs = {''};
+% gridcases = {'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
 
 
 deckcase = 'B_ISO_SMALL';
-tagcase = 'upscale';
+tagcase = '';
 
 labels = gridcases;
 % plotTitle = 'CO2 in sealing units';
 % ytxt = 'CO2 [kg]';
 xtxt = ['time [', unit, ']'];
-saveplot = false;
+saveplot = true;
 
 %% Load simcases
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E"};
@@ -83,7 +89,8 @@ end
 %%
 
 xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
-data = nan(totsteps, numel(simcases));
+xdata = xdata(1:steps);
+data = nan(steps, numel(simcases));
 %% Load data
 for isim = 1:numel(simcases)
     simcase = simcases{isim};
@@ -116,7 +123,7 @@ labels = [gridcasesDisp, pdiscsDisp];
 
 % Create the legend
 lgd = legend(handles, labels, 'NumColumns', 2);
-set(lgd, 'Interpreter', 'none', 'Location', 'northwest');
+set(lgd, 'Interpreter', 'none', 'Location', 'best');
 hold off
 title(plotTitle);
 fontsize(14, 'points'); 
@@ -126,7 +133,7 @@ grid on;
 
 if saveplot
     % folder = './../plotsMaster/sealingCO2';
-    filename = [SPEcase, '_', strjoin(gridcases, '_'), '-', strjoin(pdiscsDisp, '_')];
+    filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(pdiscsDisp, '_')];
     exportgraphics(gcf, fullfile(folder, [filename, '.pdf']))%for color
     saveas(gcf, fullfile(folder, [filename, '.png']))
 end
