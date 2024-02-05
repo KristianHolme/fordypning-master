@@ -123,16 +123,16 @@ function [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs
         neighborPartitions = unique(partition(neighbors));%find partitions of neighbors
 
         neighborPartitions = setdiff(neighborPartitions, currentPartition);%dont want current cells to be found as neighbors
-
-        convexok = arrayfun(@(nbp)checkConvexMerge2(G, [cells;find(partition == nbp)], vertIx), neighborPartitions);
         
-
-        neighborPartitions = neighborPartitions(convexok); %filter out neighbors that dont result in convexity
         neighborVolumes = arrayfun(@(nbp)sum(G.cells.volumes(partition == nbp)), neighborPartitions);
         currentPartitionVolume = sum(G.cells.volumes(partition == currentPartition));
         potentialVolumes = neighborVolumes + currentPartitionVolume;
         volumeok = potentialVolumes < G.maxOrgVol*2;
         neighborPartitions = neighborPartitions(volumeok);
+
+        convexok = arrayfun(@(nbp)checkConvexMerge2(G, [cells;find(partition == nbp)], vertIx), neighborPartitions);
+        neighborPartitions = neighborPartitions(convexok); %filter out neighbors that dont result in convexity
+
         if isempty(neighborPartitions)
             failed = [failed;c];
             continue
