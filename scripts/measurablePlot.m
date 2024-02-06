@@ -16,7 +16,7 @@ else
     steps = 31;
     totsteps = 31;
 end
-%% Set Sealing-CO2
+%% P5: Set Sealing-CO2
 getData = @(simcase, steps)getSealingCO2(simcase, steps);
 plotTitle='CO2 in sealing units';
 ytxt = 'CO2 [kg]';
@@ -29,12 +29,67 @@ ytxt = 'sum(abs(Fluxes))';
 folder = './../plotsMaster/faultfluxes';
 filetag = 'faultflux';
 steps = 22;
-%% Set BdryCO2
+%% P6: Set Buffer CO2
 getData = @(simcase, steps)getBufferCO2(simcase, steps);
 plotTitle='CO2 in buffer volumes';
 ytxt = 'CO2 [kg]';
 folder = './../plotsMaster/bufferCO2';
 filetag = 'bufferCO2';
+%% PoP
+popcell = 2;
+getData = @(simcase, steps)getPoP(simcase, steps, popcell) ./barsa;
+plotTitle = sprintf('Pressure at PoP %d', popcell);
+ytxt = 'Pressure [bar]';
+folder = './../plotsMaster/PoP';
+filetag = sprintf('pop%d', popcell);
+%% P2 composition box A
+box = 'A';
+ytxt = 'CO2 [kg]';
+%% P2.1 mobile
+plotTitle = 'P2.1 Mobile CO2';
+folder = './../plotsMaster/composition/P2boxA';
+submeasure = 1;
+filetag = ['box', box, 'mob'];
+%% P2.2 immobile
+plotTitle = 'P2.2 Immobile Co2';
+folder = './../plotsMaster/composition/P2boxA';
+submeasure = 2;
+filetag = ['box', box, 'immob'];;
+%% P2.3 dissolved
+plotTitle = 'P2.3 Dissolved CO2';
+folder = './../plotsMaster/composition/P2boxA';
+submeasure = 3;
+filetag = ['box', box, 'diss'];
+%% P2.4 seal
+plotTitle = 'P2.4 Seal CO2';
+folder = './../plotsMaster/composition/P2boxA';
+submeasure = 4;
+filetag = ['box', box, 'seal'];
+%% P3 composition box B
+box = 'B';
+ytxt = 'CO2 [kg]';
+%% P3.1 mobile
+plotTitle = 'P3.1 Mobile CO2';
+folder = './../plotsMaster/composition/P3boxB';
+submeasure = 1;
+filetag = ['box', box, 'mob'];
+%% P3.2 immobile
+plotTitle = 'P3.2 Immobile CO2';
+folder = './../plotsMaster/composition/P3boxB';
+submeasure = 2;
+filetag = ['box', box, 'immob'];
+%% P3.3 dissolved
+plotTitle = 'P3.3 Dissolved CO2';
+folder = './../plotsMaster/composition/P3boxB';
+submeasure = 3;
+filetag = ['box', box, 'diss'];
+%% P3.4 seal
+plotTitle = 'P3.4 Seal CO2';
+folder = './../plotsMaster/composition/P3boxB';
+submeasure = 4;
+filetag = ['box', box, 'seal'];
+%% P2-3 get data
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box);
 %% Setup Sealing CO2 plotting
 % A
 % gridcases = {'6tetRef1', '5tetRef1'}; %RAPPORT 
@@ -86,12 +141,11 @@ for igrid = 1:numel(gridcases)
         plotStyles{end+1} = struct('Color', color, 'LineStyle', style);
     end
 end
-%%
 
+%% Load data
 xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
 xdata = xdata(1:steps);
 data = nan(steps, numel(simcases));
-%% Load data
 for isim = 1:numel(simcases)
     simcase = simcases{isim};
     data(:,isim) = getData(simcase, steps);

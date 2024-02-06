@@ -6,38 +6,47 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     deckformat gmsh nfvm mpfa coarsegrid
 %%
 geodata = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
-
+Lx = 2.8;
+Ly = 1.2;
+G = cartGrid([nx ny 1], [Lx, Ly 0.01]);
+G = computeGeometry(G);
+G = TagbyFacies(G, geodata);
+n = neighboursByNodes(G);
+outercells = arrayfun(@(c) all(G.cells.tag(getCellNeighborsByNode(G, c, 'n', n)) == 7) && G.cells.tag(c) == 7, 1:G.cells.num)';
+G = removeCells(G, outercells);
+G.cells.tag = G.cells.tag(~outercells);
 %%
 nx = 130;
 ny = 62;
 buffer = false;
+save = false;
 Gcut = GenerateCutCellGrid(nx, ny, 'type', 'cartesian', ...
-    'recombine', false, 'save', true, ...
+    'recombine', false, 'save', save, ...
     'bufferVolumeSlice', buffer, 'removeInactive', true, ...
     'partitionMethod', 'convexity', ...
     'verbose', true);
 Gp = GenerateCutCellGrid(nx, ny, 'type', 'cartesian', ...
-    'recombine', true, 'save', true, ...
+    'recombine', true, 'save', save, ...
     'bufferVolumeSlice', buffer, 'removeInactive', true, ...
     'partitionMethod', 'convexity', ...
     'verbose', true);
 %% Histogram
 T = tiledlayout(3,1);
-
+AtoBVolumeFactor = 3e8;
 nexttile;
-h1 = histogram(log10(G.cells.volumes));
+h1 = histogram(log10(G.cells.volumes*AtoBVolumeFactor));
 title(sprintf('Background grid. Total cells:%d', G.cells.num));
 xlabel('Log10(cell volumes)');
 ylabel('Frequency');
 
 nexttile;
-h2 = histogram(log10(Gcut.cells.volumes));
+h2 = histogram(log10(Gcut.cells.volumes*AtoBVolumeFactor));
 title(sprintf('Cut-cell. Total cells:%d', Gcut.cells.num));
 xlabel('Log10(cell volumes)');
 ylabel('Frequency');
 
 nexttile;
-h3 = histogram(log10(Gp.cells.volumes));
+h3 = histogram(log10(Gp.cells.volumes*AtoBVolumeFactor));
 title(sprintf('Coarsened Cut-cell. Total cells:%d', Gp.cells.num));
 xlabel('Log10(cell volumes)');
 ylabel('Frequency');

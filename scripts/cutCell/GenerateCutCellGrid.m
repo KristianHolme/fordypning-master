@@ -113,24 +113,14 @@ function G = Recombine(G, opt, nx, ny)
         geodata = StretchGeo(geodata);
     end
     t = tic();
-    [partition, failed] = PartitionByTag(G, 'method', opt.partitionMethod, ...
+    [partition, failed, tries] = PartitionByTag(G, 'method', opt.partitionMethod, ...
             'avoidBufferCells', opt.bufferVolumeSlice);
+    G = makePartitionedGrid(G, partition);
+    G = TagbyFacies(G, geodata, 'vertIx', vertIx);
 
-    partitionIterations = 0;
-    maxPartitionIterations = 5;
-    while max(partition) < G.cells.num && partitionIterations <= maxPartitionIterations
-        partitionIterations = partitionIterations +1;
-
-        Gp = makePartitionedGrid(G, partition);
-        Gp = TagbyFacies(Gp, geodata, 'vertIx', vertIx);
-        G = Gp;
-        partition = PartitionByTag(G, 'method', opt.partitionMethod, ...
-            'avoidBufferCells', opt.bufferVolumeSlice);
-
-    end
 
     t = toc(t);
-    dispif(opt.verbose, "Partition and coarsen(%d iterations) in %0.2f s\n", partitionIterations, t);
+    dispif(opt.verbose, "Partition(%d iterations) and coarsen in %0.2f s\n%d cells failed to merge.\n", tries, t, numel(failed));
 
 
     

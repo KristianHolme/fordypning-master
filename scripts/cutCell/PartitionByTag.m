@@ -1,4 +1,4 @@
-function [partition, failed] = PartitionByTag(G, varargin)
+function [partition, failed, tries] = PartitionByTag(G, varargin)
     opt = struct('method', 'convexity', ...
         'vertIx', [], ...
         'avoidBufferCells', true);
@@ -34,8 +34,9 @@ function [partition, failed] = PartitionByTag(G, varargin)
     switch opt.method
         case 'facearea'
             [partition, failed] = FaceAreaPartition(G, smallCells, nbs,  'ignoreCells', ignoreCells);
+            tries = 1;
         case 'convexity'
-            [partition, failed] = ConvexityPartition(G, smallCells, nbs, opt.vertIx,  'ignoreCells', ignoreCells);
+            [partition, failed, tries] = ConvexityPartition(G, smallCells, nbs, opt.vertIx,  'ignoreCells', ignoreCells);
     end
     partition = compressPartition(partition);
 end
@@ -88,7 +89,7 @@ function [partition,failed] = FaceAreaPartition(G, smallCells, nbs,varargin)
     end
 end
 
-function [partition, failed] = ConvexityPartition(G, smallCells, nbs, vertIx, varargin)
+function [partition, failed, tries] = ConvexityPartition(G, smallCells, nbs, vertIx, varargin)
     %group a small cell together with the same facies neighbor with the
     %biggest shared face
     opt = struct('ignoreCells', []);
