@@ -10,7 +10,7 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         'removeInactive', true, ...
         'partitionMethod', 'convexity');
     opt = merge_options(opt, varargin{:});
-
+    totstart = tic();
     switch opt.type
         case 'cartesian'
             G = makeCartesianCut(nx, ny, opt);
@@ -32,6 +32,8 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
     end
 
     assert(checkGrid(G));
+    ttot = toc(totstart);
+    dispif(opt.verbose, sprintf('TOTAL TIME: %d s', round(ttot,2)));
 end
 
 function G = makeCartesianCut(nx, ny, opt)

@@ -272,8 +272,8 @@ for ifacies = 1:7
         xpts = points(:,1 );
         ypts = points(:,2 );%2 if A(x-y), 3 if B (x-z)
         zpts = points(:,3);
-        plot3(xpts, ypts, zpts, 'o');
-        % plot(xpts, ypts, 'o');
+        plot3(xpts, ypts, zpts, '-o');
+        % plot(xpts, zpts, 'o');
         % axis([-0.1 2.9 -0.1 1.3]);
         % axis equal;
         ax = gca;

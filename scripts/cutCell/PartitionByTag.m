@@ -277,7 +277,13 @@ end
 function nodesInOrder = orderFaceNodes(G, faces, depthIx)
     tol = 1e-10;
     faceNodes = arrayfun(@(f)Faces2Nodes(f, G), faces, UniformOutput=false);
-    faceNodes = reshape(cell2mat(cellfun(@(fn)fn( abs(G.nodes.coords(fn,depthIx)) < tol ), faceNodes, UniformOutput=false)), 2,[])';
+    faceNodes = cellfun(@(fn)fn( abs(G.nodes.coords(fn,depthIx)) < tol ), faceNodes, UniformOutput=false);
+    valid = cellfun(@(el)numel(el)==2, faceNodes);
+    if ~all(valid)
+        warning('Not all faces have two nodes in y=0!, ignoring affected faces!')
+        faceNodes = faceNodes(valid);
+    end
+    faceNodes = reshape(cell2mat(faceNodes), 2,[])';
 
     % frontNodes = find(abs(G.nodes.coords(:,depthIx)) < tol); 
     % faceNodes = reshape(cell2mat(arrayfun(@(f)intersect(frontNodes,gridFaceNodes(G, f)), faces, UniformOutput=false)),2, [])';

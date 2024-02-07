@@ -1,4 +1,4 @@
-function [G, t] = PointSplit(G, points, varargin)
+function [G, t, skipped] = PointSplit(G, points, varargin)
 % Splits grid at given points, in order to circumvent that sliceGrid cant
 % handle curves changing direction inside an element
 % Performs one call to sliceGrid per point, so can be slow for large
@@ -10,8 +10,10 @@ function [G, t] = PointSplit(G, points, varargin)
         'savedir', 'grid-files/cutcell/presplit', ...
         'bufferVolumeSlice', false, ...
         'type', 'cartesian', ...
-        'epsfactor', 0.01);
+        'epsfactor', 0.01, ...
+        'distTol', 1e-11);
     opt = merge_options(opt, varargin{:});
+    
     
     dir = opt.dir;
     if all(dir == [0 1 0])
@@ -30,6 +32,7 @@ function [G, t] = PointSplit(G, points, varargin)
     if opt.waitbar
         f = waitbar(0, 'Starting');
     end
+    skipped = 0;
     
     for ipoint = 1:numpoints
         if opt.waitbar
@@ -38,6 +41,7 @@ function [G, t] = PointSplit(G, points, varargin)
         point = points{ipoint};%adjust depth to guarantee point is inside?
         cell = findEnclosingCell(G, point);
         if cell == 0
+            skipped = skipped +1;
             if ipoint == numpoints
                 break
             else
@@ -67,20 +71,20 @@ function [G, t] = PointSplit(G, points, varargin)
         
         offsetup = pointToPlaneDistance(point, faceCentroids(faceymaxIx, :), faceNormals(faceymaxIx,:)/faceAreas(faceymaxIx), vertIx);
         offsetdown = pointToPlaneDistance(point, faceCentroids(faceyminIx, :), faceNormals(faceyminIx,:)/faceAreas(faceyminIx), vertIx);
-        offsetupold = abs( dot(point-faceCentroids(faceymaxIx, :), faceNormals(faceymaxIx,:)/faceAreas(faceymaxIx)) );
-        offsetdownold = abs( dot(point-faceCentroids(faceyminIx, :), faceNormals(faceyminIx,:)/faceAreas(faceyminIx)) );
+        % offsetupold = abs( dot(point-faceCentroids(faceymaxIx, :), faceNormals(faceymaxIx,:)/faceAreas(faceymaxIx)) );
+        % offsetdownold = abs( dot(point-faceCentroids(faceyminIx, :), faceNormals(faceyminIx,:)/faceAreas(faceyminIx)) );
         % offsetdown = faceCentroids(faceymaxIx, vertIx) - faceCentroids(faceyminIx, vertIx) - offsetup;
         [ydist, closestydir] = min([offsetup, offsetdown]);
         xdist = min(facexmax - point(1), point(1)-facexmin);
         [dist, splitdir] = min([xdist, ydist]);
-        if dist ~= 0
+        if dist > opt.distTol
             % dispif(opt.verbose, "point %d\n", ipoint);
             %Split cell
             if splitdir == 1
                 eps = (facexmax - facexmin)*epsfactor;
-                offset = point(vertIx) - interp1([facexmin, facexmax], ...
-                [faceCentroids(facexminIx, vertIx), faceCentroids(facexmaxIx, vertIx)], ...
-                point(1), 'linear');
+                % offset = point(vertIx) - interp1([facexmin, facexmax], ...
+                % [faceCentroids(facexminIx, vertIx), faceCentroids(facexmaxIx, vertIx)], ...
+                % point(1), 'linear');
                 if closestydir == 1
                     closestnormal = faceNormals(faceymaxIx,:);
                 else
@@ -98,13 +102,15 @@ function [G, t] = PointSplit(G, points, varargin)
                                point(1), 0, 0];
                 splitpoints(:, vertIx) = [point(vertIx)-offsetdown-eps;point(vertIx)+offsetup+eps];
             end
-            % clf;
-            % plotGrid(G, [cell; getCellNeighbors(G, cell)]);view(0,0);
-            % hold on;plot3(splitpoints(:,1), splitpoints(:,2), splitpoints(:,3));
-            % plot3(point(1), point(2), point(3), 'ro');
-            G = sliceGrid(G, splitpoints, 'cutDir', dir);
-            % plotGrid(G, [cell; getCellNeighbors(G, cell)]);
+            clf;
+            plotGrid(G, [cell; getCellNeighbors(G, cell)]);view(0,0);
+            hold on;plot3(splitpoints(:,1), splitpoints(:,2), splitpoints(:,3));
+            plot3(point(1), point(2), point(3), 'ro');
+            G = sliceGrid(G, splitpoints, 'cutDir', dir);%don't comment out!
+            plotGrid(G, [cell; getCellNeighbors(G, cell)]);
             ;%to have breakpoint when plotting
+        else
+            skipped = skipped +1;
         end
     end
     if opt.waitbar

@@ -4,7 +4,7 @@ close all
 %%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa msrsb coarsegrid
+    deckformat gmsh nfvm mpfa msrsb coarsegrid jutul
 mrstVerbose off
 %%
 % deckcases = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV', 'pyopm-Finer', 'pyopm-Coarser'};

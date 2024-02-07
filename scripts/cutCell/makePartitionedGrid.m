@@ -1,4 +1,7 @@
-function Gp = makePartitionedGrid(G, partition)
+function Gp = makePartitionedGrid(G, partition, varargin)
+    opt = struct('shortcutSingles', false);
+    opt = merge_options(opt, varargin{:});
+
     Gp = G;
     Gp.cells = [];
     Gp.faces = [];
@@ -59,6 +62,9 @@ function Gp = makePartitionedGrid(G, partition)
         neighborPartitions = setdiff(neighborPartitions, find(handledBlocks));%dont want current cells to be found as neighbors
         faces = gridCellFaces(G, cells);
         faces = faces(any(ismember(partitionFaces.neighbors(faces,:), [neighborPartitions;0]), 2));
+        if numel(cells)==1 && opt.shortcutSingles
+            %dont merge faces to save time??
+        end
         [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfaces);
     end
     %fix negative neighbors
@@ -153,6 +159,7 @@ function [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfa
         % nodesOrdered = orderNodes(G, f, facecentroid, normal);
         % nodes = gridFaceNodes(G, f);
         nodes = Faces2Nodes(f, G);
+        nodes = unique(nodes);
         nodecoords = G.nodes.coords(nodes,:);
         %------------
         % clf;
