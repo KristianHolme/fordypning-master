@@ -85,8 +85,11 @@ function G = setupGrid(simcase, varargin)
             else
                 presplit = false;
             end
+            if contains(gridcase, 'ndg')
+                amatFile = ['nudge_', amatFile];
+            end
             if contains(gridcase, 'cart')
-                amatFile = ['cartesian_', amatFile];
+                amatFile = ['cartesian_', ama                       tFile];
             elseif contains(gridcase, 'horz')
                 amatFile = ['horizon_', amatFile];
             end
@@ -96,6 +99,7 @@ function G = setupGrid(simcase, varargin)
                 amatFile = ['buff_', amatFile];
                 amatFile = fullfile(gridFolder, amatFile);
                 if ~isfile(amatFile)
+                    assert(true, 'grid not generated!')
                     GenerateCutCellGrid(params(1), params(2), 'verbose', true, 'presplit', presplit, ...
                         'recombine', recombine, 'bufferVolumeSlice', true);
                 end
@@ -111,6 +115,7 @@ function G = setupGrid(simcase, varargin)
                 amatFile = fullfile(gridFolder, amatFile);
                 % amatFile = fullfile(gridFolder, 'cutcell', ['cutcell_', gridcase(4:end), '.mat']);
                 if ~isfile(amatFile)
+                    assert(true, 'grid not generated!')
                     GenerateCutCellGrid(params(1), params(2), 'verbose', true, 'presplit', presplit, 'recombine', recombine)
                 end
                 matFile = amatFile;

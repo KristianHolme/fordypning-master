@@ -1,6 +1,7 @@
 function [moveablepoints, totNudgedPoints, totUnNudgedPoints] = nudgePoints(targetpoints, moveablepoints, varargin)
     opt = struct('verbose', true, ...
-        'targetOccupation', true);
+        'targetOccupation', true, ...
+        'round', true);
     opt = merge_options(opt, varargin{:});
 
     numMov = size(moveablepoints, 1);

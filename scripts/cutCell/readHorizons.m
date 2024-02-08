@@ -1,5 +1,11 @@
-function geoH = readHorizons()
-    geoH = readGeo('./scripts/cutCell/geo/spe11a-horizons.geo');
+function geoH = readHorizons(varargin)
+    opt = struct('geoH', []);
+    opt = merge_options(opt, varargin{:});
+    if isempty(opt.geoH)
+        geoH = readGeo('./scripts/cutCell/geo/spe11a-horizons.geo');
+    else
+        geoH = opt.geoH;
+    end
     removehorz = [5,7]; %remove difficult horizontals
     geoH.horz = geoH.horz(setdiff(1:size(geoH.horz, 1), removehorz)',:);
     geoH.horz(:, 3) = cellfun(@(curve)curveToPoints(curve, geoH), geoH.horz(:,2), UniformOutput=false);

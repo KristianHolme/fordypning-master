@@ -34,6 +34,7 @@ function displayName = displayNameGrid(gridcase, specase)
     %Master:
     Bmap('') = 'deck(Cp)';
     Bmap('horz_pre_cut_PG_130x62') = 'HCP-S';
+    Bmap('horz_ndg_cut_PG_130x62') = 'HNCP-S';
     Bmap('cart_pre_cut_PG_130x62') = 'CCP-S';
     Bmap('horz_pre_cut_130x62') = 'HC-S';
     Bmap('cart_pre_cut_130x62') = 'CC-S';

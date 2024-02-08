@@ -25,11 +25,16 @@ function [partition, failed, tries] = PartitionByTag(G, varargin)
     smallcellsLog = G.cells.volumes < volLim & G.cells.volumes > 0;
     nbs = getNeighbourship(G);
     smallCells = find(smallcellsLog);
+
     ignoreCells = [];
     if opt.avoidBufferCells
         ignoreCells = G.bufferCells;
         smallCells = setdiff(smallCells, ignoreCells);
     end
+    %Go over small cells first
+    smallVolumes = G.cells.volumes(smallCells);
+    [~, sortorder] = sort(smallVolumes);
+    smallCells = smallCells(sortorder);
     %stuff
     switch opt.method
         case 'facearea'
@@ -115,6 +120,11 @@ function [partition, failed, tries] = ConvexityPartition(G, smallCells, nbs, ver
 end
 function [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs, vertIx, opt)
     failed = [];
+    vertVector = [0; 0; 0];
+    vertVector(vertIx) = 1;
+    [cellnodes, cellnodesPos] = gridCellNodes(G, 1:G.cells.num);
+    maxWidth = MaxWidth(G, 1:G.cells.num, cellnodes, cellnodesPos);
+    allowedWidthFactor = 2;
     for ism = 1:numel(smallCells)
         c = smallCells(ism);
         currentPartition = partition(c);
@@ -131,6 +141,10 @@ function [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs
         volumeok = potentialVolumes < G.maxOrgVol*2;
         neighborPartitions = neighborPartitions(volumeok);
 
+        possibleWidths = PossibleWidths(G, cells, partition, neighborPartitions, cellnodes, cellnodesPos);
+        widthOk = possibleWidths <  allowedWidthFactor*maxWidth;
+        neighborPartitions = neighborPartitions(widthOk);
+
         convexok = arrayfun(@(nbp)checkConvexMerge2(G, [cells;find(partition == nbp)], vertIx), neighborPartitions);
         neighborPartitions = neighborPartitions(convexok); %filter out neighbors that dont result in convexity
 
@@ -144,10 +158,9 @@ function [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs
             % nf = gridCellFaces(G, find(ismember(partition, neighborPartitions)));
             % faceneighbors = G.faces.neighbors(f,:); %neighbor cells
             %for each neighboring partition:sum shared area and sort
-            interfaceareas = arrayfun(@(nbp)sum(G.faces.areas(intersect(f, gridCellFaces(G, find(partition==nbp))))), neighborPartitions);
+            % interfaceareasold = arrayfun(@(nbp)sum(G.faces.areas(intersect(f, gridCellFaces(G, find(partition==nbp))))), neighborPartitions);
+            interfaceareas = arrayfun(@(nbp)sum(abs(G.faces.normals(intersect(f, gridCellFaces(G, find(partition==nbp))),:)*vertVector)), neighborPartitions);
             [~,sortorder] = sort(interfaceareas, 'descend');
-            
-            
             
             finalneighborpartition = neighborPartitions(sortorder(1));
         end        
@@ -158,6 +171,28 @@ function [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs
 
         partition(cells) = finalneighborpartition; %cell and other cells assigned to it, gets reassigned
     end
+end
+function w = MaxWidth(G, c, n, pos)
+    maxx = arrayfun(@(cell)max(G.nodes.coords( n( pos(cell):pos(cell+1)-1 ),1 ) ),c);
+    minx = arrayfun(@(cell)min(G.nodes.coords( n( pos(cell):pos(cell+1)-1 ),1 ) ),c);
+    diff = maxx - minx;
+    w = max(diff);
+end
+function w = MaxWidthTogether(G, c, n, pos)
+    maxx = arrayfun(@(cell)max(G.nodes.coords( n( pos(cell):pos(cell+1)-1 ),1 ) ),c);
+    totmax = max(maxx);
+    minx = arrayfun(@(cell)min(G.nodes.coords( n( pos(cell):pos(cell+1)-1 ),1 ) ),c);
+    totmin = min(minx);
+    diff = totmax - totmin;
+    w = max(diff);
+end
+function pw = PossibleWidths(G, cells, partition, neighborPartitions, n, pos)
+    pw = zeros(numel(neighborPartitions),1);
+    for inp = 1:numel(neighborPartitions)
+        np = neighborPartitions(inp);
+        neighborcells = find(partition == np);
+        pw(inp) = MaxWidthTogether(G, [cells;neighborcells], n, pos);
+    end    
 end
 
 function n = getnbs(G, nbs, c)

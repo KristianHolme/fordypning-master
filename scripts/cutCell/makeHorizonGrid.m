@@ -1,10 +1,11 @@
 function G = makeHorizonGrid(nx,nys, varargin)
     %make a grid following horizons
     opt = struct('save', false, ...
-                 'savedir', './grid-files/cutcell/horizonGrids');
+                 'savedir', './grid-files/cutcell/horizonGrids', ...
+                 'geoH', []);
     opt = merge_options(opt, varargin{:});
 
-    geoH = readHorizons();
+    geoH = readHorizons('geoH', opt.geoH);
     % Add Top as first horizon
     horzInters = geoH.horz(:,4);
     horzInters = [{@(newxs)interp1([0.0, 2.8], [1.2, 1.2], newxs, 'linear')}; horzInters];

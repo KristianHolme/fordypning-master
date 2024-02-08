@@ -8,7 +8,8 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
                  'bufferVolumeSlice', false, ...
                  'extendSliceFactor', 0.0, ...
                  'type', 'cartesian', ...
-                 'vertIx', 2);
+                 'vertIx', 2, ...
+                 'nudgeGeom', false);
     [opt, extra] = merge_options(opt, varargin{:});
     if ~isfield(G, 'minOrgVol')
         G.minOrgVol = min(G.cells.volumes);
@@ -39,12 +40,24 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
             vec = vec/norm(vec);
             points(i,:) = points(i,:) + opt.extendSliceFactor* vec;
         end
-        % [Gcut, gix] = sliceGrid(Gcut, points, 'cutDir', dir, extra{:});
+        % numpts = 1;
+        % lambdas = (0:numpts)' / numpts;
+        % pts = cell2mat(arrayfun(@(l)points(1,:)*(1-l) + points(2,:)*l, lambdas, UniformOutput=false));
+        % cellsInLine = findEnclosingCell(Gcut, pts);
+        % cellsInLine = unique(cellsInLine);
+        % plotGrid(G, cellsInLine);view(0,0);hold on;
+        % plot3(points(:,1), points(:,2), points(:,3), 'r-o');
+        % fprintf('Line %d/%d\n', iline, numlines)
+        try
+            [Gcut, gix] = sliceGrid(Gcut, points, 'cutDir', dir, extra{:});
+        catch
+            warning('sliceGrid failed slicing line %d', iline);
+        end
 
         pp{end+1} = points;
     end
     dd = repmat({dir}, 1, numel(pp));
-    Gcut = sliceGrid(Gcut, pp, 'cutDir', dd);
+    % Gcut = sliceGrid(Gcut, pp, 'cutDir', dd, extra{:});
     t = toc();
     dispif(opt.verbose, sprintf("Done in %0.2f s\n", t));
     
@@ -55,6 +68,9 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
         nx = G.cartDims(1);
         ny = G.cartDims(opt.vertIx);
         fn = sprintf('%s_cutcell_%dx%d.mat', opt.type, nx, ny);
+        if opt.nudgeGeom
+            fn = sprintf('%s_nudge_cutcell_%dx%d.mat', opt.type, nx, ny);
+        end
         if opt.presplit
             fn = sprintf('%s_presplit_cutcell_%dx%d.mat', opt.type, nx, ny);
         end

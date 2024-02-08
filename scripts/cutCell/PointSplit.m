@@ -24,7 +24,7 @@ function [G, t, skipped] = PointSplit(G, points, varargin)
     end
     G.minOrgVol = min(G.cells.volumes); %save the smallest volumes
     G.maxOrgVol = max(G.cells.volumes);
-    dispif(opt.verbose, "Presplitting grid.\nEstimated time: %0.2f s\n", 0.004*prod(G.cartDims));
+    dispif(opt.verbose, "Presplitting grid.\nEstimated max time: %0.2f s\n", 0.004*prod(G.cartDims));
     tic();
     
     epsfactor = opt.epsfactor; %factor to extend each slice to make sure the slice goes through each cell
@@ -98,16 +98,16 @@ function [G, t, skipped] = PointSplit(G, points, varargin)
                 % splitpoints(:, vertIx) = [faceCentroids(facexminIx, vertIx) + offset;faceCentroids(facexmaxIx, vertIx) + offset];
             elseif splitdir == 2
                 eps = (faceymax - faceymin)*epsfactor;
-                splitpoints = [point(1), 0, 0; 
+                splitpoints = [point(1), 0, 0;
                                point(1), 0, 0];
                 splitpoints(:, vertIx) = [point(vertIx)-offsetdown-eps;point(vertIx)+offsetup+eps];
             end
-            clf;
-            plotGrid(G, [cell; getCellNeighbors(G, cell)]);view(0,0);
-            hold on;plot3(splitpoints(:,1), splitpoints(:,2), splitpoints(:,3));
-            plot3(point(1), point(2), point(3), 'ro');
+            % clf;
+            % plotGrid(G, [cell; getCellNeighbors(G, cell)]);view(0,0);
+            % hold on;plot3(splitpoints(:,1), splitpoints(:,2), splitpoints(:,3));
+            % plot3(point(1), point(2), point(3), 'ro');
             G = sliceGrid(G, splitpoints, 'cutDir', dir);%don't comment out!
-            plotGrid(G, [cell; getCellNeighbors(G, cell)]);
+            % plotGrid(G, [cell; getCellNeighbors(G, cell)]);
             ;%to have breakpoint when plotting
         else
             skipped = skipped +1;
@@ -117,7 +117,7 @@ function [G, t, skipped] = PointSplit(G, points, varargin)
         close(f);
     end
     t = toc();
-    dispif(opt.verbose, sprintf("Done in %0.2f s\n", t));
+    dispif(opt.verbose, sprintf("Skipped %d points. Done in %0.2f s\n", skipped, t));
     G.type{end+1} = 'PointSplit';
     if opt.save
         nx = G.cartDims(1);

@@ -2,10 +2,11 @@ clear all
 close all
 %%
 gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737];
-nx = 898;
-ny = 120;
+nx = 2640;
+ny = 380;
 totys = ny;
 nys = round(totys*gridfractions);
+totys = sum(nys);
 
 G = makeHorizonGrid(nx, nys, 'save', false);
 %%
@@ -55,12 +56,15 @@ plotCellData(Gcut, Gcut.cells.tag, 'edgealpha', 0.5, 'LineWidth', 0.1);view(0,0)
 % set(gca, 'xlim',[2800,3200], 'zlim', [100,180]);
 % plotCellData(Gcut, Gcut.cells.tag, 'facealpha', 0);plotGrid(Gcut, failed);
 %%
-bigLoad = load("grid-files/cutcell/buff_horizon_presplit_cutcell_2640x381.mat");
+bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_2640x381.mat");
 Gcut = bigLoad.G;
+%%
+bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_PG_898x120.mat");
+Gp = bigLoad.G;
 %% Test partitioning
 
 t = tic();
-buffer = false;
+buffer = true;
 method = 'convexity';
 [partition, failed] = PartitionByTag(Gcut, 'method', method, ...
     'avoidBufferCells', buffer);
@@ -72,20 +76,25 @@ fprintf("Partition and coarsen %dx%d grid using %s in %0.2f s\n", nx, ny, method
 % figure
 plotCellData(Gp, Gp.cells.tag,'edgealpha', 0.5, 'LineWidth', 0.1);view(0,0)
 %%
-nx = 130;
-ny = 62;
-buffer = false;
-save = false;
-% Gcut = GenerateCutCellGrid(nx, ny, 'type', 'horizon', ...
-%     'recombine', false, 'save', save, ...
+nx = 898;
+ny = 120;
+buffer = true;
+save = true;
+recombine = true;
+% Gpold = GenerateCutCellGrid(nx, ny, 'type', 'horizon', ...
+%     'recombine', true, 'save', save, ...
 %     'bufferVolumeSlice', buffer, 'removeInactive', true, ...
 %     'partitionMethod', 'convexity', ...
-%     'verbose', true);
+%     'verbose', true, ...
+%     'presplit', true, ...
+%     'nudgeGeom', false);
 Gp = GenerateCutCellGrid(nx, ny, 'type', 'horizon', ...
     'recombine', true, 'save', save, ...
     'bufferVolumeSlice', buffer, 'removeInactive', true, ...
     'partitionMethod', 'convexity', ...
-    'verbose', true);
+    'verbose', true, ...
+    'presplit', false, ...
+    'nudgeGeom', true);
 %% Histogram
 bins = 30;
 
@@ -108,9 +117,25 @@ h3 = histogram(log10(Gp.cells.volumes));
 title(sprintf('Coarsened Cut-cell. Total cells:%d', Gp.cells.num));
 xlabel('Log10(cell volumes)');
 ylabel('Frequency');
+%%
+T = tiledlayout(2,1);
+
+nexttile;
+h1 = histogram(log10(Gpold.cells.volumes));
+title(sprintf('Presplitting. Total cells:%d', Gpold.cells.num));
+xlabel('Log10(cell volumes)');
+ylabel('Frequency');
+
+nexttile;
+h2 = histogram(log10(Gp.cells.volumes));
+title(sprintf('Nudging. Total cells:%d', Gp.cells.num));
+xlabel('Log10(cell volumes)');
+ylabel('Frequency');
+
+
 
 %% Save hist
-exportgraphics(T, sprintf('./../plotsMaster/histograms/horizon_orig_nudgecut_part_%dx%d.pdf', nx, ny));
+exportgraphics(T, sprintf('./../plotsMaster/histograms/horizon_orig_cut_PG_%dx%d.pdf', nx, ny));
 
 %% Plot partitions
 tot = 0;
