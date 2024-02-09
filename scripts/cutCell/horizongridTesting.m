@@ -2,8 +2,8 @@ clear all
 close all
 %%
 gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737];
-nx = 2640;
-ny = 380;
+nx = 8400;
+ny = 1200;
 totys = ny;
 nys = round(totys*gridfractions);
 totys = sum(nys);
@@ -56,7 +56,7 @@ plotCellData(Gcut, Gcut.cells.tag, 'edgealpha', 0.5, 'LineWidth', 0.1);view(0,0)
 % set(gca, 'xlim',[2800,3200], 'zlim', [100,180]);
 % plotCellData(Gcut, Gcut.cells.tag, 'facealpha', 0);plotGrid(Gcut, failed);
 %%
-bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_2640x381.mat");
+bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_898x120.mat");
 Gcut = bigLoad.G;
 %%
 bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_PG_898x120.mat");
@@ -76,10 +76,10 @@ fprintf("Partition and coarsen %dx%d grid using %s in %0.2f s\n", nx, ny, method
 % figure
 plotCellData(Gp, Gp.cells.tag,'edgealpha', 0.5, 'LineWidth', 0.1);view(0,0)
 %%
-nx = 898;
-ny = 120;
+nx = 130;
+ny = 62;
 buffer = true;
-save = true;
+save = false;
 recombine = true;
 % Gpold = GenerateCutCellGrid(nx, ny, 'type', 'horizon', ...
 %     'recombine', true, 'save', save, ...

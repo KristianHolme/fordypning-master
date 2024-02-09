@@ -19,7 +19,7 @@ function Gp = makePartitionedGrid(G, partition, varargin)
     Gp.faces.normals = {};
     Gp.faces.neighbors = {};
 
-    nbs = getNeighbourship(G);
+    
     
     if ~isfield(G.faces,'nodesByFace')
         G.faces.nodesByFace = arrayfun(@(f)G.faces.nodes(G.faces.nodePos(f):G.faces.nodePos(f+1)-1), (1:G.faces.num)', UniformOutput=false);
@@ -27,7 +27,11 @@ function Gp = makePartitionedGrid(G, partition, varargin)
         Gp.faces.nodesByFace = {};
     end
     if ~isfield(G.cells,'neighbors')
-        G.cells.neighbors = arrayfun(@(c)getnbs(nbs,c), (1:G.cells.num)', UniformOutput=false);
+        nbs = getNeighbourship(G);
+        Conn = getConnectivityMatrix(nbs);
+        % [I, J] = find(Conn);
+        G.cells.neighbors = getnbsByConn(Conn);
+        % G.cells.neighbors = arrayfun(@(c)getnbs(nbs,c), (1:G.cells.num)', UniformOutput=false);
     else
         Gp.cells.neighbors = {};
     end
@@ -45,10 +49,19 @@ function Gp = makePartitionedGrid(G, partition, varargin)
         partitionFaces.neighbors(nonzeros,i) = partition(partitionFaces.neighbors(nonzeros,i));
     end
 
+    [partSort, cellsByPartitionOrder] = sort(partition);
+    [~, rln] = rlencode(partSort);
+    pos = cumsum([1;rln]);
+    
     for ic = 1:Gp.cells.num
         currentPartition = ic;
         handledBlocks(currentPartition) = true;
-        cells = find(partition == currentPartition);%all cells grouped with current cell
+    
+        % cellsLog = partition == currentPartition;
+        % cells = allcells(partition == currentPartition);
+        cells = cellsByPartitionOrder(pos(ic):pos(ic+1)-1);
+        % cellsold = find(cellsLog);%all cells grouped with current cell
+
         Gp.cells.volumes(ic) = sum(G.cells.volumes(cells));
         volumeweights = G.cells.volumes(cells)/Gp.cells.volumes(ic);
         Gp.cells.centroids(ic,:) = mean(volumeweights'*G.cells.centroids(cells,:),1);
@@ -59,7 +72,8 @@ function Gp = makePartitionedGrid(G, partition, varargin)
         neighbors = setdiff(neighbors,  cells);
         neighborPartitions = unique(partition(neighbors));%find partitions of neighbors
 
-        neighborPartitions = setdiff(neighborPartitions, find(handledBlocks));%dont want current cells to be found as neighbors
+        % neighborPartitions = setdiff(neighborPartitions, find(handledBlocks));%dont want current cells to be found as neighbors
+        neighborPartitions = neighborPartitions(~handledBlocks(neighborPartitions));
         faces = gridCellFaces(G, cells);
         faces = faces(any(ismember(partitionFaces.neighbors(faces,:), [neighborPartitions;0]), 2));
         if numel(cells)==1 && opt.shortcutSingles
@@ -159,45 +173,52 @@ function [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfa
         % nodesOrdered = orderNodes(G, f, facecentroid, normal);
         % nodes = gridFaceNodes(G, f);
         nodes = Faces2Nodes(f, G);
-        nodes = unique(nodes);
-        nodecoords = G.nodes.coords(nodes,:);
-        %------------
-        % clf;
-        % scatter3(nodecoords(:,1),nodecoords(:,2), nodecoords(:,3), 500, (1:size(nodecoords,1))',  'filled');hold on;
-        %-------------------------------------
-        projcoords = (null(normal) .'*nodecoords')';
-        chOrdering = convhull(projcoords);
-        nodesOrdered = nodes(chOrdering(1:end-1));
-
-        nodesOrderedLooped = [nodesOrdered(end);nodesOrdered;nodesOrdered(1)];
-        nodecoords = G.nodes.coords(nodesOrderedLooped,:);
-        %--------------------
-        % plot3(nodecoords(:,1),nodecoords(:,2), nodecoords(:,3), 'b-o');
-        %----------------------
-        v1 = facecentroid-nodecoords(2,:);
-        v2 = facecentroid-nodecoords(3,:);
-        if sign(cross(v1, v2)*normal') == 1%make sure orientation is consistent
-            nodecoords = nodecoords(end:-1:1, :);
-            nodesOrdered = nodesOrdered(end:-1:1);
+        if numel(f) == 1
+            %shortcut
+            reverseNodes = any(cells == G.faces.neighbors(f, 2));
+            if reverseNodes
+                nodes = nodes(end:-1:1);
+            end   
+        else
+            nodes = unique(nodes);
+            nodecoords = G.nodes.coords(nodes,:);
+            %------------
+            % clf;
+            % scatter3(nodecoords(:,1),nodecoords(:,2), nodecoords(:,3), 500, (1:size(nodecoords,1))',  'filled');hold on;
+            %-------------------------------------
+            projcoords = (null(normal) .'*nodecoords')';
+            chOrdering = convhull(projcoords);
+            nodesOrdered = nodes(chOrdering(1:end-1));
+    
+            nodesOrderedLooped = [nodesOrdered(end);nodesOrdered;nodesOrdered(1)];
+            nodecoords = G.nodes.coords(nodesOrderedLooped,:);
+            %--------------------
+            % plot3(nodecoords(:,1),nodecoords(:,2), nodecoords(:,3), 'b-o');
+            %----------------------
+            v1 = facecentroid-nodecoords(2,:);
+            v2 = facecentroid-nodecoords(3,:);
+            if sign(cross(v1, v2)*normal') == 1%make sure orientation is consistent
+                nodecoords = nodecoords(end:-1:1, :);
+                nodesOrdered = nodesOrdered(end:-1:1);
+            end
+    
+            %normalize coords to avoid presicion errors bco skewness
+            for i=1:3
+                nodecoords(:,i) = nodecoords(:,i)/max(max(abs(nodecoords(:,i))),1);
+            end
+            A = nodecoords(1:end-2,:);
+            B = nodecoords(2:end-1,:);
+            C = nodecoords(3:end, :);
+            BA = A-B;
+            BC = C-B;
+            
+            roundpresicion = 13;
+            keepnodes = sign(round(cross(BA, BC,2)*(normal/area)', roundpresicion)) == 1;
+            assert(sum(keepnodes)>2, 'not enough nodes')
+            nodes = nodesOrdered(keepnodes);
+    
+            nodes = nodes(end:-1:1);%revert direction to get positive computed cell volumes
         end
-
-        %normalize coords to avoid presicion errors bco skewness
-        for i=1:3
-            nodecoords(:,i) = nodecoords(:,i)/max(max(abs(nodecoords(:,i))),1);
-        end
-        A = nodecoords(1:end-2,:);
-        B = nodecoords(2:end-1,:);
-        C = nodecoords(3:end, :);
-        BA = A-B;
-        BC = C-B;
-        
-        roundpresicion = 13;
-        keepnodes = sign(round(cross(BA, BC,2)*(normal/area)', roundpresicion)) == 1;
-        assert(sum(keepnodes)>2, 'not enough nodes')
-        nodes = nodesOrdered(keepnodes);
-
-        nodes = nodes(end:-1:1);%revert direction to get positive computed cell volumes
-        
         
         %------------
         % nodecoords = G.nodes.coords(nodes, :);
@@ -277,4 +298,15 @@ function n = getnbs(nbs, c)
     n = nbs(nbs(:, 1) == c | nbs(:, 2) == c, :);
     n = unique(n(:));
     n = n(n~=c);
+end
+function neighbors = getnbsByConn(Conn)
+    [I, J] = find(Conn);
+    sz = J(end);
+    [~, nbs] = rlencode(J);
+    pos = cumsum([1;nbs]);
+    neighbors = cell(sz,1);
+    for i = 1:sz
+        nbs = I(pos(i):pos(i+1)-1);
+        neighbors{i} = nbs;
+    end
 end

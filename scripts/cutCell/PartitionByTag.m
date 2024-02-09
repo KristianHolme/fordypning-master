@@ -173,11 +173,29 @@ function [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs
     end
 end
 function w = MaxWidth(G, c, n, pos)
+    % Preallocate arrays for max and min x-coordinates
+    maxx = zeros(size(c));
+    minx = zeros(size(c));
+
+    % Vectorized computation of min and max x-coordinates
+    for i = 1:length(c)
+        cellNodes = n(pos(c(i)):pos(c(i)+1)-1);
+        xCoords = G.nodes.coords(cellNodes, 1);
+        maxx(i) = max(xCoords);
+        minx(i) = min(xCoords);
+    end
+
+    % Compute the maximum width
+    w = max(maxx - minx);
+end
+
+function w = MaxWidth2(G, c, n, pos)
     maxx = arrayfun(@(cell)max(G.nodes.coords( n( pos(cell):pos(cell+1)-1 ),1 ) ),c);
     minx = arrayfun(@(cell)min(G.nodes.coords( n( pos(cell):pos(cell+1)-1 ),1 ) ),c);
     diff = maxx - minx;
     w = max(diff);
 end
+
 function w = MaxWidthTogether(G, c, n, pos)
     maxx = arrayfun(@(cell)max(G.nodes.coords( n( pos(cell):pos(cell+1)-1 ),1 ) ),c);
     totmax = max(maxx);
@@ -311,8 +329,14 @@ end
 
 function nodesInOrder = orderFaceNodes(G, faces, depthIx)
     tol = 1e-10;
-    faceNodes = arrayfun(@(f)Faces2Nodes(f, G), faces, UniformOutput=false);
-    faceNodes = cellfun(@(fn)fn( abs(G.nodes.coords(fn,depthIx)) < tol ), faceNodes, UniformOutput=false);
+    faceNodes = cell(numel(faces),1);
+    for ifc = 1:numel(faces)
+        allfacenodes = Faces2Nodes(faces(ifc), G);
+        frontfacenodes = allfacenodes( abs(G.nodes.coords(allfacenodes,depthIx)) < tol );
+        faceNodes{ifc} = frontfacenodes;
+    end
+    % faceNodesold = arrayfun(@(f)Faces2Nodes(f, G), faces, UniformOutput=false);
+    % faceNodesold = cellfun(@(fn)fn( abs(G.nodes.coords(fn,depthIx)) < tol ), faceNodesold, UniformOutput=false);
     valid = cellfun(@(el)numel(el)==2, faceNodes);
     if ~all(valid)
         warning('Not all faces have two nodes in y=0!, ignoring affected faces!')

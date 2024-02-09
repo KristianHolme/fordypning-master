@@ -19,16 +19,18 @@ function G = makeHorizonGrid(nx,nys, varargin)
     % Make subgrids
     Lx = 2.8;
     Ly = 1.2;
+    Gcart = cartGrid([nx, sum(nys)], [Lx, Ly]);
     cartGrids = {};
-    for ihorz = 1:numel(horzInters)-1
+    horizonYpos = cumsum([0, nys(end:-1:1)]);
+    for ihorz = numel(horzInters)-1:-1:1
         top = horzInters{ihorz};
         bottom = horzInters{ihorz+1};
     
         nx = nxs(ihorz);
         ny = nys(ihorz);
-        Gcart = cartGrid([nx, ny], [Lx, Ly]);
+        % Gcart = cartGrid([nx, ny], [Lx, Ly]);
         for j = 1:ny+1
-            jpos = (j-1)*(nx+1) + 1;
+            jpos = (j-1+ horizonYpos(numHorz-ihorz+1))*(nx+1) + 1 ;
             xs = Gcart.nodes.coords(jpos:jpos+nx, 1);
             topys = top(xs);
             botys = bottom(xs);
@@ -36,18 +38,22 @@ function G = makeHorizonGrid(nx,nys, varargin)
             ys = botys*(1-lambda) + lambda*topys;
             Gcart.nodes.coords(jpos:jpos+nx, 2) = ys;
         end
-        cartGrids{ihorz} = Gcart;
+        % cartGrids{ihorz} = Gcart;
     end
-    
+    G = Gcart;
     %Glue grids together
-    G = cartGrids{1};
-    for i=2:numel(cartGrids)
-        G = glue2DGrid(G, cartGrids{i});
-    end
+    % G = cartGrids{1};
+    % for i=2:numel(cartGrids)
+    %     G = glue2DGrid(G, cartGrids{i});
+    % end
     
     % G.type{end+1} = 'makeHorizonGrid';
     G = makeLayeredGrid(G, 0.01);%custom modified function;
-    G = computeGeometry(G);
+    if mrstSettings('get', 'useMEX')
+        G = mcomputeGeometry(G);
+    else
+        G = computeGeometry(G);
+    end
     G = StretchGrid(RotateGrid(G));
     G.cartDims = [nx, 1, sum(nys)];
     G.faces.tag = zeros(G.faces.num, 1);
