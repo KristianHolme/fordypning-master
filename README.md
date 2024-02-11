@@ -1,5 +1,5 @@
 ![Project Logo](Images/logo_small.png)
-# Fordypningsoppgave
+# Fordypningsoppgave/masteroppgave
 
 
 ## To run files (hopefully):
