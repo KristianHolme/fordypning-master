@@ -7,7 +7,7 @@ function data = getComp(simcase, steps, submeasure, box)
     else
         disp("calculating data...")
         maxsteps = numel(simcase.schedule.step.val);
-        boxcells = getCSPBoxPoints(simcase, box, simcase.SPEcase);
+        boxcells = getCSPBoxCells(simcase.G, box, simcase.SPEcase);
         [states, ~, ~] = simcase.getSimData;
 
         completedata = zeros(maxsteps, 4);

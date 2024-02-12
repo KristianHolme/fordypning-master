@@ -2,8 +2,8 @@ clear all
 close all
 %%
 gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737];
-nx = 8400;
-ny = 1200;
+nx = 130;
+ny = 62;
 totys = ny;
 nys = round(totys*gridfractions);
 totys = sum(nys);
@@ -59,7 +59,7 @@ plotCellData(Gcut, Gcut.cells.tag, 'edgealpha', 0.5, 'LineWidth', 0.1);view(0,0)
 bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_898x120.mat");
 Gcut = bigLoad.G;
 %%
-bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_PG_898x120.mat");
+bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_PG_130x62.mat");
 Gp = bigLoad.G;
 %% Test partitioning
 
