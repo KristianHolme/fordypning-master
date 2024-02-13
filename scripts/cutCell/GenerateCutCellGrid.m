@@ -7,10 +7,11 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         'recombine', true, ...
         'bufferVolumeSlice', true, ...
         'type', 'horizon', ...
-        'removeInactive', true, ...
+        'removeInactive', false, ...
         'partitionMethod', 'convexity', ...
         'nudgeGeom', true, ...
-        'round', true);
+        'round', true,...
+        'SPEcase', 'B');
     opt = merge_options(opt, varargin{:});
     totstart = tic();
     switch opt.type
@@ -30,7 +31,7 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
     end
     if opt.recombine
         G = Recombine(G, opt, nx, ny, geodata);
-    end
+    end    
 
     assert(checkGrid(G));
     ttot = toc(totstart);
@@ -44,15 +45,32 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt)
     %fn = 'C:\Users\holme\Documents\Prosjekt\Prosjektoppgave\src\11thSPE-CSP\geometries\spe11a.geo';
     geodata = readGeo(fn, 'assignExtra', true); 
 
+
     Lx = 2.8;
     Ly = 1.2;
     G = cartGrid([nx ny 1], [Lx, Ly 0.01]);
-    G = computeGeometry(G);       
+    G = computeGeometry(G);
+    if strcmp(opt.SPEcase, 'B')
+        geodata = StretchGeo(RotateGrid(geodata));
+        G = StretchGrid(RotateGrid(G));
+        depthIx = 2;
+        dir = [0 1 0];
+    else
+        depthIx = 3;
+        dir = [0 0 1];
+    end
+    vertIx = 5-depthIx;
     if opt.nudgeGeom
+        if opt.round %&& false
+            dispif(opt.verbose, 'Rounding grid points before nudging...\n')
+            roundprecision = 10;
+            G.nodes.coords = round(G.nodes.coords, roundprecision);
+            G = computeGeometry(G);
+        end
         cellpoints = geodata.Point;
         points = vertcat(cellpoints{:});
         numPoints = size(points, 1);
-        targetpoints = G.nodes.coords(G.nodes.coords(:,3)==0,:);
+        targetpoints = G.nodes.coords(G.nodes.coords(:,depthIx)==0,:);
         [points, ~, ~] = nudgePoints(targetpoints, points, ...
             'targetOccupation', true);
         cellpoints = mat2cell(points, ones(numPoints, 1), 3);
@@ -62,18 +80,45 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt)
 
     if opt.bufferVolumeSlice
         %slicing close to sides to create buffer volume cells
-        G = sliceGrid(G, {[0.000333333333, 0.5, 0], [2.79966666666, 0.5, 0]}, 'normal', [1 0 0]);
-        G = TagbyFacies(G, geodata);
-        G = getBufferCells(G);
+        if strcmp(opt.SPEcase, 'A')
+            G = sliceGrid(G, {[0.000333333333, 0.5, 0], [2.79966666666, 0.5, 0]}, 'normal', [1 0 0]);
+            G = TagbyFacies(G, geodata);
+            G = getBufferCells(G);
+        else
+            G = sliceGrid(G, {[1, 0.5, 0], [8399, 0.5, 0]}, 'normal', [1 0 0]);
+            G = TagbyFacies(G, geodata, 'vertIx', 3);
+            G = getBufferCells(G);
+        end
+
     end
      
     if opt.presplit
         G = PointSplit(G, geodata.Point, 'verbose', opt.verbose, 'waitbar', opt.waitbar, ...
-            'save', opt.save, 'savedir', fullfile(opt.savedir, 'presplit'), 'bufferVolumeSlice', opt.bufferVolumeSlice);
+            'save', opt.save, 'savedir', fullfile(opt.savedir, 'presplit'), ...
+            'bufferVolumeSlice', opt.bufferVolumeSlice, ...
+            'SPEcase', opt.SPEcase, ...
+            'dir', dir);
     end
-    G = CutCellGeo(G, geodata, 'verbose', opt.verbose, 'save', opt.save, 'savedir', opt.savedir, ...
-        'presplit', opt.presplit, 'bufferVolumeSlice', opt.bufferVolumeSlice, ...
-        'nudgeGeom', opt.nudgeGeom);
+    G = CutCellGeo(G, geodata, 'verbose', opt.verbose, ...
+        'save', opt.save, ...
+        'savedir', opt.savedir, ...
+        'presplit', opt.presplit, ...
+        'bufferVolumeSlice', opt.bufferVolumeSlice, ...
+        'nudgeGeom', opt.nudgeGeom, ...
+        'SPEcase', opt.SPEcase, ...
+        'dir', dir, ...
+        'vertIx', vertIx);
+
+    % fra horizoncut
+    % G = CutCellGeo(G, geodata, 'dir', [0 1 0], 'verbose', opt.verbose, ...
+    %     'extendSliceFactor', 0.0, ...
+    %     'topoSplit', true, 'save', opt.save, ...
+    %     'type', opt.type, ...
+    %     'bufferVolumeSlice', opt.bufferVolumeSlice, ...
+    %     'vertIx', 3, ...
+    %     'presplit', opt.presplit, ...
+    %     'nudgeGeom', opt.nudgeGeom, ...
+    %     'SPEcase', opt.SPEcase);
 
 end
 
@@ -81,8 +126,8 @@ function [G, geodata] = makeHorizonCut(nx, totys, opt)
     geodata = readGeo('./scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
     geodata = RotateGrid(geodata);
     geodata = StretchGeo(geodata);
-    gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737]; %scaled by region size
-
+    % gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737]; 
+    gridfractions = [0.1106, 0.0566, 0.0660, 0.0726, 0.0971, 0.0923, 0.1157, 0.1539, 0.1599, 0.0752]; %scaled by region size
     nys = max(round(totys*gridfractions), 1);
     dispif(opt.verbose, 'Constructing background grid...\n')
     G = makeHorizonGrid(nx, nys, 'save', false);
@@ -145,7 +190,8 @@ function [G, geodata] = makeHorizonCut(nx, totys, opt)
         'bufferVolumeSlice', opt.bufferVolumeSlice, ...
         'vertIx', 3, ...
         'presplit', opt.presplit, ...
-        'nudgeGeom', opt.nudgeGeom);
+        'nudgeGeom', opt.nudgeGeom, ...
+        'SPEcase', opt.SPEcase);
 end
 
 function G = Recombine(G, opt, nx, ny, geodata)
@@ -154,16 +200,7 @@ function G = Recombine(G, opt, nx, ny, geodata)
     else
         vertIx = 3;
     end
-    % if max(G.nodes.coords(:,1))>1000
-    %     Bscale = true;
-    % else
-    %     Bscale = false;
-    % end
-    % geodata = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
-    % if Bscale
-    %     geodata = RotateGrid(geodata);
-    %     geodata = StretchGeo(geodata);
-    % end
+
     t = tic();
     [partition, failed, tries] = PartitionByTag(G, 'method', opt.partitionMethod, ...
             'avoidBufferCells', opt.bufferVolumeSlice);
@@ -174,10 +211,17 @@ function G = Recombine(G, opt, nx, ny, geodata)
     t = toc(t);
     dispif(opt.verbose, "Partition(%d iterations) and coarsen in %0.2f s\n%d cells failed to merge.\n", tries, t, numel(failed));
 
+    t = tic();
+    dispif(opt.verbose, "Adding injection cells and box-volume-fractions...");
+    G = addBoxWeights(G, 'SPEcase', opt.SPEcase);
+    [w1, w2] = getinjcells(G, opt.SPEcase);
+    G.cells.wellCells = [w1, w2];
+    t = toc(t);
+    dispif(opt.verbose, "Done in %0.2d s.\n", t);
 
     
     if opt.save
-        fn = sprintf('cutcell_PG_%dx%d.mat', nx, ny);
+        fn = sprintf('cutcell_PG_%dx%d_%s.mat', nx, ny, opt.SPEcase);
         if opt.presplit
             fn = ['presplit_', fn];
             % fn = sprintf('%s_presplit_cutcell_PG_%dx%d.mat', opt.type, nx, ny);

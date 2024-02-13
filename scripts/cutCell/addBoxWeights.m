@@ -1,4 +1,5 @@
 function G = addBoxWeights(G, varargin)
+%NOT TESTED for SPE11A!! wont work
     opt = struct('SPEcase', 'B');
     opt = merge_options(opt, varargin{:});
     
@@ -34,34 +35,45 @@ function volumeFractions = getVolumeFractions(G, p1, p2, vertIx)
     end
     depthIx = 5-vertIx;
     
-    cn = cellNodes(G);
+    
     allcandidates = unique(vertcat(G.cells.neighbors{ccin}));
+    allcandidates = unique(vertcat(G.cells.neighbors{allcandidates}));
+
+    [n , pos] = gridCellNodes(G, allcandidates);
     numCand = numel(allcandidates);
     candidatenodes = cell(numCand, 1);
     volumeFractions = zeros(G.cells.num,1);
+    %----
+    % clf;
+    % plot3(pts(:,1), zeros(size(pts,1),1), pts(:,2));hold on;view(0,0);
+    %----
+    warning('off', 'MATLAB:polyshape:repairedBySimplify');
     for icand = 1:numCand
         globcelIx = allcandidates(icand);
-        candNodes = cn(cn(:,1)==globcelIx,3);
+        candNodes = n(pos(icand):pos(icand+1)-1);
         candidatenodes{icand} = candNodes;
         %Only want nodes in y=0
         candNodeCoords = G.nodes.coords(candNodes,:);
-        candNodeCoords = candNodeCoords(:,depthIx) == 0.0;
+        candNodeCoords = candNodeCoords(candNodeCoords(:,depthIx) == 0.0,:);
         candNodesXIn = candNodeCoords(:,1) > p1(1) & candNodeCoords(:,1) < p2(1);
-        candNodesVIn = candNodeCoords(:,vertIx) > p1(vertIx) & candNodeCoords(:,vertIx) < p2(vertIx);
+        candNodesVIn = candNodeCoords(:,vertIx) > p1(2) & candNodeCoords(:,vertIx) < p2(2);
         candNodesIn = candNodesXIn & candNodesVIn;
-    
+        %-----------
+        % plotGrid(G, allcandidates(icand), 'facealpha', 0.5, 'edgealpha', 0.5)
+        %----------
         if all(candNodesIn)
             volumeFractions(allcandidates(icand)) = 1;
         elseif ~any(candNodesIn)
             volumeFractions(allcandidates(icand)) = 0;
         else
             coordslooped = [candNodeCoords;candNodeCoords(1,:)];
-            candshape = polyshape(coordslooped);
-            origarea = polyarea(candshape);
+            candshape = polyshape(candNodeCoords(:,1), candNodeCoords(:,vertIx));
+            origarea = area(candshape);
             polyInBox = intersect(candshape, boxpoly);
-            areaInBox = polyarea(polyInBox);
+            areaInBox = area(polyInBox);
             fraction = areaInBox/origarea;
             volumeFractions(allcandidates(icand)) = fraction;
         end
     end
+    warning('on', 'MATLAB:polyshape:repairedBySimplify');
 end

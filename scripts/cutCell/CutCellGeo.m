@@ -9,7 +9,8 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
                  'extendSliceFactor', 0.0, ...
                  'type', 'cartesian', ...
                  'vertIx', 2, ...
-                 'nudgeGeom', false);
+                 'nudgeGeom', false, ...
+                 'SPEcase', 'B');
     [opt, extra] = merge_options(opt, varargin{:});
     if ~isfield(G, 'minOrgVol')
         G.minOrgVol = min(G.cells.volumes);
@@ -67,7 +68,7 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
     if opt.save
         nx = G.cartDims(1);
         ny = G.cartDims(opt.vertIx);
-        fn = sprintf('%s_cutcell_%dx%d.mat', opt.type, nx, ny);
+        fn = sprintf('%s_cutcell_%dx%d_%s.mat', opt.type, nx, ny, opt.SPEcase);
         if opt.nudgeGeom
             fn = sprintf('%s_nudge_cutcell_%dx%d.mat', opt.type, nx, ny);
         end

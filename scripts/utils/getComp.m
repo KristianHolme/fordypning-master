@@ -7,7 +7,7 @@ function data = getComp(simcase, steps, submeasure, box)
     else
         disp("calculating data...")
         maxsteps = numel(simcase.schedule.step.val);
-        boxcells = getCSPBoxCells(simcase.G, box, simcase.SPEcase);
+        boxWeights = getCSPBoxWeights(simcase.G, box, simcase.SPEcase);
         [states, ~, ~] = simcase.getSimData;
 
         completedata = zeros(maxsteps, 4);
@@ -15,19 +15,19 @@ function data = getComp(simcase, steps, submeasure, box)
             flowprops = states{it}.FlowProps;
             totalmass = flowprops.ComponentTotalMass{2};
             phasemass = flowprops.ComponentPhaseMass;
-            mobility = flowprops.Mobility{2};
+            Co2RelPerm = flowprops.RelativePermeability{2};
             %submeasurable 1
             freeco2 = phasemass{2,2};
-            mobileCells = mobility > 0;
-            completedata(it, 1) = sum(freeco2(boxcells & mobileCells));
+            mobileCells = Co2RelPerm > 0;
+            completedata(it, 1) = sum(freeco2.*(boxWeights .* mobileCells));
             %submeasure 2
-            completedata(it, 2) = sum(freeco2(boxcells & ~mobileCells));
+            completedata(it, 2) = sum(freeco2.*(boxWeights .* ~mobileCells));
             %submeasure 3
             dissolvedco2 = phasemass{2,1};
-            completedata(it, 3) = sum(dissolvedco2(boxcells));
+            completedata(it, 3) = sum(dissolvedco2 .* boxWeights);
             %submeasure 4
             sealCells = simcase.G.cells.tag == 1;
-            completedata(it, 4) = sum(totalmass(boxcells & sealCells));
+            completedata(it, 4) = sum(totalmass.*(boxWeights .* sealCells));
         end
         if simcase.G.griddim == 2
             adjustmentfactor = 1e-2;%2D case is like 1m deep, need to divide by 100 to get comparable (actual) mass

@@ -89,7 +89,7 @@ function G = setupGrid(simcase, varargin)
                 amatFile = ['nudge_', amatFile];
             end
             if contains(gridcase, 'cart')
-                amatFile = ['cartesian_', ama                       tFile];
+                amatFile = ['cartesian_', amatFile];
             elseif contains(gridcase, 'horz')
                 amatFile = ['horizon_', amatFile];
             end

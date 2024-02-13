@@ -1,6 +1,13 @@
 clear all 
 close all
 %%
+G = cartGrid([3,3], [1,1]);
+G.nodes.coords(8,2) = 0;
+Grm = removePinch(G, 1e-16);
+Gl = makeLayeredGrid(Grm,1);
+Gl = mcomputeGeometry(Gl);
+
+%%
 gridcase = 'cut1080x463';
 simcase = Simcase('gridcase', gridcase);
 G = simcase.G;

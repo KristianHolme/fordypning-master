@@ -54,7 +54,7 @@ filetag = ['box', box, 'mob'];
 plotTitle = 'P2.2 Immobile Co2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 2;
-filetag = ['box', box, 'immob'];;
+filetag = ['box', box, 'immob'];
 %% P2.3 dissolved
 plotTitle = 'P2.3 Dissolved CO2';
 folder = './../plotsMaster/composition/P2boxA';
