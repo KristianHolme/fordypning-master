@@ -71,56 +71,24 @@ function G = setupGrid(simcase, varargin)
             tokens = regexp(gridcase, pattern, 'tokens');
             params = tokens{1};
             params = cellfun(@str2double, params);
-            amatFile = [num2str(params(1)), 'x', num2str(params(2)), '.mat'];
+            matFile = [num2str(params(1)), 'x', num2str(params(2)), '_', simcase.SPEcase,'.mat'];
             if contains(gridcase, 'PG')
-                recombine = true;
-                amatFile = ['PG_', amatFile];
+                matFile = ['PG_', matFile];
             else
-                recombine = false;
             end
-            amatFile = ['cutcell_', amatFile];
+            matFile = ['cutcell_', matFile];
             if contains(gridcase, 'pre')
-                presplit = true;
-                amatFile = ['presplit_', amatFile];
-            else
-                presplit = false;
+                matFile = ['presplit_', matFile];
             end
             if contains(gridcase, 'ndg')
-                amatFile = ['nudge_', amatFile];
+                matFile = ['nudge_', matFile];
             end
             if contains(gridcase, 'cart')
-                amatFile = ['cartesian_', amatFile];
+                matFile = ['cartesian_', matFile];
             elseif contains(gridcase, 'horz')
-                amatFile = ['horizon_', amatFile];
+                matFile = ['horizon_', matFile];
             end
-            
-            
-            if strcmp(simcase.SPEcase, 'B')%stretch A-grid
-                amatFile = ['buff_', amatFile];
-                amatFile = fullfile(gridFolder, amatFile);
-                if ~isfile(amatFile)
-                    assert(false, sprintf('grid %s not generated!', amatFile));
-                    GenerateCutCellGrid(params(1), params(2), 'verbose', true, 'presplit', presplit, ...
-                        'recombine', recombine, 'bufferVolumeSlice', true);
-                end
-                matFile = replace(amatFile, '.mat', '_B.mat');
-                if ~isfile(matFile)
-                    assert(false, sprintf('grid %s not generated!', matFile));
-                    load(amatFile)
-                    if max(G.cells.centroids(:,1)) < 1000 %horizongrids are already in B geometry
-                        G = StretchGrid(RotateGrid(G));
-                    end
-                    save(matFile, 'G');
-                end
-            else
-                amatFile = fullfile(gridFolder, amatFile);
-                % amatFile = fullfile(gridFolder, 'cutcell', ['cutcell_', gridcase(4:end), '.mat']);
-                if ~isfile(amatFile)
-                    assert(false, sprintf('grid %s not generated!', amatFile));
-                    GenerateCutCellGrid(params(1), params(2), 'verbose', true, 'presplit', presplit, 'recombine', recombine)
-                end
-                matFile = amatFile;
-            end
+            matFile = fullfile(gridFolder, matFile);
         end
         load(matFile);
         if ~isempty(simcase.tagcase) && contains(simcase.tagcase, 'allcells')
