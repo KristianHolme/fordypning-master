@@ -105,6 +105,7 @@ function G = setupGrid(simcase, varargin)
                 end
                 matFile = replace(amatFile, '.mat', '_B.mat');
                 if ~isfile(matFile)
+                    assert(false, 'Grid not generated!');
                     load(amatFile)
                     if max(G.cells.centroids(:,1)) < 1000 %horizongrids are already in B geometry
                         G = StretchGrid(RotateGrid(G));
@@ -154,7 +155,11 @@ function G = setupGrid(simcase, varargin)
     if isfield(G, 'parent') %coarsegrid, this computation maybe superfluous??
         G = coarsenGeometry(G);
     else
-        G = computeGeometry(G);
+        if mrstSettings('get', 'useMEX')
+            G = mcomputeGeometry(G);
+        else
+            G = computeGeometry(G);
+        end
         assert(all(G.cells.volumes > 0), 'negative volumes!')
     end
     if stretch
