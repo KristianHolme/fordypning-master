@@ -476,6 +476,14 @@ classdef Simcase < handle
                     end
                 end
             end
-        end     
+        end 
+
+        function saveGridRock(simcase, name)
+            folder = 'grid-files/cutcell/gridrock_simready';
+            dispif(isempty(simcase.tagcase), 'No tag! Will remove facies 7 cells!\n');
+            G = simcase.G;
+            rock = simcase.rock;
+            save(fullfile(folder, name), "rock", "G");
+        end
     end
 end
