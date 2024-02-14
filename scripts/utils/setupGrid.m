@@ -88,6 +88,9 @@ function G = setupGrid(simcase, varargin)
             elseif contains(gridcase, 'horz')
                 matFile = ['horizon_', matFile];
             end
+            if ~strcmp(simcase.SPEcase, 'A')
+                matFile = ['buff_', matFile];
+            end
             matFile = fullfile(gridFolder, matFile);
         end
         load(matFile);
