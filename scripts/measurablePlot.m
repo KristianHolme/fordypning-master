@@ -90,7 +90,7 @@ submeasure = 4;
 filetag = ['box', box, 'seal'];
 %% P2-3 get data
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box);
-%% Setup Sealing CO2 plotting
+%% SETUP
 % A
 % gridcases = {'6tetRef1', '5tetRef1'}; %RAPPORT 
 % gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'}; %RAPPORT
@@ -109,7 +109,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box);
 % gridcases = {'struct420x141'};
 
 %Master B
-gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 % gridcases = {'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 

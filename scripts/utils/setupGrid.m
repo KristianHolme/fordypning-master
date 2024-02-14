@@ -98,8 +98,10 @@ function G = setupGrid(simcase, varargin)
             %dont remove cells
         else
             [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
+            active = G.cells.tag ~= 7;
+            G.cells.indexMap = find(active);
             G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
-            G.cells.indexMap = (1:G.cells.num)';
+            
         end
         if simcase.griddim == 3
             if strcmp(simcase.SPEcase, 'A')

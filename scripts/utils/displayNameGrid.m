@@ -33,9 +33,10 @@ function displayName = displayNameGrid(gridcase, specase)
     Bmap('5tetRef6-stretch') = 'UU-C-Astretch';
     %Master:
     Bmap('') = 'deck(Cp)';
-    Bmap('horz_pre_cut_PG_130x62') = 'HCP-S';
+    Bmap('horz_pre_cut_PG_130x62') = 'HPCP-S';
     Bmap('horz_ndg_cut_PG_130x62') = 'HNCP-S';
-    Bmap('cart_pre_cut_PG_130x62') = 'CCP-S';
+    Bmap('cart_pre_cut_PG_130x62') = 'CPCP-S';
+    Bmap('cart_ndg_cut_PG_130x62') = 'CNCP-S';
     Bmap('horz_pre_cut_130x62') = 'HC-S';
     Bmap('cart_pre_cut_130x62') = 'CC-S';
     Bmap('struct130x62') = 'C-S';

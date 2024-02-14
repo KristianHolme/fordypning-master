@@ -1,6 +1,7 @@
-function weights = getCSPBoxWeights(G, box, SPEcase)
+function activeWeights = getCSPBoxWeights(G, box, SPEcase)
     if ~isfield(G.cells, ['fractionIn', box])
         G = addBoxWeights(G, 'SPEcase', SPEcase);
     end
-    weights = G.cells.(['fractionIn', box]);
+    allweights = G.cells.(['fractionIn', box]);
+    activeWeights = allweights(G.cells.indexMap);
 end
