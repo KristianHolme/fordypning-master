@@ -1,8 +1,8 @@
 clear all
 close all
 %%
-nx = 130;
-ny = 62;
+nx = 898;
+ny = 120;
 gridcase = sprintf('horz_ndg_cut_PG_%dx%d', nx, ny);
 tagcase = 'allcells';
 SPEcase = 'B';
