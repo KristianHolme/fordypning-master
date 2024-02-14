@@ -13,4 +13,4 @@ simcase.saveGridRock(name);
 load(['grid-files/cutcell/gridrock_simready/', name]);
 
 %% 
-plotToolbar(G, rock);view(0,0);
+plotToolbar(G, G.cells.volumes);view(10,0)
