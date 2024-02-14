@@ -13,11 +13,11 @@ function G = addBufferVolume(G, rock, varargin)
     % end
     
 
-    bf = boundaryFaces(G);
+    % bf = boundaryFaces(G);
     
-    tol = 1e-10;
+    % tol = 1e-10;
     eps = opt.eps;
-    xlimit = 8400;
+    % xlimit = 8400;
     areaVolumeConstant = 5e4;
 
     G = getBufferCells(G);
@@ -27,7 +27,7 @@ function G = addBufferVolume(G, rock, varargin)
         cell = G.bufferCells(ic);
         % cell = max(G.faces.neighbors(face, :));
         facies = G.cells.tag(cell);
-        assert(facies ~=6 )
+        assert(facies ~=6 );
         face = G.bufferFaces(ic);
         faceArea = G.faces.areas(face);
         if ismember(facies, [2, 3, 4, 5])

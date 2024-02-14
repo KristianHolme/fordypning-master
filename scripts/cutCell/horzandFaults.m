@@ -14,11 +14,12 @@ G =computeGeometry(G);
 %% Add Top as first horizon
 horzInters = geoH.horz(:,4);
 horzInters = [{@(newxs)interp1([0.0, 2.8], [1.2, 1.2], newxs, 'linear')}; horzInters];
+horzInters = [horzInters;{@(newxs)interp1([0.0, 2.8], [0.0, 0.0], newxs, 'linear')}; ];
 %% Make subgrids
 top = horzInters{1};
 bottom = horzInters{2};
-nxs = [20, 20, 20, 20, 20, 20, 20, 20, 20];
-nys = [4, 5, 6, 7, 8, 9, 10, 11, 10];
+nxs = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]*2;
+nys = [4, 5, 6, 7, 8, 9, 10, 11, 10, 8, 8]*2;
 cartGrids = {};
 for ihorz = 1:numel(horzInters)-1
     top = horzInters{ihorz};
@@ -41,7 +42,7 @@ for ihorz = 1:numel(horzInters)-1
 end
 %% Plot subgrids
 clf
-for i=1:9
+for i=1:10
     % clf
     axis([0,2.8, 0, 1.2]);
     plotGrid(cartGrids{i});
