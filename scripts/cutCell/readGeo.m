@@ -70,6 +70,16 @@ function result = readGeo(filename, varargin)
         %add all lines thats not faults to Boundarylines
         result.includeLines = faultlines;
     end
+    %Voronoi-friendly(?) segments
+     dataV = regexp(text, '\"([V]\d*(\.\d+)?)\", \d+\) = \{([\d, ]+)\}', 'tokens');
+    if ~isempty(dataV)
+        dataV = vertcat(dataV{:});
+        dataV(:,2) = cellfun(@(s) str2num(s), dataV(:,2), 'UniformOutput', false);
+        result.V = dataV;
+        Vlines = horzcat(result.V{:,2});
+        %add all lines thats not faults to Boundarylines
+        result.includeLines = Vlines;
+    end
 
    
 end
