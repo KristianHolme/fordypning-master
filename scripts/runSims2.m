@@ -8,13 +8,9 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'B';
-<<<<<<< Updated upstream
-        gridcases = {'horz_ndg_cut_PG_898x120', 'horz_pre_cut_PG_898x120'};
-=======
-        gridcases = {'horz_ndg_cut_PG_460x64', 'horz_pre_cut_PG_460x64'};
->>>>>>> Stashed changes
+        gridcases = {'horz_pre_cut_PG_460x64'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-ntpfa', 'hybrid-avgmpfa'};
+        pdiscs = {'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
@@ -24,13 +20,9 @@ function timings = runSims2(server)
         direct_solver = false;
     case 2
         SPEcase = 'B';
-<<<<<<< Updated upstream
-        gridcases = {'cart_ndg_cut_PG_898x120', 'cart_pre_cut_PG_898x120'};
-=======
-        gridcases = {'cart_ndg_cut_PG_460x64', 'cart_pre_cut_PG_460x64'};
->>>>>>> Stashed changes
+        gridcases = {'cart_pre_cut_PG_460x64'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-ntpfa', 'hybrid-avgmpfa'};
+        pdiscs = {'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
@@ -40,9 +32,9 @@ function timings = runSims2(server)
         direct_solver = false;
     case 3
         SPEcase = 'B';
-        gridcases = {'struct130x62'};
+        gridcases = {'cPEBI_460x64'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
