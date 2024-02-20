@@ -24,7 +24,7 @@ for ig = 1:numel(gridcases)
         catch
             wallTime = NaN;
         end
-        data(ip, ig) = round(wallTime/G.cells.num, decimals);
+        data(ip, ig) = round(wallTime, decimals);
     end
 end
 

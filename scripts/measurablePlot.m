@@ -36,7 +36,7 @@ ytxt = 'CO2 [kg]';
 folder = './../plotsMaster/bufferCO2';
 filetag = 'bufferCO2';
 %% PoP
-popcell = 1;
+popcell = 2;
 getData = @(simcase, steps)getPoP(simcase, steps, popcell) ./barsa;
 plotTitle = sprintf('Pressure at PoP %d', popcell);
 ytxt = 'Pressure [bar]';
