@@ -129,6 +129,8 @@ function G = setupGrid(simcase, varargin)
     elseif ~isempty(simcase.deck) %use deck if present
         G = initEclipseGrid(simcase.deck);
         G = computeGeometry(G);
+        G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
+        G.cells.indexMap = 1:G.cells.num;
         if max(G.cells.volumes) > 100800
             return
         end

@@ -47,7 +47,7 @@ function displayName = displayNameGrid(gridcase, specase)
     Bmap('cart_pre_cut_130x62') = 'CC-S';
     Bmap('struct130x62') = 'C-S';
     Bmap('cPEBI_130x62') = 'cPEBI-S';
-    Bmap('cPEBI_460x64') = 'cPEBI-M';
+    Bmap('cPEBI_220x110') = 'cPEBI-M';
 
 
     if strcmp(lower(specase), 'a')

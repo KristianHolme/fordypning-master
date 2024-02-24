@@ -32,7 +32,7 @@ function timings = runSims2(server)
         direct_solver = false;
     case 3
         SPEcase = 'B';
-        gridcases = {'cPEBI_460x64'};
+        gridcases = {'cPEBI_220x110'};
         schedulecases = {''};
         pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};

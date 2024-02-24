@@ -1,0 +1,5 @@
+[deps]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+DelaunayTriangulation = "927a84f5-c5f4-47a5-9785-b46e178433df"
+MAT = "23992714-dd62-5051-b70f-ba57cb901cac"
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"

@@ -12,7 +12,7 @@ tagcase = '';%normalRock
 numcols = numel(gridcases);
 numrows = numel(pdiscs);
 data = NaN(numrows, numcols);
-decimals = 4;
+decimals = 2;
 
 for ig = 1:numel(gridcases)
     for ip = 1:numel(pdiscs)
