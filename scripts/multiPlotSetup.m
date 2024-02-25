@@ -43,7 +43,9 @@ end
 % gridcases = {'6tetRef0.4', '5tetRef0.4', '5tetRef1-stretch'};filename = 'FmeshalgStretch';
 % gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
 % gridcases = {'struct420x141'};
-gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
+% gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
+gridcases = {'horz_ndg_cut_PG_460x64', 'cart_ndg_cut_PG_460x64', 'cPEBI_460x64'};filename = 'cut-vs-pebi';
+
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
@@ -117,7 +119,7 @@ end
 % gridcase = '5tetRef1-stretch';
 % gridcase = 'cart_pre_cut_PG_130x62';
 % gridcase = 'horz_pre_cut_PG_130x62';
-gridcase = '';
+gridcase = 'cPEBI_460x64';
 % steps = [360];
 
 
@@ -125,7 +127,7 @@ filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
-pdiscs = {'', 'cc', 'ccloc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 deckcase = 'B_ISO_SMALL';
 tagcases = {''};%one for each pdisc or that applies to all pdiscs
 
@@ -171,6 +173,9 @@ for istep = 1:numel(steps)
     %add grid for plot in corner
     plotsize = numel(pdiscs);
     switch plotsize
+        case 5
+            gridplotheight = 2;
+            gridplotwidth = 2;
         case 4
             gridplotheight = 2;
             gridplotwidth = 2;

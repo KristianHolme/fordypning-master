@@ -76,8 +76,8 @@ fprintf("Partition and coarsen %dx%d grid using %s in %0.2f s\n", nx, ny, method
 % figure
 plotCellData(Gp, Gp.cells.tag,'edgealpha', 0.5, 'LineWidth', 0.1);view(0,0)
 %%
-nx = 2640;
-ny = 380;
+nx = 100;
+ny = 50;
 buffer = true;
 save = true;
 recombine = true;

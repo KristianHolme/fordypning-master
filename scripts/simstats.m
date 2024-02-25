@@ -15,15 +15,20 @@ mrstVerbose off
 % gridcases = {'semi263x154_0.3'};
 % gridcases = {'struct420x141'};
 
-SPEcase = 'A';
+% SPEcase = 'A';
 % gridcases = {'6tetRef1', '5tetRef1', 'semi263x154_0.3', 'struct340x150'};
-gridcases = {'6tetRef1'};
+% gridcases = {'6tetRef1'};
 % gridcases = {'5tetRef1'};
 % gridcases = {'semi263x154_0.3'};
 % gridcases = {'struct340x150'};
 
+
+SPEcase = 'B';
+% gridcases = {'horz_ndg_cut_PG_460x64', 'cart_ndg_cut_PG_460x64', 'cPEBI_460x64'};
+gridcases = {'cPEBI_460x64'};
+
 % SPEcase = 'A'; gridcases = {'5tetRef10'};
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
 tagcase = '';
 set(groot, 'defaultLineLineWidth', 2);
@@ -53,7 +58,7 @@ for igrid = 1:numel(gridcases)
     gridcase = gridcases{igrid};
     for idisc = 1:numel(pdiscs)
         pdisc = pdiscs{idisc};
-        simcase = Simcase('SPEcase', SPEcase, 'deckcase', 'RS', 'usedeck', true, 'gridcase', gridcase, ...
+        simcase = Simcase('SPEcase', SPEcase, 'deckcase', 'B_ISO_SMALL', 'usedeck', true, 'gridcase', gridcase, ...
                        'pdisc', pdisc, 'tagcase', tagcase);
         simcases{end+1} = simcase;
     end
@@ -96,7 +101,7 @@ for isim = 1:numel(simcases)
     data{7, isim} = simcase.getWallTime;
     data{8, isim} = cuttingcount;
 end
-plot([20,20], [0,12000], 'k');labels{end+1} = 'Injection stop';
+% plot([20,20], [0,120], 'k');labels{end+1} = 'Injection stop';
 grid();
 % title('Timestep cuts per control step')
 title([displayNameGrid(simcase.gridcase, SPEcase)]);
@@ -104,7 +109,7 @@ xlabel('Control step');
 ylabel('Cumulative nonlinear iterations');
 legend(labels, Location="southeast");
 hold off;
-exportgraphics(gcf, ['plots/iterations/', SPEcase, '_', displayNameGrid(simcase.gridcase, SPEcase), '.pdf'])
+exportgraphics(gcf, ['./../plotsMaster/iterations/', SPEcase, '_', displayNameGrid(simcase.gridcase, SPEcase), '.pdf'])
 
 
 

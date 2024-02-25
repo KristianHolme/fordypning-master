@@ -392,6 +392,12 @@ classdef Simcase < handle
             [err, errvect, fwerr] = computeOrthError(simcase.G, simcase.rock, tbls);
         end
 
+        function plotErr(simcase)
+            [err, ~, fwerr] = simcase.computeStaticIndicator;
+            errstruct = struct('err', err, 'fwerr', fwerr);
+            plotToolbar(simcase.G, errstruct);view(0,0);
+        end
+
         function [well1Index, well2Index] = getinjcells(simcase)
             SPEcase = simcase.SPEcase;
             G = simcase.G;

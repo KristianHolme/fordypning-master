@@ -92,6 +92,14 @@ function G = setupGrid(simcase, varargin)
                 matFile = ['buff_', matFile];
             end
             matFile = fullfile(gridFolder, matFile);
+        elseif contains(gridcase, 'PEBI')
+            gridFolder = 'grid-files/PEBI';
+            gridfilename = [gridcase, '_', simcase.SPEcase, '.mat'];
+
+            if ~strcmp(simcase.SPEcase, 'A')
+                gridfilename = ['buff_', gridfilename];
+            end
+            matFile = fullfile(gridFolder, gridfilename);
         end
         load(matFile);
         if ~isempty(simcase.tagcase) && contains(simcase.tagcase, 'allcells')
@@ -121,6 +129,8 @@ function G = setupGrid(simcase, varargin)
     elseif ~isempty(simcase.deck) %use deck if present
         G = initEclipseGrid(simcase.deck);
         G = computeGeometry(G);
+        G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
+        G.cells.indexMap = 1:G.cells.num;
         if max(G.cells.volumes) > 100800
             return
         end

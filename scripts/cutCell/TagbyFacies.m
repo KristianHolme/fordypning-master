@@ -1,5 +1,5 @@
 function G = TagbyFacies(G, geodata, varargin)
-%use inpolygon to fvertIxind facies of each cell
+%use inpolygon to find facies of each cell
     opt = struct('verbose', false, ...
                  'vertIx', 2);
     opt = merge_options(opt, varargin{:});

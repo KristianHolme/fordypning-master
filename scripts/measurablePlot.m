@@ -51,7 +51,7 @@ folder = './../plotsMaster/composition/P2boxA';
 submeasure = 1;
 filetag = ['box', box, 'mob'];
 %% P2.2 immobile
-plotTitle = 'P2.2 Immobile Co2';
+plotTitle = 'P2.2 Immobile CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 2;
 filetag = ['box', box, 'immob'];
@@ -109,11 +109,10 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box);
 % gridcases = {'struct420x141'};
 
 %Master B
-gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
-% gridcases = {'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+% gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
+% gridcases = {'horz_ndg_cut_PG_460x64', 'cart_ndg_cut_PG_460x64', 'cPEBI_460x64'};
 pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-
-
 
 deckcase = 'B_ISO_SMALL';
 tagcase = '';
