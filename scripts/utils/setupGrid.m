@@ -102,15 +102,16 @@ function G = setupGrid(simcase, varargin)
             matFile = fullfile(gridFolder, gridfilename);
         end
         load(matFile);
+
         if ~isempty(simcase.tagcase) && contains(simcase.tagcase, 'allcells')
-            %dont remove cells
+            ;%dont remove cells
         else
             [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
             active = G.cells.tag ~= 7;
             G.cells.indexMap = find(active);
             G.cells.tag = G.cells.tag(G.cells.tag ~= 7);
-            
         end
+
         if simcase.griddim == 3
             if strcmp(simcase.SPEcase, 'A')
                 depth = 0.01;
@@ -120,21 +121,28 @@ function G = setupGrid(simcase, varargin)
             if G.griddim ~=3
                 G = makeLayeredGrid(G, depth);
                 G = computeGeometry(G);
+                G.faces.tag = zeros(G.faces.num, 1);
             end
             if ~any(ismember(G.type, 'RotateGrid')) && ~(max(G.cells.centroids(:,3)) > 1000)
                 G = RotateGrid(G);%rotategrid to Z axis
             end
         end
         
+        
     elseif ~isempty(simcase.deck) %use deck if present
-        G = initEclipseGrid(simcase.deck);
+        G = initEclipseGrid(simcase.deck, 'usemex', true);
         G = computeGeometry(G);
         G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
-        G.cells.indexMap = 1:G.cells.num;
+        % G.cells.indexMap = 1:G.cells.num;
+        if ~isfield(G.faces, 'tag')
+            G.faces.tag = zeros(G.faces.num, 1);
+        end
+        
         if max(G.cells.volumes) > 100800
             return
         end
     end
+    
     if isfield(G, 'parent') %coarsegrid, this computation maybe superfluous??
         G = coarsenGeometry(G);
     else
@@ -145,6 +153,9 @@ function G = setupGrid(simcase, varargin)
         end
         assert(all(G.cells.volumes > 0), 'negative volumes!')
     end
+
+    
+
     if stretch
         G = StretchGrid(G);
     end
