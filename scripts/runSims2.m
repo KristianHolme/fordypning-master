@@ -8,28 +8,30 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {'horz_pre_cut_PG_460x64'};
+        gridcases = {'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cPEBI_130x62'};
         schedulecases = {''};
-        pdiscs = {'hybrid-mpfa'};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
-        resetData = false;
+        resetData = true;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
+        warning('off', 'all');
     case 2
         SPEcase = 'B';
-        gridcases = {'cart_pre_cut_PG_460x64'};
+        gridcases = {'cart_ndg_cut_PG_460x64'};
         schedulecases = {''};
-        pdiscs = {'hybrid-mpfa'};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
-        resetData = false;
+        resetData = true;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
+        warning('off', 'all');
     case 3
         SPEcase = 'B';
         gridcases = {'cPEBI_220x110'};
@@ -43,6 +45,7 @@ function timings = runSims2(server)
         Jutul = false;
         direct_solver = false;
         mrstVerbose off;
+        warning('off', 'all');
     case 4
         SPEcase = 'B';
         gridcases = {''};
@@ -55,6 +58,7 @@ function timings = runSims2(server)
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
+        warning('off', 'all');
     end
 
     timings = struct();
@@ -83,4 +87,5 @@ function timings = runSims2(server)
         end
     end
     disp(timings);
+    warning('on', 'all');
 end
