@@ -118,16 +118,74 @@ legend([h1, h2, h3, h4], 'Cell2cell-faceplane intersection', 'face centroid', 'c
 %% Finalize
 % 130x62: FCF: 0.53, cF: 0.6
 % 220x110: FCF: 0.94, cF: 0.6
-% 460x64: FCF: 1.0, cF: 0.6
+% 460x64: FCF: 0.56, cF: 0.6
 % 898x120: FCF: 1.0, cF: 0.6, useMrstPebi false
-nx = 130;
-ny = 62;
-[G, G2D, Pts] = GeneratePEBIGrid(nx, ny, 'FCFactor', 0.53, 'circleFactor', 0.6, 'save', true, ...
+nx = 220;
+ny = 110;
+[G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, 'FCFactor', 0.94, 'circleFactor', 0.6, 'save', false, ...
     'bufferVolumeSlice', true, ...
     'useMrstPebi', false, ...
     'earlyReturn', false);
+%% Comparison w/o edgeremoval
+
+grids = {G2D, G2Ds};
+names = {'stock', 'RSE'};
+
+T = tiledlayout(3, numel(grids));
+
+for ig = 1:numel(grids)
+    G = grids{ig};
+    N = getNeighbourship(G);
+    Conn = getConnectivityMatrix(N);
+    [I, J] = find(Conn);
+    sz = J(end);
+    [~, nbs] = rlencode(J);
+
+    name = names{ig};
+    nexttile(0 + ig);
+    histogram(nbs);
+    title(sprintf('Grid: %s, Cells: %d', name, G.cells.num));
+    xlabel('Number of neighbors');
+    ylabel('Frequency');
+end
+
+for ig = 1:numel(grids)
+    G = grids{ig};
+    N = getNeighbourship(G);
+    Conn = getConnectivityMatrix(N);
+    [I, J] = find(Conn);
+    sz = J(end);
+    [~, nbs] = rlencode(J);
+
+    name = names{ig};
+    nexttile(2+ ig);
+    histogram(nbs);
+    title(sprintf('Grid: %s, Cells: %d', name, G.cells.num));
+    xlabel('Number of neighbors');
+    ylabel('Frequency');
+end
+
+for ig = 1:numel(grids)
+    G = grids{ig};
+    name = names{ig};
+    nexttile(4+ig);
+    histogram(log10(G.faces.areas));
+    title(sprintf('Grid: %s, Cells: %d', name, G.cells.num));
+    xlabel('Log10(face areas)');
+    ylabel('Frequency');
+end
 %%
-plotCellData(G2D, G2D.cells.tag);axis tight equal;
+Gf = G2Ds;
+[~, smallestFacesOrder] = sort(Gf.faces.areas);
+num = 10;
+smallestFaceNbs = Gf.faces.neighbors(smallestFacesOrder(1:num),:);
+smallestFaceNbs = unique(reshape(smallestFaceNbs, [], 1));
+% plotGrid(Gf, 'facecolor', 'none');
+plotGrid(Gf, smallestFaceNbs)
+%%
+plotGrid(G, 'facecolor', 'none');axis tight equal;
+plotGrid(G, G.cells.wellCells);view(0,0);
+% plotCellData(G2Ds, G2Ds.cells.tag);axis tight equal;
 %%
 histogram(log10(G.cells.volumes));
 title(sprintf('PEBI grid (%dx%d)', nx, ny));

@@ -18,8 +18,8 @@ mrstVerbose off
 SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 % gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
-% gridcases = {'cPEBI_898x120'};
-gridcases = {'5tetRef0.4'};
+gridcases = {'cPEBI_220x110'};
+% gridcases = {'5tetRef0.4'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
 pdiscs = {''};%, 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
@@ -29,9 +29,9 @@ tagcase = '';%normalRock
 
 resetData           = true;
 resetAssembly       = true;
-do.plotStates       = false;
+do.plotStates       = true;
 do.plotFlux         = false;
-do.multiphase       = true;
+do.multiphase       = false;
 do.dispTime         = false;
 useJutulIfPossible  = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met

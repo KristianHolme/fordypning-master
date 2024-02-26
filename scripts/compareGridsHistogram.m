@@ -1,11 +1,11 @@
 clear all
 close all
 %%
-nx = 460;
-ny = 64;
+nx = 898;
+ny = 120;
 G1 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', false);
 G2 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', false, 'type', 'cartesian');
-nx=220;ny=110;
+% nx=898;ny=110;
 G3 = GeneratePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', false, 'FCFactor', 0.94);
 %%
 G1 = load('grid-files/cutcell/horizon_nudge_cutcell_PG_460x64_B.mat').G;

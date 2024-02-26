@@ -1,4 +1,4 @@
-function [G, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
+function [G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
     opt = struct('SPEcase', 'B',...
                  'FCFactor', 1.0, ...
                  'circleFactor', 0.6, ...
@@ -6,11 +6,16 @@ function [G, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
                  'bufferVolumeSlice', true, ...
                  'save', true, ...
                  'useMrstPebi', false, ...
-                 'earlyReturn', false);
+                 'earlyReturn', false, ...
+                 'removeShortEdges', true);
     dispif(opt.verbose, 'Generating PEBI grid...\n');
     tstart = tic();
     [opt, extra] = merge_options(opt, varargin{:});
     geodata = readGeo('scripts/cutcell/geo/spe11a-V2.geo', 'assignextra', true);
+
+    % make cells so well are in center
+    [~, ~, well1Coords, well2Coords] = getinjcells(computeGeometry(cartGrid([1,1], [2.8, 1.2])), opt.SPEcase);
+
     switch opt.SPEcase
         case 'B'
             matPoints = vertcat(geodata.Point{:});
@@ -19,6 +24,9 @@ function [G, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
             geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
             pdims = [1*meter, 1.2/8.4*meter];
             depth = 1*meter;
+
+            well1Coords = well1Coords/8400;
+            well2Coords = well2Coords/8400;
         case 'A'
             matPoints = vertcat(geodata.Point{:});
             matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
@@ -26,6 +34,9 @@ function [G, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
             geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
             pdims = [1*meter, 1.2/2.8*meter];
             depth = 1*centi*meter;
+
+            well1Coords = well1Coords/2.8;
+            well2Coords = well2Coords/2.8;
     end
 
     data = geodata.V;
@@ -39,24 +50,78 @@ function [G, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
     targetsRes = [nx, ny];
     gs = pdims ./ targetsRes;
 
-    [G, Pts,~] = compositePebiGrid2D(gs, pdims, 'faceConstraints', faults, ...
+    wellConstraints = {well1Coords, well2Coords};
+    
+
+    [G, Pts,~] = compositePebiGrid2D(gs, pdims, ...
+        'cellConstraints', wellConstraints,...
+        'mlqtMaxLevel', 1,...
+        'protLayer', false,...
+        'faceConstraints', faults, ...
         'FCFactor', opt.FCFactor, ...
         'circleFactor', opt.circleFactor, ...
         'interpolateFC', false, ...
         'useMrstPebi', opt.useMrstPebi,...
         'earlyReturn', opt.earlyReturn);
     
-    G = computeGeometry(G);
-    
-    G = TagbyFacies(G, geodata);
-    G2D = G;
-
     if opt.earlyReturn
         fn = sprintf('scripts/PEBI/pointData/points_%dx%d.mat', nx, ny);
         save(fn, "Pts");
         fprintf("Early return! saving points to %s.\n", fn)
+        G2D = [];
+        G2Ds = [];
         return
     end
+    G = computeGeometry(G);
+
+    % plotGrid(G);axis tight equal;
+    % 
+    % set(gca, 'xlim', currxlim, 'ylim', currylim);
+    % currxlim = xlim;
+    % currylim = ylim;
+    
+    G = TagbyFacies(G, geodata);
+    G2D = G;
+
+    if opt.removeShortEdges
+        dispif(opt.verbose, 'Binary search for short edge tolerance...')
+        t = tic();
+        sortedAreas = sort(G2D.faces.areas);
+        maxdepth = 10;
+        depth = 1;
+        numfaces = G2D.faces.num;
+        biggest = sortedAreas(round(numfaces/5));
+        smallest = sortedAreas(1);
+        tol = (biggest + smallest)/2;
+        stopCriterion = false;
+        dontStop = false;
+        while (depth <= maxdepth && ~stopCriterion) || dontStop
+            G2Ds = removeShortEdges(G2D, tol);
+            if G2Ds.cells.num < G2D.cells.num
+                %too big tol, removed too much
+                biggest = tol;
+                dontStop = true;
+            else
+                smallest = tol;
+                dontStop = false;
+            end
+            tol = (biggest + smallest)/2;
+            depth = depth + 1;
+        end
+        % G2Ds = removeShortEdges(G2D, tol);
+        G2Ds = computeGeometry(G2Ds);
+        t = toc(t);
+        dispif(opt.verbose, 'Removed %d edges in %0.2f s.\n', G2D.faces.num - G2Ds.faces.num, t);
+        dispif(opt.verbose, 'Smallest edge before: %0.2e.\nSmallest edge now: %0.2e\n', min(G2D.faces.areas), min(G2Ds.faces.areas));
+        
+        G = G2Ds;
+    end
+
+    if ~checkGrid(G)
+        warning('Grid does not pass checkgrid!');
+    end
+
+    
 
     G = makeLayeredGrid(G, 1);
     G.faces.tag = zeros(G.faces.num, 1);

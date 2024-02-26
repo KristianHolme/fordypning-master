@@ -1,4 +1,4 @@
-function [well1Index, well2Index] = getinjcells(G, SPEcase)
+function [well1Index, well2Index, well1Coords, well2Coords] = getinjcells(G, SPEcase)
     % SPEcase = simcase.SPEcase;
     % G = simcase.G;
     if strcmp(SPEcase, 'A')
@@ -10,8 +10,6 @@ function [well1Index, well2Index] = getinjcells(G, SPEcase)
             well1Coords = [0.9, 0.3];
             well2Coords = [1.7, 0.7];
         end
-        [~,well1Index] = min(vecnorm(G.cells.centroids - well1Coords, 2, 2));
-        [~,well2Index] = min(vecnorm(G.cells.centroids - well2Coords, 2, 2));
     elseif strcmp(SPEcase, 'B')
         [~, dim] = size(G.cells.centroids);
         if dim == 3
@@ -21,8 +19,7 @@ function [well1Index, well2Index] = getinjcells(G, SPEcase)
             well1Coords = [2700, 300];
             well2Coords = [5100, 700];
         end
-        [~,well1Index] = min(vecnorm(G.cells.centroids - well1Coords, 2, 2));
-        [~,well2Index] = min(vecnorm(G.cells.centroids - well2Coords, 2, 2));
-
     end
+    [~,well1Index] = min(vecnorm(G.cells.centroids - well1Coords, 2, 2));
+    [~,well2Index] = min(vecnorm(G.cells.centroids - well2Coords, 2, 2));
 end
