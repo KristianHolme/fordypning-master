@@ -1,8 +1,11 @@
-function data = getSealingCO2(simcase, steps)
+function data = getSealingCO2(simcase, steps, varargin)
+    opt = struct('resetData', false);
+    opt = merge_options(opt, varargin{:});
+
     G = simcase.G;
     dirName       = fullfile(simcase.dataOutputDir, simcase.casename);
     filename      = fullfile(dirName, 'sealingCO2');
-    if exist([filename, '.mat'], "file")
+    if exist([filename, '.mat'], "file") && ~opt.resetData
         disp("loading data...")
         load(filename)
     else

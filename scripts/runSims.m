@@ -29,10 +29,10 @@ tagcase = '';%normalRock
 
 resetData           = true;
 resetAssembly       = true;
-do.plotStates       = true;
+do.plotStates       = false;
 do.plotFlux         = false;
 do.multiphase       = false;
-do.dispTime         = false;
+do.dispTime         = true;
 useJutulIfPossible  = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 

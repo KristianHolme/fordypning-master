@@ -5,7 +5,7 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
     deckformat gmsh nfvm mpfa
 mrstVerbose off
-%%
+%% SPEcase
 SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
     xscaling = hour; unit = 'h';
@@ -16,21 +16,22 @@ else
     steps = 31;
     totsteps = 31;
 end
+resetData = true;
 %% P5: Set Sealing-CO2
-getData = @(simcase, steps)getSealingCO2(simcase, steps);
+getData = @(simcase, steps)getSealingCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in sealing units';
 ytxt = 'CO2 [kg]';
 folder = './../plotsMaster/sealingCO2';
 filetag = 'sealingCO2';
 %% Set-Faultfluxes
-getData = @(simcase, steps)getFaultFluxes(simcase, steps);
+getData = @(simcase, steps)getFaultFluxes(simcase, steps, 'resetData', resetData);
 plotTitle='Fluxes over region bdrys (sum(abs(flux)))';
 ytxt = 'sum(abs(Fluxes))';
 folder = './../plotsMaster/faultfluxes';
 filetag = 'faultflux';
 steps = 22;
 %% P6: Set Buffer CO2
-getData = @(simcase, steps)getBufferCO2(simcase, steps);
+getData = @(simcase, steps)getBufferCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in buffer volumes';
 ytxt = 'CO2 [kg]';
 folder = './../plotsMaster/bufferCO2';
@@ -50,21 +51,25 @@ plotTitle = 'P2.1 Mobile CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 1;
 filetag = ['box', box, 'mob'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P2.2 immobile
 plotTitle = 'P2.2 Immobile CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 2;
 filetag = ['box', box, 'immob'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P2.3 dissolved
 plotTitle = 'P2.3 Dissolved CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 3;
 filetag = ['box', box, 'diss'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P2.4 seal
 plotTitle = 'P2.4 Seal CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 4;
 filetag = ['box', box, 'seal'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P3 composition box B
 box = 'B';
 ytxt = 'CO2 [kg]';
@@ -73,23 +78,26 @@ plotTitle = 'P3.1 Mobile CO2';
 folder = './../plotsMaster/composition/P3boxB';
 submeasure = 1;
 filetag = ['box', box, 'mob'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P3.2 immobile
 plotTitle = 'P3.2 Immobile CO2';
 folder = './../plotsMaster/composition/P3boxB';
 submeasure = 2;
 filetag = ['box', box, 'immob'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P3.3 dissolved
 plotTitle = 'P3.3 Dissolved CO2';
 folder = './../plotsMaster/composition/P3boxB';
 submeasure = 3;
 filetag = ['box', box, 'diss'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P3.4 seal
 plotTitle = 'P3.4 Seal CO2';
 folder = './../plotsMaster/composition/P3boxB';
 submeasure = 4;
 filetag = ['box', box, 'seal'];
-%% P2-3 get data
-getData = @(simcase, steps)getComp(simcase, steps, submeasure, box);
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+
 %% SETUP
 % A
 % gridcases = {'6tetRef1', '5tetRef1'}; %RAPPORT 
@@ -110,9 +118,9 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box);
 
 %Master B
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
-gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
-% gridcases = {'horz_ndg_cut_PG_460x64', 'cart_ndg_cut_PG_460x64', 'cPEBI_460x64'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
+gridcases = {'horz_ndg_cut_PG_220x110','cPEBI_220x110'};
+pdiscs = {'', 'cc'};
 
 deckcase = 'B_ISO_SMALL';
 tagcase = '';
@@ -151,7 +159,7 @@ for isim = 1:numel(simcases)
 end
 %% Plot
 set(groot, 'defaultLineLineWidth', 2);
-figure('Position', [100,100, 800, 600])
+figure('Position', [1600+100,200, 800, 600])
 hold on;
 for i=1:numel(simcases)
     plot(xdata, data(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle);
@@ -190,4 +198,3 @@ if saveplot
     exportgraphics(gcf, fullfile(folder, [filename, '.pdf']))%for color
     saveas(gcf, fullfile(folder, [filename, '.png']))
 end
-

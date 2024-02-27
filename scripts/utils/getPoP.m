@@ -1,7 +1,9 @@
-function data = getPoP(simcase, steps, popcell)
+function data = getPoP(simcase, steps, popcell, varargin)
+    opt = struct('resetData', false);
+    opt = merge_options(opt, varargin{:});
     dirName       = fullfile(simcase.dataOutputDir, simcase.casename);
     filename      = fullfile(dirName, 'PoP');
-    if exist([filename, '.mat'], "file")
+    if exist([filename, '.mat'], "file") && ~opt.resetData
         disp("loading data...")
         load(filename)
     else

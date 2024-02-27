@@ -25,10 +25,10 @@ mrstVerbose off
 
 SPEcase = 'B';
 % gridcases = {'horz_ndg_cut_PG_460x64', 'cart_ndg_cut_PG_460x64', 'cPEBI_460x64'};
-gridcases = {'cPEBI_460x64'};
+gridcases = {'horz_ndg_cut_PG_220x110','cPEBI_220x110'};
 
 % SPEcase = 'A'; gridcases = {'5tetRef10'};
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
 
 tagcase = '';
 set(groot, 'defaultLineLineWidth', 2);

@@ -1,11 +1,11 @@
 function data = getFaultFluxes(simcase, steps, varargin)
-    opt = struct('loadifsaved', false);
+    opt = struct('resetData', false);
     opt = merge_options(opt, varargin{:});
 
     G = simcase.model.G;
     dirName       = fullfile(simcase.dataOutputDir, simcase.casename);
     filename      = fullfile(dirName, 'faultflux.mat');
-    if exist([filename, '.mat'], "file") && opt.loadifsaved
+    if exist([filename, '.mat'], "file") && opt.resetData
         disp("loading data...")
         load(filename)
     else

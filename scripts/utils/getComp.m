@@ -1,7 +1,9 @@
-function data = getComp(simcase, steps, submeasure, box)
+function data = getComp(simcase, steps, submeasure, box, varargin)
+    opt = struct('resetData', false);
+    opt = merge_options(opt, varargin{:});
     dirName       = fullfile(simcase.dataOutputDir, simcase.casename);
     filename      = fullfile(dirName, ['comp', box]);
-    if exist([filename, '.mat'], "file")
+    if exist([filename, '.mat'], "file") && ~opt.resetData
         disp("loading data...")
         load(filename)
     else
