@@ -33,21 +33,28 @@ function displayName = displayNameGrid(gridcase, specase)
     Bmap('5tetRef6-stretch') = 'UU-C-Astretch';
     %Master:
     Bmap('') = 'deck(Cp)';
-    Bmap('horz_pre_cut_PG_130x62') = 'HPCP-S';
-    Bmap('horz_ndg_cut_PG_130x62') = 'HNCP-S';
-    Bmap('cart_pre_cut_PG_130x62') = 'CPCP-S';
-    Bmap('cart_ndg_cut_PG_130x62') = 'CNCP-S';
+    Bmap('horz_pre_cut_PG_130x62') = 'HPCP-C';
+    Bmap('horz_ndg_cut_PG_130x62') = 'HNCP-C';
+    Bmap('cart_pre_cut_PG_130x62') = 'CPCP-C';
+    Bmap('cart_ndg_cut_PG_130x62') = 'CNCP-C';
 
     Bmap('horz_pre_cut_PG_460x64') = 'HPCP-M';
     Bmap('horz_ndg_cut_PG_460x64') = 'HNCP-M';
     Bmap('cart_pre_cut_PG_460x64') = 'CPCP-M';
     Bmap('cart_ndg_cut_PG_460x64') = 'CNCP-M';
 
-    Bmap('horz_pre_cut_130x62') = 'HC-S';
-    Bmap('cart_pre_cut_130x62') = 'CC-S';
+    Bmap('horz_pre_cut_PG_819x117') = 'HPCP-F';
+    Bmap('horz_ndg_cut_PG_819x117') = 'HNCP-F';
+    Bmap('cart_pre_cut_PG_819x117') = 'CPCP-F';
+    Bmap('cart_ndg_cut_PG_819x117') = 'CNCP-F';
+
+    Bmap('horz_pre_cut_130x62') = 'HPC-S';
+    Bmap('cart_pre_cut_130x62') = 'CPC-S';
     Bmap('struct130x62') = 'C-S';
-    Bmap('cPEBI_130x62') = 'cPEBI-S';
+
+    Bmap('cPEBI_130x62') = 'cPEBI-C';
     Bmap('cPEBI_220x110') = 'cPEBI-M';
+    Bmap('cPEBI_819x117') = 'cPEBI-F';
 
 
     if strcmp(lower(specase), 'a')

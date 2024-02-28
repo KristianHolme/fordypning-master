@@ -14,6 +14,7 @@ tagcase = '';%normalRock
 numcols = numel(gridcases);
 numrows = numel(pdiscs);
 data = NaN(numrows, numcols);
+datarelcell = NaN(numrows, numcols);
 decimals = 3;
 
 for ig = 1:numel(gridcases)
@@ -26,13 +27,16 @@ for ig = 1:numel(gridcases)
         catch
             wallTime = NaN;
         end
-        data(ip, ig) = round(wallTime/simcase.G.faces.num, decimals);
+        data(ip, ig) = round(wallTime, decimals);
+        datarelcell(ip, ig) = round(wallTime/simcase.G.cells.num, decimals);
     end
 end
-% data(data < 1e-6) = NaN;
-% mindat = min(data, [], 'all');
-% data = data / mindat;
 
+data(data < 1e-6) = NaN;
 T = array2table(data, 'VariableNames', cellfun(@(g)displayNameGrid(g, SPEcase), gridcases, UniformOutput=false), 'RowNames', cellfun(@(p)shortDiscName(p), pdiscs, UniformOutput=false));
+datarelcell(datarelcell < 1e-6) = NaN;
+mindat = min(datarelcell, [], 'all');
+datarelcell = datarelcell / mindat;
+Trelcell = array2table(datarelcell, 'VariableNames', cellfun(@(g)displayNameGrid(g, SPEcase), gridcases, UniformOutput=false), 'RowNames', cellfun(@(p)shortDiscName(p), pdiscs, UniformOutput=false));
 %%
 table2latex(T, './../rapport/Tables/walltimes_cut-vs-pebi.tex');

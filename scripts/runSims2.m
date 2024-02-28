@@ -1,14 +1,14 @@
 function timings = runSims2(server)
     mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa coarsegrid
+    deckformat gmsh nfvm mpfa coarsegrid jutul
     % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
     % schedulecases = {'simple-coarse', 'simple-std'};
     mrstVerbose off
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {'horz_ndg_cut_PG_898x120', 'cart_ndg_cut_PG_898x120', 'cPEBI_898x120'};
+        gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
         schedulecases = {''};
         pdiscs = {''};
         uwdiscs = {''};
@@ -16,12 +16,12 @@ function timings = runSims2(server)
         tagcase = '';
         resetData = false;
         resetAssembly = true;
-        Jutul = false;
+        Jutul = true;
         direct_solver = false;
         warning('off', 'all');
     case 2
         SPEcase = 'B';
-        gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110'};
+        gridcases = {'cPEBI_220x110'};
         schedulecases = {''};
         pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
         uwdiscs = {''};
@@ -34,17 +34,16 @@ function timings = runSims2(server)
         warning('off', 'all');
     case 3
         SPEcase = 'B';
-        gridcases = {'cPEBI_220x110'};
+        gridcases = {'cart_ndg_cut_PG_220x110'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
-        resetData = true;
+        resetData = false;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
-        mrstVerbose off;
         warning('off', 'all');
     case 4
         SPEcase = 'B';
@@ -60,6 +59,7 @@ function timings = runSims2(server)
         direct_solver = false;
         warning('off', 'all');
     end
+    if Jutul, mrstVerbose on,else, mrstVerbose off,end
 
     timings = struct();
     for ideck = 1:numel(deckcases)
@@ -74,9 +74,9 @@ function timings = runSims2(server)
                         uwdisc = uwdiscs{iuwdisc};
                         simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                             'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                            'pdisc', pdisc, 'uwdisc', uwdisc);
+                            'pdisc', pdisc, 'uwdisc', uwdisc, 'jutul', Jutul);
 
-                        [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                        [~, ~, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                             'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
                         disp(['Done with: ', simcase.casename]);
                         timings.(timingName(simcase.casename)) = time;

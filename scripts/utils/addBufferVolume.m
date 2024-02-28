@@ -1,10 +1,11 @@
-function G = addBufferVolume(G, rock, varargin)
+function [G, rock] = addBufferVolume(G, rock, varargin)
     % adds buffervolume on left and right boundary of G
     % need to have G.tag to indicate facies
 
     opt = struct('eps', 1, ...
         'verbose', false, ...
-        'slice', false);%slice not used
+        'slice', false,...%slice not used
+        'adjustPoro', true);
     opt = merge_options(opt, varargin{:});
 
     assert(isfield(G.cells, 'tag'), "No tag on G.cells!")
@@ -33,8 +34,11 @@ function G = addBufferVolume(G, rock, varargin)
         if ismember(facies, [2, 3, 4, 5])
             G.bufferCells(end+1) = cell;
             extraVolume = faceArea*areaVolumeConstant/eps;
-            oldVolume = G.cells.volumes(cell);
-            G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
+            if opt.adjustPoro
+                rock.poro(cell) = rock.poro(cell) + extraVolume;
+            else
+                G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
+            end
         end
     end
 

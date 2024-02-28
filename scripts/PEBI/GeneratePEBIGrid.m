@@ -8,9 +8,10 @@ function [G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
                  'useMrstPebi', false, ...
                  'earlyReturn', false, ...
                  'removeShortEdges', true);
+    [opt, extra] = merge_options(opt, varargin{:});
     dispif(opt.verbose, 'Generating PEBI grid...\n');
     tstart = tic();
-    [opt, extra] = merge_options(opt, varargin{:});
+    
     geodata = readGeo('scripts/cutcell/geo/spe11a-V2.geo', 'assignextra', true);
 
     % make cells so well are in center
@@ -88,14 +89,14 @@ function [G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
         t = tic();
         sortedAreas = sort(G2D.faces.areas);
         maxdepth = 10;
-        depth = 1;
+        recdepth = 1;
         numfaces = G2D.faces.num;
         biggest = sortedAreas(round(numfaces/5));
         smallest = sortedAreas(1);
         tol = (biggest + smallest)/2;
         stopCriterion = false;
         dontStop = false;
-        while (depth <= maxdepth && ~stopCriterion) || dontStop
+        while (recdepth <= maxdepth && ~stopCriterion) || dontStop
             G2Ds = removeShortEdges(G2D, tol);
             if G2Ds.cells.num < G2D.cells.num
                 %too big tol, removed too much
@@ -106,7 +107,7 @@ function [G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
                 dontStop = false;
             end
             tol = (biggest + smallest)/2;
-            depth = depth + 1;
+            recdepth = recdepth + 1;
         end
         % G2Ds = removeShortEdges(G2D, tol);
         G2Ds = computeGeometry(G2Ds);
@@ -178,10 +179,10 @@ function [G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
     
     if opt.save
         filename = sprintf('cPEBI_%dx%d_%s.mat', nx, ny, opt.SPEcase);
-        dispif(opt.verbose, 'Saving Grid to %s\n', filename)
         if opt.bufferVolumeSlice
             filename = ['buff_', filename];
         end
+        dispif(opt.verbose, 'Saving Grid to %s\n', filename)
         save(fullfile("grid-files/PEBI", filename), "G");
     end
     t = toc(tstart);

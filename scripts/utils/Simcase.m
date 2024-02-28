@@ -14,6 +14,7 @@ classdef Simcase < handle
         usedeck
         pdisc %eks. pressure discretization'hybrid-avgmpfa'
         uwdisc
+        jutul
 
         G
         rock
@@ -52,7 +53,8 @@ classdef Simcase < handle
                          'rockcase'     , [], ...
                          'pdisc'   , '', ...
                          'griddim'      , 3, ...
-                         'uwdisc'      , []);
+                         'uwdisc'      , [], ...
+                         'jutul'       , false);
             opt = merge_options(opt, varargin{:});
 
             propnames = {'SPEcase', 'deckcase', 'gridcase', 'pdisc', 'uwdisc', 'fluidcase', 'tagcase',...
@@ -70,6 +72,7 @@ classdef Simcase < handle
 
             simcase.propnames = propnames;
             simcase.usedeck = opt.usedeck;
+            simcase.jutul = opt.jutul;
             
             %configure folder structure
             configFile = fileread('config.JSON');
@@ -318,27 +321,30 @@ classdef Simcase < handle
             dataOutputDir = simcase.dataOutputDir;
             casename = simcase.casename;
             dirname = fullfile(dataOutputDir, casename); %casename was basename
+            contents = dir(fullfile(dirname, 'multiphase'));
+            
+            % Filter out any hidden files or folders (like . and .. on Unix-based systems)
+            contents = contents(~ismember({contents.name}, {'.', '..'}));
+            
+            % Check if the folder is empty
+            if isempty(contents) || simcase.jutul
+                dirname =[dirname, '_output_mrst'];
+                dataFolder = '';
+            else
+                dataFolder = 'multiphase';
+            end
+
             states = ResultHandler('dataPrefix', 'state', ...
                                    'dataDirectory', dirname, ...
-                                   'dataFolder', 'multiphase');
+                                   'dataFolder', dataFolder);
             wellsols = ResultHandler('dataPrefix', 'wellsols', ...
                                    'dataDirectory', dirname, ...
-                                   'dataFolder', 'multiphase');
+                                   'dataFolder', dataFolder);
             reports = ResultHandler('dataPrefix', 'report', ...
                                    'dataDirectory', dirname, ...
-                                   'dataFolder', 'multiphase');
+                                   'dataFolder', dataFolder);
         end
-        % function dataOutputDir = get.dataOutputDir(simcase) %TODO delete
-        %     dataOutputDir = simcase.dataOutputDir;
-        %     if isempty(dataOutputDir)%should not enter here if config is correct
-        %         if strcmp(simcase.user, 'holme')
-        %             dataOutputDir = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\output';
-        %         elseif strcmp(simcase.user, 'kholme')%on markov
-        %             dataOutputDir = '/home/shomec/k/kholme/Documents/Prosjektoppgave/src/output';
-        %         end
-        %         simcase.dataOutputDir = dataOutputDir;
-        %     end
-        % end
+
         function plotStates(simcase, varargin)
             opt = struct('field', 'rs', ...
                 'pauseTime', 0.04);
@@ -462,7 +468,7 @@ classdef Simcase < handle
         end 
 
         function saveGridRock(simcase, name)
-            folder = 'grid-files/cutcell/gridrock_simready';
+            folder = 'grid-files/gridrock_simready';
             dispif(isempty(simcase.tagcase), 'No tag! Will remove facies 7 cells!\n');
             G = simcase.G;
             rock = simcase.rock;

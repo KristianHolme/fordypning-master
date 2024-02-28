@@ -1,16 +1,16 @@
 clear all
 close all
 %%
-nx = 220;
-ny = 110;
-buffer = true;
-% G1 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer);
-% G2 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'cartesian');
-G3 = GeneratePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'FCFactor', 0.94);
+nx = 819;
+ny = 117;
+buffer = false;
+G1 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer);
+G2 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'cartesian');
+G3 = GeneratePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'FCFactor', 1.0);
 %%
 G1 = load('grid-files/cutcell/horizon_nudge_cutcell_PG_220x110_B.mat').G;
 G2 = load('grid-files/cutcell/cartesian_nudge_cutcell_PG_220x110_B.mat').G;
-G3 = load('grid-files/PEBI/cPEBI_220x110_B.mat').G;
+G3 = load('grid-files/PEBI/buff_cPEBI_220x110_B.mat').G;
 %%
 grids = {G1, G2, G3};
 names = {'HNCP-M', 'CNCP-M', 'cPEBI-M'};

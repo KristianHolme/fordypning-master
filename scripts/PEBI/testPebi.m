@@ -1,69 +1,50 @@
 clear all
 close all
-%%
-geodata = readGeo('scripts/cutcell/geo/spe11a-V2.geo', 'assignextra', true);
-%scale to unit square
-% for ip = 1:numel(geodata.Point)
-%     pt = geodata.Point{ip};
-%     pt(1) = pt(1)/2.8;
-%     pt(2) = pt(2)/1.2;
-%     geodata.Point{ip} = pt;
-% end
-clear faults;
-data = geodata.V;
-for i = 1:size(data,1)
-    fault = data{i,2};
-    points = curveToPoints(abs(fault), geodata);
-    points2D = points(:,1:2);
-    faults{i} = points2D;
+%% Find smallest good resolution
+startny = 60;
+warning('off', 'all');
+for dny = 1:100
+    ny = startny + dny;
+    nx = 7*ny;
+    try
+        GeneratePEBIGrid(nx, ny, 'save', false, 'earlyReturn', true, 'verbose', false);
+        fprintf('Success for %dx%d!\n', nx, ny);
+        break
+    catch
+        dispif(mod(dny,10)==0, 'Failed upto %dx%d\n', nx, ny);
+        continue
+    end
 end
-% %% Extend slices?
-% extendFactor = 0.01;
-% for i = 1:numel(faults)
-%     fault = faults{i};
-%     startdir = fault(2,:) - fault(1,:);
-%     startdir = startdir/norm(startdir);
-%     enddir = fault(end,:) - fault(end-1, :);
-%     enddir = enddir/norm(enddir);
-% 
-%     newstart = fault(1,:) - startdir*extendFactor;
-%     newend = fault(end, :) + enddir*extendFactor;
-%     fault = [newstart;fault;newend];
-%     faults{i} = fault;
-% end
+warning('on', 'all');
+%% Correct wrong depth
+% Set the folder path and file type
+folderPath = 'grid-files/PEBI'; % Replace with your folder path
+fileType = '*.mat'; % Replace with your file type, e.g., '*.txt', '*.csv'
 
-%%
-% T = tiledlayout(1,2);
-%% Composite, find params
-selection = true(numel(faults),1);
-selection([]) = false;
-% selection = internalLines(selection);
-disp('Generating...');
-% nexttile(1);cla;
-% segments = find(selection);
-% for ifl = 1:sum(selection)
-%     faultsmat = cell2mat(faults(segments(ifl))');
-%     plot(faultsmat(:,1), faultsmat(:,2), '-o');hold on;
-%     xlim([0 1]);
-%     ylim([0 1]);
-% end
-pdims = [2.8, 1.2];
-nx = 898;
-ny = 120;
-targetsRes = [nx, ny];
-gs = pdims ./ targetsRes;
+% Get a list of all files in the folder with the specified file type
+files = dir(fullfile(folderPath, fileType));
 
-ts = tic();
-[G, Pts] = compositePebiGrid2D(gs, pdims, 'faceConstraints', faults(selection), ...
-    'FCFactor', 1.0, ...
-    'circleFactor', 0.6, ...
-    'interpolateFC', false);
-G = computeGeometry(G);
-G = TagbyFacies(G, geodata);
-t = toc(ts);
-% nexttile(2);
-newplot;plotCellData(G, G.cells.tag);axis tight equal;
-fprintf('Done! (%0.2fs)\n', t);
+% Loop through each file
+for k = 1:length(files)
+    % Full path to the file
+    fullFileName = fullfile(folderPath, files(k).name);
+    
+    % Load the file
+    % Assuming the file is a .mat file. Modify this part according to your file type.
+    G = load(fullFileName).G;
+
+    backnodes = G.nodes.coords(:,2) > 0;
+    iswrong = any(G.nodes.coords(backnodes, 2) > 1.001);
+    G.nodes.coords(backnodes, 2) = 1;
+
+    G = mcomputeGeometry(G);
+    
+    
+    % Save the file with the same name
+    save(fullFileName, 'G'); % For .mat files
+    % If it's a different file type, use the appropriate save/write function
+end
+
 %% Check Voronoi-property
 N      = G.faces.neighbors;
 intInx = all(N ~= 0, 2);
@@ -102,7 +83,7 @@ cells = setdiff(unique(reshape(G.faces.neighbors(faceselection,:), [], 1)), 0);
 
 
 plotGrid(G, 'facecolor', 'none');hold on;
-h1 = plot(faceCenters(faceselection,1), faceCenters(faceselection,2), 'ro', 'LineWidth', 0.1);
+% h1 = plot(faceCenters(faceselection,1), faceCenters(faceselection,2), 'ro', 'LineWidth', 0.1);
 h2 = plot(FacescOld(faceselection,1), FacescOld(faceselection,2), 'bo', 'LineWidth', 0.1);
 h3 = plot(G.cells.centroids(cells,1), G.cells.centroids(cells,2), 'ko', 'LineWidth', 0.1);
 
@@ -110,19 +91,20 @@ sitePlotData = [];
 for iface = 1:numel(faceselection)
     sitePlotData = [sitePlotData;Pts(G.faces.neighbors(faceselection(iface),:),:);NaN,NaN];
 end
-h4 = plot(sitePlotData(:,1), sitePlotData(:,2), 'm-o', 'LineWidth', 0.1);
+% h4 = plot(sitePlotData(:,1), sitePlotData(:,2), 'm-o', 'LineWidth', 0.1);
 % h4 = plot(NaN, NaN, 'm-o', 'LineWidth', 0.1);
 % set(gca, 'xlim', [1.46, 1.48], 'ylim', [0.675, 0.7])
 axis equal;
-legend([h1, h2, h3, h4], 'Cell2cell-faceplane intersection', 'face centroid', 'cell centroid', 'voronoi sites');
+% legend([h1, h2, h3, h4], 'Cell2cell-faceplane intersection', 'face centroid', 'cell centroid', 'voronoi sites');
+legend([h2, h3], 'face centroid', 'cell centroid');
 %% Finalize
 % 130x62: FCF: 0.53, cF: 0.6
 % 220x110: FCF: 0.94, cF: 0.6
 % 460x64: FCF: 0.56, cF: 0.6
 % 898x120: FCF: 1.0, cF: 0.6, useMrstPebi false
-nx = 100;
-ny = 120;p
-[G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, 'FCFactor', 1.02, 'circleFactor', 0.6, 'save', false, ...
+nx = 130;
+ny = 62;
+[G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, 'FCFactor', 0.53, 'circleFactor', 0.6, 'save', true, ...
     'bufferVolumeSlice', true, ...
     'useMrstPebi', false, ...
     'earlyReturn', false);

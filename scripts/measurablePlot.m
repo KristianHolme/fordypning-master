@@ -119,7 +119,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 %Master B
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
-gridcases = {'horz_ndg_cut_PG_220x110','cPEBI_220x110'};
+gridcases = {'horz_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 pdiscs = {'', 'cc'};
 
 deckcase = 'B_ISO_SMALL';

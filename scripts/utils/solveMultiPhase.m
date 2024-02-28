@@ -29,14 +29,13 @@ function [ok, status, time] = solveMultiPhase(simcase, varargin)
     end
     tic();
     if opt.Jutul
-        projPath = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src';
-        outputfolder = 'C:\Users\holme\OneDrive\Dokumenter\_Studier\Prosjekt\Prosjektoppgave\src\output';
+        projPath = '~/Code/prosjekt-master/jutul';
+        outputfolder = fullfile(simcase.dataOutputDir);
         [ws, states] = simulatePackedProblemJutul(problem, 'name', simcase.casename, 'project', projPath, 'path', outputfolder);
         ok = true;%?
     else
         [ok, status] = simulatePackedProblem(problem, ...
                                   'restartStep', restartStep, ...
-                                  'continueOnError', false, ...
                                   'checkTooMany', checkTooMany, ...
                                   'continueOnError', true);
     end

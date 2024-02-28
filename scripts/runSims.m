@@ -18,7 +18,7 @@ mrstVerbose off
 SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 % gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
-gridcases = {'cPEBI_220x110'};
+gridcases = {'horz_ndg_cut_PG_130x62'};
 % gridcases = {'5tetRef0.4'};
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
@@ -29,21 +29,16 @@ tagcase = '';%normalRock
 
 resetData           = true;
 resetAssembly       = true;
-do.plotStates       = false;
+do.plotStates       = true;
 do.plotFlux         = false;
 do.multiphase       = false;
 do.dispTime         = true;
-useJutulIfPossible  = false;
+Jutul               = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 
 timings = struct();
 for ideck = 1:numel(deckcases)
     deckcase = deckcases{ideck};
-    if strcmp(deckcase, 'IMMISCIBLE') && useJutulIfPossible
-        Jutul = true;
-    else
-        Jutul = false;
-    end
     for igrid = 1:numel(gridcases)
         gridcase = gridcases{igrid};
         for ischedule = 1:numel(schedulecases)
@@ -54,7 +49,7 @@ for ideck = 1:numel(deckcases)
                     uwdisc = uwdiscs{iuwdisc};
                     simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                     'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                    'pdisc', pdisc, 'uwdisc', uwdisc);
+                                    'pdisc', pdisc, 'uwdisc', uwdisc, 'jutul', Jutul);
                     if do.multiphase
                         [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                             'direct_solver', direct_solver, 'prio', disc_prio, 'resetAssembly', resetAssembly);

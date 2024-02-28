@@ -1,16 +1,16 @@
 clear all
 close all
 %%
-nx = 100;
-ny = 50;
-gridcase = sprintf('horz_ndg_cut_PG_%dx%d', nx, ny);
+nx = 2640;
+ny = 380;
+gridcase = sprintf('cPEBI_%dx%d', nx, ny);
 tagcase = 'allcells';
 SPEcase = 'B';
 simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'tagcase', tagcase);
-name = sprintf('horizon-nudge_%dx%d', nx, ny);
+name = sprintf('cPEBI_%dx%d', nx, ny);
 simcase.saveGridRock(name);
 %%
-load(['grid-files/cutcell/gridrock_simready/', name]);
+load(['grid-files/gridrock_simready/', name]);
 
 %% 
 plotToolbar(G, G.cells.volumes);view(10,0)

@@ -160,20 +160,20 @@ function G = setupGrid(simcase, varargin)
         G = StretchGrid(G);
     end
     
-    if strcmp(simcase.SPEcase, 'B') && opt.buffer %add buffervolume
-        if ~isfield(G.cells, 'tag')
-            G.cells.tag = simcase.rock.regions.saturation;
-            if max(simcase.rock.poro) > 1 %poro is adjusted instead of volume
-                opt.buffer = false;
-            end
-        end
-        if opt.buffer
-            if sliceForBuffer
-                [G, simcase] = bufferSlice(G, simcase);
-            end
-            G = addBufferVolume(G, simcase.rock,'verbose', true);
-        end
-    end
+    % if strcmp(simcase.SPEcase, 'B') && opt.buffer %add buffervolume
+    %     if ~isfield(G.cells, 'tag')
+    %         G.cells.tag = simcase.rock.regions.saturation;
+    %         if max(simcase.rock.poro) > 1 %poro is adjusted instead of volume
+    %             opt.buffer = false;
+    %         end
+    %     end
+    %     if opt.buffer
+    %         if sliceForBuffer
+    %             [G, simcase] = bufferSlice(G, simcase);
+    %         end
+    %         G = addBufferVolume(G, simcase.rock,'verbose', true);
+    %     end
+    % end
     if ~checkGrid(G)
         warning("Grid does not pass checkgrid!")
     end
