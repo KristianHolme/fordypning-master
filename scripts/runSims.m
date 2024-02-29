@@ -18,14 +18,18 @@ mrstVerbose off
 SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 % gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
-gridcases = {'horz_ndg_cut_PG_130x62'};
-% gridcases = {'5tetRef0.4'};
+gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
+gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
+% gridcases = {''};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% pdiscs = {''};
+
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
-pdiscs = {''};%, 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';%normalRock
+Jutul               = false;
 
 resetData           = true;
 resetAssembly       = true;
@@ -33,8 +37,8 @@ do.plotStates       = true;
 do.plotFlux         = false;
 do.multiphase       = false;
 do.dispTime         = true;
-Jutul               = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
+mrstVerbose on;
 
 timings = struct();
 for ideck = 1:numel(deckcases)

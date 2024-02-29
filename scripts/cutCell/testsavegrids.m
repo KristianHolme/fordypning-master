@@ -1,8 +1,8 @@
 clear all
 close all
 %%
-nx = 2640;
-ny = 380;
+nx = 819;
+ny = 117;
 gridcase = sprintf('cPEBI_%dx%d', nx, ny);
 tagcase = 'allcells';
 SPEcase = 'B';
@@ -13,4 +13,5 @@ simcase.saveGridRock(name);
 load(['grid-files/gridrock_simready/', name]);
 
 %% 
-plotToolbar(G, G.cells.volumes);view(10,0)
+plotToolbar(G, G);view(10,0);
+axis tight equal;

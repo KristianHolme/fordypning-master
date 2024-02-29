@@ -14,6 +14,9 @@ function data = getSealingCO2(simcase, steps, varargin)
         cealingcells = G.cells.tag == 1;
         [states, ~, ~] = simcase.getSimData;
         typeParts = strsplit('FlowProps.ComponentTotalMass', '.');
+        if simcase.jutul
+            typeParts = {'TotalMasses'};
+        end
         completedata = zeros(maxsteps, 1);
         for it = 1:maxsteps
             fulldata = getfield(states{it}, typeParts{:});
@@ -22,7 +25,11 @@ function data = getSealingCO2(simcase, steps, varargin)
             else
                 adjustmentfactor = 1;
             end
-            completedata(it) = sum(fulldata{2}(cealingcells))*adjustmentfactor;
+            if simcase.jutul
+               completedata(it) = sum(fulldata(cealingcells, 2))*adjustmentfactor;
+            else
+                completedata(it) = sum(fulldata{2}(cealingcells))*adjustmentfactor;
+            end
         end
         save(filename, "completedata")
     end

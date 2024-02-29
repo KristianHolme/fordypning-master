@@ -18,11 +18,13 @@ function data = getComp(simcase, steps, submeasure, box, varargin)
             totalmass = flowprops.ComponentTotalMass{2};
             phasemass = flowprops.ComponentPhaseMass;
             Co2RelPerm = flowprops.RelativePermeability{2};
-            %submeasurable 1
+            %submeasurable 1, mobile
             freeco2 = phasemass{2,2};
             mobileCells = Co2RelPerm > 0;
+            % mobileCells2 = Co2RelPerm > 1e-12;
+            % difference = sum(mobileCells2 ~= mobileCells);
             completedata(it, 1) = sum(freeco2.*(boxWeights .* mobileCells));
-            %submeasure 2
+            %submeasure 2, immobile
             completedata(it, 2) = sum(freeco2.*(boxWeights .* ~mobileCells));
             %submeasure 3
             dissolvedco2 = phasemass{2,1};

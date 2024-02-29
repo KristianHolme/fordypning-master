@@ -37,7 +37,7 @@ ytxt = 'CO2 [kg]';
 folder = './../plotsMaster/bufferCO2';
 filetag = 'bufferCO2';
 %% PoP
-popcell = 2;
+popcell = 1;
 getData = @(simcase, steps)getPoP(simcase, steps, popcell) ./barsa;
 plotTitle = sprintf('Pressure at PoP %d', popcell);
 ytxt = 'Pressure [bar]';
@@ -119,13 +119,20 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 %Master B
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
-gridcases = {'horz_ndg_cut_PG_220x110', 'cPEBI_220x110'};
-pdiscs = {'', 'cc'};
+% gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
+% gridcases = {'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cPEBI_130x62'};
+% gridcases = {'cPEBI_130x62', 'cPEBI_220x110', 'cPEBI_819x117'};
+gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
+% gridcases = {'horz_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_819x117'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% pdiscs = {''};
 
 deckcase = 'B_ISO_SMALL';
 tagcase = '';
+jutul = {false, false, false};
 
 labels = gridcases;
+% labels = {'MRST', 'Jutul'};
 % plotTitle = 'CO2 in sealing units';
 % ytxt = 'CO2 [kg]';
 xtxt = ['time [', unit, ']'];
@@ -144,7 +151,7 @@ for igrid = 1:numel(gridcases)
         pdisc = pdiscs{idisc};
         style = pdiscstyles{idisc};
         simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                       'pdisc', pdisc, 'tagcase', tagcase);
+                       'pdisc', pdisc, 'tagcase', tagcase, 'jutul', jutul{igrid});
         plotStyles{end+1} = struct('Color', color, 'LineStyle', style);
     end
 end
@@ -165,11 +172,12 @@ for i=1:numel(simcases)
     plot(xdata, data(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle);
 end
 % Create dummy plots for legend
+h_grid = [];
 for igrid = 1:numel(gridcases)
     color = gridcasecolors{igrid};
     h_grid(igrid) = plot(NaN,NaN, 'Color', color, 'LineStyle', '-', 'LineWidth', 2); % No data, just style
 end
-
+h_disc = [];
 for idisc = 1:numel(pdiscs)
     style = pdiscstyles{idisc};
     h_disc(idisc) = plot(NaN,NaN, 'Color', 'k', 'LineStyle', style, 'LineWidth', 2); % No data, just style
@@ -177,8 +185,7 @@ end
 
 % Combine handles and labels
 handles = [h_grid, h_disc];
-gridcasesDisp = gridcases;
-gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), gridcases,  'UniformOutput', false);
+gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), labels,  'UniformOutput', false);
 pdiscsDisp = cellfun(@shortDiscName, pdiscs, 'UniformOutput', false); 
 labels = [gridcasesDisp, pdiscsDisp];
 

@@ -38,10 +38,10 @@ function displayName = displayNameGrid(gridcase, specase)
     Bmap('cart_pre_cut_PG_130x62') = 'CPCP-C';
     Bmap('cart_ndg_cut_PG_130x62') = 'CNCP-C';
 
-    Bmap('horz_pre_cut_PG_460x64') = 'HPCP-M';
-    Bmap('horz_ndg_cut_PG_460x64') = 'HNCP-M';
-    Bmap('cart_pre_cut_PG_460x64') = 'CPCP-M';
-    Bmap('cart_ndg_cut_PG_460x64') = 'CNCP-M';
+    Bmap('horz_pre_cut_PG_220x110') = 'HPCP-M';
+    Bmap('horz_ndg_cut_PG_220x110') = 'HNCP-M';
+    Bmap('cart_pre_cut_PG_220x110') = 'CPCP-M';
+    Bmap('cart_ndg_cut_PG_220x110') = 'CNCP-M';
 
     Bmap('horz_pre_cut_PG_819x117') = 'HPCP-F';
     Bmap('horz_ndg_cut_PG_819x117') = 'HNCP-F';

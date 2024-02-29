@@ -44,10 +44,12 @@ end
 % gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
 % gridcases = {'struct420x141'};
 % gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
-gridcases = {'horz_ndg_cut_PG_460x64', 'cart_ndg_cut_PG_460x64', 'cPEBI_460x64'};filename = 'cut-vs-pebi';
+gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};filename = 'cut-vs-pebi';
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% pdiscs = {''};
+jutul = false;
 
 subname = ''; %'', 'uppermiddle', 
 [p1, p2] = getBoxPoints(subname, SPEcase, 3);
@@ -77,7 +79,8 @@ for istep = 1:numel(steps)
             gridcase = gridcases{j};
             simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'tagcase', tagcases{j}, ...
-                                'pdisc', pdisc);
+                                'pdisc', pdisc, ...
+                                'jutul', jutul);
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step
@@ -119,7 +122,7 @@ end
 % gridcase = '5tetRef1-stretch';
 % gridcase = 'cart_pre_cut_PG_130x62';
 % gridcase = 'horz_pre_cut_PG_130x62';
-gridcase = 'cPEBI_460x64';
+gridcase = 'cPEBI_220x110';
 % steps = [360];
 
 
@@ -127,7 +130,7 @@ filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 deckcase = 'B_ISO_SMALL';
 tagcases = {''};%one for each pdisc or that applies to all pdiscs
 

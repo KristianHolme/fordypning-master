@@ -13,9 +13,12 @@ function data = getBufferCO2(simcase, steps, varargin)
         if ~isfield(G, 'bufferCells')
             G = getBufferCells(G);
         end
-        cealingcells = G.bufferCells;
+        bufferCells = G.bufferCells;
         [states, ~, ~] = simcase.getSimData;
         typeParts = strsplit('FlowProps.ComponentTotalMass', '.');
+        if simcase.jutul
+            typeParts = {'TotalMasses'};
+        end
         completedata = zeros(maxsteps, 1);
         for it = 1:maxsteps
             fulldata = getfield(states{it}, typeParts{:});
@@ -24,7 +27,11 @@ function data = getBufferCO2(simcase, steps, varargin)
             else
                 adjustmentfactor = 1;
             end
-            completedata(it) = sum(fulldata{2}(cealingcells))*adjustmentfactor;
+            if simcase.jutul
+               completedata(it) = sum(fulldata(bufferCells, 2))*adjustmentfactor;
+            else
+                completedata(it) = sum(fulldata{2}(bufferCells))*adjustmentfactor;
+            end
         end
         save(filename, "completedata")
     end

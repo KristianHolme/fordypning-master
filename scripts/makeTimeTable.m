@@ -8,14 +8,14 @@ SPEcase = 'B';
 gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 
 deckcase = 'B_ISO_SMALL'; %B_ISO_SMALL
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 tagcase = '';%normalRock
 
 numcols = numel(gridcases);
 numrows = numel(pdiscs);
 data = NaN(numrows, numcols);
 datarelcell = NaN(numrows, numcols);
-decimals = 3;
+decimals = 2;
 
 for ig = 1:numel(gridcases)
     for ip = 1:numel(pdiscs)
@@ -28,7 +28,7 @@ for ig = 1:numel(gridcases)
             wallTime = NaN;
         end
         data(ip, ig) = round(wallTime, decimals);
-        datarelcell(ip, ig) = round(wallTime/simcase.G.cells.num, decimals);
+        datarelcell(ip, ig) = wallTime/simcase.G.cells.num;
     end
 end
 
@@ -37,6 +37,8 @@ T = array2table(data, 'VariableNames', cellfun(@(g)displayNameGrid(g, SPEcase), 
 datarelcell(datarelcell < 1e-6) = NaN;
 mindat = min(datarelcell, [], 'all');
 datarelcell = datarelcell / mindat;
+datarelcell = round(datarelcell, decimals);
 Trelcell = array2table(datarelcell, 'VariableNames', cellfun(@(g)displayNameGrid(g, SPEcase), gridcases, UniformOutput=false), 'RowNames', cellfun(@(p)shortDiscName(p), pdiscs, UniformOutput=false));
 %%
-table2latex(T, './../rapport/Tables/walltimes_cut-vs-pebi.tex');
+table2latex(T, './../rapport/Tables/walltimes_cut-vs-pebi-M.tex');
+table2latex(Trelcell, './../rapport/Tables/walltimes_relcell_cut-vs-pebi-M.tex');
