@@ -16,7 +16,7 @@ else
     steps = 31;
     totsteps = 31;
 end
-resetData = true;
+resetData = false;
 %% P5: Set Sealing-CO2
 getData = @(simcase, steps)getSealingCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in sealing units';
@@ -53,6 +53,7 @@ submeasure = 1;
 filetag = ['box', box, 'mob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P2.2 immobile
+
 plotTitle = 'P2.2 Immobile CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 2;
@@ -120,16 +121,18 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
-% gridcases = {'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cPEBI_130x62'};
+gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'cPEBI_130x62', 'cPEBI_220x110', 'cPEBI_819x117'};
-gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
+% gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
+% gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_819x117'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
 % pdiscs = {''};
 
 deckcase = 'B_ISO_SMALL';
 tagcase = '';
-jutul = {false, false, false};
+jutul = {false, false, false, false, false, false};
 
 labels = gridcases;
 % labels = {'MRST', 'Jutul'};
@@ -139,7 +142,7 @@ xtxt = ['time [', unit, ']'];
 saveplot = true;
 
 %% Load simcases
-gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E"};
+gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6'};
 pdiscstyles = {'-', '--', '-.', ':'};
 simcases = {};
 plotStyles = {};

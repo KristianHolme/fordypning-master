@@ -13,5 +13,5 @@ simcase.saveGridRock(name);
 load(['grid-files/gridrock_simready/', name]);
 
 %% 
-plotToolbar(G, G);view(10,0);
-axis tight equal;
+plotToolbar(G, G);view(10,10);
+axis tight %equal;

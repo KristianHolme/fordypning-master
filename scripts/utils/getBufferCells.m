@@ -1,9 +1,10 @@
 function G = getBufferCells(G)
     %adds a field bufferCells to G
-    assert(isfield(G.cells, 'tag'), "No tag on G.cells!")
-    % if ~isfield(G.cells, 'tag')
-    %     G.cells.tag = rock.regions.saturation;
-    % end
+    % assert(isfield(G.cells, 'tag'), "No tag on G.cells!")
+    if ~isfield(G.cells, 'tag')
+        warning("No fascies tags found, can't tag buffer volumes!" )
+        return
+    end
     
 
     bf = boundaryFaces(G);

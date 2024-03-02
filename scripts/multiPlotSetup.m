@@ -122,7 +122,7 @@ end
 % gridcase = '5tetRef1-stretch';
 % gridcase = 'cart_pre_cut_PG_130x62';
 % gridcase = 'horz_pre_cut_PG_130x62';
-gridcase = 'cPEBI_220x110';
+gridcase = 'horz_ndg_cut_PG_819x117';
 % steps = [360];
 
 

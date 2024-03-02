@@ -470,8 +470,12 @@ classdef Simcase < handle
         function saveGridRock(simcase, name)
             folder = 'grid-files/gridrock_simready';
             dispif(isempty(simcase.tagcase), 'No tag! Will remove facies 7 cells!\n');
+            if ~isfield(simcase.G.cells, 'topCells')
+                simcase = addTopBotTags(simcase);
+            end
             G = simcase.G;
             rock = simcase.rock;
+            
             save(fullfile(folder, name), "rock", "G");
         end
     end

@@ -1,5 +1,5 @@
 function G = setupGrid(simcase, varargin)
-    opt = struct('buffer', true);
+    opt = struct('extra', true);
     opt = merge_options(opt, varargin{:});
     sliceForBuffer = false;
     gridcase = simcase.gridcase;
@@ -103,17 +103,6 @@ function G = setupGrid(simcase, varargin)
         end
         load(matFile);
 
-        if ~isempty(simcase.tagcase) && contains(simcase.tagcase, 'allcells')
-            ;%dont remove cells
-        else
-            [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
-            % active = G.cells.tag ~= 7;
-            G.cells.indexMap = cellmap;
-            G.cells.tag = G.cells.tag(cellmap);
-            [ismem, ind] = ismember(G.bufferCells, cellmap);
-            G.bufferCells = ind(ismem);
-        end
-
         if simcase.griddim == 3
             if strcmp(simcase.SPEcase, 'A')
                 depth = 0.01;
@@ -143,6 +132,8 @@ function G = setupGrid(simcase, varargin)
         if max(G.cells.volumes) > 100800
             return
         end
+        % rock = setupRock(simcase, 'deck', true);
+        G.cells.tag = simcase.deck.REGIONS.SATNUM(simcase.deck.GRID.ACTNUM);
     end
     
     if isfield(G, 'parent') %coarsegrid, this computation maybe superfluous??
@@ -161,6 +152,34 @@ function G = setupGrid(simcase, varargin)
     if stretch
         G = StretchGrid(G);
     end
+
+    if ~isfield(G.cells, 'tag') && opt.extra
+        G.cells.tag = simcase.rock.regions.saturation;
+        if max(simcase.rock.poro) > 1 %poro is adjusted instead of volume
+            opt.buffer = false;
+        end
+    end
+
+    if ~isfield(G, 'bufferCells')
+        G = getBufferCells(G);
+    end
+
+    if ~isfield(G.cells, 'fractionInA')
+        G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
+    end
+
+    if (~isempty(simcase.tagcase) && contains(simcase.tagcase, 'allcells')) 
+        ;%dont remove cells
+    else
+        [G, cellmap] = removeCells(G, G.cells.tag == 7);%try to remove 0 perm cells
+        % active = G.cells.tag ~= 7;
+        G.cells.indexMap = cellmap;
+        G.cells.tag = G.cells.tag(cellmap);
+        [ismem, ind] = ismember(G.bufferCells, cellmap);
+        G.bufferCells = ind(ismem);
+    end
+
+    
     
     % if strcmp(simcase.SPEcase, 'B') && opt.buffer %add buffervolume
     %     if ~isfield(G.cells, 'tag')

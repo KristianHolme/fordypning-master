@@ -1,5 +1,15 @@
-function rock = setupRock(simcase)
-    G = setupGrid(simcase, 'buffer', false); %no circular dependency
+function rock = setupRock(simcase, varargin)
+    opt = struct('deck', false);
+    opt = merge_options(opt, varargin{:});
+
+    if opt.deck
+        rock = initEclipseRock(simcase.deck);
+        active = G.cells.indexMap;
+        rock = compressRock(rock, active);
+    end
+    
+    % G = setupGrid(simcase, 'extra', false); %no circular dependency
+    G = simcase.G;
     gridcase = simcase.gridcase;
     if ~isempty(gridcase) && contains(gridcase, 'skewed3D')
         rock = makeRock(G, 100*milli*darcy, .2);

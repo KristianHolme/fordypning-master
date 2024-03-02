@@ -64,6 +64,8 @@ function [G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
         'interpolateFC', false, ...
         'useMrstPebi', opt.useMrstPebi,...
         'earlyReturn', opt.earlyReturn);
+
+    
     
     if opt.earlyReturn
         fn = sprintf('scripts/PEBI/pointData/points_%dx%d.mat', nx, ny);
@@ -73,6 +75,8 @@ function [G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
         G2Ds = [];
         return
     end
+    
+
     G = computeGeometry(G);
 
     % plotGrid(G);axis tight equal;
@@ -121,6 +125,8 @@ function [G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
     if ~checkGrid(G)
         warning('Grid does not pass checkgrid!');
     end
+
+    G = fixGrid(G);
 
     
 
