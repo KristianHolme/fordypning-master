@@ -15,3 +15,4 @@ spe11-decks
 decksave
 grid-files/*
 scripts/PEBI/pointData/*
+scripts/gridgeneration/ggvenv/*
