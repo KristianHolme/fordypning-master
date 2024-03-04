@@ -12,7 +12,7 @@ G = simcase.G;
 % midbf = false(G.faces.num, 1);
 % midbf((G.faces.centroids(bf,1) > 1) & (G.faces.centroids(bf,1) < 8399) & (G.faces.centroids(bf,2) < 0.99) & (G.faces.centroids(bf,2) > 0.1)...
 %     & (G.faces.centroids(bf,3) < 1199) & (G.faces.centroids(bf,3) > 0.1)) = true;
-% wrongcell = bfc(find(midbf, 1));
+% wrongcell = bfc(find(midbf, 10));
 
 bfnormals = G.faces.normals(bf,:);
 
@@ -20,7 +20,7 @@ bfflat = abs(bfnormals(:,3)) > abs(bfnormals(:,1)) + abs(bfnormals(:,2));
 
 bfflatc = bfc(bfflat);
 
-topcells = bfflatc(G.cells.centroids(bfflatc,3) < 600);
+topcells = bfflatc(G.cells.centroids(bfflatc,3) < 165);
 botcells = bfflatc(G.cells.centroids(bfflatc,3) > 600);
 
 G.cells.topCells = topcells;

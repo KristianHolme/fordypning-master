@@ -18,19 +18,19 @@ function displayName = displayNameGrid(gridcase, specase)
 
     
     Bmap = containers.Map;
-    Bmap('5tetRef0.4') = 'UU-F';%59k
-    Bmap('5tetRef0.8') = 'UU-M';%16k
-    Bmap('5tetRef2') = 'UU-C';%3k
-    Bmap('6tetRef2') = 'U-C';
-    Bmap('6tetRef0.8') = 'U-M';
-    Bmap('6tetRef0.4') = 'U-F';
-    Bmap('struct420x141') = 'S-F';%54k
-    Bmap('semi188x38_0.3') = 'SS-C';
-    Bmap('semi203x72_0.3') = 'SS-M';
-    Bmap('semi263x154_0.3') = 'SS-F';
-    Bmap('5tetRef2-stretch') = 'UU-M-Astretch';
-    Bmap('5tetRef1-stretch') = 'UU-F-Astretch';
-    Bmap('5tetRef6-stretch') = 'UU-C-Astretch';
+    % Bmap('5tetRef0.4') = 'UU-F';%59k
+    % Bmap('5tetRef0.8') = 'UU-M';%16k
+    % Bmap('5tetRef2') = 'UU-C';%3k
+    % Bmap('6tetRef2') = 'U-C';
+    % Bmap('6tetRef0.8') = 'U-M';
+    % Bmap('6tetRef0.4') = 'U-F';
+    % Bmap('struct420x141') = 'S-F';%54k
+    % Bmap('semi188x38_0.3') = 'SS-C';
+    % Bmap('semi203x72_0.3') = 'SS-M';
+    % Bmap('semi263x154_0.3') = 'SS-F';
+    % Bmap('5tetRef2-stretch') = 'UU-M-Astretch';
+    % Bmap('5tetRef1-stretch') = 'UU-F-Astretch';
+    % Bmap('5tetRef6-stretch') = 'UU-C-Astretch';
     %Master:
     Bmap('') = 'deck(Cp)';
     Bmap('horz_pre_cut_PG_130x62') = 'HPCP-C';
@@ -51,11 +51,13 @@ function displayName = displayNameGrid(gridcase, specase)
     Bmap('horz_pre_cut_130x62') = 'HPC-S';
     Bmap('cart_pre_cut_130x62') = 'CPC-S';
     Bmap('struct130x62') = 'C-S';
+    Bmap('struct819x117') = 'C-F';
 
     Bmap('cPEBI_130x62') = 'cPEBI-C';
     Bmap('cPEBI_220x110') = 'cPEBI-M';
     Bmap('cPEBI_819x117') = 'cPEBI-F';
 
+    Bmap('5tetRef0.31') = 'U-F';
 
     if strcmp(lower(specase), 'a')
         if isKey(Amap, gridcase)

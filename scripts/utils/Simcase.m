@@ -393,15 +393,65 @@ classdef Simcase < handle
 
         end
 
-        function [err, errvect, fwerr] = computeStaticIndicator(simcase)
-            tbls = setupTables(simcase.G);
-            [err, errvect, fwerr] = computeOrthError(simcase.G, simcase.rock, tbls);
+        function [err, errvect, fwerr] = computeStaticIndicator(simcase, varargin)
+            opt = struct('resetData', false);
+            opt = merge_options(opt, varargin{:});
+            filename = fullfile(simcase.dataOutputDir, simcase.casename, 'staticIndicator.mat');
+            if isfile(filename) && ~opt.resetData
+                disp('Loading computed data...')
+                load(filename);
+            else
+                tbls = setupTables(simcase.G);
+                [err, errvect, fwerr] = computeOrthError(simcase.G, simcase.rock, tbls);
+                save(filename, 'err', 'errvect', 'fwerr');
+            end
+        end
+        function errstruct = errStats(simcase, varargin)
+            opt = struct('errType', 'err');
+            [opt, extra] = merge_options(opt, varargin{:});
+            [err, ~, fwerr] = simcase.computeStaticIndicator(extra{:});
+            errstruct = struct('err', err, 'fwerr', fwerr);
+            types = {'err', 'fwerr'};
+            for et = 1:2
+                type = types{et};
+                errstruct.([type, 'Stats']).max = max(errstruct.(type));
+                errstruct.([type, 'Stats']).mean = mean(errstruct.(type));
+                errstruct.([type, 'Stats']).median = median(errstruct.(type));
+                errstruct.([type, 'Stats']).norm = norm(errstruct.(type));
+                errstruct.([type, 'Stats']).sum = sum(errstruct.(type));
+            end
         end
 
-        function plotErr(simcase)
-            [err, ~, fwerr] = simcase.computeStaticIndicator;
-            errstruct = struct('err', err, 'fwerr', fwerr);
-            plotToolbar(simcase.G, errstruct);view(0,0);
+        function plotErr(simcase, varargin)
+            opt = struct('showStats', true, ...
+                'errType', 'err', ...
+                'plotHistogram', false);
+            [opt, extra] = merge_options(opt, varargin{:});
+            errstruct = simcase.errStats(extra{:});
+           
+            if opt.showStats
+                fprintf('Grid: %s. Errortype: %s\n', simcase.gridcase, opt.errType);
+                fprintf('\tMax error: %0.2e\n', errstruct.([opt.errType, 'Stats']).max);
+                fprintf('\tMean error: %0.2e\n', errstruct.([opt.errType, 'Stats']).mean);
+                fprintf('\tMedian error: %0.2e\n', errstruct.([opt.errType, 'Stats']).median);
+                fprintf('\tNorm of error: %0.2e\n', errstruct.([opt.errType, 'Stats']).norm);
+                fprintf('\tSum of error: %0.2e\n', errstruct.([opt.errType, 'Stats']).sum);
+            end
+            if opt.plotHistogram
+                figure
+                histogram(log10(errstruct.(opt.errType)));
+                title(sprintf('%s', displayNameGrid(simcase.gridcase, simcase.SPEcase)));
+                xlabel(sprintf('Log10(%s)', opt.errType));
+                grid;
+                ylabel('Frequency');
+            end
+
+            figure
+            plotToolbar(simcase.G, errstruct);
+            title(displayNameGrid(simcase.gridcase, simcase.SPEcase));
+            view(0,0);
+            axis tight;
+            colorbar;
         end
 
         function [well1Index, well2Index] = getinjcells(simcase)
@@ -475,6 +525,7 @@ classdef Simcase < handle
             end
             G = simcase.G;
             rock = simcase.rock;
+            G.bufferMult = rock.bufferMult;
             
             save(fullfile(folder, name), "rock", "G");
         end

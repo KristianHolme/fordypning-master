@@ -11,9 +11,9 @@ foreach ($nx in $nxValues) {
         Write-Host current dir $dir
         $savedir = Join-Path (Split-Path -Parent $dir) -ChildPath "..\grid-files"
         Write-Host savedir: $savedir
-        Set-Location .\..\..\11thSPE-CSP\geometries\
+        Set-Location .\..\..\..\11thSPE-CSP\geometries\
         Write-Host using CSP scripts...
-        python make_structured_mesh.py --variant B -nx $nx -ny $ny
+        python3 make_structured_mesh.py --variant B -nx $nx -ny $ny
         
         # Define filenames
         $mshFileName = "spe11b_structured.msh"
@@ -24,7 +24,7 @@ foreach ($nx in $nxValues) {
         gmsh $mshFileName -save -o $newFileName
         
         # Move file to grid-files folder
-        Move-Item -Path $newFileName -Destination $savedir
+        Move-Item -Path $newFileName -Destination $savedir -force
         Set-Location $dir
     }
 }

@@ -2,10 +2,10 @@ clear all;
 close all;
 %% Setup data
 % getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'flux';
-getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs';
+% getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs';
 % getData = @(states, step, G) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation';
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';
-% getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap='';
+getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap='';
 %% SPEcase, steps
 SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
@@ -44,11 +44,12 @@ end
 % gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
 % gridcases = {'struct420x141'};
 % gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
-gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};filename = 'cut-vs-pebi';
+% gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};filename = 'cut-vs-pebi-M';
+gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};filename = 'cut-vs-pebi-F';
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-% pdiscs = {''};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {''};
 jutul = false;
 
 subname = ''; %'', 'uppermiddle', 
@@ -122,7 +123,8 @@ end
 % gridcase = '5tetRef1-stretch';
 % gridcase = 'cart_pre_cut_PG_130x62';
 % gridcase = 'horz_pre_cut_PG_130x62';
-gridcase = 'horz_ndg_cut_PG_819x117';
+% gridcase = 'horz_ndg_cut_PG_819x117';
+gridcase = 'cPEBI_819x117';
 % steps = [360];
 
 
@@ -130,7 +132,7 @@ filename =[SPEcase, '_', dataname, '_diff_', gridcase];
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 deckcase = 'B_ISO_SMALL';
 tagcases = {''};%one for each pdisc or that applies to all pdiscs
 

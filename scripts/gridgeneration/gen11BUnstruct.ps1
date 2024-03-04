@@ -5,7 +5,7 @@ param (
 
 $dir = Get-Location
 $savedir = Join-Path (Split-Path -Parent $dir) -ChildPath "..\grid-files"
-Set-Location .\..\..\11thSPE-CSP\geometries\
+Set-Location .\..\..\..\11thSPE-CSP\geometries\
 foreach ($refinement_factor in $refs) {
     $str_refinement_factor = [System.String]::Format([System.Globalization.CultureInfo]::InvariantCulture, "{0}", $refinement_factor)
     $safe_refinement_factor = $str_refinement_factor -replace '\.', '_'

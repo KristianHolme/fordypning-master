@@ -125,7 +125,7 @@ function [G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, varargin)
     if ~checkGrid(G)
         warning('Grid does not pass checkgrid!');
     end
-
+    %Try to fix wrong internal boundary faces
     G = fixGrid(G);
 
     

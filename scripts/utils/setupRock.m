@@ -15,7 +15,7 @@ function rock = setupRock(simcase, varargin)
         rock = makeRock(G, 100*milli*darcy, .2);
         return
     end
-    if strcmp(simcase.tagcase, 'normalRock')
+    if contains(simcase.tagcase, 'normalRock')
         rock = initEclipseRock(simcase.deck);
         active = G.cells.indexMap;
         rock = compressRock(rock, active);
@@ -41,7 +41,11 @@ function rock = setupRock(simcase, varargin)
             rock.perm(:, end+1) = faciesPerm(G.cells.tag)*0.1;
             rock.poro   = faciesPoro(G.cells.tag);
             rock.regions.saturation = G.cells.tag;
-            [~, rock] = addBufferVolume(G, rock);
+            if contains(simcase.tagcase, 'bufferMult')
+                [~, rock] = addBufferVolume(G, rock, 'bufferMult', true);
+            else
+                [~, rock] = addBufferVolume(G, rock);
+            end
         end
     elseif simcase.usedeck
         rock = initEclipseRock(simcase.deck);

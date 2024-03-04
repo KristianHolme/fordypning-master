@@ -19,8 +19,10 @@ SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 % gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
+% gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
-gridcases = {'cPEBI_220x110'};
+% gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.3'};
+gridcases = {''};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 pdiscs = {''};
 
@@ -33,9 +35,10 @@ Jutul               = false;
 
 resetData           = true;
 resetAssembly       = true;
-do.plotStates       = true;
+do.plotStates       = false;
 do.plotFlux         = false;
 do.multiphase       = false;
+do.plotOrthErr      = false;
 do.dispTime         = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 mrstVerbose on;
@@ -72,6 +75,9 @@ for ideck = 1:numel(deckcases)
                     end
                     if do.plotFlux
                         simcase.plotFlux();
+                    end
+                    if do.plotOrthErr
+                        simcase.plotErr('plotHistogram', true, 'resetData', true);
                     end
                 end
             end

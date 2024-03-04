@@ -34,27 +34,27 @@ function timings = runSims2(server)
         warning('off', 'all');
     case 3
         SPEcase = 'B';
-        gridcases = {'horz_ndg_cut_PG_819x117'};
+        gridcases = {'struct819x117'};
         schedulecases = {''};
-        pdiscs = {''};
-        uwdiscs = {''};
-        deckcases = {'B_ISO_SMALL'};
-        tagcase = '';
-        resetData = true;
-        resetAssembly = true;
-        Jutul = true;
-        direct_solver = false;
-        warning('off', 'all');
-    case 4
-        SPEcase = 'B';
-        gridcases = {'5tetRef0.3'};
-        schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_SMALL'};
         tagcase = '';
         resetData = false;
-        resetAssembly = true;
+        resetAssembly = false;
+        Jutul = false;
+        direct_solver = false;
+        warning('off', 'all');
+    case 4
+        SPEcase = 'B';
+        gridcases = {'5tetRef0.31'};
+        schedulecases = {''};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+        uwdiscs = {''};
+        deckcases = {'B_ISO_SMALL'};
+        tagcase = '';
+        resetData = false;
+        resetAssembly = false;
         Jutul = false;
         direct_solver = false;
         warning('off', 'all');

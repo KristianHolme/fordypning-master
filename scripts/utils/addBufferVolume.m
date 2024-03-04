@@ -5,7 +5,8 @@ function [G, rock] = addBufferVolume(G, rock, varargin)
     opt = struct('eps', 1, ...
         'verbose', false, ...
         'slice', false,...%slice not used
-        'adjustPoro', true);
+        'adjustPoro', true, ...
+        'bufferMult', false);
     opt = merge_options(opt, varargin{:});
 
     assert(isfield(G.cells, 'tag'), "No tag on G.cells!")
@@ -23,6 +24,10 @@ function [G, rock] = addBufferVolume(G, rock, varargin)
 
     G = getBufferCells(G);
     % G.bufferCells = [];
+    bufferMult = ones(numel(G.bufferCells),1);
+    if opt.bufferMult
+        disp('Adding multiplier, leaving rock normal')
+    end
 
     for ic = 1:numel(G.bufferCells)
         cell = G.bufferCells(ic);
@@ -34,27 +39,16 @@ function [G, rock] = addBufferVolume(G, rock, varargin)
         if ismember(facies, [2, 3, 4, 5])
             G.bufferCells(end+1) = cell;
             extraVolume = faceArea*areaVolumeConstant/eps;
-            if opt.adjustPoro
+
+            if opt.bufferMult
+                opt.adjustPoro = false;
+                bufferMult(ic) = 1 + extraVolume/rock.poro(cell);
+            elseif opt.adjustPoro
                 rock.poro(cell) = rock.poro(cell) + extraVolume;
             else
                 G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
             end
         end
     end
-
-    % for iface = 1:numel(bf)
-    %     face = bf(iface);
-    %     faceArea = G.faces.areas(face);
-    %     if (abs(G.faces.centroids(face, 1)) < tol) || (abs(G.faces.centroids(face, 1) - xlimit) < tol)
-    %         cell = max(G.faces.neighbors(face, :));
-    %         facies = G.cells.tag(cell);
-    %         assert(facies ~=6 )
-    %         if ismember(facies, [2, 3, 4, 5])
-    %             G.bufferCells(end+1) = cell;
-    %             extraVolume = faceArea*areaVolumeConstant/eps;
-    %             oldVolume = G.cells.volumes(cell);
-    %             G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
-    %         end
-    %     end
-    % end
+    rock.bufferMult = bufferMult;
 end

@@ -160,6 +160,10 @@ function G = setupGrid(simcase, varargin)
         end
     end
 
+    if sliceForBuffer
+        [G, simcase] = bufferSlice(G, simcase);
+    end
+
     if ~isfield(G, 'bufferCells')
         G = getBufferCells(G);
     end
@@ -177,6 +181,7 @@ function G = setupGrid(simcase, varargin)
         G.cells.tag = G.cells.tag(cellmap);
         [ismem, ind] = ismember(G.bufferCells, cellmap);
         G.bufferCells = ind(ismem);
+        G.bufferFaces = [];
     end
 
     
