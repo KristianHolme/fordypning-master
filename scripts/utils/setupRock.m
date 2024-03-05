@@ -24,7 +24,7 @@ function rock = setupRock(simcase, varargin)
         % geodata = StretchGeo(RotateGrid(geodata));
         % G = TagbyFacies(G, geodata, 'vertIx', 3); %tagging grid in xz plane
     end
-    if isfield(G.cells, 'tag')
+    if isfield(G.cells, 'tag') && ~contains(simcase.tagcase, 'deckrock')
         if strcmp(simcase.SPEcase, 'A')
             faciesPerm      = [4e-11; 5e-10;1e-9; 2.0e-9; 4e-9; 1e-8; 0.0];
             faciesPoro      = [0.44; 0.43; 0.44; 0.45; 0.43; 0.46; 0.0];
@@ -49,7 +49,7 @@ function rock = setupRock(simcase, varargin)
         end
     elseif simcase.usedeck
         rock = initEclipseRock(simcase.deck);
-        active = G.cells.indexMap;
+        active = simcase.deck.GRID.ACTNUM;
         rock = compressRock(rock, active);
     end
 end

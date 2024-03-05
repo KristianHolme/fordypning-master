@@ -8,37 +8,37 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {'cPEBI_220x110', 'cPEBI_819x117'};
+        gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cPEBI_130x62'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
-        deckcases = {'B_ISO_SMALL'};
+        deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
-        resetAssembly = true;
+        resetAssembly = false;
         Jutul = false;
         direct_solver = false;
         warning('off', 'all');
     case 2
         SPEcase = 'B';
-        gridcases = {'cPEBI_220x110'};
+        gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
-        deckcases = {'B_ISO_SMALL'};
+        deckcases = {'B_ISO_C'};
         tagcase = '';
-        resetData = true;
-        resetAssembly = true;
-        Jutul = true;
+        resetData = false;
+        resetAssembly = false;
+        Jutul = false;
         direct_solver = false;
         warning('off', 'all');
     case 3
         SPEcase = 'B';
-        gridcases = {'struct819x117'};
+        gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
         schedulecases = {''};
         pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
-        deckcases = {'B_ISO_SMALL'};
+        deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
         resetAssembly = false;
@@ -51,7 +51,7 @@ function timings = runSims2(server)
         schedulecases = {''};
         pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
-        deckcases = {'B_ISO_SMALL'};
+        deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
         resetAssembly = false;

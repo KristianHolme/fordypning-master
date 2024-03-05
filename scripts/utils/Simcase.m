@@ -218,9 +218,12 @@ classdef Simcase < handle
             deck = simcase.deck;
             if isempty(deck)
                 deckname = simcase.deckcase;
-                if contains(deckname, 'B_ISO_SMALL')
+                if contains(deckname, 'B_ISO_C')
                     deckname = 'CSP11B_DISGAS.DATA';
                     deckFolder = fullfile(simcase.spe11decksDir, 'csp11b', 'isothermal', '130_62');
+                elseif contains(deckname, 'B_ISO_F')
+                    deckname = 'CSP11B_DISGAS.DATA';
+                    deckFolder = fullfile(simcase.spe11decksDir, 'csp11b', 'isothermal', '898_120');
 
                 elseif contains(deckname, 'pyopm')%pyopm deck
                     deckname = replace(deckname, 'pyopm-', '');

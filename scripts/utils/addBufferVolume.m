@@ -29,6 +29,10 @@ function [G, rock] = addBufferVolume(G, rock, varargin)
         disp('Adding multiplier, leaving rock normal')
     end
 
+    % multiplier = 1 + extraVolume; %opt 1
+    % multiplier = 1 + extraVolume/rock.poro(cell); %opt 2
+    multiplier = 1 + areaVolumeConstant/eps; %opt 3
+
     for ic = 1:numel(G.bufferCells)
         cell = G.bufferCells(ic);
         % cell = max(G.faces.neighbors(face, :));
@@ -38,15 +42,21 @@ function [G, rock] = addBufferVolume(G, rock, varargin)
         faceArea = G.faces.areas(face);
         if ismember(facies, [2, 3, 4, 5])
             G.bufferCells(end+1) = cell;
-            extraVolume = faceArea*areaVolumeConstant/eps;
+            % extraVolume = faceArea*areaVolumeConstant/eps;
+           
+            bufferMult(ic) = multiplier; 
 
             if opt.bufferMult
                 opt.adjustPoro = false;
-                bufferMult(ic) = 1 + extraVolume/rock.poro(cell);
+                % bufferMult(ic) = 1 + extraVolume; %opt 1
+                % bufferMult(ic) = 1 + extraVolume/rock.poro(cell); %opt 2
+                bufferMult(ic) = 1 + areaVolumeConstant/eps; %opt 3
+
             elseif opt.adjustPoro
-                rock.poro(cell) = rock.poro(cell) + extraVolume;
+                % rock.poro(cell) = rock.poro(cell) + extraVolume;
+                rock.poro(cell) = rock.poro(cell)*multiplier;
             else
-                G.cells.volumes(cell) = G.cells.volumes(cell)*(1 + extraVolume/rock.poro(cell));%the specified volume is pore volume?
+                G.cells.volumes(cell) = G.cells.volumes(cell)*multiplier;
             end
         end
     end

@@ -16,7 +16,7 @@ else
     steps = 31;
     totsteps = 31;
 end
-resetData = false;
+resetData = true;
 %% P5: Set Sealing-CO2
 getData = @(simcase, steps)getSealingCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in sealing units';
@@ -37,8 +37,8 @@ ytxt = 'CO2 [kg]';
 folder = './../plotsMaster/bufferCO2';
 filetag = 'bufferCO2';
 %% PoP
-popcell = 1;
-getData = @(simcase, steps)getPoP(simcase, steps, popcell) ./barsa;
+popcell = 2;
+getData = @(simcase, steps)getPoP(simcase, steps, popcell, 'resetData', resetData) ./barsa;
 plotTitle = sprintf('Pressure at PoP %d', popcell);
 ytxt = 'Pressure [bar]';
 folder = './../plotsMaster/PoP';
@@ -121,18 +121,20 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
-gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'cPEBI_130x62', 'cPEBI_220x110', 'cPEBI_819x117'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_819x117'};
+gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62', 'cPEBI_130x62'};
+% gridcases = {'', 'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
-% pdiscs = {''};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
+pdiscs = {''};
 
 deckcase = 'B_ISO_SMALL';
 tagcase = '';
-jutul = {false, false, false, false, false, false};
+jutul = {true, true, true, true, true};
 
 labels = gridcases;
 % labels = {'MRST', 'Jutul'};

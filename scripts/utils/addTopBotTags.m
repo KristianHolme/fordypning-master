@@ -9,10 +9,10 @@ G = simcase.G;
 
 [bf, bfc] = boundaryFaces(G);
 
-% midbf = false(G.faces.num, 1);
-% midbf((G.faces.centroids(bf,1) > 1) & (G.faces.centroids(bf,1) < 8399) & (G.faces.centroids(bf,2) < 0.99) & (G.faces.centroids(bf,2) > 0.1)...
-%     & (G.faces.centroids(bf,3) < 1199) & (G.faces.centroids(bf,3) > 0.1)) = true;
-% wrongcell = bfc(find(midbf, 10));
+%midbf = false(G.faces.num, 1);
+%midbf((G.faces.centroids(bf,1) > 1) & (G.faces.centroids(bf,1) < 8399) & (G.faces.centroids(bf,2) < 0.99) & (G.faces.centroids(bf,2) > 0.1)...
+%    & (G.faces.centroids(bf,3) < 1199) & (G.faces.centroids(bf,3) > 0.1)) = true;
+%wrongcell = bfc(find(midbf, 10));
 
 bfnormals = G.faces.normals(bf,:);
 

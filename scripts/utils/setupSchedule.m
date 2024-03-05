@@ -62,6 +62,12 @@ function schedule = setupSchedule(simcase, varargin)
         else
             model = simcase.model;
             schedule = convertDeckScheduleToMRST(model, deck);
+            [cell1, cell2] = simcase.getinjcells;
+            %change cells in schedule, and keep everything else
+            for i = 1:numel(schedule.control)
+                schedule.control(i).W(1).cells = cell1;
+                schedule.control(i).W(2).cells = cell2;
+            end
         end
         G = simcase.G;
         bf = boundaryFaces(G);

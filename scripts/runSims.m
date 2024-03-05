@@ -5,7 +5,7 @@ close all
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
     deckformat gmsh nfvm mpfa msrsb coarsegrid jutul
-mrstVerbose off
+mrstVerbose on
 %%
 % deckcases = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV', 'pyopm-Finer', 'pyopm-Coarser'};
 
@@ -17,7 +17,7 @@ mrstVerbose off
 
 SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
-% gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
+% gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62', 'cPEBI_130x62'};
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
@@ -27,22 +27,23 @@ gridcases = {''};
 pdiscs = {''};
 
 schedulecases = {''};%defaults to schedule from deck
-deckcases = {'B_ISO_SMALL'}; %B_ISO_SMALL
+deckcases = {'B_ISO_C'}; %B_ISO_C
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = '';%normalRock
-Jutul               = false;
+tagcase = '';%normalRock, bufferMult, deckrock
+Jutul               = true;
 
 resetData           = true;
 resetAssembly       = true;
-do.plotStates       = false;
+do.plotStates       = true;
 do.plotFlux         = false;
-do.multiphase       = false;
+do.multiphase       = true;
 do.plotOrthErr      = false;
-do.dispTime         = true;
+do.dispTime         = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 mrstVerbose on;
 
+Totvols = {};
 timings = struct();
 for ideck = 1:numel(deckcases)
     deckcase = deckcases{ideck};
@@ -79,9 +80,14 @@ for ideck = 1:numel(deckcases)
                     if do.plotOrthErr
                         simcase.plotErr('plotHistogram', true, 'resetData', true);
                     end
+                    % Totvols{end+1,1} =  simcase.gridcase;
+                    % Totvols{end,2} =  sum(simcase.G.cells.volumes(simcase.G.bufferCells) .* simcase.rock.bufferMult);
                 end
             end
         end
     end
 end
-disp(timings)
+if do.dispTime
+    disp(timings);
+end
+disp(Totvols);
