@@ -13,10 +13,10 @@ if strcmp(SPEcase, 'A')
     totsteps = 720;
 else 
     xscaling = SPEyear;unit='y';
-    steps = 31;
-    totsteps = 31;
+    steps = 301;
+    totsteps = 301;
 end
-resetData = true;
+resetData = false;
 %% P5: Set Sealing-CO2
 getData = @(simcase, steps)getSealingCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in sealing units';
@@ -29,7 +29,7 @@ plotTitle='Fluxes over region bdrys (sum(abs(flux)))';
 ytxt = 'sum(abs(Fluxes))';
 folder = './../plotsMaster/faultfluxes';
 filetag = 'faultflux';
-steps = 22;
+steps = 202;
 %% P6: Set Buffer CO2
 getData = @(simcase, steps)getBufferCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in buffer volumes';
@@ -37,7 +37,7 @@ ytxt = 'CO2 [kg]';
 folder = './../plotsMaster/bufferCO2';
 filetag = 'bufferCO2';
 %% PoP
-popcell = 2;
+popcell = 1;
 getData = @(simcase, steps)getPoP(simcase, steps, popcell, 'resetData', resetData) ./barsa;
 plotTitle = sprintf('Pressure at PoP %d', popcell);
 ytxt = 'Pressure [bar]';
@@ -126,17 +126,20 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_819x117'};
-gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62', 'cPEBI_130x62'};
+% gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
+% gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
+gridcases = {'', '', ''};
 % gridcases = {'', 'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
 pdiscs = {''};
 
-deckcase = 'B_ISO_SMALL';
-tagcase = '';
-jutul = {true, true, true, true, true};
+deckcase = 'B_ISO_C';
+tagcases = {'deckrock', 'divporo', ''};
+jutul = {true, true, true};
 
 labels = gridcases;
+% labels = {'spe11-decks', '~pyopmspe11', 'correct(?)'};
 % labels = {'MRST', 'Jutul'};
 % plotTitle = 'CO2 in sealing units';
 % ytxt = 'CO2 [kg]';
@@ -149,6 +152,9 @@ pdiscstyles = {'-', '--', '-.', ':'};
 simcases = {};
 plotStyles = {};
 numcases = numel(gridcases) * numel(pdiscs);
+if numel(tagcases) == 1
+    tagcases = repmat(tagcases, 1, numel(gridcases));
+end
 for igrid = 1:numel(gridcases)
     gridcase = gridcases{igrid};
     color = gridcasecolors{igrid};
@@ -156,7 +162,7 @@ for igrid = 1:numel(gridcases)
         pdisc = pdiscs{idisc};
         style = pdiscstyles{idisc};
         simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                       'pdisc', pdisc, 'tagcase', tagcase, 'jutul', jutul{igrid});
+                       'pdisc', pdisc, 'tagcase', tagcases{igrid}, 'jutul', jutul{igrid});
         plotStyles{end+1} = struct('Color', color, 'LineStyle', style);
     end
 end

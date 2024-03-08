@@ -161,7 +161,10 @@ function G = setupGrid(simcase, varargin)
     end
 
     if sliceForBuffer
-        [G, simcase] = bufferSlice(G, simcase);
+        if min(G.cells.centroids(:,1)) > 0.6
+            [G, simcase] = bufferSlice(G, simcase);
+            save(matFile, 'G');
+        end
     end
 
     if ~isfield(G, 'bufferCells')
