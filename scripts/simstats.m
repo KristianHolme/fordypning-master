@@ -25,10 +25,16 @@ mrstVerbose off
 
 SPEcase = 'B';
 % gridcases = {'horz_ndg_cut_PG_460x64', 'cart_ndg_cut_PG_460x64', 'cPEBI_460x64'};
-gridcases = {'horz_ndg_cut_PG_220x110','cPEBI_220x110'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
+% gridcases = {'5tetRef0.31'};
+% gridcases = {'cPEBI_819x117'};
+% gridcases = {'horz_ndg_cut_PG_819x117'};
+% gridcases = {'cart_ndg_cut_PG_819x117'};
+gridcases = {'struct819x117'};
+% gridcases = {'horz_ndg_cut_PG_220x110','cPEBI_220x110'};
 
 % SPEcase = 'A'; gridcases = {'5tetRef10'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 
 tagcase = '';
 set(groot, 'defaultLineLineWidth', 2);
@@ -58,7 +64,7 @@ for igrid = 1:numel(gridcases)
     gridcase = gridcases{igrid};
     for idisc = 1:numel(pdiscs)
         pdisc = pdiscs{idisc};
-        simcase = Simcase('SPEcase', SPEcase, 'deckcase', 'B_ISO_SMALL', 'usedeck', true, 'gridcase', gridcase, ...
+        simcase = Simcase('SPEcase', SPEcase, 'deckcase', 'B_ISO_C', 'usedeck', true, 'gridcase', gridcase, ...
                        'pdisc', pdisc, 'tagcase', tagcase);
         simcases{end+1} = simcase;
     end
@@ -107,9 +113,10 @@ grid();
 title([displayNameGrid(simcase.gridcase, SPEcase)]);
 xlabel('Control step');
 ylabel('Cumulative nonlinear iterations');
-legend(labels, Location="southeast");
+legend(labels, Location="best");
 hold off;
 exportgraphics(gcf, ['./../plotsMaster/iterations/', SPEcase, '_', displayNameGrid(simcase.gridcase, SPEcase), '.pdf'])
+exportgraphics(gcf, ['./../plotsMaster/iterations/', SPEcase, '_', displayNameGrid(simcase.gridcase, SPEcase), '.png'])
 
 
 

@@ -19,7 +19,8 @@ function data = getBufferCO2(simcase, steps, varargin)
         if simcase.jutul
             typeParts = {'TotalMasses'};
         end
-        completedata = zeros(maxsteps, 1);
+        completedata = NaN(maxsteps, 1);
+        maxsteps = min(maxsteps, numelData(states));
         for it = 1:maxsteps
             fulldata = getfield(states{it}, typeParts{:});
             if G.griddim == 2

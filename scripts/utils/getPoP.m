@@ -13,9 +13,13 @@ function data = getPoP(simcase, steps, popcell, varargin)
         popcells = simcase.getPoPCells;
         P1 = simcase.getCellData('pressure', 'cellIx', popcells(1));
         P2 = simcase.getCellData('pressure', 'cellIx', popcells(2));
-        completedata = {P1, P2};
-        
-        save(filename, "completedata")
+        completedata = NaN(maxsteps, 2);
+        completedata(1:numel(P1),1) = P1;
+        completedata(1:numel(P2),2) = P2;
+        % completedata = {P1, P2};
+        if numel(P1)==maxsteps && numel(P2)==maxsteps
+            save(filename, "completedata")
+        end
     end
-    data = completedata{popcell}(1:steps);
+    data = completedata(1:steps, popcell);
 end

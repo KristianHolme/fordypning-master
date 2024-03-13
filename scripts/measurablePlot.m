@@ -128,17 +128,20 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'horz_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
-gridcases = {'', '', ''};
-% gridcases = {'', 'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
-% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% gridcases = {'', '', ''};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
+% gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
+pdiscs = {'','hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
-pdiscs = {''};
+% pdiscs = {''};
 
 deckcase = 'B_ISO_C';
-tagcases = {'deckrock', 'divporo', ''};
-jutul = {true, true, true};
+tagcases = {''};
+jutul = {false};
 
 labels = gridcases;
+% labels = {'Triangles new', 'Triangles old', 'cartesian'};
+labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
 % labels = {'spe11-decks', '~pyopmspe11', 'correct(?)'};
 % labels = {'MRST', 'Jutul'};
 % plotTitle = 'CO2 in sealing units';
@@ -154,6 +157,9 @@ plotStyles = {};
 numcases = numel(gridcases) * numel(pdiscs);
 if numel(tagcases) == 1
     tagcases = repmat(tagcases, 1, numel(gridcases));
+end
+if numel(jutul) == 1
+    jutul = repmat(jutul, 1, numel(gridcases));
 end
 for igrid = 1:numel(gridcases)
     gridcase = gridcases{igrid};
@@ -177,7 +183,7 @@ for isim = 1:numel(simcases)
 end
 %% Plot
 set(groot, 'defaultLineLineWidth', 2);
-figure('Position', [1600+100,200, 800, 600])
+figure('Position', [100,200, 800, 600])
 hold on;
 for i=1:numel(simcases)
     plot(xdata, data(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle);

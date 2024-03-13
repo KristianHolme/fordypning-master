@@ -8,10 +8,10 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cPEBI_130x62'};
+        gridcases = {''};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-        uwdiscs = {''};
+        pdiscs = {''};
+        uwdiscs = {'WENO'};
         deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
@@ -34,20 +34,20 @@ function timings = runSims2(server)
         warning('off', 'all');
     case 3
         SPEcase = 'B';
-        gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
+        gridcases = {'5tetRef0.31'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+        pdiscs = {''};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
-        tagcase = '';
+        tagcase = 'newBC';
         resetData = false;
         resetAssembly = false;
-        Jutul = false;
+        Jutul = true;
         direct_solver = false;
         warning('off', 'all');
     case 4
         SPEcase = 'B';
-        gridcases = {'cPEBI_220x110', 'struct220x110', '5tetRef0.31', 'cPEBI_819x117', 'struct819x117'};
+        gridcases = {'5tetRef0.31', 'struct819x117', 'cPEBI_220x110', 'struct220x110'};
         schedulecases = {''};
         pdiscs = {'hybrid-mpfa'};
         uwdiscs = {''};

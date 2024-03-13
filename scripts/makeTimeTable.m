@@ -5,11 +5,12 @@ SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cPEBI_130x62'};
-gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
-% gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
+% gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
+gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};filename = 'walltimes_cut-vs-pebi-F';
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};filename = 'walltimes_struct-cut-pebi-tri-F';
 
 deckcase = 'B_ISO_C'; %B_ISO_SMALL
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 tagcase = '';%normalRock
 
 numcols = numel(gridcases);
@@ -38,6 +39,8 @@ T = array2table(data, 'VariableNames', cellfun(@(g)displayNameGrid(g, SPEcase), 
 datarelcell(datarelcell < 1e-6) = NaN;
 mindat = min(datarelcell, [], 'all');
 datarelcell = datarelcell / mindat;
+%%
+
 datarelcell = round(datarelcell, decimals);
 celldatarelcell = cell(numel(pdiscs), numel(gridcases));
 for ig = 1:numel(gridcases)
@@ -48,5 +51,10 @@ for ig = 1:numel(gridcases)
 end
 Trelcell = array2table(celldatarelcell, 'VariableNames', cellfun(@(g)displayNameGrid(g, SPEcase), gridcases, UniformOutput=false), 'RowNames', cellfun(@(p)shortDiscName(p), pdiscs, UniformOutput=false));
 %%
-table2latex(T, './../rapport/Tables/walltimes_cut-vs-pebi-M.tex');
-table2latex(Trelcell, './../rapport/Tables/walltimes_relcell_cut-vs-pebi-M.tex');
+table2latex(T, fullfile('./../rapport/Tables', [filename, '.tex']));
+table2latex(Trelcell, fullfile('./../rapport/Tables', [filename,'_relcell','.tex']));
+%%
+savename =[filename, '.xlsx'];
+writetable(Trelcell,filename, 'WriteRowNames', true)
+%%
+exportapp(fig, './../plotsMaster/Tables/walltimes-pres.pdf')

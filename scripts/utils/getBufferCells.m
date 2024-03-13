@@ -28,4 +28,21 @@ function G = getBufferCells(G)
             G.bufferFaces(end+1) = face; 
         end
     end
+    %Fix for triangle grids?
+    sideCells = find(G.cells.centroids(:,1) > 8399 | G.cells.centroids(:,1) < 1);
+    newBdryCells = setdiff(sideCells, G.bufferCells);
+    dispif(~isempty(newBdryCells), 'Adding bdryCells without bdryFaces!\n');
+    for inc = 1:numel(newBdryCells)
+        cell = newBdryCells(inc);
+        faces = gridCellFaces(G, cell);
+        normals = G.faces.normals(faces, :);
+        areas = G.faces.areas(faces);
+        invector = [1;0;0]*sign(4200-G.cells.centroids(cell,1));
+        [I, ~, ~] = find((G.faces.neighbors(faces,:) == cell)');
+        insideFace = find(abs((normals.*sign(1.5 - I) * invector) - areas) < 1e-6);
+        assert(numel(insideFace)==1, 'More than one bdryface detected!');
+
+        G.bufferCells(end+1) = cell;
+        G.bufferFaces(end+1) = insideFace;
+    end
 end

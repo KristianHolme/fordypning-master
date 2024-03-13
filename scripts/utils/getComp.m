@@ -9,10 +9,12 @@ function data = getComp(simcase, steps, submeasure, box, varargin)
     else
         disp("calculating data...")
         maxsteps = numel(simcase.schedule.step.val);
+        completedata = NaN(maxsteps, 4);
         boxWeights = getCSPBoxWeights(simcase.G, box, simcase.SPEcase);
         [states, ~, ~] = simcase.getSimData;
+        maxsteps = min(maxsteps, numelData(states));
 
-        completedata = zeros(maxsteps, 4);
+        
         for it = 1:maxsteps
             flowprops = states{it}.FlowProps;
             totalmass = flowprops.ComponentTotalMass{2};
@@ -22,7 +24,7 @@ function data = getComp(simcase, steps, submeasure, box, varargin)
             freeco2 = phasemass{2,2};
             mobileCells = Co2RelPerm > 0;
             % mobileCells2 = Co2RelPerm > 1e-12;
-            % difference = sum(mobileCells2 ~= mobileCells);
+            % difference = sum(mobileCells2 ~= mobileCells);    
             completedata(it, 1) = sum(freeco2.*(boxWeights .* mobileCells));
             %submeasure 2, immobile
             completedata(it, 2) = sum(freeco2.*(boxWeights .* ~mobileCells));
@@ -39,7 +41,9 @@ function data = getComp(simcase, steps, submeasure, box, varargin)
             adjustmentfactor = 1;
         end
         completedata = completedata*adjustmentfactor;
-        save(filename, "completedata")
+        if maxsteps == numel(simcase.schedule.step.val);
+            save(filename, "completedata")
+        end
     end
     data = completedata(1:steps, submeasure);
 end

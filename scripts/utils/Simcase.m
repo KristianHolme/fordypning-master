@@ -324,18 +324,16 @@ classdef Simcase < handle
             dataOutputDir = simcase.dataOutputDir;
             casename = simcase.casename;
             dirname = fullfile(dataOutputDir, casename); %casename was basename
-            contents = dir(fullfile(dirname, 'multiphase'));
-            
-            % Filter out any hidden files or folders (like . and .. on Unix-based systems)
-            contents = contents(~ismember({contents.name}, {'.', '..'}));
-            
-            % Check if the folder is empty
-            if isempty(contents) || simcase.jutul
+            if simcase.jutul
                 dirname =[dirname, '_output_mrst'];
                 dataFolder = '';
             else
                 dataFolder = 'multiphase';
             end
+            contents = dir(fullfile(dirname, dataFolder));
+            
+            % Filter out any hidden files or folders (like . and .. on Unix-based systems)
+            contents = contents(~ismember({contents.name}, {'.', '..'}));
 
             states = ResultHandler('dataPrefix', 'state', ...
                                    'dataDirectory', dirname, ...
@@ -497,7 +495,7 @@ classdef Simcase < handle
             end
             [states, ~, ~] = simcase.getSimData;
             steps = min(steps, numelData(states));
-            data = zeros(steps, 1);
+            data = NaN(steps, 1);
             if strcmp(type, 'pressure') || strcmp(type, 'rs') %variable has single value
                 for it = 1:steps
                     fulldata = getfield(states{it}, typeParts{:});

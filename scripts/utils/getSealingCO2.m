@@ -7,8 +7,9 @@ function data = getSealingCO2(simcase, steps, varargin)
     filename      = fullfile(dirName, 'sealingCO2');
     if exist([filename, '.mat'], "file") && ~opt.resetData
         disp("loading data...")
-        load(filename)
+        completedata = load(filename).completedata;
     else
+        savedata = true;
         disp("calculating data...")
         maxsteps = numel(simcase.schedule.step.val);
         cealingcells = G.cells.tag == 1;
@@ -17,8 +18,15 @@ function data = getSealingCO2(simcase, steps, varargin)
         if simcase.jutul
             typeParts = {'TotalMasses'};
         end
-        completedata = zeros(maxsteps, 1);
+        
+        numStates = numelData(states);
+        if numStates < maxsteps
+            savedata = false;
+        end
+        completedata = NaN(maxsteps, 1);
+        maxsteps = min(maxsteps, numStates);
         for it = 1:maxsteps
+            %break if we dont have any data
             fulldata = getfield(states{it}, typeParts{:});
             if G.griddim == 2
                 adjustmentfactor = 1e-2;%2D case is like 1m deep, need to divide by 100 to get comparable (actual) mass
@@ -31,7 +39,11 @@ function data = getSealingCO2(simcase, steps, varargin)
                 completedata(it) = sum(fulldata{2}(cealingcells))*adjustmentfactor;
             end
         end
-        save(filename, "completedata")
+        if savedata
+            save(filename, "completedata");
+        end
+        % data = completedata(1:min(steps, numStates));
     end
     data = completedata(1:steps);
+    
 end

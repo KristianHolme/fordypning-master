@@ -44,11 +44,12 @@ end
 % gridcases = {'5tetRef10', '5tetRef10'};filename = 'IMMISCIBLE_NTPFA';
 % gridcases = {'struct420x141'};
 % gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
-gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};filename = 'cut-vs-pebi-M';
-% gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};filename = 'cut-vs-pebi-F';
+% gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};filename = 'cut-vs-pebi-M';
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};filename = 'C-Cut-P-T_F';
+% gridcases = { 'cPEBI_819x117', '5tetRef0.31'};filename = 'pebi-unstruct-F';
 
-% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {''};
 jutul = false;
 
@@ -123,24 +124,31 @@ end
 % gridcase = '5tetRef1-stretch';
 % gridcase = 'cart_pre_cut_PG_130x62';
 % gridcase = 'horz_pre_cut_PG_130x62';
-gridcase = 'horz_ndg_cut_PG_819x117';
-% gridcase = 'cPEBI_220x110';
+gridcase = 'cart_ndg_cut_PG_819x117';
+% gridcase = 'struct819x117';
+% gridcase = 'cPEBI_819x117';
+% gridcase = '5tetRef0.31';
+% gridcase = '';
 % steps = [360];
 
 
-filename =[SPEcase, '_', dataname, '_diff_', gridcase];
-% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {''};
+uwdiscs = {''};
 deckcase = 'B_ISO_C';
-tagcases = {''};%one for each pdisc or that applies to all pdiscs
+tagcases = {''};%one for each pdisc or one that applies to all pdiscs
 
 
 saveplot = true;
 bigGrid = false;
+filename =[SPEcase, '_', dataname, '_diff_', gridcase, strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
 savefolder = ['./../plotsMaster/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
-numDiscs = numel(pdiscs);
+numpdiscs = numel(pdiscs);
+numuwdiscs = numel(uwdiscs);
+numDiscs = numpdiscs*numuwdiscs;
 %% Load data diff
 if numel(tagcases) ~= numDiscs
     tagcases = repmat(tagcases, 1, numDiscs);
@@ -150,10 +158,11 @@ for istep = 1:numel(steps)
     step = steps(istep);
     for i = 1:numDiscs
         for j = i:numDiscs
-            pdisc = pdiscs{j};
+            pdisc = pdiscs{ceil(j/numuwdiscs)};
+            uwdisc = uwdiscs{customMod(j, numuwdiscs)};
             simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'tagcase', tagcases{j}, ...
-                                'pdisc', pdisc);
+                                'pdisc', pdisc, 'uwdisc', uwdisc);
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step
@@ -162,11 +171,16 @@ for istep = 1:numel(steps)
                 data{i, j, istep}.statedata = statedata;
                 data{i, j, istep}.injcells = [inj1, inj2];
                 data{i, j, istep}.G = G;
+                name = shortDiscName(pdisc);
+                if ~isempty(uwdisc)
+                    name = [name, ', ', uwdisc];
+                end
                 if i == 1
-                    data{i, j, istep}.title = shortDiscName(pdisc);
+
+                    data{i, j, istep}.title = name;
                 end
                 if j == i
-                    data{i, j, istep}.ylabel = shortDiscName(pdisc);
+                    data{i, j, istep}.ylabel = name;
                 end
                 %make diff
                 if j ~= i
@@ -176,7 +190,7 @@ for istep = 1:numel(steps)
         end
     end
     %add grid for plot in corner
-    plotsize = numel(pdiscs);
+    plotsize = numDiscs;
     switch plotsize
         case 5
             gridplotheight = 2;

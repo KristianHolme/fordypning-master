@@ -38,8 +38,8 @@ function [G, rock] = addBufferVolume(G, rock, varargin)
         % cell = max(G.faces.neighbors(face, :));
         facies = G.cells.tag(cell);
         assert(facies ~=6 );
-        face = G.bufferFaces(ic);
-        faceArea = G.faces.areas(face);
+        % face = G.bufferFaces(ic);
+        % faceArea = G.faces.areas(face);
         if ismember(facies, [2, 3, 4, 5])
             G.bufferCells(end+1) = cell;
             % extraVolume = faceArea*areaVolumeConstant/eps;

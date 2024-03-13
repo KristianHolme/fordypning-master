@@ -21,30 +21,32 @@ SPEcase = 'B';
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
-% gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.3'};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
+% gridcases = {'cPEBI_819x117', '5tetRef0.31'};
+% gridcases = {'5tetRef0.31'};
 gridcases = {''};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 pdiscs = {''};
 
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_C'}; %B_ISO_C
-uwdiscs = {''};
+uwdiscs = {'', 'WENO'};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';%normalRock, bufferMult, deckrock
-Jutul               = true;
+Jutul               = false;
 
 resetData           = true;
 resetAssembly       = true;
-do.plotStates       = true;
+do.plotStates       = false;
 do.plotFlux         = false;
-do.multiphase       = true;
+do.multiphase       = false;
 do.plotOrthErr      = false;
-do.dispTime         = false;
+do.dispTime         = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 mrstVerbose on;
 
-Totvols = {};
+stats = {};
 timings = struct();
 for ideck = 1:numel(deckcases)
     deckcase = deckcases{ideck};
@@ -81,8 +83,9 @@ for ideck = 1:numel(deckcases)
                     if do.plotOrthErr
                         simcase.plotErr('plotHistogram', true, 'resetData', true);
                     end
-                    % Totvols{end+1,1} =  simcase.gridcase;
-                    % Totvols{end,2} =  sum(simcase.G.cells.volumes(simcase.G.bufferCells) .* simcase.rock.bufferMult);
+                    stats{end+1,1} =  simcase.gridcase;
+                    % stats{end,2} =  sum(simcase.G.cells.volumes(simcase.G.bufferCells) .* simcase.rock.poro(simcase.G.bufferCells));
+                    stats{end,2} = simcase.G.cells.num;
                 end
             end
         end
@@ -91,4 +94,4 @@ end
 if do.dispTime
     disp(timings);
 end
-disp(Totvols);
+disp(stats);
