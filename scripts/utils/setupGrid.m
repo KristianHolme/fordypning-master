@@ -121,19 +121,26 @@ function G = setupGrid(simcase, varargin)
         
         
     elseif ~isempty(simcase.deck) %use deck if present
-        G = initEclipseGrid(simcase.deck, 'usemex', true);
-        G = computeGeometry(G);
-        G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
-        % G.cells.indexMap = 1:G.cells.num;
-        if ~isfield(G.faces, 'tag')
-            G.faces.tag = zeros(G.faces.num, 1);
+        matFile = fullfile('grid-files/deck', [simcase.deckcase,'.mat']);
+        if isfile(matFile)
+            load(matFile);
+        else
+            G = initEclipseGrid(simcase.deck, 'usemex', true);
+            G = computeGeometry(G);
+            G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
+            % G.cells.indexMap = 1:G.cells.num;
+            matFile = fullfile('grid-files/deck', [simcase.deckcase,'.mat']);
+            if ~isfield(G.faces, 'tag')
+                G.faces.tag = zeros(G.faces.num, 1);
+            end
+            
+            if max(G.cells.volumes) > 100800
+                return
+            end
+            % rock = setupRock(simcase, 'deck', true);
+            G.cells.tag = simcase.deck.REGIONS.SATNUM(simcase.deck.GRID.ACTNUM);
+            save(matFile, 'G');
         end
-        
-        if max(G.cells.volumes) > 100800
-            return
-        end
-        % rock = setupRock(simcase, 'deck', true);
-        G.cells.tag = simcase.deck.REGIONS.SATNUM(simcase.deck.GRID.ACTNUM);
     end
     
     if isfield(G, 'parent') %coarsegrid, this computation maybe superfluous??
@@ -174,6 +181,25 @@ function G = setupGrid(simcase, varargin)
     if ~isfield(G.cells, 'fractionInA')
         G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
     end
+    
+    testing = false;
+    if (~isfield(G, 'reductionMatrix') ) || testing %still testing TODO remove
+        switch simcase.SPEcase
+            case 'B'
+                redNx = 840;
+                redNy = 120;
+            case 'A'
+                redNx = 280;
+                redNy = 120;
+        end
+        [M, Gr, report] = getReductionMatrix(G, redNx, redNy);
+        G.reductionMatrix = M;
+        G.reductionGrid = Gr;
+        G.reductionReport = report;
+        save(matFile, 'G');
+    end
+
+
 
     if (~isempty(simcase.tagcase) && contains(simcase.tagcase, 'allcells')) 
         ;%dont remove cells

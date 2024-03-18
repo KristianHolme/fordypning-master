@@ -102,12 +102,13 @@ legend([h2, h3], 'face centroid', 'cell centroid');
 % 220x110: FCF: 0.94, cF: 0.6
 % 460x64: FCF: 0.56, cF: 0.6
 % 898x120: FCF: 1.0, cF: 0.6, useMrstPebi false
-nx = 819;
-ny = 117;
-[G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, 'FCFactor', 1.0, 'circleFactor', 0.6, 'save', true, ...
-    'bufferVolumeSlice', true, ...
+nx = 400;
+ny = 400;
+[G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, 'FCFactor', 1.0, 'circleFactor', 0.6, 'save', false, ...
+    'bufferVolumeSlice', false, ...
     'useMrstPebi', false, ...
-    'earlyReturn', false);
+    'earlyReturn', false, ...
+    'aspect', 'square');
 %% Comparison w/o edgeremoval
 
 grids = {G2D, G2Ds};
@@ -165,9 +166,9 @@ smallestFaceNbs = unique(reshape(smallestFaceNbs, [], 1));
 % plotGrid(Gf, 'facecolor', 'none');
 plotGrid(Gf, smallestFaceNbs)
 %%
-plotGrid(G, 'facecolor', 'none');axis tight equal;
-plotGrid(G, G.cells.wellCells);view(0,0);
-% plotCellData(G2Ds, G2Ds.cells.tag);axis tight equal;
+% plotGrid(G, 'facecolor', 'none');axis tight equal;
+% plotGrid(G, G.cells.wellCells);view(0,0);
+plotCellData(G2Ds, G2Ds.cells.tag);axis tight equal;
 %%
 histogram(log10(G.cells.volumes));
 title(sprintf('PEBI grid (%dx%d)', nx, ny));

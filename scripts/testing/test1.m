@@ -4,6 +4,37 @@ close all
 mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
+%% test Reduction Matrix
+gridcase = 'horz_ndg_cut_PG_220x110';
+% gridcase = 'struct819x117';
+
+simcase = Simcase('gridcase', gridcase, 'deckcase', 'B_ISO_C', 'usedeck', true, 'SPEcase', 'B');
+G = simcase.G;
+
+% nx = 280;
+% ny = 120;
+% [M, Gr, report] = getReductionMatrix(G, nx, ny);
+Gr = G.reductionGrid;
+M = G.reductionMatrix;
+
+states = simcase.getSimData;
+state = states{301};
+
+fulldata = zeros(size(M, 2), 1);
+% data = state.FlowProps.ComponentTotalMass{2};
+data = state.rs;
+fulldata(G.cells.indexMap) = data;
+plotToolbar(G, data);view(0,0);
+title('Original');
+axis tight;
+
+
+reducedData = M*fulldata;
+figure
+plotToolbar(Gr, reducedData);view(0,0);
+title('Interpolated to cartesian 840x120');
+axis tight;
+
 %%
 [inj1, inj2] = simcase.getinjcells;
 [states, ~, ~] = simcase.getSimData;

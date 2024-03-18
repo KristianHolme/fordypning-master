@@ -7,7 +7,8 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
                  'save', true, ...
                  'useMrstPebi', false, ...
                  'earlyReturn', false, ...
-                 'removeShortEdges', true);
+                 'removeShortEdges', true, ...
+                 'aspect', 'true');
     [opt, extra] = merge_options(opt, varargin{:});
     dispif(opt.verbose, 'Generating PEBI grid...\n');
     tstart = tic();
@@ -17,27 +18,43 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     % make cells so well are in center
     [~, ~, well1Coords, well2Coords] = getinjcells(computeGeometry(cartGrid([1,1], [2.8, 1.2])), opt.SPEcase);
 
-    switch opt.SPEcase
-        case 'B'
-            matPoints = vertcat(geodata.Point{:});
-            matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
-            matPoints(:,2) = matPoints(:,2)/8.4;
-            geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
-            pdims = [1*meter, 1.2/8.4*meter];
-            depth = 1*meter;
+    if strcmp(opt.aspect, 'true')
+        switch opt.SPEcase
+            case 'B'
+                matPoints = vertcat(geodata.Point{:});
+                matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
+                matPoints(:,2) = matPoints(:,2)/8.4;
+                geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
+                pdims = [1*meter, 1.2/8.4*meter];
+                depth = 1*meter;
+    
+                well1Coords = well1Coords/8400;
+                well2Coords = well2Coords/8400;
+            case 'A'
+                matPoints = vertcat(geodata.Point{:});
+                matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
+                matPoints(:,2) = matPoints(:,2)/2.8;
+                geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
+                pdims = [1*meter, 1.2/2.8*meter];
+                depth = 1*centi*meter;
+    
+                well1Coords = well1Coords/2.8;
+                well2Coords = well2Coords/2.8;
+        end
+    elseif strcmp(opt.aspect, 'square')
+        matPoints = vertcat(geodata.Point{:});
+        maxx = max(matPoints(:,1));
+        maxz = max(matPoints(:,2));
+        matPoints(:,1) = matPoints(:,1)/maxx; 
+        matPoints(:,2) = matPoints(:,2)/maxz;
+        geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
+        pdims = [1*meter, 1*meter];
+        if strcmp(opt.SPEcase, 'A'),depth = 1*centi*meter;else, depth = 1*meter;end
 
-            well1Coords = well1Coords/8400;
-            well2Coords = well2Coords/8400;
-        case 'A'
-            matPoints = vertcat(geodata.Point{:});
-            matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
-            matPoints(:,2) = matPoints(:,2)/2.8;
-            geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
-            pdims = [1*meter, 1.2/2.8*meter];
-            depth = 1*centi*meter;
-
-            well1Coords = well1Coords/2.8;
-            well2Coords = well2Coords/2.8;
+        well1Coords(1) = well1Coords(1)/8400;
+        well1Coords(2) = well1Coords(2)/1200;
+        well2Coords(1) = well2Coords(1)/8400;
+        well2Coords(2) = well2Coords(2)/1200;
     end
 
     data = geodata.V;
@@ -134,23 +151,33 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     G.faces.tag = zeros(G.faces.num, 1);
     k = G.nodes.coords(:,3) > 0;
     G.nodes.coords(k,3) = depth;
-
-    switch opt.SPEcase
-        case 'B'
-            matPoints = vertcat(geodata.Point{:});
-            matPoints(:,1) = matPoints(:,1)*8400; %correct size
-            matPoints(:,2) = matPoints(:,2)*8400;
-            geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
-            G.nodes.coords(:,1) = G.nodes.coords(:,1)*8400;
-            G.nodes.coords(:,2) = G.nodes.coords(:,2)*8400;
-        case 'A'
-            matPoints = vertcat(geodata.Point{:});
-            matPoints(:,1) = matPoints(:,1)*2.8; %correct size
-            matPoints(:,2) = matPoints(:,2)*2.8;
-            geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
-            G.nodes.coords(:,1) = G.nodes.coords(:,1)*2.8;
-            G.nodes.coords(:,2) = G.nodes.coords(:,2)*2.8;            
+    switch opt.aspect
+        case 'true'
+            switch opt.SPEcase
+                case 'B'
+                    xscale = 8400;%correct size
+                    zscale = 8400;
+                case 'A' 
+                    xscale = 2.8;
+                    zscale = 2.8;
+            end
+        case 'square'
+            switch opt.SPEcase
+                case 'B'
+                    xscale = 8400;
+                    zscale = 1200;
+                case 'A' 
+                    xscale = 2.8;
+                    zscale = 1.2;
+            end
     end
+    matPoints = vertcat(geodata.Point{:});
+    matPoints(:,1) = matPoints(:,1)*xscale;
+    matPoints(:,2) = matPoints(:,2)*zscale;
+    geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
+    G.nodes.coords(:,1) = G.nodes.coords(:,1)*xscale;
+    G.nodes.coords(:,2) = G.nodes.coords(:,2)*zscale; %z is coord 2 since grid is not yet rotated
+
     
     if mrstSettings('get', 'useMEX')
         G = mcomputeGeometry(G);

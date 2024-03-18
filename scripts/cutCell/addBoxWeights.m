@@ -49,7 +49,7 @@ function volumeFractions = getVolumeFractions(G, p1, p2, vertIx)
     %----
     warning('off', 'MATLAB:polyshape:repairedBySimplify');
     for icand = 1:numCand
-        globcelIx = allcandidates(icand);
+        % globcelIx = allcandidates(icand);
         candNodes = n(pos(icand):pos(icand+1)-1);
         candidatenodes{icand} = candNodes;
         %Only want nodes in y=0
@@ -66,7 +66,7 @@ function volumeFractions = getVolumeFractions(G, p1, p2, vertIx)
         elseif ~any(candNodesIn)
             volumeFractions(allcandidates(icand)) = 0;
         else
-            coordslooped = [candNodeCoords;candNodeCoords(1,:)];
+            % coordslooped = [candNodeCoords;candNodeCoords(1,:)];
             candshape = polyshape(candNodeCoords(:,1), candNodeCoords(:,vertIx));
             origarea = area(candshape);
             polyInBox = intersect(candshape, boxpoly);

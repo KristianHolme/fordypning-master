@@ -2,10 +2,11 @@ clear all;
 close all;
 %% Setup data
 % getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'flux';
-getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs';
+% getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs';
 % getData = @(states, step, G) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation';
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';
 % getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap='';
+getData = @(states, step, G, simcase) states{step}.FlowProps.ComponentTotalMass{2};cmap='';dataname='totMass';
 %% SPEcase, steps
 SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
@@ -124,10 +125,10 @@ end
 % gridcase = '5tetRef1-stretch';
 % gridcase = 'cart_pre_cut_PG_130x62';
 % gridcase = 'horz_pre_cut_PG_130x62';
-gridcase = 'cart_ndg_cut_PG_819x117';
+% gridcase = 'cart_ndg_cut_PG_819x117';
 % gridcase = 'struct819x117';
 % gridcase = 'cPEBI_819x117';
-% gridcase = '5tetRef0.31';
+gridcase = '5tetRef0.31';
 % gridcase = '';
 % steps = [360];
 
@@ -137,6 +138,7 @@ pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {''};
+% uwdiscs = {'', 'WENO'};
 uwdiscs = {''};
 deckcase = 'B_ISO_C';
 tagcases = {''};%one for each pdisc or one that applies to all pdiscs
@@ -229,6 +231,65 @@ for istep = 1:numel(steps)
         'saveplot', saveplot, 'cmap', 'Seismic', 'equal', strcmp(SPEcase, 'A'), ...
         'diff', true, 'bigGrid', bigGrid);   
 end
+%% Setup Grid diff plot
+gridcases = {'struct220x110', 'struct819x117'};
+
+pdiscs = {'', 'hybrid-ntpfa'};
+
+tagcases = {''};
+
+deckcase = 'B_ISO_C';
+saveplot = false;
+filename =[SPEcase, '_', dataname, '_diff_', strjoin(cellfun(@(g)displayNameGrid(g, SPEcase) , gridcases, UniformOutput=false), '_'), strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
+savefolder = ['./../plotsMaster/gridDiff/', SPEcase];
+numpdiscs = numel(pdiscs);
+numuwdiscs = numel(uwdiscs);
+numDiscs = numpdiscs*numuwdiscs;
+%% Load Grid diff
+if numel(tagcases) ~= numDiscs
+    tagcases = repmat(tagcases, 1, numDiscs);
+end
+data = cell(numDiscs, numDiscs, numel(steps));
+for istep = 1:numel(steps)
+    step = steps(istep);
+    for ig = 1:numGrids
+        gridcase = gridcases{ig};
+        for i = 1:numDiscs
+            for j = i:numDiscs
+                pdisc = pdiscs{ceil(j/numuwdiscs)};
+                uwdisc = uwdiscs{customMod(j, numuwdiscs)};
+                simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                                    'tagcase', tagcases{j}, ...
+                                    'pdisc', pdisc, 'uwdisc', uwdisc);
+                [states, ~, ~] = simcase.getSimData;
+                G = simcase.G;
+                if numelData(states) >= step
+                    statedata = getData(states,step, G);
+                    [inj1, inj2] = simcase.getinjcells;
+                    data{i, j, istep}.statedata = statedata;
+                    data{i, j, istep}.injcells = [inj1, inj2];
+                    data{i, j, istep}.G = G;
+                    name = shortDiscName(pdisc);
+                    if ~isempty(uwdisc)
+                        name = [name, ', ', uwdisc];
+                    end
+                    if i == 1
+    
+                        data{i, j, istep}.title = name;
+                    end
+                    if j == i
+                        data{i, j, istep}.ylabel = name;
+                    end
+                    %make diff
+                    if j ~= i
+                        data{i, j, istep}.statedata = data{i, i, istep}.statedata - data{i, j, istep}.statedata;
+                    end
+                end
+            end
+        end
+    end
+end
+
 %% Setup time evolution plot
 % gridcases = {'5tetRef0.4', '5tetRef1-stretch'}; pdiscs = {'hybrid-mpfa', 'hybrid-mpfa'};%one for each grid
 % gridcases = {'5tetRef10', '5tetRef10'}; pdiscs = {'', 'hybrid-ntpfa'};
