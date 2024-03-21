@@ -14,8 +14,28 @@ function G = setupGrid(simcase, varargin)
         
     if ~isempty(gridcase)
         gridFolder = fullfile(simcase.repoDir, 'grid-files');
-        
-        if contains(gridcase, 'tetRef')
+        if contains(gridcase, 'gq')%gq_pb0.19
+            ref = gridcase(6:end); %0.19
+            ref = replace(ref, '.', '_');
+            alg = gridcase(4:5);
+
+            mFile = fullfile(gridFolder, [prefix, '_ref', ref, '_alg', alg, '.m']);
+            matFile = fullfile(gridFolder, [prefix, '_ref', ref, '_alg', alg, '_grid.mat']);
+
+            if ~isfile(matFile) && ~isfile(mFile)
+                error([matFile,' and ', mFile, ' not found']);
+            elseif ~isfile(matFile) && isfile(mFile)
+                G = gmshToMRST(mFile);
+                configFile = fileread('config.JSON');
+                config = jsondecode(configFile);
+                fn = fullfile(config.repo_folder, '..', '11thSPE-CSP','geometries', 'spe11a.geo');
+                geodata = readGeo(fn, 'assignExtra', true); 
+                G = TagbyFacies(G, geodata, 'scale', [3000, 1000, 1]);
+                save(matFile, "G")
+            end
+            sliceForBuffer = true;
+
+        elseif contains(gridcase, 'tetRef')
             meshAlg = str2double(gridcase(1));
             pattern = 'Ref(-?\d+\.?\d*)';
             match = regexp(gridcase, pattern, 'tokens');

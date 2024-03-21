@@ -29,7 +29,7 @@ plotTitle='Fluxes over region bdrys (sum(abs(flux)))';
 ytxt = 'sum(abs(Fluxes))';
 folder = './../plotsMaster/faultfluxes';
 filetag = 'faultflux';
-steps = 202;
+steps = 206;
 %% P6: Set Buffer CO2
 getData = @(simcase, steps)getBufferCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in buffer volumes';
@@ -37,7 +37,7 @@ ytxt = 'CO2 [kg]';
 folder = './../plotsMaster/bufferCO2';
 filetag = 'bufferCO2';
 %% PoP
-popcell = 1;
+popcell = 2;
 getData = @(simcase, steps)getPoP(simcase, steps, popcell, 'resetData', resetData) ./barsa;
 plotTitle = sprintf('Pressure at PoP %d', popcell);
 ytxt = 'Pressure [bar]';
@@ -129,9 +129,10 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 % gridcases = {'', '', ''};
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
-pdiscs = {'','hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
 % pdiscs = {''};
 
@@ -139,19 +140,27 @@ deckcase = 'B_ISO_C';
 tagcases = {''};
 jutul = {false};
 
-labels = gridcases;
+gridlabels = gridcases;
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
-labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
+% labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
 % labels = {'spe11-decks', '~pyopmspe11', 'correct(?)'};
 % labels = {'MRST', 'Jutul'};
 % plotTitle = 'CO2 in sealing units';
 % ytxt = 'CO2 [kg]';
-xtxt = ['time [', unit, ']'];
+xtxt = ['Time [', unit, ']'];
 saveplot = true;
+plottitle = false;
+insetPlot = false;
 
 %% Load simcases
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6'};
-pdiscstyles = {'-', '--', '-.', ':'};
+if ismember('cc', pdiscs)
+    pdiscstyles = {'-', '-', '--', '-.', ':'};
+    markers = {'none','|','none','none','none'};
+else
+    pdiscstyles = {'-', '--', '-.', ':'};
+    markers = {'none','none','none','none'};
+end
 simcases = {};
 plotStyles = {};
 numcases = numel(gridcases) * numel(pdiscs);
@@ -169,7 +178,7 @@ for igrid = 1:numel(gridcases)
         style = pdiscstyles{idisc};
         simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                        'pdisc', pdisc, 'tagcase', tagcases{igrid}, 'jutul', jutul{igrid});
-        plotStyles{end+1} = struct('Color', color, 'LineStyle', style);
+        plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker', markers{idisc});
     end
 end
 
@@ -183,10 +192,10 @@ for isim = 1:numel(simcases)
 end
 %% Plot
 set(groot, 'defaultLineLineWidth', 2);
-figure('Position', [100,200, 800, 600])
+figure('Position', [100,200, 800, 600], 'Name',plotTitle)
 hold on;
 for i=1:numel(simcases)
-    plot(xdata, data(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle);
+    plot(xdata, data(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',6, 'MarkerIndices',1:10:numel(xdata));
 end
 % Create dummy plots for legend
 h_grid = [];
@@ -197,12 +206,13 @@ end
 h_disc = [];
 for idisc = 1:numel(pdiscs)
     style = pdiscstyles{idisc};
-    h_disc(idisc) = plot(NaN,NaN, 'Color', 'k', 'LineStyle', style, 'LineWidth', 2); % No data, just style
+    marker = markers{idisc};
+    h_disc(idisc) = plot(NaN,NaN, 'Color', 'k', 'LineStyle', style, 'LineWidth', 2, 'Marker',marker); % No data, just style
 end
 
 % Combine handles and labels
 handles = [h_grid, h_disc];
-gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), labels,  'UniformOutput', false);
+gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), gridlabels,  'UniformOutput', false);
 pdiscsDisp = cellfun(@shortDiscName, pdiscs, 'UniformOutput', false); 
 labels = [gridcasesDisp, pdiscsDisp];
 
@@ -210,11 +220,26 @@ labels = [gridcasesDisp, pdiscsDisp];
 lgd = legend(handles, labels, 'NumColumns', 2);
 set(lgd, 'Interpreter', 'none', 'Location', 'best');
 hold off
-title(plotTitle);
-fontsize(14, 'points'); 
+if plottitle
+    title(plotTitle);
+end
+fontsize(16, 'points'); 
 xlabel(xtxt);
 ylabel(ytxt);
 grid on;
+
+if insetPlot
+    %plot inside plot
+    insetPosition = [0.19 0.15 0.25 0.25];
+    insetAxes = axes('Position',insetPosition);
+    insetsteps = 201;
+    insetxdata = xdata(1:insetsteps);
+    for i=1:numel(simcases)
+        plot(insetAxes, insetxdata, data(1:insetsteps, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',4, 'MarkerIndices',1:10:numel(insetxdata));
+        hold on;
+    end
+    grid(insetAxes);
+end
 
 if saveplot
     % folder = './../plotsMaster/sealingCO2';

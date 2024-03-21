@@ -72,11 +72,12 @@ function multiplot(data, varargin)
     
     
     % Calculate the desired figure size (e.g., full screen or a fraction of it)
-    figWidth = screenSize(3) * min(0.8*numCols/3, 0.80); % 80% of the screen width
-    figHeight = screenSize(4) * min(0.81*numRows/4, 0.80); % 80% of the screen height
+    figWidth = screenSize(3) * 0.85; %min(0.8*numCols/3, 0.95); % 95% of the screen width
+    figHeight = screenSize(4) * 0.80;%min(0.81*numRows/4, 0.95); % 95% of the screen height
     
     % Create a figure with the desired size
-    f = figure('Position', [screenSize(3)*0.05 screenSize(4)*0.05 figWidth figHeight]);
+    f = figure('Position', [screenSize(3)*0.01 screenSize(4)*0.01 figWidth figHeight]);
+    % f = figure('WindowState','maximized');
     t = tiledlayout(numRows, numCols, 'Padding', 'loose', 'TileSpacing', 'compact');
     if ~isempty(opt.title)
         title(t, opt.title, 'fontsize', 25, 'interpreter', 'none')
@@ -178,6 +179,7 @@ function multiplot(data, varargin)
         end
         opt.savename = replace(opt.savename, '.', '_');
         savepath = fullfile(opt.savefolder, opt.savename);
+        fprintf('Saving to %s\n', savepath);
         saveas(f, savepath, 'png');
         exportgraphics(t, strcat(savepath, '.pdf'));
      end

@@ -17,7 +17,7 @@ switch opt.SPEcase
         zlimit = 1200;
 end
 numFineCells = G.cells.num;
-repsteps = round(logspace(0, log10(numFineCells), 10));
+repsteps = [round(logspace(0, log10(numFineCells/2), 5)), round(linspace(numFineCells*6/10, numFineCells, 5))];
 
 Gr = cartGrid([nx, ny], [xlimit, zlimit]);
 % Gr = computeGeometry(Gr);

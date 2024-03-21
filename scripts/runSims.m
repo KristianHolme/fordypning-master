@@ -21,12 +21,13 @@ SPEcase = 'B';
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'cPEBI_819x117', '5tetRef0.31'};
-% gridcases = {''};
-% gridcases = {'struct819x117'};
-% gridcases = {''};
+gridcases = {'gq_pb0.19'};
+% gridcases = {'5tetRef0.31'};
+% gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
+
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 pdiscs = {''};
 
@@ -42,7 +43,7 @@ resetAssembly       = true;
 do.plotStates       = false;
 do.plotFlux         = false;
 do.multiphase       = false;
-do.plotOrthErr      = false;
+do.plotOrthErr      = true;
 do.dispTime         = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 mrstVerbose on;

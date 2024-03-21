@@ -53,6 +53,7 @@ function displayName = displayNameGrid(gridcase, specase)
     Bmap('horz_pre_cut_130x62') = 'HPC-S';
     Bmap('cart_pre_cut_130x62') = 'CPC-S';
     Bmap('struct130x62') = 'C-S';
+    Bmap('struct220x110') = 'C-M';
     Bmap('struct819x117') = 'C-F';
     % Bmap('struct819x117') = 'Cartesian';
 
@@ -63,6 +64,8 @@ function displayName = displayNameGrid(gridcase, specase)
 
     Bmap('5tetRef0.31') = 'T-F';
     % Bmap('5tetRef0.31') = 'Triangles';
+
+    Bmap('gq_pb0.19') = 'QT-F';
 
     if strcmp(lower(specase), 'a')
         if isKey(Amap, gridcase)

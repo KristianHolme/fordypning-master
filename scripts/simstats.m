@@ -3,7 +3,7 @@ close all
 %%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa Jutul
+    deckformat gmsh nfvm mpfa jutul
 mrstVerbose off
 %%
 % SPEcase = 'B';
@@ -27,14 +27,16 @@ SPEcase = 'B';
 % gridcases = {'horz_ndg_cut_PG_460x64', 'cart_ndg_cut_PG_460x64', 'cPEBI_460x64'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
 % gridcases = {'5tetRef0.31'};
-% gridcases = {'cPEBI_819x117'};
+gridcases = {'cPEBI_819x117'};
 % gridcases = {'horz_ndg_cut_PG_819x117'};
 % gridcases = {'cart_ndg_cut_PG_819x117'};
-gridcases = {'struct819x117'};
+% gridcases = {'struct819x117'};
+% gridcases = {'gq_pb0.19'};
 % gridcases = {'horz_ndg_cut_PG_220x110','cPEBI_220x110'};
 
 % SPEcase = 'A'; gridcases = {'5tetRef10'};
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 
 tagcase = '';
 set(groot, 'defaultLineLineWidth', 2);
@@ -77,6 +79,10 @@ meanindex = 5;
 %% get data
 data = cell(6, numel(simcases));
 labels = {};
+xscaling = SPEyear;
+xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
+% xdata = xdata(1:steps);
+figure;
 for isim = 1:numel(simcases)
     simcase = simcases{isim};
     data{cellnumindex, isim} = ['\multirow{4}{*}{', num2str(simcase.G.cells.num) , '}'];
@@ -100,7 +106,7 @@ for isim = 1:numel(simcases)
 
     end
     % plot(ministeps);hold on;
-    plot(cumsum(NlsIts));hold on;
+    plot(xdata, cumsum(NlsIts));hold on;
     data{totindex, isim} = totaliterations;
     data{meanindex, isim} = round(totaliterations/steps, 2);
     data{6, isim} = numel(getReportMinisteps(reports(1:steps)));
@@ -111,7 +117,7 @@ end
 grid();
 % title('Timestep cuts per control step')
 title([displayNameGrid(simcase.gridcase, SPEcase)]);
-xlabel('Control step');
+xlabel('Time [y]');
 ylabel('Cumulative nonlinear iterations');
 legend(labels, Location="best");
 hold off;

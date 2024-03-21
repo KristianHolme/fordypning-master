@@ -8,41 +8,41 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {'5tetRef0.31'};
-        schedulecases = {''};
-        pdiscs = {'', 'hybrid-ntpfa'};
-        uwdiscs = {'WENO'};
-        deckcases = {'B_ISO_C'};
-        tagcase = '';
-        resetData = false;
-        resetAssembly = false;
-        Jutul = false;
-        direct_solver = false;
-        warning('off', 'all');
-    case 2
-        SPEcase = 'B';
-        gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
-        schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-        uwdiscs = {''};
-        deckcases = {'B_ISO_C'};
-        tagcase = '';
-        resetData = false;
-        resetAssembly = false;
-        Jutul = false;
-        direct_solver = false;
-        warning('off', 'all');
-    case 3
-        SPEcase = 'B';
-        gridcases = {'5tetRef0.31'};
+        gridcases = {'horz_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_1638x234', 'horz_ndg_cut_PG_2640x380', 'cart_ndg_cut_PG_2640x380'};
         schedulecases = {''};
         pdiscs = {''};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
-        tagcase = 'newBC';
+        tagcase = '';
         resetData = false;
         resetAssembly = false;
         Jutul = true;
+        direct_solver = false;
+        warning('off', 'all');
+    case 2
+        SPEcase = 'B';
+        gridcases = {'struct1638x234'};
+        schedulecases = {''};
+        pdiscs = {''};
+        uwdiscs = {''};
+        deckcases = {'B_ISO_C'};
+        tagcase = '';
+        resetData = false;
+        resetAssembly = false;
+        Jutul = true;
+        direct_solver = false;
+        warning('off', 'all');
+    case 3
+        SPEcase = 'B';
+        gridcases = {'gq_pb0.19'};
+        schedulecases = {''};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+        uwdiscs = {''};
+        deckcases = {'B_ISO_C'};
+        tagcase = '';
+        resetData = false;
+        resetAssembly = false;
+        Jutul = false;
         direct_solver = false;
         warning('off', 'all');
     case 4

@@ -1,12 +1,13 @@
 clear all;
 close all;
 %% Setup data
-% getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'flux';
-% getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs';
-% getData = @(states, step, G) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation';
-% getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';
-% getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap='';
-getData = @(states, step, G, simcase) states{step}.FlowProps.ComponentTotalMass{2};cmap='';dataname='totMass';
+% getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'CellVelocity';sumReduce = true; force = false;
+% getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
+getData = @(states, step, G, simcase) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation'; sumReduce = false;force = false;
+% getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';sumReduce = false; force = false;
+% getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap=''; sumReduce = true; force = true;
+% getData = @(states, step, G, simcase) getFwerr(simcase);dataname ='fwerr'; cmap=''; sumReduce = true; force = true;
+% getData = @(states, step, G, simcase) getTotMass(states, step, simcase);cmap='';dataname='totMass'; sumReduce = true; force = false;
 %% SPEcase, steps
 SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
@@ -46,15 +47,17 @@ end
 % gridcases = {'struct420x141'};
 % gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};filename = 'cut-vs-pebi-M';
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};filename = 'C-Cut-P-T_F';
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};filename = 'C-Cut-P-T_F';
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};filename = 'C-Cut-P-Q-T_F';
 % gridcases = { 'cPEBI_819x117', '5tetRef0.31'};filename = 'pebi-unstruct-F';
+% gridcases = {'struct220x110', 'struct819x117', 'struct2640x380'};filename = 'struct-refine';
 
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {''};
-jutul = false;
+jutul = {false};
 
-subname = ''; %'', 'uppermiddle', 
+subname = ''; %'', 'uppermiddle', 'middle'
 [p1, p2] = getBoxPoints(subname, SPEcase, 3);
 
 
@@ -73,6 +76,9 @@ numDiscs = numel(pdiscs);
 if numel(tagcases) ~= numGrids
     tagcases = repmat(tagcases, 1, numGrids);
 end
+if numel(jutul) ~= numGrids
+    jutul = repmat(jutul, 1, numGrids);
+end
 data = cell(numDiscs, numGrids, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
@@ -83,10 +89,10 @@ for istep = 1:numel(steps)
             simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'tagcase', tagcases{j}, ...
                                 'pdisc', pdisc, ...
-                                'jutul', jutul);
+                                'jutul', jutul{j});
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
-            if numelData(states) >= step
+            if numelData(states) >= step || force
                 statedata = getData(states, step, G, simcase);
                 [inj1, inj2] = simcase.getinjcells;
                 data{i, j, istep}.statedata = statedata;
@@ -103,7 +109,10 @@ for istep = 1:numel(steps)
         end
     end
 end
-
+if force
+    data = reshape(data, 3,2)';
+    data{1,1}.ylabel = '';
+end
 %% Plotting grid vs disc
 times = cumsum(simcase.schedule.step.val);
 for istep = 1:numel(steps)
@@ -124,16 +133,17 @@ end
 % gridcase = '5tetRef0.4';
 % gridcase = '5tetRef1-stretch';
 % gridcase = 'cart_pre_cut_PG_130x62';
-% gridcase = 'horz_pre_cut_PG_130x62';
+% gridcase = 'horz_ndg_cut_PG_819x117';
 % gridcase = 'cart_ndg_cut_PG_819x117';
 % gridcase = 'struct819x117';
-% gridcase = 'cPEBI_819x117';
-gridcase = '5tetRef0.31';
+gridcase = 'cPEBI_819x117';
+% gridcase = '5tetRef0.31';
+% gridcase = 'gq_pb0.19';
 % gridcase = '';
 % steps = [360];
 
 
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
@@ -173,16 +183,16 @@ for istep = 1:numel(steps)
                 data{i, j, istep}.statedata = statedata;
                 data{i, j, istep}.injcells = [inj1, inj2];
                 data{i, j, istep}.G = G;
-                name = shortDiscName(pdisc);
+                discName = shortDiscName(pdisc);
                 if ~isempty(uwdisc)
-                    name = [name, ', ', uwdisc];
+                    discName = [discName, ', ', uwdisc];
                 end
                 if i == 1
 
-                    data{i, j, istep}.title = name;
+                    data{i, j, istep}.title = discName;
                 end
                 if j == i
-                    data{i, j, istep}.ylabel = name;
+                    data{i, j, istep}.ylabel = discName;
                 end
                 %make diff
                 if j ~= i
@@ -232,62 +242,102 @@ for istep = 1:numel(steps)
         'diff', true, 'bigGrid', bigGrid);   
 end
 %% Setup Grid diff plot
-gridcases = {'struct220x110', 'struct819x117'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
+% gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
+% gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117'};
+% gridcases = {'struct819x117', 'struct1638x234', 'struct2640x380'};
 
-pdiscs = {'', 'hybrid-ntpfa'};
+jutul = {false};
+pdiscs = {''};
+% pdiscs = {'hybrid-avgmpfa'};
+pdiscs = {'hybrid-ntpfa'};
+tagcases = {''}; %one for each pdisc or one for all
+uwdiscs = {''};
 
-tagcases = {''};
 
 deckcase = 'B_ISO_C';
-saveplot = false;
+saveplot = true;
 filename =[SPEcase, '_', dataname, '_diff_', strjoin(cellfun(@(g)displayNameGrid(g, SPEcase) , gridcases, UniformOutput=false), '_'), strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
 savefolder = ['./../plotsMaster/gridDiff/', SPEcase];
 numpdiscs = numel(pdiscs);
 numuwdiscs = numel(uwdiscs);
 numDiscs = numpdiscs*numuwdiscs;
+numGrids = numel(gridcases);
 %% Load Grid diff
 if numel(tagcases) ~= numDiscs
     tagcases = repmat(tagcases, 1, numDiscs);
 end
-data = cell(numDiscs, numDiscs, numel(steps));
+if numel(jutul) ~= numGrids
+    jutul = repmat(jutul, 1, numGrids);
+end
+simcases = {};
+for ig = 1:numGrids
+    for ipd = 1:numpdiscs
+        for iud = 1:numuwdiscs
+            simcases{end+1} = Simcase('gridcase', gridcases{ig}, 'pdisc', pdiscs{ipd}, 'uwdisc', uwdiscs{iud}, ...
+                'tagcase', tagcases{ipd}, 'deckcase', deckcase, 'usedeck', true, 'SPEcase', SPEcase, 'jutul', jutul{ig});
+        end
+    end
+end
+numcases = numel(simcases);
+data = cell(numcases, numcases, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
-    for ig = 1:numGrids
-        gridcase = gridcases{ig};
-        for i = 1:numDiscs
-            for j = i:numDiscs
-                pdisc = pdiscs{ceil(j/numuwdiscs)};
-                uwdisc = uwdiscs{customMod(j, numuwdiscs)};
-                simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                                    'tagcase', tagcases{j}, ...
-                                    'pdisc', pdisc, 'uwdisc', uwdisc);
-                [states, ~, ~] = simcase.getSimData;
-                G = simcase.G;
-                if numelData(states) >= step
-                    statedata = getData(states,step, G);
-                    [inj1, inj2] = simcase.getinjcells;
-                    data{i, j, istep}.statedata = statedata;
-                    data{i, j, istep}.injcells = [inj1, inj2];
-                    data{i, j, istep}.G = G;
-                    name = shortDiscName(pdisc);
-                    if ~isempty(uwdisc)
-                        name = [name, ', ', uwdisc];
-                    end
-                    if i == 1
-    
-                        data{i, j, istep}.title = name;
-                    end
-                    if j == i
-                        data{i, j, istep}.ylabel = name;
-                    end
-                    %make diff
-                    if j ~= i
-                        data{i, j, istep}.statedata = data{i, i, istep}.statedata - data{i, j, istep}.statedata;
-                    end
+    for i = 1:numcases
+        for j = i:numcases
+            simcase = simcases{j};
+            [states, ~, ~] = simcase.getSimData;
+            G = simcase.G;
+            if numelData(states) >= step
+                statedata = getData(states,step, G, simcase);
+                [inj1, inj2] = simcase.getinjcells;
+                M = G.reductionMatrix;
+                Gr = G.reductionGrid;
+                indexMap = G.cells.indexMap;
+
+                fulldata = zeros(size(M, 2), 1);
+                
+
+                if sumReduce %sums up quantitites, e.g. for total mass
+                    fulldata(indexMap) = statedata ./ G.cells.volumes;
+                    reducedData = (M*fulldata) .* Gr.cells.volumes;
+                else %wights data, for e.g. pressure
+                     fulldata(indexMap) = statedata;
+                     reducedData = (M*fulldata);
+                end
+
+                data{i, j, istep}.statedata = reducedData;
+                data{i, j, istep}.injcells = [inj1, inj2];
+                data{i, j, istep}.G = Gr;
+                discName = shortDiscName(simcase.pdisc);
+                if ~isempty(simcase.uwdisc)
+                    discName = [discName, ', ', uwdisc];
+                end
+                if i == 1
+                    ;
+                end
+                if j == i
+                    data{i, j, istep}.title = displayNameGrid(simcase.gridcase, simcase.SPEcase);
+                    data{i, j, istep}.ylabel = discName;
+                end
+                %make diff
+                if j ~= i
+                    data{i, j, istep}.statedata = data{i, i, istep}.statedata - data{i, j, istep}.statedata;
                 end
             end
         end
     end
+end
+%% Plot grid diff
+times = cumsum(simcase.schedule.step.val);
+for istep = 1:numel(steps)
+    step = steps(istep);
+    plottitle = ['difference in ', dataname, ' at t=', num2str(round(times(step)/scaling)), unit];
+    multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
+        'savename', [filename, '_step', num2str(step)], ...
+        'saveplot', saveplot, 'cmap', 'Seismic', 'equal', strcmp(SPEcase, 'A'), ...
+        'diff', true);   
 end
 
 %% Setup time evolution plot
@@ -347,3 +397,7 @@ plottitle = ['time evolution of ', dataname];
 % multiplot(data, 'title', plottitle, 'savefolder', savefolder, ...
         % 'savename', filename, 'saveplot', saveplot, 'cmap', cmap, 'equal', strcmp(SPEcase, 'A'));
 multiplot(data, 'savefolder', savefolder, 'savename', filename, 'saveplot', saveplot, 'cmap', cmap, 'equal', strcmp(SPEcase, 'A'));
+%%
+function fwerr = getFwerr(simcase)
+[~, ~, fwerr] = simcase.computeStaticIndicator;
+end

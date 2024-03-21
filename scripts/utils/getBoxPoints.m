@@ -10,6 +10,11 @@ function [p1, p2] = getBoxPoints(name, SPEcase, griddim)
             x2 = 1.61156;
             z1 = 0.099;
             z2 = 0.5586;
+        case 'middle'
+            x1 = 3950/3000;
+            x2 = 4050/3000;
+            z1 = 650/1000;
+            z2 = 750/1000;
         
     end
     if griddim == 3

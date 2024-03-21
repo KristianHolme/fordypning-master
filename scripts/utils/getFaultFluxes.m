@@ -2,13 +2,14 @@ function data = getFaultFluxes(simcase, steps, varargin)
     opt = struct('resetData', false);
     opt = merge_options(opt, varargin{:});
 
-    G = simcase.model.G;
+    
     dirName       = fullfile(simcase.dataOutputDir, simcase.casename);
     filename      = fullfile(dirName, 'faultflux.mat');
-    if exist([filename, '.mat'], "file") && opt.resetData
+    if exist(filename, "file") && ~opt.resetData
         disp("loading data...")
         load(filename)
     else
+        G = simcase.G;
         disp("calculating data...")
         maxsteps = numel(simcase.schedule.step.val);
         
@@ -22,8 +23,10 @@ function data = getFaultFluxes(simcase, steps, varargin)
         internal = (neighborTags(:,1) ~= 0) & (neighborTags(:,2) ~= 0);
         % internal = simcase.model.operators.internalConn;
         layercrossingfaces = (neighborTags(:,1) ~= neighborTags(:,2)) & internal;
-
-        completedata = zeros(maxsteps, 1);
+        
+        completedata = NaN(maxsteps, 1);
+        maxsteps = min(maxsteps, numelData(states));
+        
         for it = 1:maxsteps
             allfluxes = states{it}.flux;
             fluxes = allfluxes(layercrossingfaces);
