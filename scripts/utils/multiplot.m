@@ -1,5 +1,6 @@
 function multiplot(data, varargin)
     opt = struct('saveplot' , false, ...
+                'saveToReport', false,...
                  'title'    , [], ...
                  'tight'    , true, ...
                  'equal'     , true, ...
@@ -180,7 +181,19 @@ function multiplot(data, varargin)
         opt.savename = replace(opt.savename, '.', '_');
         savepath = fullfile(opt.savefolder, opt.savename);
         fprintf('Saving to %s\n', savepath);
-        saveas(f, savepath, 'png');
-        exportgraphics(t, strcat(savepath, '.pdf'));
+        % saveas(f, savepath, 'png');
+        % exportgraphics(f, strcat(savepath, '_f.pdf'));
+        % exportgraphics(t, strcat(savepath, '.eps'));
+        exportgraphics(t, strcat(savepath, '.png'), 'resolution', 400);
+        if opt.saveToReport
+            saveFolder = replace(opt.savefolder, 'plotsMaster', 'rapport/Figures');
+            if ~exist(saveFolder, 'dir')
+                mkdir(saveFolder)
+                disp(['Folder ', saveFolder, ' created.']);
+            end
+            savepath = fullfile(saveFolder, opt.savename);
+            fprintf('Saving to %s\n', savepath);
+            exportgraphics(t, strcat(savepath, '.png'), 'resolution', 400);
+        end
      end
 end

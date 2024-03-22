@@ -23,8 +23,8 @@ SPEcase = 'B';
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
-% gridcases = {'cPEBI_819x117', '5tetRef0.31'};
-gridcases = {'gq_pb0.19'};
+gridcases = {'cPEBI_220x110'};
+% gridcases = {'gq_pb0.19'};
 % gridcases = {'5tetRef0.31'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 
@@ -35,7 +35,7 @@ schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_C'}; %B_ISO_C
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = '';%normalRock, bufferMult, deckrock
+tagcase = 'allcells';%normalRock, bufferMult, deckrock
 Jutul               = false;
 
 resetData           = true;
@@ -43,8 +43,8 @@ resetAssembly       = true;
 do.plotStates       = false;
 do.plotFlux         = false;
 do.multiphase       = false;
-do.plotOrthErr      = true;
-do.dispTime         = true;
+do.plotOrthErr      = false;
+do.dispTime         = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 mrstVerbose on;
 

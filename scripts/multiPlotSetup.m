@@ -3,9 +3,9 @@ close all;
 %% Setup data
 % getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'CellVelocity';sumReduce = true; force = false;
 % getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
-getData = @(states, step, G, simcase) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation'; sumReduce = false;force = false;
+% getData = @(states, step, G, simcase) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation'; sumReduce = false;force = false;
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';sumReduce = false; force = false;
-% getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap=''; sumReduce = true; force = true;
+getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap=''; sumReduce = true; force = true;
 % getData = @(states, step, G, simcase) getFwerr(simcase);dataname ='fwerr'; cmap=''; sumReduce = true; force = true;
 % getData = @(states, step, G, simcase) getTotMass(states, step, simcase);cmap='';dataname='totMass'; sumReduce = true; force = false;
 %% SPEcase, steps
@@ -53,8 +53,8 @@ gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x11
 % gridcases = {'struct220x110', 'struct819x117', 'struct2640x380'};filename = 'struct-refine';
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-% pdiscs = {''};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+pdiscs = {''};
 jutul = {false};
 
 subname = ''; %'', 'uppermiddle', 'middle'
@@ -66,9 +66,11 @@ tagcases = {''};
 
 plotgrid = false;
 saveplot = true;
+saveToReport = true;
 
 filename = [SPEcase, '_', dataname, '_', filename];
 savefolder=fullfile('./../plotsMaster/multiplot', subname);
+
 
 numGrids = numel(gridcases);
 numDiscs = numel(pdiscs);
@@ -123,7 +125,8 @@ for istep = 1:numel(steps)
     %     'saveplot', saveplot, 'cmap', cmap, 'equal', false, 'plotgrid', plotgrid);   
     multiplot(data(:, :, istep), 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step)], ...
-        'saveplot', saveplot, 'cmap', cmap, 'equal', false, 'plotgrid', plotgrid); 
+        'saveplot', saveplot, 'cmap', cmap, 'equal', false, 'plotgrid', plotgrid, ...
+        'saveToReport', saveToReport); 
 end
 %% Setup full error plot/diff
 % gridcase = '5tetRef0.4';
@@ -133,17 +136,19 @@ end
 % gridcase = '5tetRef0.4';
 % gridcase = '5tetRef1-stretch';
 % gridcase = 'cart_pre_cut_PG_130x62';
+
 % gridcase = 'horz_ndg_cut_PG_819x117';
 % gridcase = 'cart_ndg_cut_PG_819x117';
 % gridcase = 'struct819x117';
-gridcase = 'cPEBI_819x117';
+% gridcase = 'cPEBI_819x117';
 % gridcase = '5tetRef0.31';
-% gridcase = 'gq_pb0.19';
+gridcase = 'gq_pb0.19';
 % gridcase = '';
 % steps = [360];
 
 
 pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
@@ -151,10 +156,11 @@ pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % uwdiscs = {'', 'WENO'};
 uwdiscs = {''};
 deckcase = 'B_ISO_C';
-tagcases = {''};%one for each pdisc or one that applies to all pdiscs
+tagcases = {'allcells'};%one for each pdisc or one that applies to all pdiscs
 
 
 saveplot = true;
+saveToReport = true;
 bigGrid = false;
 filename =[SPEcase, '_', dataname, '_diff_', gridcase, strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
 savefolder = ['./../plotsMaster/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
@@ -239,7 +245,7 @@ for istep = 1:numel(steps)
     multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step), apx], ...
         'saveplot', saveplot, 'cmap', 'Seismic', 'equal', strcmp(SPEcase, 'A'), ...
-        'diff', true, 'bigGrid', bigGrid);   
+        'diff', true, 'bigGrid', bigGrid, 'saveToReport', saveToReport);   
 end
 %% Setup Grid diff plot
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
@@ -258,6 +264,7 @@ uwdiscs = {''};
 
 deckcase = 'B_ISO_C';
 saveplot = true;
+saveToReport = true;
 filename =[SPEcase, '_', dataname, '_diff_', strjoin(cellfun(@(g)displayNameGrid(g, SPEcase) , gridcases, UniformOutput=false), '_'), strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
 savefolder = ['./../plotsMaster/gridDiff/', SPEcase];
 numpdiscs = numel(pdiscs);
@@ -337,7 +344,7 @@ for istep = 1:numel(steps)
     multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step)], ...
         'saveplot', saveplot, 'cmap', 'Seismic', 'equal', strcmp(SPEcase, 'A'), ...
-        'diff', true);   
+        'diff', true, 'saveToReport', saveToReport);   
 end
 
 %% Setup time evolution plot

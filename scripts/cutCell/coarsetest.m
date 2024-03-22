@@ -82,8 +82,8 @@ partition = PartitionByTag(Gcut);
 compressedPartition = compressPartition(partition);
 CG = generateCoarseGrid(Gcut, compressedPartition);
 CG = coarsenGeometry(CG);
-CGcellToGcutCell = unique(partition);
-CG.cells.tag = Gcut.cells.tag(CGcellToGcutCell);
+[CGcellToGcutCell, IA] = unique(partition);
+CG.cells.tag = Gcut.cells.tag(IA);
 t = toc(t);
 fprintf("Partition and coarsen in %0.2f s\n", t);
 

@@ -29,7 +29,11 @@ function G = getBufferCells(G)
         end
     end
     %Fix for triangle grids?
-    sideCells = find(G.cells.centroids(:,1) > 8399 | G.cells.centroids(:,1) < 1);
+    if any(G.cells.centroids(:,1)>2000)
+        sideCells = find(G.cells.centroids(:,1) > 8399 | G.cells.centroids(:,1) < 1);
+    else
+        sideCells = find(G.cells.centroids(:,1) > 8399/3000 | G.cells.centroids(:,1) < 1/3000);
+    end
     newBdryCells = setdiff(sideCells, G.bufferCells);
     dispif(~isempty(newBdryCells), 'Adding bdryCells without bdryFaces!\n');
     for inc = 1:numel(newBdryCells)

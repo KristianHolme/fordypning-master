@@ -54,6 +54,7 @@ function [partition,failed] = FaceAreaPartition(G, smallCells, nbs,varargin)
 
     partition = (1:G.cells.num)';
     failed = [];
+    bf = boundaryFaces(G);
     for ism = 1:numel(smallCells)
         c = smallCells(ism);
         n = nbs(nbs(:, 1) == c | nbs(:, 2) == c, :);
@@ -61,30 +62,33 @@ function [partition,failed] = FaceAreaPartition(G, smallCells, nbs,varargin)
         n = n(n~=c);
         n = n(G.cells.tag(n) == G.cells.tag(c));
         n = setdiff(n, opt.ignoreCells);
+        cells = partition == partition(c);
         if numel(n) == 1
             finalneighbor = n;
         else
-            f = gridCellFaces(G, cells); %faces in partition
-            faceneighbors = G.faces.neighbors(f,:); %neighbor cells
-            %for each neighbor:sum shared area and sort
-            interfaceareas = arrayfun(@(nb)sum(G.faces.areas(intersect(f, gridCellFaces(G, nb)))), n);
-            [~,sortorder] = sort(interfaceareas, 'descend');
-
-            % f = G.cells.faces(G.cells.facePos(c):G.cells.facePos(c+1)-1); %faces of f
+            % f = gridCellFaces(G, c); %faces in partition
+            % f = setdiff(f, bf);%exclude cell 0
             % faceneighbors = G.faces.neighbors(f,:); %neighbor cells
-            % f = f( ismember( faceneighbors(:,1), n ) | ismember( faceneighbors(:,2), n ) ); %faces that go to valid neighbor
-            % faceareas = G.faces.areas(f);
-            % faceneighbors = G.faces.neighbors(f,:);
-            % faceneighbors = faceneighbors(:,1) .* (faceneighbors(:,1) ~= c) + faceneighbors(:,2) .* (faceneighbors(:,2) ~= c);
-            % [~, sortorder] = sort(faceareas, 'descend');
-            % f = f(sortorder);
+            
+            %for each neighbor:sum shared area and sort
+            % interfaceareas = arrayfun(@(nb)sum(G.faces.areas(intersect(f, gridCellFaces(G, nb)))), n);
+            % [~,sortorder] = sort(interfaceareas, 'descend');
+
+            f = G.cells.faces(G.cells.facePos(c):G.cells.facePos(c+1)-1); %faces of f
+            faceneighbors = G.faces.neighbors(f,:); %neighbor cells
+            f = f( ismember( faceneighbors(:,1), n ) | ismember( faceneighbors(:,2), n ) ); %faces that go to valid neighbor
+            faceareas = G.faces.areas(f);
+            faceneighbors = G.faces.neighbors(f,:);
+            faceneighbors = faceneighbors(:,1) .* (faceneighbors(:,1) ~= c) + faceneighbors(:,2) .* (faceneighbors(:,2) ~= c);
+            [~, sortorder] = sort(faceareas, 'descend');
+            f = f(sortorder);
 
 
             faceneighbors = faceneighbors(sortorder);
             finalneighbor = faceneighbors(1);
         end
     
-        partition(partition == c) = partition(finalneighbor); %cell and other cells assigned to it, gets reassigned
+        partition(cells) = partition(finalneighbor); %cell and other cells assigned to it, gets reassigned
         
         % clf(gcf);
         % plotCellData(G, G.cells.tag);
