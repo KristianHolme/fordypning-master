@@ -25,7 +25,9 @@
 %   Date:    09/10/2018                                                   %
 %   E-mail:  vicmarcag (at) gmail (dot) com                               %
 % ----------------------------------------------------------------------- %
-function table2latex(T, filename)
+function table2latex(T, filename, varargin)
+    opt = struct('colheaders', true);
+    opt = merge_options(opt, varargin{:});
     
     % Error detection and default parameters
     if nargin < 2
@@ -55,7 +57,9 @@ function table2latex(T, filename)
     % Writing header
     fileID = fopen(filename, 'w');
     fprintf(fileID, '\\begin{tabular}{%s}\n', col_spec);
-    fprintf(fileID, '%s \\\\ \n', col_names);
+    if opt.colheaders
+        fprintf(fileID, '%s \\\\ \n', col_names);
+    end
     fprintf(fileID, '\\hline \n');
     
     % Writing the data

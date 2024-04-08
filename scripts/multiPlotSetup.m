@@ -2,10 +2,10 @@ clear all;
 close all;
 %% Setup data
 % getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'CellVelocity';sumReduce = true; force = false;
-% getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
+getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
 % getData = @(states, step, G, simcase) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation'; sumReduce = false;force = false;
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';sumReduce = false; force = false;
-getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap=''; sumReduce = true; force = true;
+% getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap=''; sumReduce = true; force = true;
 % getData = @(states, step, G, simcase) getFwerr(simcase);dataname ='fwerr'; cmap=''; sumReduce = true; force = true;
 % getData = @(states, step, G, simcase) getTotMass(states, step, simcase);cmap='';dataname='totMass'; sumReduce = true; force = false;
 %% SPEcase, steps
@@ -248,23 +248,28 @@ for istep = 1:numel(steps)
         'diff', true, 'bigGrid', bigGrid, 'saveToReport', saveToReport);   
 end
 %% Setup Grid diff plot
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117'};
 % gridcases = {'struct819x117', 'struct1638x234', 'struct2640x380'};
+% gridcases = {'horz_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_1638x234', 'horz_ndg_cut_PG_2640x380'};
+% gridcases = {'cart_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380'};
+% gridcases = {'struct2640x380', 'horz_ndg_cut_PG_2640x380', 'cart_ndg_cut_PG_2640x380'};
+% gridcases = {'struct1638x234', 'horz_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_1638x234'};
 
 jutul = {false};
-pdiscs = {''};
+% pdiscs = {''};
 % pdiscs = {'hybrid-avgmpfa'};
-pdiscs = {'hybrid-ntpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 tagcases = {''}; %one for each pdisc or one for all
 uwdiscs = {''};
 
 
 deckcase = 'B_ISO_C';
 saveplot = true;
-saveToReport = true;
+saveToReport = false;
+makeCorrTable = true;
 filename =[SPEcase, '_', dataname, '_diff_', strjoin(cellfun(@(g)displayNameGrid(g, SPEcase) , gridcases, UniformOutput=false), '_'), strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
 savefolder = ['./../plotsMaster/gridDiff/', SPEcase];
 numpdiscs = numel(pdiscs);
@@ -282,15 +287,23 @@ simcases = {};
 for ig = 1:numGrids
     for ipd = 1:numpdiscs
         for iud = 1:numuwdiscs
-            simcases{end+1} = Simcase('gridcase', gridcases{ig}, 'pdisc', pdiscs{ipd}, 'uwdisc', uwdiscs{iud}, ...
+            newcase = Simcase('gridcase', gridcases{ig}, 'pdisc', pdiscs{ipd}, 'uwdisc', uwdiscs{iud}, ...
                 'tagcase', tagcases{ipd}, 'deckcase', deckcase, 'usedeck', true, 'SPEcase', SPEcase, 'jutul', jutul{ig});
+            [states, ~, ~] = newcase.getSimData;
+            if numelData(states) >= steps(end)
+                simcases{end+1} = newcase;
+            end
+            clear states;
         end
     end
 end
 numcases = numel(simcases);
 data = cell(numcases, numcases, numel(steps));
+diffnorms = zeros(numcases, numcases, numel(steps));
+diffCorr = zeros(numcases, numcases, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
+    puredata = NaN(840*120, numel(simcases));
     for i = 1:numcases
         for j = i:numcases
             simcase = simcases{j};
@@ -327,14 +340,36 @@ for istep = 1:numel(steps)
                 if j == i
                     data{i, j, istep}.title = displayNameGrid(simcase.gridcase, simcase.SPEcase);
                     data{i, j, istep}.ylabel = discName;
+                    puredata(:,i) = reducedData;
                 end
+                % R = corrcoef(data{i,i, istep}.statedata, data{i,j, istep}.statedata);
+                % diffCorr(i,j, istep) = R(1,2);
                 %make diff
                 if j ~= i
                     data{i, j, istep}.statedata = data{i, i, istep}.statedata - data{i, j, istep}.statedata;
                 end
+               
+                diffnorms(i, j, istep) = norm(data{i, j, istep}.statedata);
+
+            else
+                
             end
         end
     end
+    diffCorr(:,:,istep) = corrcoef(puredata);
+end
+if makeCorrTable
+    diffcorr = round(diffCorr, 3);
+    triudiffcorr = triu(diffCorr);
+    % triudiffcorr(triudiffcorr == 0) = NaN;
+    cellDiffCorr = num2cell(diffcorr);
+    for i = 1:(numel(simcases))
+        cellDiffCorr{i,i} = [displayNameGrid(simcases{i}.gridcase, simcases{i}.SPEcase), ', ', shortDiscName(simcases{i}.pdisc)];
+    end
+    Tcorr = cell2table(cellDiffCorr);
+    displaynames = cellfun(@(s)displayNameGrid(s.gridcase, s.SPEcase), simcases, 'UniformOutput',false);
+    discnames = cellfun(@(s)shortDiscName(s.pdisc),simcases, UniformOutput=false);
+    table2latex(Tcorr, fullfile('./../rapport/Tables/corr', [strjoin(unique(displaynames),'_'), '_', strjoin(unique(discnames), '_'), '.tex']), 'colheaders', false);
 end
 %% Plot grid diff
 times = cumsum(simcase.schedule.step.val);

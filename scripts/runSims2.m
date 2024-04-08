@@ -8,28 +8,28 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'B';
-        gridcases = {'horz_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_1638x234', 'horz_ndg_cut_PG_2640x380', 'cart_ndg_cut_PG_2640x380'};
+        gridcases = {'cart_ndg_cut_FPG_130x62'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
         resetAssembly = false;
-        Jutul = true;
+        Jutul = false;
         direct_solver = false;
         warning('off', 'all');
     case 2
         SPEcase = 'B';
-        gridcases = {'struct1638x234'};
+        gridcases = {'', 'struct130x62'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
-        resetData = false;
+        resetData = true;
         resetAssembly = false;
-        Jutul = true;
+        Jutul = false;
         direct_solver = false;
         warning('off', 'all');
     case 3

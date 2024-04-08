@@ -149,7 +149,7 @@ function [partition, failed] = mainConvexPartition(partition, smallCells, G, nbs
         widthOk = possibleWidths <  allowedWidthFactor*maxWidth;
         neighborPartitions = neighborPartitions(widthOk);
 
-        convexok = arrayfun(@(nbp)checkConvexMerge2(G, [cells;find(partition == nbp)], vertIx), neighborPartitions);
+        convexok = arrayfun(@(nbp)checkConvexMerge2(G, [cells;find(partition == nbp)], vertIx), neighborPartitions); %can be made into loop for vectorization?
         neighborPartitions = neighborPartitions(convexok); %filter out neighbors that dont result in convexity
 
         if isempty(neighborPartitions)

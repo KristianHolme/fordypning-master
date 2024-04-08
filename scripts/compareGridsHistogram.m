@@ -1,19 +1,19 @@
 clear all
 close all
 %%
-nx = 819;
-ny = 117;
+nx = 130;
+ny = 62;
 buffer = false;
-G1 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer);
+G1 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'cartesian', 'presplit', true, 'nudgeGeom', false);
 G2 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'cartesian');
-G3 = GeneratePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'FCFactor', 1.0);
+% G3 = GeneratePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'FCFactor', 1.0);
 %%
-G1 = load('grid-files/cutcell/horizon_nudge_cutcell_PG_220x110_B.mat').G;
-G2 = load('grid-files/cutcell/cartesian_nudge_cutcell_PG_220x110_B.mat').G;
+G1 = load('grid-files/cutcell/horizon_nudge_cutcell_PG_130x62_B.mat').G;
+G2 = load('grid-files/cutcell/horizon_presplit_cutcell_PG_130x62_B.mat').G;
 G3 = load('grid-files/PEBI/buff_cPEBI_220x110_B.mat').G;
 %%
-grids = {G1, G2, G3};
-names = {'HNCP-M', 'CNCP-M', 'cPEBI-M'};
+grids = {G1, G2};
+names = {'CPCP-C', 'CNCP-C'};
 %%
 T = tiledlayout(numel(grids), 1);
 
@@ -28,8 +28,9 @@ for ig = 1:numel(grids)
 end
 
 %%
-exportgraphics(T, sprintf('./../plotsMaster/histograms/horz_ndg-cart_ndg-cPEBI-M.pdf'));
-exportgraphics(T, sprintf('./../plotsMaster/histograms/horz_ndg-cart_ndg-cPEBI-M.png'));
+savepath = './../plotsMaster/histograms/nudge-v-pre-C';
+exportgraphics(T, [savepath, '.pdf']);
+exportgraphics(T, [savepath, '.png']);
 
 %%
 

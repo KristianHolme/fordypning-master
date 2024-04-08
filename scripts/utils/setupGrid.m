@@ -92,9 +92,10 @@ function G = setupGrid(simcase, varargin)
             params = tokens{1};
             params = cellfun(@str2double, params);
             matFile = [num2str(params(1)), 'x', num2str(params(2)), '_', simcase.SPEcase,'.mat'];
-            if contains(gridcase, 'PG')
+            if contains(gridcase, 'FPG')
+                matFile = ['FPG_', matFile];
+            elseif contains(gridcase, 'PG')
                 matFile = ['PG_', matFile];
-            else
             end
             matFile = ['cutcell_', matFile];
             if contains(gridcase, 'pre')
