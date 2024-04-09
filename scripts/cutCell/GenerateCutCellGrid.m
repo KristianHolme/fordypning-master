@@ -11,7 +11,8 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         'partitionMethod', 'convexity', ...
         'nudgeGeom', true, ...
         'round', true,...
-        'SPEcase', 'B');
+        'SPEcase', 'B', ...
+        'Cdepth', 50);
     opt = merge_options(opt, varargin{:});
     totstart = tic();
     switch opt.type
@@ -50,7 +51,7 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt)
     Ly = 1.2;
     G = cartGrid([nx ny 1], [Lx, Ly 0.01]);
     G = computeGeometry(G);
-    if strcmp(opt.SPEcase, 'B')
+    if ~strcmp(opt.SPEcase, 'A')
         geodata = StretchGeo(RotateGrid(geodata));
         G = StretchGrid(RotateGrid(G));
         depthIx = 2;
@@ -207,9 +208,19 @@ function G = Recombine(G, opt, nx, ny, geodata)
     G = makePartitionedGrid(G, partition);
     G = TagbyFacies(G, geodata, 'vertIx', vertIx);
 
-
     t = toc(t);
     dispif(opt.verbose, "Partition(%d iterations) and coarsen in %0.2f s\n%d cells failed to merge.\n", tries, t, numel(failed));
+
+    if strcmp(opt.SPEcase, 'C')
+        G = removeLayeredGrid(G);
+        layerthicknesses = repmat(5000/opt.Cdepth, opt.Cdepth,1);
+        G = makeLayeredGrid(G, layerthicknesses);
+        G = mcomputeGeometry(G);
+        G = RotateGrid(G);
+        G = mcomputeGeometry(G);
+        G = TagbyFacies(G, geodata, 'vertIx', vertIx);
+        G = SPE11CBend(G);
+    end
 
     t = tic();
     dispif(opt.verbose, "Adding injection cells and box-volume-fractions...");

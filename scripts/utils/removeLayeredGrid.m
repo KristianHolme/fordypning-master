@@ -20,12 +20,10 @@ G2D = removeFaces(G2D, dirFaces);
 G2D = removeNodes(G2D, dirNodes);
 G2D.griddim = 2;
 G2D.nodes.coords(:,2) = max(G2D.nodes.coords(:,2)) - G2D.nodes.coords(:,2);
-
+G2D = sortEdges(G2D);
 G2D = computeGeometry(G2D);
 
 checkGrid(G2D);
-
-
 end
 
 function G = removeNodes(G, rmnodes)
