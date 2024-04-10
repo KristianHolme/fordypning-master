@@ -35,6 +35,7 @@ function [p1, p2] = getCSPBoxPoints(G, box, SPEcase)
                     x2 = 7800;
                     z1 = 1200-250;
                     z2 = 1200-550;
+            end
     end
     p1 = [x1 z2];
     p2 = [x2 z1];

@@ -34,7 +34,7 @@ function timings = MarkovSims(server)
             direct_solver = false;
         case 3
             SPEcase = 'B';
-            gridcases = {''};
+            gridcases = {'struct819x117'};
             schedulecases = {''};
             pdiscs = {''};
             uwdiscs = {''};
@@ -43,7 +43,7 @@ function timings = MarkovSims(server)
             resetData = true;
             resetAssembly = true;
             do.multiphase = true;
-            Jutul = false;
+            Jutul = true;
             direct_solver = false;
         case 4
             SPEcase = 'B';

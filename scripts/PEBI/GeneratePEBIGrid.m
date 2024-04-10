@@ -17,20 +17,15 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     geodata = readGeo('scripts/cutcell/geo/spe11a-V2.geo', 'assignextra', true);
 
     % make cells so well are in center
-    [~, ~, well1Coords, well2Coords] = getinjcells(computeGeometry(cartGrid([1,1], [2.8, 1.2])), opt.SPEcase);
+    if ~strcmp(opt.SPEcase, 'C')
+        [~, ~, well1Coords, well2Coords] = getinjcells(computeGeometry(cartGrid([1,1], [2.8, 1.2])), opt.SPEcase);
+    else
+        well1Coords = [];
+        well2Coords = [];
+    end
 
     if strcmp(opt.aspect, 'true')
         switch opt.SPEcase
-            case 'B' | 'C'
-                matPoints = vertcat(geodata.Point{:});
-                matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
-                matPoints(:,2) = matPoints(:,2)/8.4;
-                geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
-                pdims = [1*meter, 1.2/8.4*meter];
-                depth = 1*meter;
-    
-                well1Coords = well1Coords/8400;
-                well2Coords = well2Coords/8400;
             case 'A'
                 matPoints = vertcat(geodata.Point{:});
                 matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
@@ -41,6 +36,16 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     
                 well1Coords = well1Coords/2.8;
                 well2Coords = well2Coords/2.8;
+            otherwise
+                matPoints = vertcat(geodata.Point{:});
+                matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
+                matPoints(:,2) = matPoints(:,2)/8.4;
+                geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
+                pdims = [1*meter, 1.2/8.4*meter];
+                depth = 1*meter;
+    
+                well1Coords = well1Coords/8400;
+                well2Coords = well2Coords/8400;
         end
     elseif strcmp(opt.aspect, 'square')
         matPoints = vertcat(geodata.Point{:});
@@ -69,7 +74,11 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     targetsRes = [nx, ny];
     gs = pdims ./ targetsRes;
 
-    wellConstraints = {well1Coords, well2Coords};
+    if strcmp(opt.SPEcase, 'C')
+        wellConstraints = {};
+    else
+        wellConstraints = {well1Coords, well2Coords};
+    end
     
 
     [G, Pts,F] = compositePebiGrid2D(gs, pdims, ...
@@ -151,34 +160,31 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
         layerthicknesses = repmat(5000/opt.Cdepth, opt.Cdepth,1);
         G = makeLayeredGrid(G, layerthicknesses);
         G = mcomputeGeometry(G);
-        G = RotateGrid(G);
-        G = mcomputeGeometry(G);
-        G = TagbyFacies(G, geodata, 'vertIx', vertIx);
-        G.nodes.coords = SPE11CBend(G.nodes.coords);
-        G = mcomputeGeometry(G);
+    else
+        G = makeLayeredGrid(G, 1);
+        G.faces.tag = zeros(G.faces.num, 1);
+        k = G.nodes.coords(:,3) > 0;
+        G.nodes.coords(k,3) = depth;
     end
-    G = makeLayeredGrid(G, 1);
-    G.faces.tag = zeros(G.faces.num, 1);
-    k = G.nodes.coords(:,3) > 0;
-    G.nodes.coords(k,3) = depth;
+
     switch opt.aspect
         case 'true'
             switch opt.SPEcase
-                case 'B'
-                    xscale = 8400;%correct size
-                    zscale = 8400;
                 case 'A' 
                     xscale = 2.8;
                     zscale = 2.8;
+                otherwise
+                    xscale = 8400;%correct size
+                    zscale = 8400;
             end
         case 'square'
             switch opt.SPEcase
-                case 'B'
-                    xscale = 8400;
-                    zscale = 1200;
                 case 'A' 
                     xscale = 2.8;
                     zscale = 1.2;
+                otherwise
+                    xscale = 8400;
+                    zscale = 1200;
             end
     end
     matPoints = vertcat(geodata.Point{:});
@@ -196,9 +202,9 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     end 
 
 
-    switch opt.SPEcase
-        case 'B'
+    if strcmp(opt.SPEcase, 'B') || strcmp(opt.SPEcase, 'C')
         G = RotateGrid(G);
+        G = mcomputeGeometry(G);%maybe not necessary
         geodata = RotateGrid(geodata);
         if opt.bufferVolumeSlice
             G = sliceGrid(G, {[1, 0.5, 0], [8399, 0.5, 0]}, 'normal', [1 0 0]);
@@ -211,17 +217,30 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
         G = TagbyFacies(G, geodata, 'vertIx', 3);
     end
 
+    if strcmp(opt.SPEcase, 'C')
+        G.nodes.coords = SPE11CBend(G.nodes.coords);
+        G = mcomputeGeometry(G);
+    end
+
 
     t = tic();
     dispif(opt.verbose, "Adding injection cells and box-volume-fractions...");
     G = addBoxWeights(G, 'SPEcase', opt.SPEcase);
     [w1, w2] = getinjcells(G, opt.SPEcase);
-    G.cells.wellCells = [w1, w2];
+    if strcmp(opt.SPEcase, 'C')
+        G.cells.wellCells = {w1, w2};
+    else
+        G.cells.wellCells = [w1, w2];
+    end
     t = toc(t);
     dispif(opt.verbose, "Done in %0.2d s.\n", t);
     
     if opt.save
-        filename = sprintf('cPEBI_%dx%d_%s.mat', nx, ny, opt.SPEcase);
+        if strcmp(opt.SPecase, 'C')
+            filename = sprintf('cPEBI_%dx%dx%d_%s.mat', nx, opt.Cdepth, ny, opt.SPEcase);
+        else
+            filename = sprintf('cPEBI_%dx%d_%s.mat', nx, ny, opt.SPEcase);
+        end
         if opt.bufferVolumeSlice
             filename = ['buff_', filename];
         end

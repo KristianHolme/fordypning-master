@@ -237,10 +237,15 @@ function G = Recombine(G, opt, nx, ny, geodata)
 
     
     if opt.save
+        if strcmp(opt.SPecase, 'C')
+            fn = sprintf('%dx%dx%d_%s.mat', nx, opt.Cdepth, ny, opt.SPEcase);
+        else
+            fn = sprintf('%dx%d_%s.mat', nx, ny, opt.SPEcase);
+        end
         if strcmp(opt.partitionMethod, 'facearea')
-            fn = sprintf('cutcell_FPG_%dx%d_%s.mat', nx, ny, opt.SPEcase);
+            fn = ['cutcell_FPG_', fn];
         elseif strcmp(opt.partitionMethod, 'convexity')
-            fn = sprintf('cutcell_PG_%dx%d_%s.mat', nx, ny, opt.SPEcase);
+            fn = ['cutcell_PG_', fn];
         end
         if opt.presplit
             fn = ['presplit_', fn];
