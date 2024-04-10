@@ -8,7 +8,8 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
                  'useMrstPebi', false, ...
                  'earlyReturn', false, ...
                  'removeShortEdges', true, ...
-                 'aspect', 'true');
+                 'aspect', 'true', ...
+                 'Cdepth', 50);
     [opt, extra] = merge_options(opt, varargin{:});
     dispif(opt.verbose, 'Generating PEBI grid...\n');
     tstart = tic();
@@ -20,7 +21,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
 
     if strcmp(opt.aspect, 'true')
         switch opt.SPEcase
-            case 'B'
+            case 'B' | 'C'
                 matPoints = vertcat(geodata.Point{:});
                 matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
                 matPoints(:,2) = matPoints(:,2)/8.4;
@@ -146,7 +147,16 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     G = fixGrid(G);
 
     
-
+    if strcmp(opt.SPEcase, 'C')
+        layerthicknesses = repmat(5000/opt.Cdepth, opt.Cdepth,1);
+        G = makeLayeredGrid(G, layerthicknesses);
+        G = mcomputeGeometry(G);
+        G = RotateGrid(G);
+        G = mcomputeGeometry(G);
+        G = TagbyFacies(G, geodata, 'vertIx', vertIx);
+        G.nodes.coords = SPE11CBend(G.nodes.coords);
+        G = mcomputeGeometry(G);
+    end
     G = makeLayeredGrid(G, 1);
     G.faces.tag = zeros(G.faces.num, 1);
     k = G.nodes.coords(:,3) > 0;

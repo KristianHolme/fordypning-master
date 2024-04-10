@@ -66,7 +66,11 @@ function G = setupGrid(simcase, varargin)
                 G = gmshToMRST(mFile);
                 save(matFile, "G")
             end
-            sliceForBuffer = true;
+            if contains(resolution, '8400') %really big case, all cells are small, so dont need extra small (?)
+                sliceForBuffer = false;
+            else
+                sliceForBuffer = true;
+            end
         elseif contains(gridcase, 'skewed3D')
             G = makeSkewed3D();
             return

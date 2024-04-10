@@ -47,19 +47,20 @@ function timings = MarkovSims(server)
             direct_solver = false;
         case 4
             SPEcase = 'B';
-            gridcases = {'cut210x70'};
+            gridcases = {'struct8400x1200'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+            pdiscs = {''};
             uwdiscs = {''};
-            deckcases = {'RS'};
+            deckcases = {'B_ISO_C'};
             tagcase = '';
             resetData = false;
-            resetAssembly = true;
+            resetAssembly = false;
             do.multiphase = true;
-            Jutul = false;
+            Jutul = true;
             direct_solver = false;
     end
     
+    warning('off', 'all');
     timings = struct();
     for ideck = 1:numel(deckcases)
         deckcase = deckcases{ideck};
@@ -85,4 +86,6 @@ function timings = MarkovSims(server)
             end
         end
     end
+
+    warning('on', 'all');
     disp(timings);

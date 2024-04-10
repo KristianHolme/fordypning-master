@@ -219,14 +219,19 @@ function G = Recombine(G, opt, nx, ny, geodata)
         G = RotateGrid(G);
         G = mcomputeGeometry(G);
         G = TagbyFacies(G, geodata, 'vertIx', vertIx);
-        G = SPE11CBend(G);
+        G.nodes.coords = SPE11CBend(G.nodes.coords);
+        G = mcomputeGeometry(G);
     end
 
     t = tic();
     dispif(opt.verbose, "Adding injection cells and box-volume-fractions...");
     G = addBoxWeights(G, 'SPEcase', opt.SPEcase);
     [w1, w2] = getinjcells(G, opt.SPEcase);
-    G.cells.wellCells = [w1, w2];
+    if strcmp(opt.SPEcase, 'C')
+        G.cells.wellCells = {w1, w2};
+    else
+        G.cells.wellCells = [w1, w2];
+    end
     t = toc(t);
     dispif(opt.verbose, "Done in %0.2d s.\n", t);
 
