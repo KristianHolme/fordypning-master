@@ -219,7 +219,11 @@ classdef Simcase < handle
             if isempty(deck)
                 deckname = simcase.deckcase;
                 if contains(deckname, 'B_ISO_C')
-                    deckname = 'CSP11B_DISGAS.DATA';
+                    if contains(deckname, '54C')
+                        deckname = 'CSP11B_DISGAS_54C.DATA';
+                    else
+                        deckname = 'CSP11B_DISGAS.DATA';
+                    end
                     deckFolder = fullfile(simcase.spe11decksDir, 'csp11b', 'isothermal', '130_62');
                 elseif contains(deckname, 'B_ISO_F')
                     deckname = 'CSP11B_DISGAS.DATA';
@@ -356,7 +360,7 @@ classdef Simcase < handle
             plotToolbar(simcase.model.G, states, 'field', opt.field, 'pauseTime', opt.pauseTime, ...
                 varargin{:});
             [inj1, inj2] = simcase.getinjcells;
-            plotGrid(simcase.G, [inj1, inj2], 'faceAlpha', 0)
+            plotGrid(simcase.G, vertcat(inj1, inj2), 'faceAlpha', 0)
             if simcase.griddim==3
                 view(0,0);
             end

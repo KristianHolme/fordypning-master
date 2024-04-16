@@ -157,7 +157,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
 
     
     if strcmp(opt.SPEcase, 'C')
-        layerthicknesses = repmat(5000/opt.Cdepth, opt.Cdepth,1);
+        layerthicknesses = [1; repmat(5000/opt.Cdepth, opt.Cdepth,1); 1]; %one meter thickness for buffer volume in front and back
         G = makeLayeredGrid(G, layerthicknesses);
         G = mcomputeGeometry(G);
     else
@@ -236,7 +236,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     dispif(opt.verbose, "Done in %0.2d s.\n", t);
     
     if opt.save
-        if strcmp(opt.SPecase, 'C')
+        if strcmp(opt.SPEcase, 'C')
             filename = sprintf('cPEBI_%dx%dx%d_%s.mat', nx, opt.Cdepth, ny, opt.SPEcase);
         else
             filename = sprintf('cPEBI_%dx%d_%s.mat', nx, ny, opt.SPEcase);

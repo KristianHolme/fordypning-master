@@ -91,11 +91,15 @@ function G = setupGrid(simcase, varargin)
             matFile = fullfile('grid-files/cutcell/', [gridcase, '.mat']);
         elseif contains(gridcase, 'cut')
             gridFolder = 'grid-files/cutcell';
-            pattern = '(\d+)x(\d+)$';
+            pattern = '(\d+)x(\d+)x?(\d+)?$';
             tokens = regexp(gridcase, pattern, 'tokens');
             params = tokens{1};
             params = cellfun(@str2double, params);
-            matFile = [num2str(params(1)), 'x', num2str(params(2)), '_', simcase.SPEcase,'.mat'];
+            if numel(params) == 2
+                matFile = [num2str(params(1)), 'x', num2str(params(2)), '_', simcase.SPEcase,'.mat'];
+            elseif numel(params) == 3
+                matFile = [num2str(params(1)), 'x', num2str(params(2)),'x', num2str(params(3)), '_', simcase.SPEcase,'.mat'];
+            end
             if contains(gridcase, 'FPG')
                 matFile = ['FPG_', matFile];
             elseif contains(gridcase, 'PG')
@@ -152,6 +156,7 @@ function G = setupGrid(simcase, varargin)
         else
             G = initEclipseGrid(simcase.deck, 'usemex', true);
             G = computeGeometry(G);
+            G = getBufferCells(G);
             G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
             % G.cells.indexMap = 1:G.cells.num;
             matFile = fullfile('grid-files/deck', [simcase.deckcase,'.mat']);
@@ -208,7 +213,7 @@ function G = setupGrid(simcase, varargin)
     end
     
     testing = false;
-    if (~isfield(G, 'reductionMatrix') ) || testing %still testing TODO remove
+    if (~isfield(G, 'reductionMatrix') ) & ~strcmp(simcase.SPEcase, 'C') %not yet implemented for C
         switch simcase.SPEcase
             case 'B'
                 redNx = 840;

@@ -7,13 +7,13 @@ function timings = MarkovSims(server)
     mrstVerbose off
     switch  server
         case 1
-            SPEcase = 'B';
-            gridcases = {'struct220x110'};
+            SPEcase = 'C';
+            gridcases = {'horz_pre_cut_PG_50x50x50', 'horz_pre_cut_PG_50x50x50'};
             schedulecases = {''};
-            pdiscs = {''};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'cc'};
             uwdiscs = {''};
             deckcases = {'B_ISO_C'};
-            tagcase = 'test';
+            tagcase = '';
             resetData = true;
             resetAssembly = true;
             do.multiphase = true;

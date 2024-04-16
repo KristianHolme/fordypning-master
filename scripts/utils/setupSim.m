@@ -56,7 +56,7 @@ function [state0, model, schedule, nls] = setupSim(simcase, varargin)
         else
             state0 = initResSol(G, 1*atm, [1, 0]);
         end
-    elseif strcmp(simcase.SPEcase, 'B')
+    elseif strcmp(simcase.SPEcase, 'B') || strcmp(simcase.SPEcase, 'C')
         if ~isempty(simcase.gridcase)
             p_datum = 19620000;%why this value, why not 2.0754e+07?
     
@@ -67,7 +67,7 @@ function [state0, model, schedule, nls] = setupSim(simcase, varargin)
             rv = [];
             
             act = [model.water & model.oil, model.oil & model.gas];
-            contacts = [10000, 0];
+            contacts = [10000, -1000];
             contacts_pc = [0,0];
             numRegions = 6;
             regions = cell(numRegions, 1);

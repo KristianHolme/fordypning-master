@@ -9,11 +9,11 @@ function G = GenerateCutCellGrid(nx, ny, varargin)
         'type', 'horizon', ...
         'removeInactive', false, ...
         'partitionMethod', 'convexity', ...
-        'nudgeGeom', true, ...
         'round', true,...
         'SPEcase', 'B', ...
         'Cdepth', 50);
     opt = merge_options(opt, varargin{:});
+    opt.nudgeGeom = ~opt.presplit;
     totstart = tic();
     switch opt.type
         case 'cartesian'
@@ -156,6 +156,7 @@ function [G, geodata] = makeHorizonCut(nx, totys, opt)
         points = vertcat(cellpoints{:});
         numPoints = size(points, 1);
         targetpoints = Gnudge.nodes.coords(Gnudge.nodes.coords(:,2)==0,:);
+        % 
         [points(inds,:), ~, ~] = nudgePoints(targetpoints, points(inds,:), ...
             'targetOccupation', true);
         cellpoints = mat2cell(points, ones(numPoints, 1), 3);
@@ -213,7 +214,7 @@ function G = Recombine(G, opt, nx, ny, geodata)
 
     if strcmp(opt.SPEcase, 'C')
         G = removeLayeredGrid(G);
-        layerthicknesses = repmat(5000/opt.Cdepth, opt.Cdepth,1);
+        layerthicknesses = [1; repmat(5000/opt.Cdepth, opt.Cdepth,1); 1];%one meter thickness for buffer volume in front and back
         G = makeLayeredGrid(G, layerthicknesses);
         G = mcomputeGeometry(G);
         G = RotateGrid(G);
@@ -221,6 +222,7 @@ function G = Recombine(G, opt, nx, ny, geodata)
         G = TagbyFacies(G, geodata, 'vertIx', vertIx);
         G.nodes.coords = SPE11CBend(G.nodes.coords);
         G = mcomputeGeometry(G);
+        G = getBufferCells(G);
     end
 
     t = tic();
@@ -237,7 +239,7 @@ function G = Recombine(G, opt, nx, ny, geodata)
 
     
     if opt.save
-        if strcmp(opt.SPecase, 'C')
+        if strcmp(opt.SPEcase, 'C')
             fn = sprintf('%dx%dx%d_%s.mat', nx, opt.Cdepth, ny, opt.SPEcase);
         else
             fn = sprintf('%dx%d_%s.mat', nx, ny, opt.SPEcase);

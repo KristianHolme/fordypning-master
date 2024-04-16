@@ -37,7 +37,7 @@ function [G, rock] = addBufferVolume(G, rock, varargin)
         cell = G.bufferCells(ic);
         % cell = max(G.faces.neighbors(face, :));
         facies = G.cells.tag(cell);
-        assert(facies ~=6 );
+        % assert(facies ~=6 );
         % face = G.bufferFaces(ic);
         % faceArea = G.faces.areas(face);
         if ismember(facies, [2, 3, 4, 5])

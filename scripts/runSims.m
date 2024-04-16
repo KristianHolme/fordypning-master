@@ -15,12 +15,12 @@ mrstVerbose on
 % 'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-SPEcase = 'B';
+% SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 % gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62', 'cPEBI_130x62'};
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62'};
-gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_FPG_130x62'};
+% gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_FPG_130x62'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
@@ -30,11 +30,15 @@ gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_FPG_130x62'};
 % gridcases = {'5tetRef0.31'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 
+SPEcase = 'B';
+gridcases = {''};
+
+
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 pdiscs = {''};
 
 schedulecases = {''};%defaults to schedule from deck
-deckcases = {'B_ISO_C'}; %B_ISO_C
+deckcases = {'B_ISO_C', 'B_ISO_C_54C'}; %B_ISO_C
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';%normalRock, bufferMult, deckrock, allcells
@@ -42,13 +46,13 @@ Jutul               = false;
 
 resetData           = true;
 resetAssembly       = true;
-do.plotStates       = false;
+do.plotStates       = true;
 do.plotFlux         = false;
 do.multiphase       = false;
 do.plotOrthErr      = false;
 do.dispTime         = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
-mrstVerbose on;
+mrstVerbose off;
 
 stats = {};
 timings = struct();

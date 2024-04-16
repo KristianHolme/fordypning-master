@@ -2,12 +2,12 @@ clear all;
 close all;
 %% Setup data
 % getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'CellVelocity';sumReduce = true; force = false;
-getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
+% getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
 % getData = @(states, step, G, simcase) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation'; sumReduce = false;force = false;
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';sumReduce = false; force = false;
 % getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap=''; sumReduce = true; force = true;
 % getData = @(states, step, G, simcase) getFwerr(simcase);dataname ='fwerr'; cmap=''; sumReduce = true; force = true;
-% getData = @(states, step, G, simcase) getTotMass(states, step, simcase);cmap='';dataname='totMass'; sumReduce = true; force = false;
+getData = @(states, step, G, simcase) getTotMass(states, step, simcase);cmap='';dataname='totMass'; sumReduce = true; force = false;
 %% SPEcase, steps
 SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
@@ -48,9 +48,10 @@ end
 % gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};filename = 'cut-vs-pebi-M';
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};filename = 'C-Cut-P-T_F';
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};filename = 'C-Cut-P-Q-T_F';
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};filename = 'C-Cut-P-Q-T_F';
 % gridcases = { 'cPEBI_819x117', '5tetRef0.31'};filename = 'pebi-unstruct-F';
 % gridcases = {'struct220x110', 'struct819x117', 'struct2640x380'};filename = 'struct-refine';
+gridcases = {'', 'struct130x62'};
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
@@ -142,25 +143,25 @@ end
 % gridcase = 'struct819x117';
 % gridcase = 'cPEBI_819x117';
 % gridcase = '5tetRef0.31';
-gridcase = 'gq_pb0.19';
-% gridcase = '';
+% gridcase = 'gq_pb0.19';
+gridcase = '';
 % steps = [360];
 
 
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-% pdiscs = {''};
+pdiscs = {'', ''};
 % uwdiscs = {'', 'WENO'};
 uwdiscs = {''};
-deckcase = 'B_ISO_C';
-tagcases = {'allcells'};%one for each pdisc or one that applies to all pdiscs
+deckcases = {'B_ISO_C', 'B_ISO_C_54C'};
+tagcases = {''};%one for each pdisc or one that applies to all pdiscs
 
 
-saveplot = true;
-saveToReport = true;
+saveplot = false;
+saveToReport = false;
 bigGrid = false;
 filename =[SPEcase, '_', dataname, '_diff_', gridcase, strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
 savefolder = ['./../plotsMaster/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
@@ -171,6 +172,9 @@ numDiscs = numpdiscs*numuwdiscs;
 if numel(tagcases) ~= numDiscs
     tagcases = repmat(tagcases, 1, numDiscs);
 end
+if numel(deckcases) ~= numDiscs
+    deckcases = repmat(deckcases, 1, numDiscs);
+end
 data = cell(numDiscs, numDiscs, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
@@ -178,13 +182,13 @@ for istep = 1:numel(steps)
         for j = i:numDiscs
             pdisc = pdiscs{ceil(j/numuwdiscs)};
             uwdisc = uwdiscs{customMod(j, numuwdiscs)};
-            simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+            simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcases{ceil(j/numuwdiscs)}, 'usedeck', true, 'gridcase', gridcase, ...
                                 'tagcase', tagcases{j}, ...
                                 'pdisc', pdisc, 'uwdisc', uwdisc);
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step
-                statedata = getData(states,step, G);
+                statedata = getData(states,step, G, simcase);
                 [inj1, inj2] = simcase.getinjcells;
                 data{i, j, istep}.statedata = statedata;
                 data{i, j, istep}.injcells = [inj1, inj2];
@@ -248,7 +252,7 @@ for istep = 1:numel(steps)
         'diff', true, 'bigGrid', bigGrid, 'saveToReport', saveToReport);   
 end
 %% Setup Grid diff plot
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117'};
@@ -257,16 +261,17 @@ gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x11
 % gridcases = {'cart_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380'};
 % gridcases = {'struct2640x380', 'horz_ndg_cut_PG_2640x380', 'cart_ndg_cut_PG_2640x380'};
 % gridcases = {'struct1638x234', 'horz_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_1638x234'};
+gridcases = {'', 'struct130x62'};
 
 jutul = {false};
-% pdiscs = {''};
+pdiscs = {''};
 % pdiscs = {'hybrid-avgmpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 tagcases = {''}; %one for each pdisc or one for all
 uwdiscs = {''};
 
 
-deckcase = 'B_ISO_C';
+deckcases = {'B_ISO_C'};%one for each grid or one for all
 saveplot = true;
 saveToReport = false;
 makeCorrTable = true;
@@ -283,12 +288,15 @@ end
 if numel(jutul) ~= numGrids
     jutul = repmat(jutul, 1, numGrids);
 end
+if numel(deckcases) ~= numGrids
+    deckcases = repmat(deckcases, 1, numGrids);
+end
 simcases = {};
 for ig = 1:numGrids
     for ipd = 1:numpdiscs
         for iud = 1:numuwdiscs
             newcase = Simcase('gridcase', gridcases{ig}, 'pdisc', pdiscs{ipd}, 'uwdisc', uwdiscs{iud}, ...
-                'tagcase', tagcases{ipd}, 'deckcase', deckcase, 'usedeck', true, 'SPEcase', SPEcase, 'jutul', jutul{ig});
+                'tagcase', tagcases{ipd}, 'deckcase', deckcases{ig}, 'usedeck', true, 'SPEcase', SPEcase, 'jutul', jutul{ig});
             [states, ~, ~] = newcase.getSimData;
             if numelData(states) >= steps(end)
                 simcases{end+1} = newcase;

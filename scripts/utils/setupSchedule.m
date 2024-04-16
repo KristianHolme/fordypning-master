@@ -58,7 +58,56 @@ function schedule = setupSchedule(simcase, varargin)
             for i = 1:numel(schedule.control)
                 schedule.control(i).W(1).cells = cell1;
                 schedule.control(i).W(2).cells = cell2;
+                % if strcmp(simcase.SPEcase, 'C')
+                %     schedule.control(i).W(1).dir = 'Y';
+                %     schedule.control(i).W(2).dir = 'Y';
+                %     schedule.control(i).W(1).WI = repmat(schedule.control(i).W(1).WI, numel(cell1), 1);
+                %     schedule.control(i).W(2).WI = repmat(schedule.control(i).W(2).WI, numel(cell2), 1);
+                %     schedule.control(i).W(1).dZ = repmat(schedule.control(i).W(1).dZ, numel(cell1), 1);
+                %     schedule.control(i).W(2).dZ = repmat(schedule.control(i).W(2).dZ, numel(cell2), 1);
+                %     rateMult = 50/0.035;
+                %     schedule.control(i).W(1).val = schedule.control(i).W(1).val*rateMult;
+                %     schedule.control(i).W(2).val = schedule.control(i).W(2).val*rateMult;
+                % 
+                % end
             end
+            if strcmp(simcase.SPEcase, 'C')
+                rates1mult = [0,1, 1, 0];
+                rates2mult = [0,0, 1, 0];
+                w1 = [];
+                w2 = [];
+                w3 = [];
+                w4 = [];
+                for ic = 1:numel(cell1)
+                    c = cell1(ic);
+                    cellFaces = gridCellFaces(simcase.G, c);
+                    ymin = max(1000, min(simcase.G.faces.centroids(cellFaces,2)));
+                    ymax = min(4000, max(simcase.G.faces.centroids(cellFaces,2)));
+                    rateval = 50/3000 *1/deckmodel.fluid.rhoGS * (ymax-ymin);
+                    w1 = addWell(w1, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
+                    w2 = addWell(w2, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
+                    w3 = addWell(w3, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
+                    w4 = addWell(w4, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
+                end
+                wellLength = integral(@(y)SPE11CWell2Arc(y), 1000,4000);
+                for ic = 1:numel(cell2)
+                    c = cell2(ic);
+                    cellFaces = gridCellFaces(simcase.G, c);
+                    ymin = max(1000, min(simcase.G.faces.centroids(cellFaces,2)));
+                    ymax = min(4000, max(simcase.G.faces.centroids(cellFaces,2)));
+                    L = integral(@(y)SPE11CWell2Arc(y), ymin,ymax);
+                    rateval = 50 *1/deckmodel.fluid.rhoGS * L/wellLength;
+                    w1 = addWell(w1, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
+                    w2 = addWell(w2, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
+                    w3 = addWell(w3, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
+                    w4 = addWell(w4, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
+                end 
+                wells = {w1, w2, w3, w4};
+                for i = 1:numel(schedule.control)
+                    schedule.control(i).W = wells{i};
+                end
+            end
+
         else
             model = simcase.model;
             schedule = convertDeckScheduleToMRST(model, deck);

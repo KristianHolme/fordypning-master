@@ -31,16 +31,27 @@ function rock = setupRock(simcase, varargin)
             rock.perm       = faciesPerm(G.cells.tag);
             rock.poro   = faciesPoro(G.cells.tag);
             rock.regions.saturation = G.cells.tag;
-        elseif strcmp(simcase.SPEcase, 'B')
+        else
             faciesPerm      = [1e-16; 1e-13; 2e-13; 5e-13; 1e-12; 2e-12; 0.0];
             faciesPoro      = [0.1; 0.2; 0.2; 0.2; 0.25; 0.35; 0.0];
             rock.perm       = faciesPerm(G.cells.tag);
             if G.griddim == 3
-                rock.perm(:, end+1) = faciesPerm(G.cells.tag)*1;%same perm in y direction
+                rock.perm(:, end+1) = faciesPerm(G.cells.tag);%same perm in y direction
             end
             rock.perm(:, end+1) = faciesPerm(G.cells.tag)*0.1;
             rock.poro   = faciesPoro(G.cells.tag);
             rock.regions.saturation = G.cells.tag;
+
+            if strcmp(simcase.SPEcase, 'C')
+                fullperm = zeros(G.cells.num, 6);
+                fullperm(:,[1,4,6]) = rock.perm;
+                v = G.cells.centroids(:,2);
+                scaling = -(0.12)*(v/2500-1)+0.002;
+                xperm = fullperm(:,1);%perm in x dir
+                fullperm(:,5) = xperm .* scaling;
+                fullperm(:,6) = fullperm(:,6) + xperm .* (scaling.^2);
+                rock.perm = fullperm;                
+            end
             if contains(simcase.tagcase, 'bufferMult')
                 [~, rock] = addBufferVolume(G, rock, 'bufferMult', true);
             else
