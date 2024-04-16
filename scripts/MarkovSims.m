@@ -8,9 +8,9 @@ function timings = MarkovSims(server)
     switch  server
         case 1
             SPEcase = 'C';
-            gridcases = {'horz_pre_cut_PG_50x50x50', 'horz_pre_cut_PG_50x50x50'};
+            gridcases = {'horz_pre_cut_PG_50x50x50'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'cc'};
+            pdiscs = {'', 'hybrid-avgmpfa'};
             uwdiscs = {''};
             deckcases = {'B_ISO_C'};
             tagcase = '';
@@ -20,43 +20,43 @@ function timings = MarkovSims(server)
             Jutul = false;
             direct_solver = false;
         case 2
-            SPEcase = 'B';
-            gridcases = {'struct220x110'};
+            SPEcase = 'C';
+            gridcases = {'horz_pre_cut_PG_50x50x50'};
             schedulecases = {''};
-            pdiscs = {''};
+            pdiscs = {'hybrid-ntpfa', 'cc'};
             uwdiscs = {''};
             deckcases = {'B_ISO_C'};
-            tagcase = 'test';
+            tagcase = '';
             resetData = true;
             resetAssembly = true;
             do.multiphase = true;
-            Jutul = true;
+            Jutul = false;
             direct_solver = false;
         case 3
-            SPEcase = 'B';
-            gridcases = {'struct819x117'};
+             SPEcase = 'C';
+            gridcases = {'horz_pre_cut_PG_50x50x50'};
             schedulecases = {''};
-            pdiscs = {''};
+            pdiscs = {'', 'hybrid-avgmpfa'};
             uwdiscs = {''};
             deckcases = {'B_ISO_C'};
             tagcase = '';
             resetData = true;
             resetAssembly = true;
             do.multiphase = true;
-            Jutul = true;
+            Jutul = false;
             direct_solver = false;
         case 4
-            SPEcase = 'B';
-            gridcases = {'struct8400x1200'};
+             SPEcase = 'C';
+            gridcases = {'horz_pre_cut_PG_50x50x50'};
             schedulecases = {''};
-            pdiscs = {''};
+            pdiscs = {'hybrid-ntpfa', 'cc'};
             uwdiscs = {''};
             deckcases = {'B_ISO_C'};
             tagcase = '';
-            resetData = false;
-            resetAssembly = false;
+            resetData = true;
+            resetAssembly = true;
             do.multiphase = true;
-            Jutul = true;
+            Jutul = false;
             direct_solver = false;
     end
     
