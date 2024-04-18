@@ -95,9 +95,9 @@ function G = setupGrid(simcase, varargin)
             tokens = regexp(gridcase, pattern, 'tokens');
             params = tokens{1};
             params = cellfun(@str2double, params);
-            if numel(params) == 2
+            if numel(params) == 2 || (numel(params) == 3 & isnan(params(3)))
                 matFile = [num2str(params(1)), 'x', num2str(params(2)), '_', simcase.SPEcase,'.mat'];
-            elseif numel(params) == 3
+            elseif numel(params) == 3 & ~isnan(params(3))
                 matFile = [num2str(params(1)), 'x', num2str(params(2)),'x', num2str(params(3)), '_', simcase.SPEcase,'.mat'];
             end
             if contains(gridcase, 'FPG')
@@ -199,7 +199,8 @@ function G = setupGrid(simcase, varargin)
 
     if sliceForBuffer
         if min(G.cells.centroids(:,1)) > 0.6
-            [G, simcase] = bufferSlice(G, simcase);
+            G = bufferSlice(G, SPEcase);
+            G.faces.tag = zeros(G.faces.num, 1);
             save(matFile, 'G');
         end
     end

@@ -1,4 +1,4 @@
-function timings = MarkovSims(server)
+1function timings = MarkovSims(server)
     mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
         ad-blackoil postprocessing diagnostics prosjektOppgave...
         deckformat gmsh nfvm mpfa coarsegrid
@@ -8,7 +8,7 @@ function timings = MarkovSims(server)
     switch  server
         case 1
             SPEcase = 'C';
-            gridcases = {'horz_pre_cut_PG_50x50x50'};
+            gridcases = {'struct50x50c50'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa'};
             uwdiscs = {''};
@@ -21,7 +21,7 @@ function timings = MarkovSims(server)
             direct_solver = false;
         case 2
             SPEcase = 'C';
-            gridcases = {'horz_pre_cut_PG_50x50x50'};
+            gridcases = {'struct50x50x50'};
             schedulecases = {''};
             pdiscs = {'hybrid-ntpfa', 'cc'};
             uwdiscs = {''};

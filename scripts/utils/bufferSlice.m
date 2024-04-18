@@ -1,6 +1,6 @@
-function  [G, simcase] = bufferSlice(G, simcase)
+function  G = bufferSlice(G, SPEcase)
     
-    assert(strcmp(simcase.SPEcase, 'B'));
+    assert(~strcmp(SPEcase, 'A'));
     dispif(true, "Slicing to add buffervolume...\n");
     [G, gix] = sliceGrid(G, {[1, 0.5, 0], [8399, 0.5, 0]}, 'normal', [1 0 0]);
     dispif(true, "Done slicing.\n");

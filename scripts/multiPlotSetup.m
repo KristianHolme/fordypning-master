@@ -252,7 +252,7 @@ for istep = 1:numel(steps)
         'diff', true, 'bigGrid', bigGrid, 'saveToReport', saveToReport);   
 end
 %% Setup Grid diff plot
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117'};
@@ -261,20 +261,21 @@ end
 % gridcases = {'cart_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380'};
 % gridcases = {'struct2640x380', 'horz_ndg_cut_PG_2640x380', 'cart_ndg_cut_PG_2640x380'};
 % gridcases = {'struct1638x234', 'horz_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_1638x234'};
-gridcases = {'', 'struct130x62'};
+% gridcases = {'', 'struct130x62'};
 
 jutul = {false};
-pdiscs = {''};
+% pdiscs = {''};
 % pdiscs = {'hybrid-avgmpfa'};
-% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 tagcases = {''}; %one for each pdisc or one for all
 uwdiscs = {''};
 
 
 deckcases = {'B_ISO_C'};%one for each grid or one for all
-saveplot = true;
+saveplot = false;
 saveToReport = false;
-makeCorrTable = true;
+makeCorrTable = false;
+makeEMDTable = true;
 filename =[SPEcase, '_', dataname, '_diff_', strjoin(cellfun(@(g)displayNameGrid(g, SPEcase) , gridcases, UniformOutput=false), '_'), strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
 savefolder = ['./../plotsMaster/gridDiff/', SPEcase];
 numpdiscs = numel(pdiscs);
@@ -309,6 +310,7 @@ numcases = numel(simcases);
 data = cell(numcases, numcases, numel(steps));
 diffnorms = zeros(numcases, numcases, numel(steps));
 diffCorr = zeros(numcases, numcases, numel(steps));
+energy = zeros(numcases, numcases, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
     puredata = NaN(840*120, numel(simcases));
@@ -330,7 +332,7 @@ for istep = 1:numel(steps)
                 if sumReduce %sums up quantitites, e.g. for total mass
                     fulldata(indexMap) = statedata ./ G.cells.volumes;
                     reducedData = (M*fulldata) .* Gr.cells.volumes;
-                else %wights data, for e.g. pressure
+                else %weights data, for e.g. pressure
                      fulldata(indexMap) = statedata;
                      reducedData = (M*fulldata);
                 end
@@ -352,6 +354,11 @@ for istep = 1:numel(steps)
                 end
                 % R = corrcoef(data{i,i, istep}.statedata, data{i,j, istep}.statedata);
                 % diffCorr(i,j, istep) = R(1,2);
+                if makeEMDTable && j ~= i && j>i
+                    flowenergy = approxEMD(data{i, i, istep}.statedata, data{i, j, istep}.statedata, 'verbose', true);
+                    energy(i,j, istep) = flowenergy;
+                    data{i,j,istep}.title = flowenergy;
+                end
                 %make diff
                 if j ~= i
                     data{i, j, istep}.statedata = data{i, i, istep}.statedata - data{i, j, istep}.statedata;
@@ -378,6 +385,17 @@ if makeCorrTable
     displaynames = cellfun(@(s)displayNameGrid(s.gridcase, s.SPEcase), simcases, 'UniformOutput',false);
     discnames = cellfun(@(s)shortDiscName(s.pdisc),simcases, UniformOutput=false);
     table2latex(Tcorr, fullfile('./../rapport/Tables/corr', [strjoin(unique(displaynames),'_'), '_', strjoin(unique(discnames), '_'), '.tex']), 'colheaders', false);
+end
+if makeEMDTable
+    energy = energy + energy';
+    cellEnergy = num2cell(energy);
+    for i = 1:(numel(simcases))
+        cellEnergy{i,i} = [displayNameGrid(simcases{i}.gridcase, simcases{i}.SPEcase), ', ', shortDiscName(simcases{i}.pdisc)];
+    end
+    Tenergy = cell2table(cellEnergy);
+    displaynames = cellfun(@(s)displayNameGrid(s.gridcase, s.SPEcase), simcases, 'UniformOutput',false);
+    discnames = cellfun(@(s)shortDiscName(s.pdisc),simcases, UniformOutput=false);
+    table2latex(Tenergy, fullfile('./../rapport/Tables/EMD', [strjoin(unique(displaynames),'_'), '_', strjoin(unique(discnames), '_'), '.tex']), 'colheaders', false);
 end
 %% Plot grid diff
 times = cumsum(simcase.schedule.step.val);

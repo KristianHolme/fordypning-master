@@ -42,7 +42,7 @@ function rock = setupRock(simcase, varargin)
             rock.poro   = faciesPoro(G.cells.tag);
             rock.regions.saturation = G.cells.tag;
 
-            if strcmp(simcase.SPEcase, 'C')
+            if strcmp(simcase.SPEcase, 'C') & ~contains(simcase.tagcase, 'diagperm')
                 fullperm = zeros(G.cells.num, 6);
                 fullperm(:,[1,4,6]) = rock.perm;
                 v = G.cells.centroids(:,2);

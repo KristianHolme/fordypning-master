@@ -56,11 +56,13 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
         geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
         pdims = [1*meter, 1*meter];
         if strcmp(opt.SPEcase, 'A'),depth = 1*centi*meter;else, depth = 1*meter;end
-
-        well1Coords(1) = well1Coords(1)/8400;
-        well1Coords(2) = well1Coords(2)/1200;
-        well2Coords(1) = well2Coords(1)/8400;
-        well2Coords(2) = well2Coords(2)/1200;
+        
+        if ~strcmp(opt.SPEcase, 'C')
+            well1Coords(1) = well1Coords(1)/8400;
+            well1Coords(2) = well1Coords(2)/1200;
+            well2Coords(1) = well2Coords(1)/8400;
+            well2Coords(2) = well2Coords(2)/1200;
+        end
     end
 
     data = geodata.V;

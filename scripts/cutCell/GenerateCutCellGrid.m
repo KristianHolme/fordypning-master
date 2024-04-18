@@ -263,6 +263,6 @@ function G = Recombine(G, opt, nx, ny, geodata)
         end
         savepath = fullfile(opt.savedir, fn);
         dispif(opt.verbose, sprintf('Saving to %s\n', savepath));
-        save(fullfile(opt.savedir, fn), "G");
+        save(savepath, "G");
     end
 end

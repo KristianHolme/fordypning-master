@@ -30,25 +30,25 @@ mrstVerbose on
 % gridcases = {'5tetRef0.31'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 
-SPEcase = 'B';
-gridcases = {''};
+SPEcase = 'C';
+gridcases = {'struct20x20x20'};
 
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-pdiscs = {''};
+pdiscs = {'hybrid-ntpfa'};
 
 schedulecases = {''};%defaults to schedule from deck
-deckcases = {'B_ISO_C', 'B_ISO_C_54C'}; %B_ISO_C
+deckcases = {'B_ISO_C'}; %B_ISO_C
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = '';%normalRock, bufferMult, deckrock, allcells
+tagcase = 'diagperm';%normalRock, bufferMult, deckrock, allcells, diagperm
 Jutul               = false;
 
 resetData           = true;
 resetAssembly       = true;
-do.plotStates       = true;
+do.plotStates       = false;
 do.plotFlux         = false;
-do.multiphase       = false;
+do.multiphase       = true;
 do.plotOrthErr      = false;
 do.dispTime         = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
