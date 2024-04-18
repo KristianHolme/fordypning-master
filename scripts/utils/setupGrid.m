@@ -61,7 +61,7 @@ function G = setupGrid(simcase, varargin)
             matFile = fullfile(gridFolder, [prefix, '_struct', resolution ,'_grid.mat']);
             mFile = fullfile(gridFolder, [prefix, '_struct', resolution, '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
-                error([matFile,' and ', mfile, ' not found']);
+                error([matFile,' and ', mFile, ' not found']);
             elseif ~isfile(matFile) && isfile(mFile)
                 G = gmshToMRST(mFile);
                 save(matFile, "G")

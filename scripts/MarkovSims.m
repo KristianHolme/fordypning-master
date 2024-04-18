@@ -8,7 +8,7 @@ function timings = MarkovSims(server)
     switch  server
         case 1
             SPEcase = 'C';
-            gridcases = {'struct50x50c50'};
+            gridcases = {'struct50x50x50'};
             schedulecases = {''};
             pdiscs = {'', 'hybrid-avgmpfa'};
             uwdiscs = {''};
