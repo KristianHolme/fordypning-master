@@ -48,7 +48,7 @@ function rock = setupRock(simcase, varargin)
                 v = G.cells.centroids(:,2);
                 scaling = -(0.12)*(v/2500-1)+0.002;
                 xperm = fullperm(:,1);%perm in x dir
-                fullperm(:,5) = xperm .* scaling;
+                fullperm(:,5) = -xperm .* scaling;
                 fullperm(:,6) = fullperm(:,6) + xperm .* (scaling.^2);
                 rock.perm = fullperm;                
             end

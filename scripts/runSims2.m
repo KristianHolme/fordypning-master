@@ -8,30 +8,29 @@ function timings = runSims2(server)
     switch  server
     case 1
         SPEcase = 'C';
-        gridcases = {'horz_pre_cut_PG_20x20x20', 'horz_pre_cut_PG_50x50x50', 'horz_pre_cut_PG_100x100x100'};
+        gridcases = {'horz_ndg_cut_PG_50x50x50'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'hybrid-avgmpfa', 'hybrid-ntpfa', '', 'cc'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
         resetAssembly = false;
-        Jutul = true;
+        Jutul = false;
         direct_solver = false;
-        warning('off', 'all');
+        mrstVerbose on;
     case 2
-        SPEcase = 'B';
-        gridcases = {''};
+        SPEcase = 'C';
+        gridcases = {'cart_ndg_cut_PG_50x50x50'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'hybrid-ntpfa', 'hybrid-avgmpfa', '', 'cc'};
         uwdiscs = {''};
-        deckcases = {'B_ISO_C_54C'};
+        deckcases = {'B_ISO_C'};
         tagcase = '';
-        resetData = true;
+        resetData = false;
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
-        warning('off', 'all');
     case 3
         SPEcase = 'B';
         gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
@@ -44,7 +43,6 @@ function timings = runSims2(server)
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
-        warning('off', 'all');
     case 4
         SPEcase = 'B';
         gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
@@ -57,7 +55,6 @@ function timings = runSims2(server)
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
-        warning('off', 'all');
     case 5
         SPEcase = 'B';
         gridcases = {'struct819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
@@ -70,10 +67,9 @@ function timings = runSims2(server)
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
-        warning('off', 'all');
     end
-    if Jutul, mrstVerbose on,else, mrstVerbose off,end
-
+    if Jutul, mrstVerbose on,end
+    warning('off', 'all');
     timings = struct();
     for ideck = 1:numel(deckcases)
         deckcase = deckcases{ideck};

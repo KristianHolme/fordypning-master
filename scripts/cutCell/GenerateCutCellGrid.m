@@ -72,6 +72,10 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt)
         points = vertcat(cellpoints{:});
         numPoints = size(points, 1);
         targetpoints = G.nodes.coords(G.nodes.coords(:,depthIx)==0,:);
+        if strcmp(opt.SPEcase, 'C')
+            newPointsPerFace = 10;
+            targetpoints = expandTargetPoints(G, targetpoints, depthIx, newPointsPerFace);
+        end
         [points, ~, ~] = nudgePoints(targetpoints, points, ...
             'targetOccupation', true);
         cellpoints = mat2cell(points, ones(numPoints, 1), 3);
@@ -157,6 +161,10 @@ function [G, geodata] = makeHorizonCut(nx, totys, opt)
         numPoints = size(points, 1);
         targetpoints = Gnudge.nodes.coords(Gnudge.nodes.coords(:,2)==0,:);
         % 
+        if strcmp(opt.SPEcase, 'C')
+            newPointsPerFace = 10;
+            targetpoints = expandTargetPoints(G, targetpoints, 2, newPointsPerFace);
+        end
         [points(inds,:), ~, ~] = nudgePoints(targetpoints, points(inds,:), ...
             'targetOccupation', true);
         cellpoints = mat2cell(points, ones(numPoints, 1), 3);
@@ -265,4 +273,34 @@ function G = Recombine(G, opt, nx, ny, geodata)
         dispif(opt.verbose, sprintf('Saving to %s\n', savepath));
         save(savepath, "G");
     end
+end
+
+function targetPoints = expandTargetPoints(G, targetPoints, depthIx, np)
+%np = number of new points per edge
+tol = 1e-6;
+upvec = [0;0;0];
+upvec(depthIx) = 1;
+lambda = linspace(0,1,np+2);
+lambda = lambda(2:end-1);
+backNodes = G.nodes.coords(:,depthIx)>0.007;
+faceNodes = G.faces.nodes;
+faceNodePos = G.faces.nodePos;
+[faceNodes, faceNodePos] = removeFromPackedData(faceNodePos, faceNodes, backNodes);
+sidefaces = G.faces.normals * upvec < tol;
+numNodes = diff(faceNodePos);
+assert(all(numNodes(sidefaces==2)));
+nodes1 = faceNodes(faceNodePos(sidefaces));
+nodes2 = faceNodes(faceNodePos(sidefaces)+1);
+ndPts1 = G.nodes.coords(nodes1,:);
+ndPts2 = G.nodes.coords(nodes2,:);
+
+numSideFaces = sum(sidefaces);
+totNewPoints = np*numSideFaces;
+newPoints = zeros(totNewPoints,3);
+for i = 1:np
+    newPoints((i-1)*numSideFaces+1:i*numSideFaces,:) = ndPts1*lambda(i) + ndPts2*(1-lambda(i));
+end
+
+targetPoints = [targetPoints;newPoints];
+
 end

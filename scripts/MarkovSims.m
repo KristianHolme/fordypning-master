@@ -59,7 +59,7 @@ function timings = MarkovSims(server)
             Jutul = false;
             direct_solver = false;
     end
-    
+    if Jutul, mrstVerbose on,else, mrstVerbose off,end
     warning('off', 'all');
     timings = struct();
     for ideck = 1:numel(deckcases)

@@ -75,15 +75,27 @@ function displayName = displayNameGrid(gridcase, specase)
 
     Bmap('gq_pb0.19') = 'QT-F';
 
-    if strcmp(lower(specase), 'a')
+
+    % C
+    Cmap = containers.Map;
+    Cmap('struct20x20x20') = 'C-C';
+    Cmap('struct50x50x50') = 'C-F';
+
+    if strcmpi(specase, 'a')
         if isKey(Amap, gridcase)
             displayName = Amap(gridcase);
         else
             displayName = gridcase;
         end
-    elseif strcmp(lower(specase), 'b')
+    elseif strcmpi(specase, 'b')
         if isKey(Bmap, gridcase)
             displayName = Bmap(gridcase);
+        else
+            displayName = gridcase;
+        end
+    elseif strcmpi(specase, 'c')
+        if isKey(Cmap, gridcase)
+            displayName = Cmap(gridcase);
         else
             displayName = gridcase;
         end
