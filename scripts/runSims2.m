@@ -18,7 +18,7 @@ function timings = runSims2(server)
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
-        mrstVerbose on;
+        mrstVerbose off;
     case 2
         SPEcase = 'C';
         gridcases = {'cart_ndg_cut_PG_50x50x50'};
