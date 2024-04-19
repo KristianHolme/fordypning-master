@@ -8,9 +8,9 @@ function timings = MarkovSims(server)
     switch  server
         case 1
             SPEcase = 'C';
-            gridcases = {'struct50x50x50'};
+            gridcases = {'struct100x100x100'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'cc', 'hybrid-mpfa'};
             uwdiscs = {''};
             deckcases = {'B_ISO_C'};
             tagcase = '';
@@ -23,7 +23,7 @@ function timings = MarkovSims(server)
             SPEcase = 'C';
             gridcases = {'struct50x50x50'};
             schedulecases = {''};
-            pdiscs = {'hybrid-ntpfa', 'cc'};
+            pdiscs = {'hybrid-mpfa'};
             uwdiscs = {''};
             deckcases = {'B_ISO_C'};
             tagcase = '';
