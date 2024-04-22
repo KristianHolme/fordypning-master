@@ -35,21 +35,21 @@ gridcases = {'struct20x20x20'};
 
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-pdiscs = {''};
+pdiscs = {'hybrid-ntpfa'};
 
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_C'}; %B_ISO_C
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = '';%normalRock, bufferMult, deckrock, allcells, diagperm
+tagcase = 'gdz-shift';%normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
 Jutul               = false;
 
 resetData           = true;
 resetAssembly       = true;
-do.plotStates       = false;
+do.plotStates       = true;
 do.plotFlux         = false;
 do.multiphase       = false;
-do.plotOrthErr      = true;
+do.plotOrthErr      = false;
 do.dispTime         = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 mrstVerbose off;

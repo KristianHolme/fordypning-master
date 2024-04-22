@@ -6,7 +6,7 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     deckformat gmsh nfvm mpfa
 mrstVerbose off
 %% SPEcase
-SPEcase = 'B';
+SPEcase = 'C';
 if strcmp(SPEcase, 'A') 
     xscaling = hour; unit = 'h';
     steps = 720;
@@ -132,24 +132,27 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 
+%Master C
+gridcases = {'cart_ndg_cut_PG_50x50x50'};
+
 %grid vs res
-gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
-ress = {'819x117', '1638x234', '2640x380'};
-gridlabels = {'C', 'HNCP', 'CNCP'};
-reslabels = {'100K', '400K', '1M'};
+% gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
+% ress = {'819x117', '1638x234', '2640x380'};
+% gridlabels = {'C', 'HNCP', 'CNCP'};
+% reslabels = {'100K', '400K', '1M'};
 % ress = {''};
 
 
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
-pdiscs = {''};
+% pdiscs = {''};
 
 deckcase = 'B_ISO_C';
 tagcases = {''};
-jutul = {false, true, true};
+jutul = {false};
 
-% gridlabels = gridcases;
+gridlabels = gridcases;
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
 % labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
 % labels = {'spe11-decks', '~pyopmspe11', 'correct(?)'};

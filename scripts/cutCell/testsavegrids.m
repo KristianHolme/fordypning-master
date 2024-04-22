@@ -3,11 +3,13 @@ close all
 %%
 nx = 100;
 ny = 50;
-gridcase = sprintf('horz_ndg_cut_PG_%dx%d', nx, ny);
+% gridcase = sprintf('horz_ndg_cut_PG_%dx%d', nx, ny);
+gridcase = 'struct20x20x20';
 tagcase = 'allcells-bufferMult';
-SPEcase = 'B';
-simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'tagcase', tagcase);
-name = sprintf('horizon-cut_%dx%d', nx, ny);
+SPEcase = 'C';
+simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'tagcase', tagcase, 'deckcase', 'B_ISO_C', 'usedeck', true);
+% name = sprintf('horizon-cut_%dx%d', nx, ny);
+name = gridcase;
 simcase.saveGridRock(name);
 % %%
 % load(['grid-files/gridrock_simready/', name]);

@@ -1,4 +1,4 @@
-function schedule = setupSchedule(simcase, varargin)
+function [schedule, simcase] = setupSchedule(simcase, varargin)
 
     schedulecase = simcase.schedulecase;
     
@@ -78,12 +78,15 @@ function schedule = setupSchedule(simcase, varargin)
                 w2 = [];
                 w3 = [];
                 w4 = [];
+                simcase.G.cells.wellMassRate = cell(1,2);
                 for ic = 1:numel(cell1)
                     c = cell1(ic);
                     cellFaces = gridCellFaces(simcase.G, c);
                     ymin = max(1000, min(simcase.G.faces.centroids(cellFaces,2)));
                     ymax = min(4000, max(simcase.G.faces.centroids(cellFaces,2)));
-                    rateval = 50/3000 *1/deckmodel.fluid.rhoGS * (ymax-ymin);
+                    massRateVal = 50/3000* (ymax-ymin);
+                    simcase.G.cells.wellMassRate{1}(ic) = massRateVal;
+                    rateval = massRateVal *1/deckmodel.fluid.rhoGS;
                     w1 = addWell(w1, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
                     w2 = addWell(w2, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
                     w3 = addWell(w3, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
@@ -96,7 +99,9 @@ function schedule = setupSchedule(simcase, varargin)
                     ymin = max(1000, min(simcase.G.faces.centroids(cellFaces,2)));
                     ymax = min(4000, max(simcase.G.faces.centroids(cellFaces,2)));
                     L = integral(@(y)SPE11CWell2Arc(y), ymin,ymax);
-                    rateval = 50 *1/deckmodel.fluid.rhoGS * L/wellLength;
+                    massRateVal = 50 * L/wellLength;
+                    simcase.G.cells.wellMassRate{2}(ic) = massRateVal;
+                    rateval = massRateVal*1/deckmodel.fluid.rhoGS;
                     w1 = addWell(w1, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
                     w2 = addWell(w2, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);
                     w3 = addWell(w3, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1);

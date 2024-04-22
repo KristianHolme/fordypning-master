@@ -528,6 +528,7 @@ classdef Simcase < handle
             if ~isfield(simcase.G.cells, 'topCells')
                 simcase = addTopBotTags(simcase);
             end
+            [~, simcase] = setupSchedule(simcase);
             G = simcase.G;
             rock = simcase.rock;
             G.bufferMult = rock.bufferMult;
