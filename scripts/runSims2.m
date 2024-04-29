@@ -10,7 +10,7 @@ function timings = runSims2(server)
         SPEcase = 'C';
         gridcases = {'horz_ndg_cut_PG_50x50x50'};
         schedulecases = {''};
-        pdiscs = {'hybrid-avgmpfa', 'hybrid-ntpfa'};
+        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
@@ -21,9 +21,9 @@ function timings = runSims2(server)
         mrstVerbose off;
     case 2
         SPEcase = 'C';
-        gridcases = {'cart_ndg_cut_PG_50x50x50'};
+        gridcases = {'struct50x50x50'};
         schedulecases = {''};
-        pdiscs = {'hybrid-ntpfa', 'hybrid-avgmpfa'};
+        pdiscs = {'', 'cc', 'hybrid-ntpfa', 'hybrid-avgmpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
@@ -39,33 +39,33 @@ function timings = runSims2(server)
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = 'gdz-shift';
-        resetData = false;
+        resetData = true;
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
     case 4
-        SPEcase = 'B';
-        gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
+        SPEcase = 'C';
+        gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
         schedulecases = {''};
-        pdiscs = {'hybrid-ntpfa'};
+        pdiscs = {''};
         uwdiscs = {''};
-        deckcases = {'B_ISO_C_54C'};
+        deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
         resetAssembly = false;
-        Jutul = false;
+        Jutul = true;
         direct_solver = false;
     case 5
-        SPEcase = 'B';
-        gridcases = {'struct819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
+        SPEcase = 'C';
+        gridcases = {'cart_ndg_cut_PG_100x100x100'};
         schedulecases = {''};
-        pdiscs = {'hybrid-mpfa'};
+        pdiscs = {''};
         uwdiscs = {''};
-        deckcases = {'B_ISO_C_54C'};
+        deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
         resetAssembly = false;
-        Jutul = false;
+        Jutul = true;
         direct_solver = false;
     end
     if Jutul, mrstVerbose on,end

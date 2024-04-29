@@ -275,7 +275,9 @@ function G = makeSkewed3D()
     % G.nodes.coords = twister(G.nodes.coords);
     % G.nodes.coords(:,1) = 2*G.nodes.coords(:,1);
     
-    G = makeLayeredGrid(G, 0.01);
+    G = makeLayeredGrid(G, 1);
+    k = G.nodes.coords(:,3) > 0;
+    G.nodes.coords(k,3) = 0.01;
     G = computeGeometry(G);
     G = RotateGrid(G);
     G = computeGeometry(G);

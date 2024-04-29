@@ -29,9 +29,16 @@ function [ok, status, time] = solveMultiPhase(simcase, varargin)
     end
     tic();
     if opt.Jutul
+        if opt.resetData
+            restartStep = 1;
+        else
+            restartStep = true;
+        end
         projPath = '~/Code/prosjekt-master/jutul';
         outputfolder = fullfile(simcase.dataOutputDir);
-        [ws, states] = simulatePackedProblemJutul(problem, 'name', simcase.casename, 'project', projPath, 'path', outputfolder);
+        [~, ~] = simulatePackedProblemJutul(problem, 'name', simcase.casename, 'project', projPath, 'path', outputfolder, ...
+            'restart', restartStep);
+            % 'output_path', fullfile('/media/kristian/HDD/Jutul/output/',simcase.casename)
         ok = true;%?
     else
         [ok, status] = simulatePackedProblem(problem, ...

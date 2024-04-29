@@ -129,11 +129,11 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 % gridcases = {'', '', ''};
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 
 %Master C
-gridcases = {'cart_ndg_cut_PG_50x50x50'};
+gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 
 %grid vs res
 % gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
@@ -143,26 +143,29 @@ gridcases = {'cart_ndg_cut_PG_50x50x50'};
 % ress = {''};
 
 
-% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
-% pdiscs = {''};
+% pdiscs = {'hybrid-ntpfa'};
 
 deckcase = 'B_ISO_C';
+% tagcases = {'gdz-shift', 'gdz-shift-big'};
 tagcases = {''};
 jutul = {false};
 
-gridlabels = gridcases;
+gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
 % labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
+% gridlabels = {'Kartesisk', 'Horisont-kutt', 'Kartesisk-kutt', 'PEBI', 'Firkant/trekant'};
 % labels = {'spe11-decks', '~pyopmspe11', 'correct(?)'};
 % labels = {'MRST', 'Jutul'};
 % plotTitle = 'CO2 in sealing units';
 % ytxt = 'CO2 [kg]';
 xtxt = ['Time [', unit, ']'];
 saveplot = true;
-plottitle = false;
+plottitle = true;
 insetPlot = false;
+legendpos = 'best';
 
 %% Load simcases
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
@@ -176,10 +179,10 @@ end
 simcases = {};
 plotStyles = {};
 numcases = numel(gridcases) * numel(pdiscs);
-if numel(tagcases) == 1
+if isscalar(tagcases)
     tagcases = repmat(tagcases, 1, numel(gridcases));
 end
-if numel(jutul) == 1
+if isscalar(jutul)
     jutul = repmat(jutul, 1, numel(gridcases));
 end
 for igrid = 1:numel(gridcases)
@@ -233,7 +236,7 @@ labels = [gridcasesDisp, pdiscsDisp];
 
 % Create the legend
 lgd = legend(handles, labels, 'NumColumns', 2);
-set(lgd, 'Interpreter', 'none', 'Location', 'best');
+set(lgd, 'Interpreter', 'none', 'Location', legendpos);
 hold off
 if plottitle
     title(plotTitle);

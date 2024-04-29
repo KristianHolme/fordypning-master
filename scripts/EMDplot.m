@@ -15,8 +15,8 @@ end
 deckcase = 'B_ISO_C';
 
 
-sim1 = Simcase('gridcase', '', 'pdisc', 'hybrid-avgmpfa', 'SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true);
-sim2 = Simcase('gridcase', '', 'pdisc', 'hybrid-ntpfa', 'SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true);
+sim1 = Simcase('gridcase', 'struct20x20x20', 'pdisc', 'hybrid-ntpfa', 'tagcase', 'gdz-shift', 'SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true);
+sim2 = Simcase('gridcase', 'struct20x20x20', 'pdisc', 'hybrid-ntpfa', 'tagcase', 'gdz-shift-big' , 'SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true);
 
 states1 = sim1.getSimData;
 G1 = sim1.G;

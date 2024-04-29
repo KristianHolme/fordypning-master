@@ -8,12 +8,13 @@ G1 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'typ
 G2 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'cartesian');
 % G3 = GeneratePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'FCFactor', 1.0);
 %%
-G1 = load('grid-files/cutcell/horizon_nudge_cutcell_PG_130x62_B.mat').G;
-G2 = load('grid-files/cutcell/horizon_presplit_cutcell_PG_130x62_B.mat').G;
-G3 = load('grid-files/PEBI/buff_cPEBI_220x110_B.mat').G;
+G1 = load('grid-files/cutcell/buff_horizon_nudge_cutcell_PG_50x50x50_C.mat').G;
+G2 = load('grid-files/cutcell/buff_cartesian_nudge_cutcell_PG_50x50x50_C.mat').G;
+% G3 = load('grid-files/PEBI/buff_cPEBI_220x110_B.mat').G;
 %%
 grids = {G1, G2};
-names = {'CPCP-C', 'CNCP-C'};
+names = {'HNCP-50', 'CNCP-50'};
+plotname = 'horz-vs-cart-SPE11C';
 %%
 T = tiledlayout(numel(grids), 1);
 
@@ -28,9 +29,8 @@ for ig = 1:numel(grids)
 end
 
 %%
-savepath = './../plotsMaster/histograms/nudge-v-pre-C';
-exportgraphics(T, [savepath, '.pdf']);
-exportgraphics(T, [savepath, '.png']);
+exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-volumes.pdf', plotname));
+exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-volumes.png', plotname));
 
 %%
 
@@ -53,8 +53,8 @@ for ig = 1:numel(grids)
 end
 
 %%
-exportgraphics(T, sprintf('./../plotsMaster/histograms/horz_ndg-cart_ndg-cPEBI-M-neighbors.pdf'));
-exportgraphics(T, sprintf('./../plotsMaster/histograms/horz_ndg-cart_ndg-cPEBI-M-neighbors.png'));
+exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-neighbors.pdf', plotname));
+exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-neighbors.png', plotname));
 %%
 T = tiledlayout(numel(grids), 1);
 
@@ -63,11 +63,11 @@ for ig = 1:numel(grids)
     name = names{ig};
     nexttile(ig);
     histogram(log10(G.faces.areas));
-    title(sprintf('Grid: %s, Cells: %d', name, G.cells.num));
+    title(sprintf('Grid: %s, Cells: %d, Faces: %d', name, G.cells.num, G.faces.num));
     xlabel('Log10(face areas)');
     ylabel('Frequency');
 end
 
 %%
-exportgraphics(T, sprintf('./../plotsMaster/histograms/horz_ndg-cart_ndg-cPEBI-M-faceA.pdf'));
-exportgraphics(T, sprintf('./../plotsMaster/histograms/horz_ndg-cart_ndg-cPEBI-M-faceA.png'));
+exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-faceA.pdf', plotname));
+exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-faceA.png', plotname));

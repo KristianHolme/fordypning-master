@@ -78,8 +78,10 @@ function displayName = displayNameGrid(gridcase, specase)
 
     % C
     Cmap = containers.Map;
-    Cmap('struct20x20x20') = 'C-C';
-    Cmap('struct50x50x50') = 'C-F';
+    Cmap('struct20x20x20') = 'C-20';
+    Cmap('struct50x50x50') = 'C-50';
+    Cmap('horz_ndg_cut_PG_50x50x50') = 'HNCP-50';
+    Cmap('cart_ndg_cut_PG_50x50x50') = 'CNCP-50';
 
     if strcmpi(specase, 'a')
         if isKey(Amap, gridcase)

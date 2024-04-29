@@ -42,13 +42,13 @@ deckcases = {'B_ISO_C'}; %B_ISO_C
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = 'gdz-shift';%normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
-Jutul               = false;
+Jutul               = true;
 
-resetData           = true;
+resetData           = false;
 resetAssembly       = true;
-do.plotStates       = true;
+do.plotStates       = false;
 do.plotFlux         = false;
-do.multiphase       = false;
+do.multiphase       = true;
 do.plotOrthErr      = false;
 do.dispTime         = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met

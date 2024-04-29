@@ -4,7 +4,7 @@ close all
 nx = 100;
 ny = 50;
 % gridcase = sprintf('horz_ndg_cut_PG_%dx%d', nx, ny);
-gridcase = 'struct20x20x20';
+gridcase = 'struct100x100x100';
 tagcase = 'allcells-bufferMult';
 SPEcase = 'C';
 simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'tagcase', tagcase, 'deckcase', 'B_ISO_C', 'usedeck', true);
