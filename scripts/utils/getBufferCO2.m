@@ -9,14 +9,18 @@ function data = getBufferCO2(simcase, steps, varargin)
         load(filename)
     else
         disp("calculating data...")
-        maxsteps = numel(simcase.schedule.step.val);
+        if simcase.jutulThermal
+            maxsteps = 210;
+        else
+            maxsteps = numel(simcase.schedule.step.val);
+        end
         if ~isfield(G, 'bufferCells')
             G = getBufferCells(G);
         end
         bufferCells = G.bufferCells;
         [states, ~, ~] = simcase.getSimData;
         typeParts = strsplit('FlowProps.ComponentTotalMass', '.');
-        if simcase.jutul
+        if simcase.jutul || simcase.jutulThermal
             typeParts = {'TotalMasses'};
         end
         completedata = NaN(maxsteps, 1);
@@ -28,7 +32,7 @@ function data = getBufferCO2(simcase, steps, varargin)
             else
                 adjustmentfactor = 1;
             end
-            if simcase.jutul
+            if simcase.jutul || simcase.jutulThermal
                completedata(it) = sum(fulldata(bufferCells, 2))*adjustmentfactor;
             else
                 completedata(it) = sum(fulldata{2}(bufferCells))*adjustmentfactor;

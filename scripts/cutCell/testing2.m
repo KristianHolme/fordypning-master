@@ -1,6 +1,21 @@
 clear all 
 close all
 %%
+nx = 130;
+ny = 62;
+type = 'cartesian';
+presplit = true;
+G1 = GenerateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', false, 'recombine', false);
+G2 = GenerateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', true, 'recombine', false);
+[G3, partition] = GenerateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', true, 'recombine', true);
+%%
+CG = generateCoarseGrid(G2, partition);
+CG = coarsenGeometry(CG);
+[CGcellToGcutCell, IA] = unique(partition);
+CG.cells.tag = G2.cells.tag(IA);
+VizCoarse(CG)
+
+%%
 G = cartGrid([3,3], [1,1]);
 G.nodes.coords(8,2) = 0;
 Grm = removePinch(G, 1e-16);
@@ -52,7 +67,8 @@ plotGrid(G);
 pnts = [-1 0 0;5 8 0;11 4 0];
 cutDir = [0 0 1];
 Gslice = sliceGrid(G, pnts, 'cutDir', cutDir);
-plotGrid(Gslice);
+plotGrid(Gslice);hold on;
+plot3(pnts(:,1), pnts(:,2), pnts(:,3));
 %%
 plot(0,0);hold on;
 Gslice = G;

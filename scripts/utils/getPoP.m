@@ -8,7 +8,11 @@ function data = getPoP(simcase, steps, popcell, varargin)
         load(filename)
     else
         disp("calculating data...")
-        maxsteps = numel(simcase.schedule.step.val);
+        if simcase.jutulThermal
+            maxsteps = 210;
+        else
+            maxsteps = numel(simcase.schedule.step.val);
+        end
 
         popcells = simcase.getPoPCells;
         P1 = simcase.getCellData('pressure', 'cellIx', popcells(1));

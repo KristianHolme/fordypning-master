@@ -48,10 +48,10 @@ end
 % gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};filename = 'cut-vs-pebi-M';
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};filename = 'C-Cut-P-T_F';
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};filename = 'C-Cut-P-Q-T_F';
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};filename = 'C-Cut-P-Q-T_F';
 % gridcases = { 'cPEBI_819x117', '5tetRef0.31'};filename = 'pebi-unstruct-F';
 % gridcases = {'struct220x110', 'struct819x117', 'struct2640x380'};filename = 'struct-refine';
-gridcases = {'', 'struct130x62'};
+% gridcases = {'', 'struct130x62'};
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
@@ -66,8 +66,9 @@ deckcase = 'B_ISO_C';
 tagcases = {''};
 
 plotgrid = false;
-saveplot = true;
-saveToReport = true;
+saveplot = false;
+saveToReport = false;
+ColorScale = 'log';
 
 filename = [SPEcase, '_', dataname, '_', filename];
 savefolder=fullfile('./../plotsMaster/multiplot', subname);
@@ -252,7 +253,7 @@ for istep = 1:numel(steps)
         'diff', true, 'bigGrid', bigGrid, 'saveToReport', saveToReport);   
 end
 %% Setup Grid diff plot
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31', 'gq_pb0.19'};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117'};
@@ -468,4 +469,5 @@ multiplot(data, 'savefolder', savefolder, 'savename', filename, 'saveplot', save
 %%
 function fwerr = getFwerr(simcase)
 [~, ~, fwerr] = simcase.computeStaticIndicator;
+fwerr = log(fwerr);
 end

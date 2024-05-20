@@ -40,8 +40,8 @@ if strcmp(simcase.SPEcase, 'C')
     G.nodes.coords = SPE11CBend(G.nodes.coords);
     G = mcomputeGeometry(G);
 end
-figure;
-plotGrid(G, [topcells;botcells])
-title('top and bottom cells');
+% figure;
+% plotGrid(G, [topcells;botcells])
+% title('top and bottom cells');
 simcase.G = G;
 end

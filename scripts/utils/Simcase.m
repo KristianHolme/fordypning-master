@@ -15,6 +15,7 @@ classdef Simcase < handle
         pdisc %eks. pressure discretization'hybrid-avgmpfa'
         uwdisc
         jutul
+        jutulThermal
 
         G
         rock
@@ -54,7 +55,8 @@ classdef Simcase < handle
                          'pdisc'   , '', ...
                          'griddim'      , 3, ...
                          'uwdisc'      , [], ...
-                         'jutul'       , false);
+                         'jutul'       , false, ...
+                         'jutulThermal', false);
             opt = merge_options(opt, varargin{:});
 
             propnames = {'SPEcase', 'deckcase', 'gridcase', 'pdisc', 'uwdisc', 'fluidcase', 'tagcase',...
@@ -73,6 +75,7 @@ classdef Simcase < handle
             simcase.propnames = propnames;
             simcase.usedeck = opt.usedeck;
             simcase.jutul = opt.jutul;
+            simcase.jutulThermal = opt.jutulThermal;
             
             %configure folder structure
             configFile = fileread('config.JSON');
@@ -90,6 +93,11 @@ classdef Simcase < handle
                 opt.griddim = 2;
             end
             simcase.griddim = opt.griddim;
+
+            if simcase.jutulThermal
+                simcase.casename = sprintf('spe11%s_%s_thermal_cv', lower(simcase.SPEcase), simcase.gridcase);
+                simcase.dataOutputDir = '/media/kristian/HDD/Jutul/output/csp11/';
+            end
         end
 
         function casename = get.casename(simcase)
@@ -331,6 +339,9 @@ classdef Simcase < handle
             if simcase.jutul
                 dirname =[dirname, '_output_mrst'];
                 dataFolder = '';
+            elseif simcase.jutulThermal
+                dirname =[dirname, '_mrst'];
+                dataFolder = '';
             else
                 dataFolder = 'multiphase';
             end
@@ -401,11 +412,12 @@ classdef Simcase < handle
         function [err, errvect, fwerr] = computeStaticIndicator(simcase, varargin)
             opt = struct('resetData', false);
             opt = merge_options(opt, varargin{:});
-            filename = fullfile(simcase.dataOutputDir, simcase.casename, 'staticIndicator.mat');
+            filename = fullfile(simcase.dataOutputDir, 'staticIndicator', [simcase.SPEcase, '_', simcase.gridcase, '_staticIndicator.mat']);
             if isfile(filename) && ~opt.resetData
                 disp('Loading computed data...')
                 load(filename);
             else
+                disp('Computing data...')
                 tbls = setupTables(simcase.G);
                 [err, errvect, fwerr] = computeOrthError(simcase.G, simcase.rock, tbls);
                 save(filename, 'err', 'errvect', 'fwerr');
@@ -476,6 +488,10 @@ classdef Simcase < handle
                     pop1 = [4500, 0.5, 1200 - 500];
                     pop2 = [5100, 0.5, 1200 - 1100];
                     popCells = findEnclosingCell(simcase.G, [pop1;pop2]);
+                case 'C'
+                    pop1 = [4500, 2500, 1200-655];
+                    pop2 = [5100, 2500, 1200-1255];
+                    popCells = findEnclosingCell(simcase.G, [pop1;pop2]);
             end
         end
         function wallTime = getWallTime(simcase)
@@ -493,8 +509,9 @@ classdef Simcase < handle
             cellIx = opt.cellIx;
 
             typeParts = strsplit(type, '.');
-
-            if isempty(simcase.schedulecase) || strcmp(simcase.schedulecase, 'simple-std')
+            if simcase.jutulThermal
+                steps = 210;
+            elseif isempty(simcase.schedulecase) || strcmp(simcase.schedulecase, 'simple-std')
                 steps = size(simcase.schedule.step.val, 1);
             end
             [states, ~, ~] = simcase.getSimData;
@@ -532,6 +549,11 @@ classdef Simcase < handle
             G = simcase.G;
             rock = simcase.rock;
             G.bufferMult = rock.bufferMult;
+            if ~isfield(G.cells, 'wellCells')
+                assert(strcmp(simcase.SPEcase, 'B'))
+                [w1, w2] = getinjcells(G, 'B');
+                G.cells.wellCells = [w1, w2];
+            end
             
             save(fullfile(folder, name), "rock", "G");
         end

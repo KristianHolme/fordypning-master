@@ -21,7 +21,7 @@ G.nodes.coords = SPE11CBend(G.nodes.coords);
 G = mcomputeGeometry(G);
 G = getBufferCells(G);
 
-G = addBoxWeights(G);
+G = addBoxWeights(G, 'SPEcase', 'C');
 [w1, w2] = getinjcells(G, 'C');
 G.cells.wellCells = {w1, w2};
 G.faces.tag = zeros(G.faces.num, 1);

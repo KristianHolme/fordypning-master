@@ -25,11 +25,11 @@ folder = './../plotsMaster/sealingCO2';
 filetag = 'sealingCO2';
 %% Set-Faultfluxes
 getData = @(simcase, steps)getFaultFluxes(simcase, steps, 'resetData', resetData);
-plotTitle='Fluxes over region bdrys (sum(abs(flux)))';
+plotTitle='CO2 fluxes over region boundaries (sum(abs(flux)))';
 ytxt = 'sum(abs(Fluxes))';
 folder = './../plotsMaster/faultfluxes';
 filetag = 'faultflux';
-steps = 206;
+steps = 204;
 %% P6: Set Buffer CO2
 getData = @(simcase, steps)getBufferCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in buffer volumes';
@@ -129,11 +129,19 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 % gridcases = {'', '', ''};
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 
 %Master C
+% gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
+% gridcases = {'struct100x100x100', 'horz_ndg_cut_PG_100x100x100', 'cart_ndg_cut_PG_100x100x100'};
+% gridcases = {'horz_ndg_cut_PG_50x50x50', 'horz_ndg_cut_PG_50x50x50'};
+
+% Copmare with thermal
 gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
+% gridcases = {'struct50x50x50', 'struct50x50x50'};
+
 
 %grid vs res
 % gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
@@ -143,14 +151,15 @@ gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x5
 % ress = {''};
 
 
-pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-% pdiscs = {'', 'cc', 'hybrid-avgmpfa'};
-% pdiscs = {'hybrid-ntpfa'};
+% pdiscs = {'hybrid-avgmpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
+pdiscs = {''};
 
 deckcase = 'B_ISO_C';
 % tagcases = {'gdz-shift', 'gdz-shift-big'};
 tagcases = {''};
+% tagcases = {''};
 jutul = {false};
 
 gridlabels = gridcases; %DEFAULT
@@ -163,7 +172,7 @@ gridlabels = gridcases; %DEFAULT
 % ytxt = 'CO2 [kg]';
 xtxt = ['Time [', unit, ']'];
 saveplot = true;
-plottitle = true;
+plottitle = false;
 insetPlot = false;
 legendpos = 'best';
 
@@ -204,13 +213,25 @@ data = nan(steps, numel(simcases));
 for isim = 1:numel(simcases)
     simcase = simcases{isim};
     data(:,isim) = getData(simcase, steps);
+    % fprintf('%s tot co2: %.3e\n', simcase.casename, sum(simcase.getSimData{250}.FlowProps.ComponentTotalMass{2}))
 end
+disp("Loading done.");
 %% Plot
 set(groot, 'defaultLineLineWidth', 2);
 figure('Position', [100,200, 800, 600], 'Name',plotTitle)
 hold on;
+scale = floor(log10(max(data, [], 'all')));
+axfix = false;
+if scale ~=1 && ~contains(ytxt, 'bar') && axfix
+    figscaling = 3*floor(scale/3);
+    figytxt = replace(ytxt, '[', ['[10^{', num2str(figscaling), '} ']);
+    figdata = data ./ 10^figscaling;
+else
+    figdata = data;
+    figytxt = ytxt;
+end
 for i=1:numel(simcases)
-    plot(xdata, data(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',6, 'MarkerIndices',1:10:numel(xdata));
+    plot(xdata, figdata(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',6, 'MarkerIndices',1:10:numel(xdata));
 end
 % Create dummy plots for legend
 h_grid = [];
@@ -243,7 +264,7 @@ if plottitle
 end
 fontsize(16, 'points'); 
 xlabel(xtxt);
-ylabel(ytxt);
+ylabel(figytxt);
 grid on;
 
 if insetPlot
@@ -258,12 +279,13 @@ if insetPlot
     end
     grid(insetAxes);
 end
-
+tightfig();
 if saveplot
     % folder = './../plotsMaster/sealingCO2';
     filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(pdiscsDisp, '_')];
-    exportgraphics(gcf, fullfile(folder, [filename, '.pdf']))%for color
-    saveas(gcf, fullfile(folder, [filename, '.png']))
+    % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
+    saveas(gcf, fullfile(folder, [filename, '.png']));
+    saveas(gcf, fullfile(folder, [filename,'.eps']), 'epsc');
 end
 %% Load simcases grid RES
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
@@ -305,11 +327,22 @@ for isim = 1:numel(simcases)
     data(:,isim) = getData(simcase, steps);
 end
 %% Plot grid RES
+
 set(groot, 'defaultLineLineWidth', 2);
 figure('Position', [100,200, 800, 600], 'Name',plotTitle)
 hold on;
+scale = floor(log10(max(data, [], 'all')));
+axfix = false;
+if scale ~=1 && ~contains(ytxt, 'bar') && axfix
+    figscaling = 3*floor(scale/3);
+    figytxt = replace(ytxt, '[', ['[10^{', num2str(figscaling), '} ']);
+    figdata = data ./ 10^figscaling;
+else
+    figdata = data;
+    figytxt = ytxt;
+end
 for i=1:numel(simcases)
-    plot(xdata, data(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',6, 'MarkerIndices',1:10:numel(xdata));
+    plot(xdata, figdata(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',6, 'MarkerIndices',1:10:numel(xdata));
 end
 % Create dummy plots for legend
 h_grid = [];
@@ -341,7 +374,7 @@ if plottitle
 end
 fontsize(16, 'points'); 
 xlabel(xtxt);
-ylabel(ytxt);
+ylabel(figytxt);
 grid on;
 
 if insetPlot
@@ -356,10 +389,121 @@ if insetPlot
     end
     grid(insetAxes);
 end
-
+tightfig();
 if saveplot
     % folder = './../plotsMaster/sealingCO2';
     filename = [SPEcase, '_', filetag,'_', strjoin(gridlabels, '_'), '-', strjoin(reslabels, '_')];
-    exportgraphics(gcf, fullfile(folder, [filename, '.pdf']))%for color
+    % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
+    saveas(gcf, fullfile(folder, [filename, '.png']));
+    saveas(gcf, fullfile(folder, filename), 'epsc');
+end
+%% Load simcases compThermal
+gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
+pdiscstyles = {'-', '--'};
+simcases = {};
+plotStyles = {};
+numcases = numel(gridcases) * 2;
+if isscalar(jutul)
+    jutul = repmat(jutul, 1, numel(gridcases));
+end
+for igrid = 1:numel(gridcases)
+    gridcase = gridcases{igrid};
+    color = gridcasecolors{igrid};
+    style = pdiscstyles{1};
+    simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, 'jutul', jutul{igrid});
+    plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker','none');
+
+    style = pdiscstyles{2};
+    simcases{end+1} = Simcase('SPEcase', SPEcase,'gridcase', gridcase, 'jutul', jutul{igrid}, 'jutulThermal', true, 'tagcase', 'allcells');
+    plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker','none');
+end
+%% Load data compThermal
+
+xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
+xdata = xdata(1:steps);
+xdata_thermal = cumsum(load('/media/kristian/HDD/Jutul/output/csp11/thermal_dt.mat').dt)/xscaling;
+xdatasets = {xdata, xdata_thermal};
+data = nan(steps, numel(simcases));
+twosteps = [301, 210];
+for isim = 1:numel(simcases)
+    simcase = simcases{isim};
+    step = twosteps(2-mod(isim, 2));
+    data(1:step,isim) = getData(simcase, step);
+end
+disp("Loading done.");
+
+%% Plot compThermal
+set(groot, 'defaultLineLineWidth', 2);
+figure('Position', [100,200, 800, 600], 'Name',plotTitle)
+hold on;
+scale = floor(log10(max(data, [], 'all')));
+axfix = false;
+if scale ~=1 && ~contains(ytxt, 'bar') && axfix
+    figscaling = 3*floor(scale/3);
+    figytxt = replace(ytxt, '[', ['[10^{', num2str(figscaling), '} ']);
+    figdata = data ./ 10^figscaling;
+else
+    figdata = data;
+    figytxt = ytxt;
+end
+for i=1:numel(simcases)
+    step = twosteps(2-mod(i, 2));
+    x = xdatasets{2-mod(i, 2)};
+    y = figdata(1:step, i);
+    if mod(i, 2)==0
+        x = x(10:end);
+        y = y(10:210);
+    end
+    plot(x, y, 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle);
+end
+% Create dummy plots for legend
+h_grid = [];
+for igrid = 1:numel(gridcases)
+    color = gridcasecolors{igrid};
+    h_grid(igrid) = plot(NaN,NaN, 'Color', color, 'LineStyle', '-', 'LineWidth', 2); % No data, just style
+end
+h_disc = [];
+for isim = 1:2
+    style = pdiscstyles{isim};
+    h_disc(isim) = plot(NaN,NaN, 'Color', 'k', 'LineStyle', style, 'LineWidth', 2); % No data, just style
+end
+
+% Combine handles and labels
+handles = [h_grid, h_disc];
+gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), gridlabels,  'UniformOutput', false);
+simlabels = {'Blackoil', 'Compositional'}; 
+labels = [gridcasesDisp, simlabels];
+
+% Create the legend
+lgd = legend(handles, labels,'NumColumns', 2);
+set(lgd, 'Interpreter', 'none', 'Location', legendpos);
+hold off
+if plottitle
+    title(plotTitle);
+end
+fontsize(16, 'points'); 
+xlabel(xtxt);
+ylabel(figytxt);
+grid on;
+
+if insetPlot
+    %plot inside plot
+    insetPosition = [0.19 0.15 0.25 0.25];
+    insetAxes = axes('Position',insetPosition);
+    insetsteps = 201;
+    insetxdata = xdata(1:insetsteps);
+    for i=1:numel(simcases)
+        plot(insetAxes, insetxdata, data(1:insetsteps, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',4, 'MarkerIndices',1:10:numel(insetxdata));
+        hold on;
+    end
+    grid(insetAxes);
+end
+tightfig()
+if saveplot
+    % folder = './../plotsMaster/sealingCO2';
+    filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(simlabels, '_')];
+    % saveas(gcf, fullfile(folder, [filename, '.svg']))%for color
+    % print(fullfile(folder, [filename, '.pdf']), '-dpdf')
     saveas(gcf, fullfile(folder, [filename, '.png']))
+    saveas(gcf, fullfile(folder, [filename,'.eps']), 'epsc');
 end

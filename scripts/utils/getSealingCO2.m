@@ -11,11 +11,15 @@ function data = getSealingCO2(simcase, steps, varargin)
     else
         savedata = true;
         disp("calculating data...")
-        maxsteps = numel(simcase.schedule.step.val);
-        cealingcells = G.cells.tag == 1;
+        if simcase.jutulThermal
+            maxsteps = 210;
+        else
+            maxsteps = numel(simcase.schedule.step.val);
+        end
+        sealingcells = G.cells.tag == 1;
         [states, ~, ~] = simcase.getSimData;
         typeParts = strsplit('FlowProps.ComponentTotalMass', '.');
-        if simcase.jutul
+        if simcase.jutul || simcase.jutulThermal
             typeParts = {'TotalMasses'};
         end
         
@@ -29,14 +33,14 @@ function data = getSealingCO2(simcase, steps, varargin)
             %break if we dont have any data
             fulldata = getfield(states{it}, typeParts{:});
             if G.griddim == 2
-                adjustmentfactor = 1e-2;%2D case is like 1m deep, need to divide by 100 to get comparable (actual) mass
+                adjustmentfactor = 1e-2;%For SPE11A only; 2D case is 1m deep (not 1 cm), need to divide by 100 to get comparable (actual) mass
             else
                 adjustmentfactor = 1;
             end
-            if simcase.jutul
-               completedata(it) = sum(fulldata(cealingcells, 2))*adjustmentfactor;
+            if simcase.jutul || simcase.jutulThermal
+                completedata(it) = sum(fulldata(sealingcells, 2))*adjustmentfactor;
             else
-                completedata(it) = sum(fulldata{2}(cealingcells))*adjustmentfactor;
+                completedata(it) = sum(fulldata{2}(sealingcells))*adjustmentfactor;
             end
         end
         if savedata

@@ -4,18 +4,22 @@ close all
 nx = 130;
 ny = 62;
 buffer = false;
-G1 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'cartesian', 'presplit', true, 'nudgeGeom', false);
-G2 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'cartesian');
+G1 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'horizon', 'presplit', true, 'nudgeGeom', false);
+G2 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'horizon');
 % G3 = GeneratePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'FCFactor', 1.0);
 %%
-G1 = load('grid-files/cutcell/buff_horizon_nudge_cutcell_PG_50x50x50_C.mat').G;
-G2 = load('grid-files/cutcell/buff_cartesian_nudge_cutcell_PG_50x50x50_C.mat').G;
+res = '28x12';
+G1 = load(sprintf('grid-files/cutcell/cartesian_presplit_cutcell_%s_B.mat', res)).G;
+% G2 = load(sprintf('grid-files/cutcell/buff_horizon_presplit_cutcell_PG_%s_C.mat', res)).G;
+G3 = load(sprintf('grid-files/cutcell/cartesian_presplit_cutcell_28x1.mat', res)).G;
+G4 = load(sprintf('grid-files/cutcell/buff_cartesian_presplit_cutcell_PG_%s_C.mat', res)).G;
 % G3 = load('grid-files/PEBI/buff_cPEBI_220x110_B.mat').G;
 %%
 grids = {G1, G2};
-names = {'HNCP-50', 'CNCP-50'};
-plotname = 'horz-vs-cart-SPE11C';
+names = {'HPCP-C', 'HNCP-C'};
+plotname = 'H-pre-v-nudge-C';
 %%
+figure()
 T = tiledlayout(numel(grids), 1);
 
 for ig = 1:numel(grids)
@@ -33,7 +37,7 @@ exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-volumes.pdf', plotname
 exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-volumes.png', plotname));
 
 %%
-
+figure
 T = tiledlayout(numel(grids), 1);
 
 for ig = 1:numel(grids)
@@ -56,6 +60,7 @@ end
 exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-neighbors.pdf', plotname));
 exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-neighbors.png', plotname));
 %%
+figure
 T = tiledlayout(numel(grids), 1);
 
 for ig = 1:numel(grids)

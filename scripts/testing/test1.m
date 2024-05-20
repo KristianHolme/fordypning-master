@@ -4,6 +4,34 @@ close all
 mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
+%%
+G1 = load('grid-files/cutcell/buff_horizon_nudge_cutcell_PG_100x100x100_C.mat').G;
+G2 = load('grid-files/cutcell/buff_cartesian_nudge_cutcell_PG_100x100x100_C.mat').G;
+G3 = load('grid-files/spe11c_struct100x100x100_grid.mat').G;
+
+grids = {G1, G2, G3};
+names = {'HNCP', 'CNCP', 'C'};
+for i=1:3
+    figure;
+    plotToolbar(grids{i}, grids{i}.cells.tag);view(0,0)
+    title(names{i});
+end
+%%
+disp("New run...")
+for is = 1:numel(simcases)
+    simcase = simcases{is};
+    pv = sum(simcase.rock.poro(simcase.G.bufferCells) .* simcase.G.cells.volumes(simcase.G.bufferCells));
+    fprintf('%s bv:%.3e\n', simcase.casename, pv);
+end
+%% totmass
+states = simcase.getSimData;
+num_states = numelData(states);
+co2mass = zeros(num_states,1);
+for i =1:num_states
+    co2mass(i) = sum(states{i}.FlowProps.ComponentTotalMass{2});
+end
+plot(co2mass);
+
 %% test Reduction Matrix
 gridcase = 'horz_ndg_cut_PG_220x110';
 % gridcase = 'struct819x117';

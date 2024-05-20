@@ -31,26 +31,27 @@ mrstVerbose on
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 
 SPEcase = 'C';
-gridcases = {'struct20x20x20'};
+% gridcases = {'horz_ndg_cut_PG_50x50x50', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
+gridcases = {'struct50x50x50'};
 
-
-% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
-pdiscs = {'hybrid-ntpfa'};
+pdiscs = {''};
+% pdiscs = {'', 'hybrid-avgmpfa'};
+% pdiscs = {'hybrid-avgmpfa'};
 
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_C'}; %B_ISO_C
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = 'gdz-shift';%normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
-Jutul               = true;
+tagcase = 'allcells';%normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
+Jutul               = false;
 
 resetData           = false;
-resetAssembly       = true;
+resetAssembly       = false;
 do.plotStates       = false;
 do.plotFlux         = false;
-do.multiphase       = true;
+do.multiphase       = false;
 do.plotOrthErr      = false;
-do.dispTime         = true;
+do.dispTime         = false;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 mrstVerbose off;
 
@@ -91,9 +92,10 @@ for ideck = 1:numel(deckcases)
                     if do.plotOrthErr
                         simcase.plotErr('plotHistogram', true, 'resetData', true);
                     end
-                    stats{end+1,1} =  simcase.gridcase;
-                    % stats{end,2} =  sum(simcase.G.cells.volumes(simcase.G.bufferCells) .* simcase.rock.poro(simcase.G.bufferCells));
-                    stats{end,2} = simcase.G.cells.num;
+                    % stats{end+1,1} =  simcase.gridcase;
+                    % states = simcase.getSimData;
+                    % totco2 = sum(states{301}.FlowProps.ComponentTotalMass{2});
+                    % stats{end,2} = totco2;
                 end
             end
         end
