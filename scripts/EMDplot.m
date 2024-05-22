@@ -15,8 +15,8 @@ end
 deckcase = 'B_ISO_C';
 
 
-sim1 = Simcase('gridcase', 'struct20x20x20', 'pdisc', 'hybrid-ntpfa', 'tagcase', 'gdz-shift', 'SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true);
-sim2 = Simcase('gridcase', 'struct20x20x20', 'pdisc', 'hybrid-ntpfa', 'tagcase', 'gdz-shift-big' , 'SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true);
+sim1 = Simcase('gridcase', 'struct819x117', 'uwdisc', '', 'tagcase', '', 'SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true);
+sim2 = Simcase('gridcase', 'struct819x117', 'uwdisc', 'WENO', 'tagcase', '' , 'SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true);
 
 states1 = sim1.getSimData;
 G1 = sim1.G;
@@ -45,3 +45,44 @@ disp(t);
 figure;
 plot(xdata, EMD);
 title(sprintf('%s-%s', sim1.pdisc, sim2.pdisc))
+
+%%
+load("/media/kristian/HDD/matlab/output/Benergy.mat")
+save("/media/kristian/HDD/matlab/output/Benergy.mat", 'energy', "discnames", 'displaynames');
+A = energy;
+upperTriangularMask = triu(true(size(A)), 1);
+
+% Replace the upper triangular part with NaN
+A(upperTriangularMask) = NaN;
+energy = A;
+%% Old 
+load("/media/kristian/HDD/matlab/output/Benergy.mat")
+h = heatmap(energy);
+% Remove grid lines
+h.GridVisible = 'off';
+
+% Customize the color map to have no color for NaN values
+% Define the custom colormap with an extra color for NaNs
+customColormap = [jet(256); 1 1 1]; % Jet colormap with white color for NaNs
+h.Colormap = jet(256);
+
+% Set the color data to treat NaNs differently
+h.MissingDataLabel = '';
+h.MissingDataColor = 'none'; % White color for NaNs
+
+h.YDisplayLabels = discnames;
+%% Newest, using imagesc
+load("/media/kristian/HDD/matlab/output/Benergy.mat")
+h = imagesc(energy);
+
+cdata = get(gca, 'Children');
+% Set the missing data color explicitly to white
+set(cdata, 'AlphaData', ~isnan(energy)); % Make NaNs transparent
+set(gca, 'XTick', [], 'YTick', []);
+colorbar();
+colormap(flipud(hot));
+%% resize, then:
+tightfig();
+
+%% save
+exportgraphics(gca, './../plotsMaster/energyimgHotRev.eps');

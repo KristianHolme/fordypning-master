@@ -48,15 +48,17 @@ end
 % gridcases = {'', 'horz_pre_cut_PG_130x62', 'struct130x62', 'cart_pre_cut_PG_130x62'};filename = 'horz-cut-cart-cut';
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};filename = 'cut-vs-pebi-M';
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};filename = 'C-Cut-P-T_F';
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};filename = 'C-Cut-P-Q-T_F';
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};filename = 'C-Cut-P-Q-T_F';
 % gridcases = { 'cPEBI_819x117', '5tetRef0.31'};filename = 'pebi-unstruct-F';
 % gridcases = {'struct220x110', 'struct819x117', 'struct2640x380'};filename = 'struct-refine';
-% gridcases = {'', 'struct130x62'};
+gridcases = {'struct819x117'};filename='B-UWdisc';
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 pdiscs = {''};
 jutul = {false};
+
+uwdiscs = {'', 'WENO'};
 
 subname = ''; %'', 'uppermiddle', 'middle'
 [p1, p2] = getBoxPoints(subname, SPEcase, 3);
@@ -75,8 +77,15 @@ savefolder=fullfile('./../plotsMaster/multiplot', subname);
 
 
 numGrids = numel(gridcases);
-numDiscs = numel(pdiscs);
-%% Loading data grid vs pdisc
+if numel(uwdiscs)>1
+    discs = uwdiscs;
+    uw = true;
+else
+    discs = pdiscs;
+    uw = false;
+end
+numDiscs = numel(discs);
+%% Loading data grid vs disc
 if numel(tagcases) ~= numGrids
     tagcases = repmat(tagcases, 1, numGrids);
 end
@@ -87,12 +96,17 @@ data = cell(numDiscs, numGrids, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
     for i = 1:numDiscs
-        pdisc = pdiscs{i};
+        disc = discs{i};
         for j = 1:numGrids
+            if uw
+                disktype = 'uwdisc';
+            else
+                disktype = 'pdisc';
+            end
             gridcase = gridcases{j};
             simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                 'tagcase', tagcases{j}, ...
-                                'pdisc', pdisc, ...
+                                disktype, disc, ...
                                 'jutul', jutul{j});
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
@@ -107,16 +121,18 @@ for istep = 1:numel(steps)
                     data{i, j, istep}.title = displayNameGrid(gridcase, simcase.SPEcase);
                 end
                 if j == 1
-                    data{i, j, istep}.ylabel = shortDiscName(pdisc);
+                    data{i, j, istep}.ylabel = shortDiscName(disc, 'uw', uw);
                 end
             end
         end
     end
+
 end
 if force
     data = reshape(data, 3,2)';
     data{1,1}.ylabel = '';
 end
+
 %% Plotting grid vs disc
 times = cumsum(simcase.schedule.step.val);
 for istep = 1:numel(steps)
@@ -145,7 +161,7 @@ end
 % gridcase = 'cPEBI_819x117';
 % gridcase = '5tetRef0.31';
 % gridcase = 'gq_pb0.19';
-gridcase = '';
+gridcase = 'struct819x117';
 % steps = [360];
 
 
@@ -154,10 +170,10 @@ gridcase = '';
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-pdiscs = {'', ''};
+pdiscs = {''};
 % uwdiscs = {'', 'WENO'};
-uwdiscs = {''};
-deckcases = {'B_ISO_C', 'B_ISO_C_54C'};
+uwdiscs = {'', 'WENO'};uw = true;
+deckcases = {'B_ISO_C'};
 tagcases = {''};%one for each pdisc or one that applies to all pdiscs
 
 
@@ -181,11 +197,11 @@ for istep = 1:numel(steps)
     step = steps(istep);
     for i = 1:numDiscs
         for j = i:numDiscs
-            pdisc = pdiscs{ceil(j/numuwdiscs)};
+            disc = pdiscs{ceil(j/numuwdiscs)};
             uwdisc = uwdiscs{customMod(j, numuwdiscs)};
             simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcases{ceil(j/numuwdiscs)}, 'usedeck', true, 'gridcase', gridcase, ...
                                 'tagcase', tagcases{j}, ...
-                                'pdisc', pdisc, 'uwdisc', uwdisc);
+                                'pdisc', disc, 'uwdisc', uwdisc);
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step
@@ -194,7 +210,7 @@ for istep = 1:numel(steps)
                 data{i, j, istep}.statedata = statedata;
                 data{i, j, istep}.injcells = [inj1, inj2];
                 data{i, j, istep}.G = G;
-                discName = shortDiscName(pdisc);
+                discName = shortDiscName(disc);
                 if ~isempty(uwdisc)
                     discName = [discName, ', ', uwdisc];
                 end
@@ -253,7 +269,7 @@ for istep = 1:numel(steps)
         'diff', true, 'bigGrid', bigGrid, 'saveToReport', saveToReport);   
 end
 %% Setup Grid diff plot
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117'};
@@ -262,14 +278,16 @@ gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x11
 % gridcases = {'cart_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380'};
 % gridcases = {'struct2640x380', 'horz_ndg_cut_PG_2640x380', 'cart_ndg_cut_PG_2640x380'};
 % gridcases = {'struct1638x234', 'horz_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_1638x234'};
-% gridcases = {'', 'struct130x62'};
+gridcases = {'struct819x117'};
 
 jutul = {false};
 % pdiscs = {''};
 % pdiscs = {'hybrid-avgmpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+pdiscs = {''};
 tagcases = {''}; %one for each pdisc or one for all
-uwdiscs = {''};
+uwdiscs = {'', 'WENO'};
+% uwdiscs = {''};
 
 
 deckcases = {'B_ISO_C'};%one for each grid or one for all
@@ -343,7 +361,7 @@ for istep = 1:numel(steps)
                 data{i, j, istep}.G = Gr;
                 discName = shortDiscName(simcase.pdisc);
                 if ~isempty(simcase.uwdisc)
-                    discName = [discName, ', ', uwdisc];
+                    discName = [discName, ', ', simcase.uwdisc];
                 end
                 if i == 1
                     ;
@@ -388,7 +406,7 @@ if makeCorrTable
     table2latex(Tcorr, fullfile('./../rapport/Tables/corr', [strjoin(unique(displaynames),'_'), '_', strjoin(unique(discnames), '_'), '.tex']), 'colheaders', false);
 end
 if makeEMDTable
-    energy = energy + energy';
+    energy = energy';
     cellEnergy = num2cell(energy);
     for i = 1:(numel(simcases))
         cellEnergy{i,i} = [displayNameGrid(simcases{i}.gridcase, simcases{i}.SPEcase), ', ', shortDiscName(simcases{i}.pdisc)];
@@ -434,10 +452,10 @@ numcases = numel(pdiscs);
 data = cell(numel(steps), numcases);
 for i = 1:numcases
     gridcase = gridcases{i};
-    pdisc = pdiscs{i};
+    disc = pdiscs{i};
     simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                             'tagcase', tagcase, ...
-                            'pdisc', pdisc);
+                            'pdisc', disc);
     [states, ~, ~] = simcase.getSimData;
     G = simcase.G;
     if i == 1
@@ -452,7 +470,7 @@ for i = 1:numcases
             data{istep, i}.injcells = [inj1, inj2];
             data{istep, i}.G = G;
             if istep == 1
-                data{istep, i}.title = [displayNameGrid(gridcase, SPEcase), ', ', shortDiscName(pdisc)];
+                data{istep, i}.title = [displayNameGrid(gridcase, SPEcase), ', ', shortDiscName(disc)];
             end
             if i == 1
                 data{istep, i}.ylabel = [num2str(round(times(step)/scaling)), ' ', unit];

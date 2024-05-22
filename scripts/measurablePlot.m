@@ -132,14 +132,16 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
+% gridcases = {'struct819x117'};
 
 %Master C
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct100x100x100', 'horz_ndg_cut_PG_100x100x100', 'cart_ndg_cut_PG_100x100x100'};
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'horz_ndg_cut_PG_50x50x50'};
+gridcases = {'struct50x50x50'};
 
 % Copmare with thermal
-gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
+% gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct50x50x50', 'struct50x50x50'};
 
 
@@ -156,6 +158,7 @@ gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x5
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
 pdiscs = {''};
 
+uwdiscs = {'', 'WENO'};
 deckcase = 'B_ISO_C';
 % tagcases = {'gdz-shift', 'gdz-shift-big'};
 tagcases = {''};
@@ -179,10 +182,10 @@ legendpos = 'best';
 %% Load simcases
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
 if ismember('cc', pdiscs)
-    pdiscstyles = {'-', '-', '--', '-.', ':'};
+    discstyles = {'-', '-', '--', '-.', ':'};
     markers = {'none','|','none','none','none'};
 else
-    pdiscstyles = {'-', '--', '-.', ':'};
+    discstyles = {'-', '--', '-.', ':'};
     markers = {'none','none','none','none'};
 end
 simcases = {};
@@ -199,12 +202,43 @@ for igrid = 1:numel(gridcases)
     color = gridcasecolors{igrid};
     for idisc = 1:numel(pdiscs)
         pdisc = pdiscs{idisc};
-        style = pdiscstyles{idisc};
+        style = discstyles{idisc};
         simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                        'pdisc', pdisc, 'tagcase', tagcases{igrid}, 'jutul', jutul{igrid});
         plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker', markers{idisc});
     end
 end
+discs = pdiscs;
+%% Load simcases uwdisc
+gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
+if ismember('cc', pdiscs)
+    discstyles = {'-', '-', '--', '-.', ':'};
+    markers = {'none','|','none','none','none'};
+else
+    discstyles = {'-', '--', '-.', ':'};
+    markers = {'none','none','none','none'};
+end
+simcases = {};
+plotStyles = {};
+numcases = numel(gridcases) * numel(uwdiscs);
+if isscalar(tagcases)
+    tagcases = repmat(tagcases, 1, numel(uwdiscs));
+end
+if isscalar(jutul)
+    jutul = repmat(jutul, 1, numel(gridcases));
+end
+for igrid = 1:numel(gridcases)
+    gridcase = gridcases{igrid};
+    color = gridcasecolors{igrid};
+    for idisc = 1:numel(uwdiscs)
+        uwdisc = uwdiscs{idisc};
+        style = discstyles{idisc};
+        simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
+                       'uwdisc', uwdisc, 'tagcase', tagcases{igrid}, 'jutul', jutul{igrid});
+        plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker', markers{idisc});
+    end
+end
+discs = uwdiscs;
 
 %% Load data
 xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
@@ -233,27 +267,49 @@ end
 for i=1:numel(simcases)
     plot(xdata, figdata(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',6, 'MarkerIndices',1:10:numel(xdata));
 end
-% Create dummy plots for legend
-h_grid = [];
-for igrid = 1:numel(gridcases)
-    color = gridcasecolors{igrid};
-    h_grid(igrid) = plot(NaN,NaN, 'Color', color, 'LineStyle', '-', 'LineWidth', 2); % No data, just style
-end
-h_disc = [];
-for idisc = 1:numel(pdiscs)
-    if numel(pdiscs) == 1
-        break
+if numel(gridcases) > 1
+    % Create dummy plots for legend
+    h_grid = [];
+    for igrid = 1:numel(gridcases)
+        color = gridcasecolors{igrid};
+        h_grid(igrid) = plot(NaN,NaN, 'Color', color, 'LineStyle', '-', 'LineWidth', 2); % No data, just style
     end
-    style = pdiscstyles{idisc};
-    marker = markers{idisc};
-    h_disc(idisc) = plot(NaN,NaN, 'Color', 'k', 'LineStyle', style, 'LineWidth', 2, 'Marker',marker); % No data, just style
+    h_disc = [];
+    for idisc = 1:numel(discs)
+        if numel(discs) == 1
+            break
+        end
+        style = discstyles{idisc};
+        marker = markers{idisc};
+        h_disc(idisc) = plot(NaN,NaN, 'Color', 'k', 'LineStyle', style, 'LineWidth', 2, 'Marker',marker); % No data, just style
+    end
+    % Combine handles and labels
+    handles = [h_grid, h_disc];
+    gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), gridlabels,  'UniformOutput', false);
+    if numel(uwdiscs)>1
+        discs{1} = 'SPU';
+    end
+    discsDisp = cellfun(@shortDiscName, discs, 'UniformOutput', false); 
+    labels = [gridcasesDisp, discsDisp];
+else
+    h_disc = [];
+    for idisc = 1:numel(discs)
+        if numel(discs) == 1
+            break
+        end
+        style = discstyles{idisc};
+        marker = markers{idisc};
+        color = gridcasecolors{igrid};
+        h_disc(idisc) = plot(NaN,NaN, 'Color', color, 'LineStyle', style, 'LineWidth', 2, 'Marker',marker); % No data, just style
+    end
+    % Combine handles and labels
+    handles = h_disc;
+    if numel(uwdiscs)>1
+        discs{1} = 'SPU';
+    end
+    discsDisp = cellfun(@shortDiscName, discs, 'UniformOutput', false); 
+    labels = discsDisp;
 end
-
-% Combine handles and labels
-handles = [h_grid, h_disc];
-gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), gridlabels,  'UniformOutput', false);
-pdiscsDisp = cellfun(@shortDiscName, pdiscs, 'UniformOutput', false); 
-labels = [gridcasesDisp, pdiscsDisp];
 
 % Create the legend
 lgd = legend(handles, labels, 'NumColumns', 2);
@@ -282,7 +338,7 @@ end
 tightfig();
 if saveplot
     % folder = './../plotsMaster/sealingCO2';
-    filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(pdiscsDisp, '_')];
+    filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(discsDisp, '_')];
     % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
     saveas(gcf, fullfile(folder, [filename, '.png']));
     saveas(gcf, fullfile(folder, [filename,'.eps']), 'epsc');
@@ -290,10 +346,10 @@ end
 %% Load simcases grid RES
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
 if ismember('cc', pdiscs)
-    pdiscstyles = {'-', '-', '--', '-.', ':'};
+    discstyles = {'-', '-', '--', '-.', ':'};
     markers = {'none','|','none','none','none'};
 else
-    pdiscstyles = {'-', '--', '-.', ':'};
+    discstyles = {'-', '--', '-.', ':'};
     markers = {'none','none','none','none'};
 end
 simcases = {};
@@ -310,7 +366,7 @@ for igrid = 1:numel(gridcases)
     color = gridcasecolors{igrid};
     for ires = 1:numel(ress)
         res = ress{ires};
-        style = pdiscstyles{ires};
+        style = discstyles{ires};
         gridcase = [gridcases{igrid}, res];
         simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                        'pdisc', pdisc, 'tagcase', tagcases{igrid}, 'jutul', jutul{igrid});
@@ -355,7 +411,7 @@ for ires = 1:numel(ress)
     if numel(ress) == 1
         break
     end
-    style = pdiscstyles{ires};
+    style = discstyles{ires};
     marker = markers{ires};
     h_res(ires) = plot(NaN,NaN, 'Color', 'k', 'LineStyle', style, 'LineWidth', 2, 'Marker',marker); % No data, just style
 end
@@ -399,7 +455,7 @@ if saveplot
 end
 %% Load simcases compThermal
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
-pdiscstyles = {'-', '--'};
+discstyles = {'-', '--'};
 simcases = {};
 plotStyles = {};
 numcases = numel(gridcases) * 2;
@@ -409,11 +465,11 @@ end
 for igrid = 1:numel(gridcases)
     gridcase = gridcases{igrid};
     color = gridcasecolors{igrid};
-    style = pdiscstyles{1};
+    style = discstyles{1};
     simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, 'jutul', jutul{igrid});
     plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker','none');
 
-    style = pdiscstyles{2};
+    style = discstyles{2};
     simcases{end+1} = Simcase('SPEcase', SPEcase,'gridcase', gridcase, 'jutul', jutul{igrid}, 'jutulThermal', true, 'tagcase', 'allcells');
     plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker','none');
 end
@@ -464,14 +520,14 @@ for igrid = 1:numel(gridcases)
 end
 h_disc = [];
 for isim = 1:2
-    style = pdiscstyles{isim};
+    style = discstyles{isim};
     h_disc(isim) = plot(NaN,NaN, 'Color', 'k', 'LineStyle', style, 'LineWidth', 2); % No data, just style
 end
 
 % Combine handles and labels
 handles = [h_grid, h_disc];
 gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), gridlabels,  'UniformOutput', false);
-simlabels = {'Blackoil', 'Compositional'}; 
+simlabels = {'Black-oil', 'Compositional'}; 
 labels = [gridcasesDisp, simlabels];
 
 % Create the legend
@@ -507,3 +563,5 @@ if saveplot
     saveas(gcf, fullfile(folder, [filename, '.png']))
     saveas(gcf, fullfile(folder, [filename,'.eps']), 'epsc');
 end
+pause(0.5)
+close gcf
