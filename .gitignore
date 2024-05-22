@@ -16,5 +16,5 @@ decksave
 grid-files/*
 scripts/PEBI/pointData/*
 scripts/gridgeneration/ggvenv/*
-Misc/*
-deck/*
+Misc/
+deck/
