@@ -2,7 +2,7 @@ clear all
 close all
 %%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-    ad-blackoil postprocessing diagnostics prosjektOppgave...
+    ad-blackoil postprocessing diagnostics masterthesis...
     deckformat gmsh nfvm mpfa
 mrstVerbose off
 %% SPEcase
@@ -44,61 +44,73 @@ ytxt = 'Pressure [bar]';
 folder = './../plotsMaster/PoP';
 filetag = sprintf('pop%d', popcell);
 %% P2 composition box A
-box = 'A';
-ytxt = 'CO2 [kg]';
+
 %% P2.1 mobile
 plotTitle = 'P2.1 Mobile CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 1;
 filetag = ['box', box, 'mob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+box = 'A';
+ytxt = 'CO2 [kg]';
 %% P2.2 immobile
-
+box = 'A';
+ytxt = 'CO2 [kg]';
 plotTitle = 'P2.2 Immobile CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 2;
 filetag = ['box', box, 'immob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P2.3 dissolved
+box = 'A';
+ytxt = 'CO2 [kg]';
 plotTitle = 'P2.3 Dissolved CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 3;
 filetag = ['box', box, 'diss'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P2.4 seal
+box = 'A';
+ytxt = 'CO2 [kg]';
 plotTitle = 'P2.4 Seal CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 4;
 filetag = ['box', box, 'seal'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P3 composition box B
+
+%% P3.1 mobile
 box = 'B';
 ytxt = 'CO2 [kg]';
-%% P3.1 mobile
 plotTitle = 'P3.1 Mobile CO2';
 folder = './../plotsMaster/composition/P3boxB';
 submeasure = 1;
 filetag = ['box', box, 'mob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P3.2 immobile
+box = 'B';
+ytxt = 'CO2 [kg]';
 plotTitle = 'P3.2 Immobile CO2';
 folder = './../plotsMaster/composition/P3boxB';
 submeasure = 2;
 filetag = ['box', box, 'immob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P3.3 dissolved
+box = 'B';
+ytxt = 'CO2 [kg]';
 plotTitle = 'P3.3 Dissolved CO2';
 folder = './../plotsMaster/composition/P3boxB';
 submeasure = 3;
 filetag = ['box', box, 'diss'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% P3.4 seal
+box = 'B';
+ytxt = 'CO2 [kg]';
 plotTitle = 'P3.4 Seal CO2';
 folder = './../plotsMaster/composition/P3boxB';
 submeasure = 4;
 filetag = ['box', box, 'seal'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
-
 %% SETUP
 % A
 % gridcases = {'6tetRef1', '5tetRef1'}; %RAPPORT 

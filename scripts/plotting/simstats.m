@@ -1,9 +1,8 @@
+%used to create tables of simulation stats
+%%
 clear all
 close all
 %%
-mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-    ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa jutul
 mrstVerbose off
 %%
 % SPEcase = 'B';

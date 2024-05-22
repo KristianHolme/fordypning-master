@@ -1,6 +1,6 @@
 param (
-    [float[]]$refs,
-    [int]$alg = 6  # Set the default alg to 6 (Frontal). Change this number as needed.
+    [float[]]$refs, #one or more numbers, separated by commas, indicating refinementfactors to use. Smaller factors results in more cells
+    [int]$alg = 6  # What gmsh algorithm to use. Set the default alg to 6 (Frontal). Change this number as needed.
 )
 
 $dir = Get-Location

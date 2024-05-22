@@ -1,11 +1,11 @@
 configFile = fileread('config.JSON');
 config = jsondecode(configFile);
-mrstPath('register', 'prosjektOppgave', fullfile(config.repo_folder, 'scripts'))
+mrstPath('register', 'masterthesis', fullfile(config.repo_folder, 'scripts'))
 mrstModule add prosjektOppgave
 mrstSettings('set', 'useMEX', true)
 
 %%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-    ad-blackoil postprocessing diagnostics prosjektOppgave...
+    ad-blackoil postprocessing diagnostics masterthesis...
     deckformat gmsh nfvm mpfa msrsb coarsegrid dfm libgeometry...
     upr jutul wellpaths

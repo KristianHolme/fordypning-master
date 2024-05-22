@@ -1,3 +1,5 @@
+#generate multiple structured grids
+#given a number of nx-values (resolution in x-direction) and ny-values, generates grids with all combination of resolutions
 param(
     [int[]]$nxValues,
     [int[]]$nyValues
@@ -13,7 +15,7 @@ foreach ($nx in $nxValues) {
         $mshFileName = "spe11a_structured.msh"
         $newFileName = "spe11a_struct$nx" + "x" + "$ny.m"
 
-        # Convert using gmsh (assuming gmsh can convert to .m, replace 'm' with correct format otherwise)
+        # Convert using gmsh
         gmsh $mshFileName -save -o $newFileName
 
         # Move file to grid-files folder

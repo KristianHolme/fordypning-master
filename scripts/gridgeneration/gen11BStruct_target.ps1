@@ -1,3 +1,4 @@
+#dont use, dont always trust chatGPT
 param(
     [int[]]$nxValues,
     [int[]]$targets,

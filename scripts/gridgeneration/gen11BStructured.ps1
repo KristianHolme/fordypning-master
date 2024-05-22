@@ -1,3 +1,5 @@
+#generate multiple structured grids
+#given a number of nx-values (resolution in x-direction) and ny-values, generates grids with all combination of resolutions
 param(
     [int[]]$nxValues,
     [int[]]$nyValues
