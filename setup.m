@@ -1,7 +1,7 @@
 configFile = fileread('config.JSON');
 config = jsondecode(configFile);
 mrstPath('register', 'masterthesis', fullfile(config.repo_folder, 'scripts'))
-mrstModule add prosjektOppgave
+mrstModule add masterthesis
 mrstSettings('set', 'useMEX', true)
 
 %%
