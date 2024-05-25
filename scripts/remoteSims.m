@@ -17,7 +17,7 @@ function timings = remoteSims(server)
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = false;
             direct_solver = false;
         case 2
@@ -30,7 +30,7 @@ function timings = remoteSims(server)
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = false;
             direct_solver = false;
         case 3
@@ -43,7 +43,7 @@ function timings = remoteSims(server)
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = false;
             direct_solver = false;
         case 4
@@ -56,7 +56,7 @@ function timings = remoteSims(server)
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = false;
             direct_solver = false;
         case 'test'
@@ -69,7 +69,7 @@ function timings = remoteSims(server)
             tagcase = 'test';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = false;
             direct_solver = false;
         case 'august'
@@ -82,7 +82,7 @@ function timings = remoteSims(server)
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = false;
             direct_solver = false;
     end
@@ -101,8 +101,8 @@ function timings = remoteSims(server)
                         simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                         'schedulecase', schedulecase, 'tagcase', tagcase, ...
                                         'pdisc', pdisc, 'uwdisc', uwdisc);
-                        if do.multiphase
-                            [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                        if do.runSimulation
+                            [ok, status, time] = runSimulation(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                                 'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
                             disp(['Done with: ', simcase.casename]);
                             timings.(timingName(simcase.casename)) = time;

@@ -30,31 +30,32 @@ gridcases = {'struct819x117'};
 % gridcases = {'5tetRef0.31'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 
-% SPEcase = 'C';
+% SPEcase = 'C'; %some grids for SPE11C
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct50x50x50'};
 
 pdiscs = {''};
-% pdiscs = {'', 'hybrid-avgmpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'hybrid-avgmpfa'};
 
 schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_C'}; %B_ISO_C
-uwdiscs = {''};
+uwdiscs = {''}; % '' means SPU, 'WENO' means WENO transport discretizations
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = '';%normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
-Jutul               = false;
+tagcase = '';%some options: normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
 
-resetData           = false;
-resetAssembly       = false;
-do.plotStates       = false;
-do.plotFlux         = false;
-do.multiphase       = false;
-do.plotOrthErr      = false;
-do.dispTime         = true;
-direct_solver       = false; %may not be respected if backslashThreshold is not met
+Jutul               = false; %use Jutul for simulations. Only works for TPFA
+resetData           = false; %Start simulation at beginning, ignoring saved steps
+resetAssembly       = false; %ignore stored preprocessing computations for consistent discretizations
+do.plotStates       = false; %plot results of simulations using plotToolBar
+do.plotFlux         = false; %plots flux
+do.runSimulation    = false; %run simulation
+do.plotOrthErr      = false; %plot cellwise K-orthogonality indicator
+do.dispTime         = true;  %display simulation time
+direct_solver       = false; % use direct solver instead of better iterative solvers like AMG/CPR. May not be respected if backslashThreshold is not met
 mrstVerbose off;
 
+%Does simulation/plotting for all combinations of parameters specified above
 stats = {};
 timings = struct();
 for ideck = 1:numel(deckcases)
@@ -70,8 +71,8 @@ for ideck = 1:numel(deckcases)
                     simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                     'schedulecase', schedulecase, 'tagcase', tagcase, ...
                                     'pdisc', pdisc, 'uwdisc', uwdisc, 'jutul', Jutul);
-                    if do.multiphase
-                        [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                    if do.runSimulation
+                        [ok, status, time] = runSimulation(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                             'direct_solver', direct_solver, 'prio', disc_prio, 'resetAssembly', resetAssembly);
                         disp(['Done with: ', simcase.casename]);
                         timingname = replace(simcase.casename, '=', '_');
@@ -104,4 +105,4 @@ end
 if do.dispTime
     disp(timings);
 end
-disp(stats);
+% disp(stats);

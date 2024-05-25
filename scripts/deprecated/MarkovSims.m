@@ -16,7 +16,7 @@ function timings = MarkovSims(server)
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = false;
             direct_solver = false;
         case 2
@@ -29,7 +29,7 @@ function timings = MarkovSims(server)
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = false;
             direct_solver = false;
         case 3
@@ -42,7 +42,7 @@ function timings = MarkovSims(server)
             tagcase = '';
             resetData = false;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = true;
             direct_solver = false;
         case 4
@@ -55,7 +55,7 @@ function timings = MarkovSims(server)
             tagcase = '';
             resetData = true;
             resetAssembly = true;
-            do.multiphase = true;
+            do.runSimulation = true;
             Jutul = false;
             direct_solver = false;
     end
@@ -75,8 +75,8 @@ function timings = MarkovSims(server)
                         simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                         'schedulecase', schedulecase, 'tagcase', tagcase, ...
                                         'pdisc', pdisc, 'uwdisc', uwdisc);
-                        if do.multiphase
-                            [ok, status, time] = solveMultiPhase(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
+                        if do.runSimulation
+                            [ok, status, time] = runSimulation(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                                 'direct_solver', direct_solver, 'resetAssembly', resetAssembly);
                             disp(['Done with: ', simcase.casename]);
                             timings.(timingName(simcase.casename)) = time;
