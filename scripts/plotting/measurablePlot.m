@@ -6,7 +6,7 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     deckformat gmsh nfvm mpfa
 mrstVerbose off
 %% SPEcase
-SPEcase = 'C';
+SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
     xscaling = hour; unit = 'h';
     steps = 720;
@@ -46,13 +46,13 @@ filetag = sprintf('pop%d', popcell);
 %% P2 composition box A
 
 %% P2.1 mobile
+box = 'A';
+ytxt = 'CO2 [kg]';
 plotTitle = 'P2.1 Mobile CO2';
 folder = './../plotsMaster/composition/P2boxA';
 submeasure = 1;
 filetag = ['box', box, 'mob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
-box = 'A';
-ytxt = 'CO2 [kg]';
 %% P2.2 immobile
 box = 'A';
 ytxt = 'CO2 [kg]';
@@ -141,7 +141,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 % gridcases = {'', '', ''};
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'struct819x117'};
@@ -150,7 +150,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct100x100x100', 'horz_ndg_cut_PG_100x100x100', 'cart_ndg_cut_PG_100x100x100'};
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'horz_ndg_cut_PG_50x50x50'};
-gridcases = {'struct50x50x50'};
+% gridcases = {'struct50x50x50'};
 
 % Copmare with thermal
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -166,11 +166,11 @@ gridcases = {'struct50x50x50'};
 
 
 % pdiscs = {'hybrid-avgmpfa'};
-% pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
-pdiscs = {''};
+% pdiscs = {''};
 
-uwdiscs = {'', 'WENO'};
+uwdiscs = {''};
 deckcase = 'B_ISO_C';
 % tagcases = {'gdz-shift', 'gdz-shift-big'};
 tagcases = {''};
@@ -189,6 +189,7 @@ xtxt = ['Time [', unit, ']'];
 saveplot = true;
 plottitle = false;
 insetPlot = false;
+plotbars = true;
 legendpos = 'best';
 
 %% Load simcases
@@ -264,7 +265,7 @@ end
 disp("Loading done.");
 %% Plot
 set(groot, 'defaultLineLineWidth', 2);
-figure('Position', [100,200, 800, 600], 'Name',plotTitle)
+f1 = figure('Position', [100,200, 800, 600], 'Name',plotTitle);
 hold on;
 scale = floor(log10(max(data, [], 'all')));
 axfix = false;
@@ -348,13 +349,25 @@ if insetPlot
     grid(insetAxes);
 end
 tightfig();
+if plotbars
+    f2 = plotbar3(data, gridcasesDisp, discsDisp, gridcasecolors, plotTitle, ytxt);
+    tightfig();
+end
 if saveplot
     % folder = './../plotsMaster/sealingCO2';
     filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(discsDisp, '_')];
     % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
-    saveas(gcf, fullfile(folder, [filename, '.png']));
-    saveas(gcf, fullfile(folder, [filename,'.eps']), 'epsc');
+    saveas(f1, fullfile(folder, [filename, '.png']));
+    saveas(f1, fullfile(folder, [filename,'.eps']), 'epsc');
+    if plotbars
+        filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(discsDisp, '_'), '_bar3'];
+        set(f2, 'Renderer', 'painters');
+        saveas(f2, fullfile(folder, 'bars', [filename, '.png']));
+        saveas(f2, fullfile(folder, 'bars', [filename,'.pdf']), 'pdf');
+    end
 end
+pause(0.3)
+close all
 %% Load simcases grid RES
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
 if ismember('cc', pdiscs)
@@ -575,5 +588,5 @@ if saveplot
     saveas(gcf, fullfile(folder, [filename, '.png']))
     saveas(gcf, fullfile(folder, [filename,'.eps']), 'epsc');
 end
-pause(0.5)
-close gcf
+% pause(0.5)
+% close gcf

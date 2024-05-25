@@ -9,11 +9,13 @@ G1 = GenerateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolu
 G2 = GenerateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', true, 'recombine', false);
 [G3, partition] = GenerateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', true, 'recombine', true);
 %%
-CG = generateCoarseGrid(G2, partition);
+CG = generateCoarseGrid(G, partition);
 CG = coarsenGeometry(CG);
 [CGcellToGcutCell, IA] = unique(partition);
-CG.cells.tag = G2.cells.tag(IA);
+CG.cells.tag = G.cells.tag(IA);
+clf;
 VizCoarse(CG)
+set(gca, 'xlim', [800, 1400], 'zlim', [400,800])
 
 %%
 G = cartGrid([3,3], [1,1]);

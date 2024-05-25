@@ -33,5 +33,6 @@ exportgraphics(gcf, './../rapport/Figures/grids/CP-SC_part.png', 'ContentType','
 %     'nudgeGeom', true, 'round', false, 'SPEcase', 'B');
 load('grid-files/cutcell/horizon_nudge_cutcell_898x120.mat')
 plotCellData(G, G.cells.tag);view(0,0);
-set(gca, 'xlim', [940, 1400], 'zlim', [750, 950]);
-exportgraphics(gcf, './../rapport/Figures/grids/HNCP-fault.png', 'ContentType','image', Resolution=500);
+set(gca, 'xlim', [1085, 1170], 'zlim', [870, 940]); %more zoom in
+% set(gca, 'xlim', [940, 1400], 'zlim', [750, 950]); %original for zoomout
+exportgraphics(gcf, './../rapport/Figures/grids/HNCP-zoomfault.png', 'ContentType','image', Resolution=500);

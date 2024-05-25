@@ -11,7 +11,7 @@ function [moveablepoints, totNudgedPoints, totUnNudgedPoints] = nudgePoints(targ
     closenesslimit = 1; %1: always nudge
     totNudgedPoints = 0;
 
-
+    origMovPts = moveablepoints;
     for im = 1:numMov
         mpoint = moveablepoints(im,:);
         availabletargetPoints = targetpoints(availabletargets,:);

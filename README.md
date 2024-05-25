@@ -1,6 +1,6 @@
-![Project Logo](Images/logo_small.png)
+![Project Logo](Media/logo_small.png)
 # Fordypningsoppgave/masteroppgave
-
+![animation](Media/BsimPEBI.gif)
 
 ## To run files (hopefully):
 - Rename 'config-template.JSON' to 'config.JSON' and modify it to suit your setup

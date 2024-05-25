@@ -28,13 +28,32 @@ function G = makeHorizonGrid(nx,nys, varargin)
     Gcart = cartGrid([nx, sum(nys)], [Lx, Ly]);
     % cartGrids = {};
     horizonYpos = cumsum([0, nys(end:-1:1)]);
+
+    %visualization------
+    % nysRev = nys(end:-1:1);
+    % layerIds = zeros(sum(nysRev));
+    % nysRevCS = [0,cumsum(nysRev)];
+    % for i =1:numel(nysRevCS)-1
+    %     layerIds(nysRevCS(i)+1:nysRevCS(i+1)) = i;
+    % end
+    % ijk = gridLogicalIndices(Gcart);
+    % tags = layerIds(ijk{2});
+    % tags = 11-tags;
+    % plotCellData(Gcart, tags);axis tight;
+    % colormap(lines(10));
+    % cb = colorbar();
+    % set(cb, 'YDir', 'reverse');
+    % cb.FontSize = 15;
+    % cb.Label.String = 'Geometry layer assignment';
+    %visualization------
+
+    
     for ihorz = numel(horzInters)-1:-1:1
         top = horzInters{ihorz};
         bottom = horzInters{ihorz+1};
     
         nx = nxs(ihorz);
         ny = nys(ihorz);
-        % Gcart = cartGrid([nx, ny], [Lx, Ly]);
         for j = 1:ny%+1
             jpos = (j-1+ horizonYpos(numHorz-ihorz+1))*(nx+1) + 1 ;
             xs = Gcart.nodes.coords(jpos:jpos+nx, 1);
@@ -44,22 +63,13 @@ function G = makeHorizonGrid(nx,nys, varargin)
             ys = botys*(1-lambda) + lambda*topys;
             Gcart.nodes.coords(jpos:jpos+nx, 2) = ys;
         end
-        % cartGrids{ihorz} = Gcart;
     end
     G = Gcart;
     G = fixDegenerateFaces(G);
-    % G = computeGeometry(G);
-    % G = removePinch(G, 0.0);
 
     G = makeLayeredGrid(G, 1);
     k = G.nodes.coords(:,3) > 0;
     G.nodes.coords(k,3) = 0.01;
-
-    % G = removePinch(G, 0.0);
-
-    %readjust bc. workaround
-    % k = G.nodes.coords(:,2) < 0;
-    % G.nodes.coords(k,2) = -0.0010;
 
     if mrstSettings('get', 'useMEX')
         G = mcomputeGeometry(G);
@@ -121,5 +131,4 @@ function G = fixDegenerateFaces(G)
    numFaces = diff(G.cells.facePos);
    flatCells = numFaces < 3;
    G = removeCells(G, flatCells);
-   ;
 end

@@ -15,7 +15,7 @@ mrstVerbose on
 % 'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-% SPEcase = 'B';
+SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 % gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62', 'cPEBI_130x62'};
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
@@ -25,14 +25,14 @@ mrstVerbose on
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
-% gridcases = {'cPEBI_220x110'};
+gridcases = {'struct819x117'};
 % gridcases = {'gq_pb0.19'};
 % gridcases = {'5tetRef0.31'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 
-SPEcase = 'C';
+% SPEcase = 'C';
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
-gridcases = {'struct50x50x50'};
+% gridcases = {'struct50x50x50'};
 
 pdiscs = {''};
 % pdiscs = {'', 'hybrid-avgmpfa'};
@@ -42,7 +42,7 @@ schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_C'}; %B_ISO_C
 uwdiscs = {''};
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = 'allcells';%normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
+tagcase = '';%normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
 Jutul               = false;
 
 resetData           = false;
@@ -51,7 +51,7 @@ do.plotStates       = false;
 do.plotFlux         = false;
 do.multiphase       = false;
 do.plotOrthErr      = false;
-do.dispTime         = false;
+do.dispTime         = true;
 direct_solver       = false; %may not be respected if backslashThreshold is not met
 mrstVerbose off;
 

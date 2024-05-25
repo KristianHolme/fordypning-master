@@ -129,7 +129,7 @@ function Gp = makePartitionedGrid(G, partition, varargin)
         Gp.bufferFaces = [];
     end
 
-    assert(checkGrid(Gp), 'grid does not pas checkGrid!');
+    assert(checkGrid(Gp), 'grid does not pass checkGrid!');
 end
 
 function [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfaces)

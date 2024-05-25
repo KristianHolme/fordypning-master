@@ -8,15 +8,15 @@ function timings = runSims2(server)
     mrstVerbose off
     switch  server
     case 1
-        SPEcase = 'C';
-        gridcases = {'struct50x50x50'};
+        SPEcase = 'B';
+        gridcases = {'cPEBI_812x118'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+        pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
-        tagcase = 'newtest';
+        tagcase = '';
         resetData = false;
-        resetAssembly = true;
+        resetAssembly = false;
         Jutul = false;
         direct_solver = false;
         mrstVerbose off;

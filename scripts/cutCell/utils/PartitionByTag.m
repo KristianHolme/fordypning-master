@@ -113,9 +113,11 @@ function [partition, failed, tries] = ConvexityPartition(G, smallCells, nbs, ver
 
     while ~isempty(failed) && tries <= maxtries
         [partition, newfailed] = mainConvexPartition(partition, failed, G, nbs, vertIx, opt);
+        
         if numel(newfailed) == numel(failed) && all(newfailed == failed)
             break
         else
+            tries = tries + 1;
             failed = newfailed;
         end
     end

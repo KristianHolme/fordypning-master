@@ -195,7 +195,8 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
     G.nodes.coords(:,1) = G.nodes.coords(:,1)*xscale;
     G.nodes.coords(:,2) = G.nodes.coords(:,2)*zscale; %z is coord 2 since grid is not yet rotated
-
+    Pts(:,1) = Pts(:,1)*xscale;
+    Pts(:,2) = Pts(:,2)*zscale;
     
     if mrstSettings('get', 'useMEX')
         G = mcomputeGeometry(G);
@@ -209,9 +210,15 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
         G = mcomputeGeometry(G);%maybe not necessary
         geodata = RotateGrid(geodata);
         if opt.bufferVolumeSlice
-            G = sliceGrid(G, {[1, 0.5, 0], [8399, 0.5, 0]}, 'normal', [1 0 0]);
+            [G, gix] = sliceGrid(G, {[1, 0.5, 0], [8399, 0.5, 0]}, 'normal', [1 0 0]);
             G = TagbyFacies(G, geodata, 'vertIx', 3);
             G = getBufferCells(G);
+            newPts = G.cells.centroids;
+            unchanged = gix.new.cells == 1;
+            unchangedParents = gix.parent.cells(unchanged);
+            newPts(unchanged,1) = Pts(unchangedParents,1);
+            newPts(unchanged,3) = 1200-Pts(unchangedParents,2);
+            G.sites = newPts;
         end
     end
 

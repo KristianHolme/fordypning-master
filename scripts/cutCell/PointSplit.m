@@ -34,13 +34,15 @@ function [G, t, skipped] = PointSplit(G, points, varargin)
         f = waitbar(0, 'Starting');
     end
     skipped = 0;
-    
+    pointArray = vertcat(points{:});
+    pointCells = findEnclosingCell(G, pointArray);
     for ipoint = 1:numpoints
         if opt.waitbar
             waitbar(ipoint/numpoints, f, sprintf('Splitting progress: %d %%. (%d/%d).', floor(ipoint/numpoints*100), ipoint, numpoints))
         end
         point = points{ipoint};%adjust depth to guarantee point is inside?
-        cell = findEnclosingCell(G, point);
+        % cell = findEnclosingCell(G, point);
+        cell = pointCells(ipoint);
         if cell == 0
             skipped = skipped +1;
             if ipoint == numpoints
