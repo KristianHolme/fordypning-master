@@ -34,6 +34,9 @@ function model = setupModel(simcase, varargin)
         end
         model = setCCTransmissibility(model, K_system);
     end
+    if ~isempty(simcase.pdisc) && strcmp(simcase.pdisc, 'p')
+        model = setPEBITransmissibility(model);
+    end
 
     if contains(simcase.tagcase, 'upscale')
         partition = PartitionByTag(G);
@@ -43,6 +46,7 @@ function model = setupModel(simcase, varargin)
 
         simcase.G = model.G;
     end
+
 
     if ~isempty(simcase.pdisc) && contains(simcase.pdisc, 'hybrid')
         cellblocks = getCellblocks(simcase, varargin{:});
