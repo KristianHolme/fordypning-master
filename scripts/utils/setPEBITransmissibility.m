@@ -1,5 +1,6 @@
 function model = setPEBITransmissibility(model)
 sites = model.G.sites;
+sites = sites(model.G.cells.indexMap,:);
 G = model.G;
 rock = model.rock;
 

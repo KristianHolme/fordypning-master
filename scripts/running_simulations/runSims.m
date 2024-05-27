@@ -25,7 +25,7 @@ SPEcase = 'B';
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
-gridcases = {'struct819x117'};
+gridcases = {'cPEBI_812x118'};
 % gridcases = {'gq_pb0.19'};
 % gridcases = {'5tetRef0.31'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
@@ -34,7 +34,7 @@ gridcases = {'struct819x117'};
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct50x50x50'};
 
-pdiscs = {''};
+pdiscs = {'p'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'hybrid-avgmpfa'};
 

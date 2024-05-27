@@ -26,6 +26,18 @@ This repository contains files for creating different kind of grids, and running
     - Adds the scripts-folder as an mrst module called masterthesis and adds it to the path
     Turns the MRST option 'useMEX' on, to utilize accelerated computations where possible.
 
+## Dependencies
+The scripts and functions in this repository depend on a number of packages. The main dependency is [MRST](https://www.sintef.no/projectweb/mrst/), the Matlab Reservoir Simulation Toolbox, developed at [SINTEF Digital](https://www.sintef.no/en/digital/departments-new/department-of-mathematics-and-cybernetics/research-group-applied-computational-science/). Some modifications to MRST functionality has been made, and some other packages and files have been used:
+1. For generating PEBI-grids, a fork of the MRST module UPR has been made. The modified MRST functions are in the folder ```scripts/MRST_functions```. Eventually, some of these modifications may find their way into an official release of MRST. 
+    - The main modifications are bugfixes and performance improvements, in addition to some modifications to ease the prototyping process.
+2. [Jutul.jl](https://github.com/sintefmath/Jutul.jl)/[JutulDarcy.jl](https://github.com/sintefmath/JutulDarcy.jl) for accelerated computations in julia.
+3. [CSP11_JutulDarcy.jl](https://github.com/sintefmath/CSP11_JutulDarcy.jl/tree/SPE11C_input) for running compositional models. (branch SPE11C_input for SPE11C support.)
+4. [The official SPE11 CSP repo](https://github.com/Simulation-Benchmarks/11thSPE-CSP/) for ```.geo```-files describing the geometry of the reservoirs.
+5. [multilevelOT](https://github.com/liujl11git/multilevelOT) was used for efficiently calculating the [Earth Movers Distance](https://en.wikipedia.org/wiki/Earth_mover%27s_distance) between different mass distributions from different simulations.
+6. [tightfig(hfig)](https://se.mathworks.com/matlabcentral/fileexchange/34055-tightfig-hfig) for making nicer plots.
+
+
+
 ## Generating grids
 - ```GenerateCutCellGrid``` and ```GeneratePEBIGrid``` for cut-cell and PEBI-grids
 - ```GenerateStructuredGrid``` for generation of structured grid for SPE11C

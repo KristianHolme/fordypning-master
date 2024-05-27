@@ -141,10 +141,10 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
 % gridcases = {'', '', ''};
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
-% gridcases = {'struct819x117'};
+gridcases = {'cPEBI_819x117', 'cPEBI_812x118'};
 
 %Master C
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -166,7 +166,7 @@ gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x11
 
 
 % pdiscs = {'hybrid-avgmpfa'};
-pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
 % pdiscs = {''};
 
@@ -195,8 +195,13 @@ legendpos = 'best';
 %% Load simcases
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
 if ismember('cc', pdiscs)
-    discstyles = {'-', '-', '--', '-.', ':'};
-    markers = {'none','|','none','none','none'};
+    if ismember('p', pdiscs)
+        discstyles = {'-', '-', '-', '--', '-.', ':'};
+        markers = {'none','|','x', 'none','none','none'};
+    else
+        discstyles = {'-', '-', '--', '-.', ':'};
+        markers = {'none','|', 'none','none','none'};
+    end
 else
     discstyles = {'-', '--', '-.', ':'};
     markers = {'none','none','none','none'};
@@ -225,8 +230,13 @@ discs = pdiscs;
 %% Load simcases uwdisc
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
 if ismember('cc', pdiscs)
-    discstyles = {'-', '-', '--', '-.', ':'};
-    markers = {'none','|','none','none','none'};
+    if ismember('p', pdiscs)
+        discstyles = {'-', '-', '-', '--', '-.', ':'};
+        markers = {'none','|','x', 'none','none','none'};
+    else
+        discstyles = {'-', '-', '--', '-.', ':'};
+        markers = {'none','|', 'none','none','none'};
+    end
 else
     discstyles = {'-', '--', '-.', ':'};
     markers = {'none','none','none','none'};
@@ -366,8 +376,8 @@ if saveplot
         saveas(f2, fullfile(folder, 'bars', [filename,'.pdf']), 'pdf');
     end
 end
-pause(0.3)
-close all
+% pause(0.3)
+% close all
 %% Load simcases grid RES
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
 if ismember('cc', pdiscs)
