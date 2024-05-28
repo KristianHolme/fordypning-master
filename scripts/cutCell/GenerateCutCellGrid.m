@@ -13,14 +13,14 @@ function [G, partition] = GenerateCutCellGrid(nx, ny, varargin)
         'round', true,...
         'SPEcase', 'B', ...
         'Cdepth', 50);
-    opt = merge_options(opt, varargin{:});
+    [opt, extra] = merge_options(opt, varargin{:});
     opt.nudgeGeom = ~opt.presplit;
     totstart = tic();
     switch opt.type
         case 'cartesian'
-            [G, geodata] = makeCartesianCut(nx, ny, opt);
+            [G, geodata] = makeCartesianCut(nx, ny, opt, extra);
         case 'horizon'
-            [G, geodata] = makeHorizonCut(nx, ny, opt);
+            [G, geodata] = makeHorizonCut(nx, ny, opt, extra);
     end
     if opt.removeInactive
         G = removeCells(G, G.cells.tag == 7); %remove here, RemoveCells doesnt work on CG
@@ -40,7 +40,7 @@ function [G, partition] = GenerateCutCellGrid(nx, ny, varargin)
     dispif(opt.verbose, sprintf('Generated cut-cell grid in %f s\n', round(ttot,2)));
 end
 
-function [G, geodata] = makeCartesianCut(nx, ny, opt)
+function [G, geodata] = makeCartesianCut(nx, ny, opt, extra)
     configFile = fileread('config.JSON');
     config = jsondecode(configFile);
     fn = fullfile(config.geo_folder, 'spe11a.geo');
@@ -77,8 +77,7 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt)
             newPointsPerFace = 10;
             targetpoints = expandTargetPoints(G, targetpoints, depthIx, newPointsPerFace);
         end
-        [points, ~, ~] = nudgePoints(targetpoints, points, ...
-            'targetOccupation', true);
+        [points, ~, ~] = nudgePoints(targetpoints, points, extra{:});
         cellpoints = mat2cell(points, ones(numPoints, 1), 3);
         geodata.Point = cellpoints;
         assert(opt.presplit == false, 'nudge and presplitting should not both be enabled!')
@@ -118,8 +117,8 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt)
     end
 end
 
-function [G, geodata] = makeHorizonCut(nx, totys, opt)
-    geodata = readGeo('./scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
+function [G, geodata] = makeHorizonCut(nx, totys, opt, extra)
+    geodata = readGeo('./scripts/geo-files/spe11a-faults.geo', 'assignExtra', true);
     geodata = RotateGrid(geodata);
     geodata = StretchGeo(geodata);
     % gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737]; 
@@ -156,8 +155,7 @@ function [G, geodata] = makeHorizonCut(nx, totys, opt)
             newPointsPerFace = 10;
             targetpoints = expandTargetPoints(G, targetpoints, 2, newPointsPerFace);
         end
-        [points(inds,:), ~, ~] = nudgePoints(targetpoints, points(inds,:), ...
-            'targetOccupation', true);
+        [points(inds,:), ~, ~] = nudgePoints(targetpoints, points(inds,:), extra{:});
         cellpoints = mat2cell(points, ones(numPoints, 1), 3);
         geodata.Point = cellpoints;
         if opt.presplit == true

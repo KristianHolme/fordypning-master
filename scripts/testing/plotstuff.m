@@ -2,18 +2,25 @@
 clear all
 close all
 
-%%
-p = rand([8,2]);
+%% For plotting pebi grid in thesis
+p = rand([6,2]);
+bnd = [0,0;
+    1,0;
+    1,1;
+    0,1];
+    
 
-Gt = triangleGrid(p);
-Gp = pebi(Gt);
-%%
+Gt = triangleGrid([p;bnd]);
+Gp = clippedPebi2D(p, bnd);
+%
+pts = [p;bnd];
 clf
-plotGrid(Gp, 'facealpha', 0, 'EdgeColor', 'm', 'LineWidth', 4)
+plotGrid(Gp, 'facealpha', 0, 'EdgeColor', '#77AC30', 'LineWidth', 4)
 plotGrid(Gt, 'facealpha', 0, 'EdgeColor', 'k', 'LineStyle', '--', 'LineWidth', 2);hold on;
-plot(p(:,1), p(:,2), 'ro', 'MarkerSize',10, 'MarkerFaceColor','r');
+plot(p(:,1), p(:,2), 'ro', 'MarkerSize',10, 'MarkerFaceColor','#D95319');
 
 axis equal tight
+tightfig()
 
 %% break point in line 34 in nudgePoints
 GenerateCutCellGrid(130,62, 'save', false, 'type', 'cartesian')

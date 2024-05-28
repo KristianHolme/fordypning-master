@@ -280,7 +280,7 @@ fprintf("Done in %0.2f s\n", t);
 % plotGrid(Gcut, 'facealpha', 0);axis tight;
 
 hold on;
-% data = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);;
+% data = readGeo('~/Code/prosjekt-master/src/scripts/geo-files/spe11a-faults.geo', 'assignExtra', true);;
 data = geodata;
 vertIx = 3;
 for ifacies = 1:7

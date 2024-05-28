@@ -1,6 +1,4 @@
 function Gp = makePartitionedGrid(G, partition, varargin)
-    opt = struct('shortcutSingles', false);
-    opt = merge_options(opt, varargin{:});
 
     Gp = G;
     Gp.cells = [];
@@ -76,9 +74,6 @@ function Gp = makePartitionedGrid(G, partition, varargin)
         neighborPartitions = neighborPartitions(~handledBlocks(neighborPartitions));
         faces = gridCellFaces(G, cells);
         faces = faces(any(ismember(partitionFaces.neighbors(faces,:), [neighborPartitions;0]), 2));
-        if numel(cells)==1 && opt.shortcutSingles
-            %dont merge faces to save time??
-        end
         [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfaces);
     end
     %fix negative neighbors
@@ -174,7 +169,8 @@ function [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfa
         % nodes = gridFaceNodes(G, f);
         nodes = Faces2Nodes(f, G);
         if numel(f) == 1
-            %shortcut
+            %shortcut, dont need to compute anything if there only is one
+            %face to be merged with itself
             reverseNodes = any(cells == G.faces.neighbors(f, 2));
             if reverseNodes
                 nodes = nodes(end:-1:1);

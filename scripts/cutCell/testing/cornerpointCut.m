@@ -8,7 +8,7 @@ set(groot, 'DefaultLineLineWidth', 0.5);
 %% Load CP grid (from deck)
 simcase = Simcase('deckcase', 'B_ISO_SMALL', 'usedeck', true);
 Gdeck = simcase.G;
-geodata = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
+geodata = readGeo('~/Code/prosjekt-master/src/scripts/geo-files/spe11a-faults.geo', 'assignExtra', true);
 geodata = RotateGrid(geodata);
 geodata = StretchGeo(geodata);
 %% Process points

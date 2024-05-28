@@ -20,7 +20,7 @@ function rock = setupRock(simcase, varargin)
         active = G.cells.indexMap;
         rock = compressRock(rock, active);
         G.cells.tag = rock.regions.saturation;
-        % geodata = readGeo('./scripts/cutcell/geo/spe11a.geo', 'assignExtra', true);
+        % geodata = readGeo('./scripts/geo-files/spe11a.geo', 'assignExtra', true);
         % geodata = StretchGeo(RotateGrid(geodata));
         % G = TagbyFacies(G, geodata, 'vertIx', 3); %tagging grid in xz plane
     end

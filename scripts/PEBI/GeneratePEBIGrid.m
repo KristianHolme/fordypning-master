@@ -14,7 +14,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     dispif(opt.verbose, 'Generating PEBI grid...\n');
     tstart = tic();
     
-    geodata = readGeo('scripts/cutcell/geo/spe11a-V2.geo', 'assignextra', true);
+    geodata = readGeo('scripts/geo-files/spe11a-V2.geo', 'assignextra', true);
 
     % make cells so well are in center
     if ~strcmp(opt.SPEcase, 'C')
@@ -41,7 +41,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
                 matPoints(:,1) = matPoints(:,1)/2.8; %correct aspect ratio
                 matPoints(:,2) = matPoints(:,2)/8.4;
                 geodata.Point = mat2cell(matPoints, ones(numel(geodata.Point),1), 3)';
-                pdims = [1*meter, 1.2/8.4*meter];
+                pdims = [1*meter, 1.2/8.4*meter]; %~[1,0.14]
                 depth = 1*meter;
     
                 well1Coords = well1Coords/8400;
@@ -70,7 +70,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
         fault = data{i,2};
         points = curveToPoints(abs(fault), geodata);
         points2D = points(:,1:2);
-        faults{i} = points2D;
+        lineSegments{i} = points2D;
     end
     % pdims = [2.8, 1.2];
     targetsRes = [nx, ny];
@@ -82,19 +82,17 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
         wellConstraints = {well1Coords, well2Coords};
     end
     
-
     [G, Pts,F] = compositePebiGrid2D(gs, pdims, ...
         'cellConstraints', wellConstraints,...
         'mlqtMaxLevel', 1,...
         'protLayer', false,...
-        'faceConstraints', faults, ...
+        'faceConstraints', lineSegments, ...
         'FCFactor', opt.FCFactor, ...
         'circleFactor', opt.circleFactor, ...
         'interpolateFC', false, ...
         'useMrstPebi', opt.useMrstPebi,...
         'earlyReturn', opt.earlyReturn);
 
-    
     
     if opt.earlyReturn
         fn = sprintf('scripts/PEBI/pointData/points_%dx%d.mat', nx, ny);

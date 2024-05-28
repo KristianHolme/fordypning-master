@@ -1,12 +1,8 @@
 clear all
 close all
-%%
-mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-    ad-blackoil postprocessing diagnostics masterthesis...
-    deckformat gmsh nfvm mpfa
 mrstVerbose off
 %% SPEcase
-SPEcase = 'B';
+SPEcase = 'C';
 if strcmp(SPEcase, 'A') 
     xscaling = hour; unit = 'h';
     steps = 720;
@@ -144,7 +140,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
-gridcases = {'cPEBI_819x117', 'cPEBI_812x118'};
+% gridcases = {'cPEBI_819x117', 'cPEBI_812x118'};
 
 %Master C
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -152,32 +148,37 @@ gridcases = {'cPEBI_819x117', 'cPEBI_812x118'};
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'horz_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct50x50x50'};
 
+
 % Copmare with thermal
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct50x50x50', 'struct50x50x50'};
 
 
 %grid vs res
-% gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
+% gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_', 'cPEBI_'};
+gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
 % ress = {'819x117', '1638x234', '2640x380'};
-% gridlabels = {'C', 'HNCP', 'CNCP'};
-% reslabels = {'100K', '400K', '1M'};
+ress = {'50x50x50', '100x100x100'};
+% gridlabels = {'C', 'HNCP', 'CNCP', 'cPEBI'};
+gridlabels = {'C', 'HNCP', 'CNCP'};
+% reslabels = {'F', 'F2', 'F3'};
+reslabels = {'50', '100'};
 % ress = {''};
 
 
 % pdiscs = {'hybrid-avgmpfa'};
-pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
-% pdiscs = {''};
+pdiscs = {''};
 
 uwdiscs = {''};
 deckcase = 'B_ISO_C';
 % tagcases = {'gdz-shift', 'gdz-shift-big'};
 tagcases = {''};
 % tagcases = {''};
-jutul = {false};
+jutul = {false, true, true};
 
-gridlabels = gridcases; %DEFAULT
+% gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
 % labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
 % gridlabels = {'Kartesisk', 'Horisont-kutt', 'Kartesisk-kutt', 'PEBI', 'Firkant/trekant'};
@@ -394,7 +395,7 @@ if numel(tagcases) == 1
     tagcases = repmat(tagcases, 1, numel(gridcases));
 end
 if numel(jutul) == 1
-    jutul = repmat(jutul, 1, numel(gridcases));
+    jutul = repmat(jutul, 1, numel(ress));
 end
 pdisc = pdiscs{1};
 for igrid = 1:numel(gridcases)
@@ -404,7 +405,7 @@ for igrid = 1:numel(gridcases)
         style = discstyles{ires};
         gridcase = [gridcases{igrid}, res];
         simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
-                       'pdisc', pdisc, 'tagcase', tagcases{igrid}, 'jutul', jutul{igrid});
+                       'pdisc', pdisc, 'tagcase', tagcases{igrid}, 'jutul', jutul{ires});
         plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker', markers{ires});
     end
 end

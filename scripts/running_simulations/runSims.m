@@ -23,9 +23,9 @@ SPEcase = 'B';
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_FPG_130x62'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
-gridcases = {'cPEBI_812x118'};
+% gridcases = {'cPEBI_819x117'};
 % gridcases = {'gq_pb0.19'};
 % gridcases = {'5tetRef0.31'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
@@ -34,7 +34,7 @@ gridcases = {'cPEBI_812x118'};
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct50x50x50'};
 
-pdiscs = {'p'};
+pdiscs = {''};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'hybrid-avgmpfa'};
 
@@ -51,7 +51,7 @@ do.plotStates       = false; %plot results of simulations using plotToolBar
 do.plotFlux         = false; %plots flux
 do.runSimulation    = false; %run simulation
 do.plotOrthErr      = false; %plot cellwise K-orthogonality indicator
-do.dispTime         = true;  %display simulation time
+do.dispTime         = false;  %display simulation time
 direct_solver       = false; % use direct solver instead of better iterative solvers like AMG/CPR. May not be respected if backslashThreshold is not met
 mrstVerbose off;
 
@@ -93,6 +93,15 @@ for ideck = 1:numel(deckcases)
                     if do.plotOrthErr
                         simcase.plotErr('plotHistogram', true, 'resetData', true);
                     end
+                    % G = simcase.G;
+                    % [inj1, inj2] = getinjcells(simcase);
+                    % disp(simcase.gridcase);
+                    % disp(G.cells.tag([inj1;inj2]))
+                    % figure('Name',simcase.gridcase);
+                    % plotToolbar(G, G.cells.tag);view(0,0)
+                    % plotGrid(G, [inj1;inj2]);
+
+                    
                     % stats{end+1,1} =  simcase.gridcase;
                     % states = simcase.getSimData;
                     % totco2 = sum(states{301}.FlowProps.ComponentTotalMass{2});

@@ -273,20 +273,21 @@ end
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117'};
-% gridcases = {'struct819x117', 'struct1638x234', 'struct2640x380'};
+gridcases = {'struct819x117', 'struct1638x234', 'struct2640x380'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_1638x234', 'horz_ndg_cut_PG_2640x380'};
 % gridcases = {'cart_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380'};
+% gridcases = {'cPEBI_819x117', 'cPEBI_1638x234', 'cPEBI_2640x380'};
 % gridcases = {'struct2640x380', 'horz_ndg_cut_PG_2640x380', 'cart_ndg_cut_PG_2640x380'};
 % gridcases = {'struct1638x234', 'horz_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_1638x234'};
-gridcases = {'struct819x117'};
+% gridcases = {'struct819x117'};
 
-jutul = {false};
+jutul = {false, true, true};
 % pdiscs = {''};
 % pdiscs = {'hybrid-avgmpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 pdiscs = {''};
 tagcases = {''}; %one for each pdisc or one for all
-uwdiscs = {'', 'WENO'};
+uwdiscs = {''};
 % uwdiscs = {''};
 
 

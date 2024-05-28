@@ -1,7 +1,7 @@
 load("grid-files/cutcell/buff_horizon_presplit_cutcell_130x62.mat");
 
 
-geodata = readGeo('~/Code/prosjekt-master/src/scripts/cutCell/geo/spe11a-faults.geo', 'assignExtra', true);
+geodata = readGeo('~/Code/prosjekt-master/src/scripts/geo-files/spe11a-faults.geo', 'assignExtra', true);
 geodata = RotateGrid(geodata);
 geodata = StretchGeo(geodata);
 
