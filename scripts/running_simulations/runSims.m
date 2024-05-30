@@ -23,7 +23,7 @@ SPEcase = 'B';
 % gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_FPG_130x62'};
 % gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', '5tetRef0.31'};
+gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
 % gridcases = {'cPEBI_819x117'};
 % gridcases = {'gq_pb0.19'};
@@ -32,7 +32,7 @@ gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x11
 
 % SPEcase = 'C'; %some grids for SPE11C
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
-% gridcases = {'struct50x50x50'};
+% gridcases = {'cart_ndg_cut_PG_50x50x50'};
 
 pdiscs = {''};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
@@ -45,9 +45,10 @@ disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretizat
 tagcase = '';%some options: normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
 
 Jutul               = false; %use Jutul for simulations. Only works for TPFA
+jutulThermal        = false;
 resetData           = false; %Start simulation at beginning, ignoring saved steps
 resetAssembly       = false; %ignore stored preprocessing computations for consistent discretizations
-do.plotStates       = false; %plot results of simulations using plotToolBar
+do.plotStates       = true; %plot results of simulations using plotToolBar
 do.plotFlux         = false; %plots flux
 do.runSimulation    = false; %run simulation
 do.plotOrthErr      = false; %plot cellwise K-orthogonality indicator
@@ -70,7 +71,7 @@ for ideck = 1:numel(deckcases)
                     uwdisc = uwdiscs{iuwdisc};
                     simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                     'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                    'pdisc', pdisc, 'uwdisc', uwdisc, 'jutul', Jutul);
+                                    'pdisc', pdisc, 'uwdisc', uwdisc, 'jutul', Jutul, 'jutulThermal', jutulThermal);
                     if do.runSimulation
                         [ok, status, time] = runSimulation(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                             'direct_solver', direct_solver, 'prio', disc_prio, 'resetAssembly', resetAssembly);

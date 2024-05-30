@@ -52,7 +52,7 @@ function G = getBufferCells(G)
         sideCells = find(G.cells.centroids(:,1) > 8399/3000 | G.cells.centroids(:,1) < 1/3000);
     end
     newBdryCells = setdiff(sideCells, G.bufferCells);
-    dispif(~isempty(newBdryCells), 'Adding bdryCells without bdryFaces!\n');
+    % dispif(~isempty(newBdryCells), 'Adding bdryCells without bdryFaces!\n');
     for inc = 1:numel(newBdryCells)
         cell = newBdryCells(inc);
         faces = gridCellFaces(G, cell);

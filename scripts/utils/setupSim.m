@@ -58,7 +58,7 @@ function [state0, model, schedule, nls] = setupSim(simcase, varargin)
         end
     elseif strcmp(simcase.SPEcase, 'B') || strcmp(simcase.SPEcase, 'C')
         if ~isempty(simcase.gridcase)
-            p_datum = 19620000;%why this value, why not 2.0754e+07?
+            p_datum = 19620000;
     
             rsvd = [0,0;1200,0];
             depth_datum = 0.0;
@@ -105,7 +105,7 @@ function [state0, model, schedule, nls] = setupSim(simcase, varargin)
         nls.LinearSolver = BackslashSolverAD();
     end
     nls.maxTimestepCuts = 20;
-    nls.maxIterations = 12; %12 fra readeclipse
+    nls.maxIterations = 12;
     nls.useRelaxation = true;
 
 end

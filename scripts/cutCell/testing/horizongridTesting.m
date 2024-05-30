@@ -14,7 +14,7 @@ plotGrid(G, 'facealpha', 0);view(0,0);
 
 
 %%
-geodata = readGeo('~/Code/prosjekt-master/src/scripts/geo-files/spe11a-faults.geo', 'assignExtra', true);
+geodata = readGeo('./geo-files/spe11a-faults.geo', 'assignExtra', true);
 geodata = RotateGrid(geodata);
 geodata = StretchGeo(geodata);
 %% Nudge geometry points

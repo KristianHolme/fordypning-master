@@ -61,17 +61,17 @@ function volumeFractions = getVolumeFractions(G, p1, p2, vertIx, opt)
     
 end
 
-function volumeFractions = polyVolumeFractions(G, n, pos, numCand, allcandidates, depthIx, vertIx, p1, p2, boxpoly)
+function volumeFractions = polyVolumeFractions(G, n, pos, numCand, allcandidates, depthIx, vertIx, p1, p2, boxshape)
 volumeFractions = zeros(G.cells.num,1);
 warning('off', 'MATLAB:polyshape:repairedBySimplify');
 for icand = 1:numCand
     % globcelIx = allcandidates(icand);
     candNodes = n(pos(icand):pos(icand+1)-1);
     %Only want nodes in y=0
-    candNodeCoords = G.nodes.coords(candNodes,:);
-    candNodeCoords = candNodeCoords(candNodeCoords(:,depthIx) == 0.0,:);
-    candNodesXIn = candNodeCoords(:,1) > p1(1) & candNodeCoords(:,1) < p2(1);
-    candNodesVIn = candNodeCoords(:,vertIx) > p1(2) & candNodeCoords(:,vertIx) < p2(2);
+    nodeCoords = G.nodes.coords(candNodes,:);
+    nodeCoords = nodeCoords(nodeCoords(:,depthIx) == 0.0,:);
+    candNodesXIn = nodeCoords(:,1) > p1(1) & nodeCoords(:,1) < p2(1);
+    candNodesVIn = nodeCoords(:,vertIx) > p1(2) & nodeCoords(:,vertIx) < p2(2);
     candNodesIn = candNodesXIn & candNodesVIn;
     %-----------
     % plotGrid(G, allcandidates(icand), 'facealpha', 0.5, 'edgealpha', 0.5)
@@ -82,9 +82,9 @@ for icand = 1:numCand
         volumeFractions(allcandidates(icand)) = 0;
     else
         % coordslooped = [candNodeCoords;candNodeCoords(1,:)];
-        candshape = polyshape(candNodeCoords(:,1), candNodeCoords(:,vertIx));
-        origarea = area(candshape);
-        polyInBox = intersect(candshape, boxpoly);
+        cellShape = polyshape(nodeCoords(:,1), nodeCoords(:,vertIx));
+        origarea = area(cellShape);
+        polyInBox = intersect(cellShape, boxshape);
         areaInBox = area(polyInBox);
         fraction = areaInBox/origarea;
         volumeFractions(allcandidates(icand)) = fraction;
@@ -103,21 +103,21 @@ for icand = 1:numCand
     % globcelIx = allcandidates(icand);
     candNodes = n(pos(icand):pos(icand+1)-1);
     numCandNodes = numel(candNodes);
-    candNodeCoords = G.nodes.coords(candNodes,:);
-    candNodesXIn = candNodeCoords(:,1) > p1(1) & candNodeCoords(:,1) < p2(1);
-    candNodesVIn = candNodeCoords(:,vertIx) >= p1(2) & candNodeCoords(:,vertIx) <= p2(2);
+    cellNodeCoords = G.nodes.coords(candNodes,:);
+    candNodesXIn = cellNodeCoords(:,1) > p1(1) & cellNodeCoords(:,1) < p2(1);
+    candNodesVIn = cellNodeCoords(:,vertIx) >= p1(2) & cellNodeCoords(:,vertIx) <= p2(2);
     candNodesIn = candNodesXIn & candNodesVIn;
     if all(candNodesIn)
         volumeFractions(allcandidates(icand)) = 1;
     elseif ~any(candNodesIn)
         volumeFractions(allcandidates(icand)) = 0;
     else
-        xmin = min(candNodeCoords(:,1));
-        ymin = min(candNodeCoords(:,2));
-        zmin = min(candNodeCoords(:,3));
-        xmax = max(candNodeCoords(:,1));
-        ymax = max(candNodeCoords(:,2));
-        zmax = max(candNodeCoords(:,3));
+        xmin = min(cellNodeCoords(:,1));
+        ymin = min(cellNodeCoords(:,2));
+        zmin = min(cellNodeCoords(:,3));
+        xmax = max(cellNodeCoords(:,1));
+        ymax = max(cellNodeCoords(:,2));
+        zmax = max(cellNodeCoords(:,3));
 
         boundingBoxVol = (xmax-xmin)*(ymax-ymin)*(zmax-zmin);
         d = (boundingBoxVol/numSampsTarget)^(1/3);
@@ -131,17 +131,18 @@ for icand = 1:numCand
         [X, Y, Z] = meshgrid(x, y, z);
         allCoords = [X(:), Y(:), Z(:)];
 
-        
-        shp = alphaShape(candNodeCoords, Inf);
-        sampsInCand = inShape(shp, allCoords(:,1), allCoords(:,2), allCoords(:,3));
-        numSampsInCand = sum(sampsInCand);
-        sampCoords = allCoords(sampsInCand,:);
-        sampCoordsXIn = sampCoords(:,1) >= p1(1) & sampCoords(:,1) <= p2(1);
-        sampCoordsZIn = sampCoords(:,3) >= p1(2) & sampCoords(:,3) <= p2(2);
-        sampCoordsYIn = sampCoords(:,2) >= 1 & sampCoords(:,2) <= 4998;
-        sampCoordsIn = sampCoordsXIn & sampCoordsYIn & sampCoordsZIn;
-        numSampCoordsIn = sum(sampCoordsIn);
-        fraction = numSampCoordsIn/numSampsInCand;
+        %Make cell shape and find points inside cell
+        cellshape = alphaShape(cellNodeCoords, Inf);
+        pointsInCell= inShape(cellshape, allCoords(:,1), allCoords(:,2), allCoords(:,3));
+        numPointsInCell = sum(pointsInCell);
+        pointCoords = allCoords(pointsInCell,:);
+        %How many of these points are inside the bpx?
+        pointsInsideDirX = pointCoords(:,1) >= p1(1) & pointCoords(:,1) <= p2(1);
+        pointsInsideDirZ = pointCoords(:,3) >= p1(2) & pointCoords(:,3) <= p2(2);
+        pointsInsideDirY = pointCoords(:,2) >= 1 & pointCoords(:,2) <= 4999;
+        pointsInCellAndBox = pointsInsideDirX & pointsInsideDirY & pointsInsideDirZ;
+        numPointsInCellAndBox = sum(pointsInCellAndBox);
+        fraction = numPointsInCellAndBox/numPointsInCell;
         volumeFractions(allcandidates(icand)) = fraction;
 
         % weights = rand(numCandNodes, numSamps);

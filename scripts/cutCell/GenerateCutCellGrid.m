@@ -118,7 +118,7 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt, extra)
 end
 
 function [G, geodata] = makeHorizonCut(nx, totys, opt, extra)
-    geodata = readGeo('./scripts/geo-files/spe11a-faults.geo', 'assignExtra', true);
+    geodata = readGeo('./geo-files/spe11a-faults.geo', 'assignExtra', true);
     geodata = RotateGrid(geodata);
     geodata = StretchGeo(geodata);
     % gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737]; 
@@ -213,7 +213,7 @@ function [G, partition] = Recombine(G, opt, nx, ny, geodata)
 
     if strcmp(opt.SPEcase, 'C')
         G = removeLayeredGrid(G);
-        layerthicknesses = [1; repmat(5000/opt.Cdepth, opt.Cdepth,1); 1];%one meter thickness for buffer volume in front and back
+        layerthicknesses = [1; repmat(4998/opt.Cdepth, opt.Cdepth,1); 1];%one meter thickness for buffer volume in front and back
         G = makeLayeredGrid(G, layerthicknesses);
         G = mcomputeGeometry(G);
         G = RotateGrid(G);

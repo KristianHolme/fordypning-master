@@ -11,15 +11,7 @@ This repository contains files for creating different kind of grids, and running
     - repo_folder: the folder where this repo is cloned.
     - geo_folder: the folder containing the spe11a.geo file. Can be found in the SPE11 CSP repo (https://github.com/Simulation-Benchmarks/11thSPE-CSP/)
     - spe11decks_folder: the folder containing the spe11-decks repo (https://github.com/sintefmath/spe11-decks)
-        - Recommened to refine schedule by changing the last three schedule steps in ```spe11-decks/csp11b/isothermal/130_62/CSP11B_DISGAS.DATA``` ($100$ times is more than enough, and what is assumed in some plotting scripts):
-        ```
-        #change this
-        TSTEP
-        1*9125.0 #or 1*346750
-        #to this
-        TSTEP
-        100*91.250 #or 100*3467.50
-        ```
+        - The schedule timesteps are modified so that both injection periods and the settling period are all 100 steps each.
 
         
 - Run setup.m

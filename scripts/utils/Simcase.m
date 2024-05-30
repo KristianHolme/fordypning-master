@@ -253,14 +253,6 @@ classdef Simcase < handle
                     deckFolder = fullfile(simcase.repoDir, 'deck');
                 end
               
-                % if isempty(deckFolder)%something wrong with config if we
-                % enter here %TODO delete
-                %     if strcmp(simcase.user, 'kholme')%on markov
-                %         deckFolder = fullfile('/home/shomec/k/kholme/Documents/Prosjektoppgave/src/', replace(folderFromSrc, '\', '/'));
-                %     else
-                %         deckFolder = folderFromSrc;
-                %     end
-                % end
                 %load deck from mat file or save to mat file
                 decksavename = replace(deckname, '.DATA', '_deck.mat');
                 decksaveFolder = simcase.decksaveDir;
@@ -368,7 +360,9 @@ classdef Simcase < handle
 
             [states, ~, ~] = simcase.getSimData;
             figure
-            plotToolbar(simcase.model.G, states, 'field', opt.field, 'pauseTime', opt.pauseTime, ...
+            % plotToolbar(simcase.model.G, states, 'field', opt.field, 'pauseTime', opt.pauseTime, ...
+            %     varargin{:});
+            plotToolbar(simcase.G, states, 'field', opt.field, 'pauseTime', opt.pauseTime, ...
                 varargin{:});
             [inj1, inj2] = simcase.getinjcells;
             plotGrid(simcase.G, vertcat(inj1, inj2), 'faceAlpha', 0)

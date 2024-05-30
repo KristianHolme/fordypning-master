@@ -14,7 +14,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     dispif(opt.verbose, 'Generating PEBI grid...\n');
     tstart = tic();
     
-    geodata = readGeo('scripts/geo-files/spe11a-V2.geo', 'assignextra', true);
+    geodata = readGeo('./geo-files/spe11a-V2.geo', 'assignextra', true);
 
     % make cells so well are in center
     if ~strcmp(opt.SPEcase, 'C')
@@ -157,7 +157,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
 
     
     if strcmp(opt.SPEcase, 'C')
-        layerthicknesses = [1; repmat(5000/opt.Cdepth, opt.Cdepth,1); 1]; %one meter thickness for buffer volume in front and back
+        layerthicknesses = [1; repmat(4998/opt.Cdepth, opt.Cdepth,1); 1]; %one meter thickness for buffer volume in front and back
         G = makeLayeredGrid(G, layerthicknesses);
         G = mcomputeGeometry(G);
     else

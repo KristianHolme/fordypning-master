@@ -12,7 +12,7 @@ else
     steps = 301;
     totsteps = 301;
 end
-resetData = false;
+resetData = true;
 %% P5: Set Sealing-CO2
 getData = @(simcase, steps)getSealingCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in sealing units';
@@ -146,7 +146,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct100x100x100', 'horz_ndg_cut_PG_100x100x100', 'cart_ndg_cut_PG_100x100x100'};
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'horz_ndg_cut_PG_50x50x50'};
-% gridcases = {'struct50x50x50'};
+gridcases = {'struct50x50x50', 'struct50x50x50'};
 
 
 % Copmare with thermal
@@ -156,13 +156,13 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 
 %grid vs res
 % gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_', 'cPEBI_'};
-gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
+% gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
 % ress = {'819x117', '1638x234', '2640x380'};
-ress = {'50x50x50', '100x100x100'};
+% ress = {'50x50x50', '100x100x100'};
 % gridlabels = {'C', 'HNCP', 'CNCP', 'cPEBI'};
-gridlabels = {'C', 'HNCP', 'CNCP'};
+% gridlabels = {'C', 'HNCP', 'CNCP'};
 % reslabels = {'F', 'F2', 'F3'};
-reslabels = {'50', '100'};
+% reslabels = {'50', '100'};
 % ress = {''};
 
 
@@ -174,11 +174,11 @@ pdiscs = {''};
 uwdiscs = {''};
 deckcase = 'B_ISO_C';
 % tagcases = {'gdz-shift', 'gdz-shift-big'};
-tagcases = {''};
+tagcases = {'', 'fixedGrid'};
 % tagcases = {''};
-jutul = {false, true, true};
+jutul = {false};
 
-% gridlabels = gridcases; %DEFAULT
+gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
 % labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
 % gridlabels = {'Kartesisk', 'Horisont-kutt', 'Kartesisk-kutt', 'PEBI', 'Firkant/trekant'};
@@ -187,7 +187,7 @@ jutul = {false, true, true};
 % plotTitle = 'CO2 in sealing units';
 % ytxt = 'CO2 [kg]';
 xtxt = ['Time [', unit, ']'];
-saveplot = true;
+saveplot = false;
 plottitle = false;
 insetPlot = false;
 plotbars = true;

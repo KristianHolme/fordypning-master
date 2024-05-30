@@ -1,8 +1,9 @@
 clear all
 close all
 %% Prepare simcases
-SPEcase = 'B';
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
+SPEcase = 'C';
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
+gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 
 numgrids = numel(gridcases);
 simcases = {};
@@ -39,17 +40,17 @@ end
 %% Plot
 % figure('Position', [100, 100, 800, 600]);
 % distributionPlot(errdata+mn, 'color', colors, 'xnames', names, 'showMM', 0, 'addboxes', true);
-boxplot(errvectdata, 'Colors', vertcat(colors{:}), 'Labels',names, 'Whisker',Inf);
+boxplot(errdata, 'Colors', vertcat(colors{:}), 'Labels',names, 'Whisker',Inf);
 % ylims = ylim;
 % ylims(1) = ylims(1)*0.2;
 % ylim(ylims);
 xlim([0.5, numgrids+0.5]);
 ax = gca;
-ax.YScale = 'linear';
+ax.YScale = 'log';
 grid();
 tightfig();
-% saveas(gcf, fullfile('../plotsMaster/staticIndicator', ['fwerr', SPEcase,'.eps']), 'epsc');
-%%
+saveas(gcf, fullfile('../plotsMaster/staticIndicator', ['err', SPEcase,'.eps']), 'epsc');
+%% bad experimentation
 maxVal = max(errdata, [], 'all');
 transformFunc = @(x) log(x+1) + (x/maxVal) * 10;
 %%

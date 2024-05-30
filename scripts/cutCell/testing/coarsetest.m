@@ -5,7 +5,7 @@ mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics prosjektOppgave...
     deckformat gmsh nfvm mpfa coarsegrid
 %%
-geodata = readGeo('~/Code/prosjekt-master/src/scripts/geo-files/spe11a-faults.geo', 'assignExtra', true);
+geodata = readGeo('./geo-files/spe11a-faults.geo', 'assignExtra', true);
 Lx = 2.8;
 Ly = 1.2;
 G = cartGrid([nx ny 1], [Lx, Ly 0.01]);

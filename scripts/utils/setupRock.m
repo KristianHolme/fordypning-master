@@ -52,11 +52,9 @@ function rock = setupRock(simcase, varargin)
                 fullperm(:,6) = fullperm(:,6) + xperm .* (scaling.^2);
                 rock.perm = fullperm;                
             end
-            if contains(simcase.tagcase, 'bufferMult')
-                [~, rock] = addBufferVolume(G, rock, 'bufferMult', true);
-            else
-                [~, rock] = addBufferVolume(G, rock);
-            end
+
+            [~, rock] = addBufferVolume(G, rock, 'bufferMult', contains(simcase.tagcase, 'bufferMult'));
+
         end
     elseif simcase.usedeck
         rock = initEclipseRock(simcase.deck);
