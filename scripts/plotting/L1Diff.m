@@ -1,3 +1,6 @@
+clear all
+close all
+%%
 SPEcase = 'B';
 gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
 pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
@@ -25,7 +28,7 @@ G = simcase.G;
 M = G.reductionMatrix;
 Gr = G.reductionGrid;
 data = nan(G.cells.num, numdiscs);
-%% Define reduce function first
+% Define reduce function first
 for ip = 1:numdiscs
     simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'pdisc', pdiscs{ip}, 'deckcase', 'B_ISO_C', 'usedeck', true);
     states = simcase.getSimData;
@@ -75,6 +78,18 @@ end
 % imagesc(EMDDiffs);
 % colormap(hot);
 % colorbar;
+%%
+figure('Name',sprintf('L1, %s', 'SPE11B'));
+imagesc(L1Diffs);
+cdata = get(gca, 'Children');
+% Set the missing data color explicitly to white
+set(cdata, 'AlphaData', ~isnan(L1Diffs)); % Make NaNs transparent
+set(gca, 'XTick', [], 'YTick', []);
+colormap(hot);
+colorbar;
+
+%%
+save('/media/kristian/HDD/matlab/output/L1Diffs.mat', 'L1Diffs', 'discnames', 'displaynames')
 %%
 function reducedData = reduce(statedata, G, M, Gr)
 fulldata = zeros(size(M, 2), 1);

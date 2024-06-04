@@ -1,8 +1,8 @@
 {
-    "output_folder": "C:\\Users\\holme\\OneDrive\\Dokumenter\\_Studier\\Prosjekt\\Prosjektoppgave\\src\\output",
-    "spe11utils_folder": "C:\\Users\\holme\\OneDrive\\Dokumenter\\_Studier\\Prosjekt\\Prosjektoppgave\\src\\spe11-utils",
-    "decksave_folder": "",
-    "repo_folder": "C:\\Users\\holme\\OneDrive\\Dokumenter\\_Studier\\Prosjekt\\Prosjektoppgave\\src",
-    "geo_folder": "C:\\Users\\holme\\Documents\\Prosjekt\\Prosjektoppgave\\src\\11thSPE-CSP", 
-    "spe11decks_folder": "C:\\Users\\holme\\OneDrive\\Dokumenter\\_Studier\\Prosjekt\\Prosjektoppgave\\src\\spe11-decks"
+    "output_folder": "/media/user/HDD/matlab/output",
+    "spe11utils_folder": "~/code/spe11/spe11-utils",
+    "decksave_folder": "/media/user/HDD/matlab/decksave",
+    "repo_folder": "~/code/spe11/src",
+    "geo_folder": "~/code/spe11/11thSPE-CSP/geometries", 
+    "spe11decks_folder": "~/code/spe11/spe11-decks"
 }

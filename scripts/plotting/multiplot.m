@@ -17,7 +17,7 @@ function multiplot(data, varargin)
 
     % Get the screen size
     screenSize = get(0, 'ScreenSize');
-    % screenSize(3) = 2560; %TEMPORARY
+    screenSize(3) = 1600; %TEMPORARY
     [numRows, numCols] = size(data);
 
     %get min and max value

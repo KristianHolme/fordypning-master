@@ -12,7 +12,7 @@ else
     steps = 301;
     totsteps = 301;
 end
-resetData = true;
+resetData = false;
 %% P5: Set Sealing-CO2
 getData = @(simcase, steps)getSealingCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in sealing units';
@@ -146,7 +146,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct100x100x100', 'horz_ndg_cut_PG_100x100x100', 'cart_ndg_cut_PG_100x100x100'};
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'horz_ndg_cut_PG_50x50x50'};
-gridcases = {'struct50x50x50', 'struct50x50x50'};
+% gridcases = {'struct50x50x50', 'struct50x50x50'};
 
 
 % Copmare with thermal
@@ -156,13 +156,13 @@ gridcases = {'struct50x50x50', 'struct50x50x50'};
 
 %grid vs res
 % gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_', 'cPEBI_'};
-% gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
+gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
 % ress = {'819x117', '1638x234', '2640x380'};
-% ress = {'50x50x50', '100x100x100'};
+ress = {'50x50x50', '100x100x100'};
 % gridlabels = {'C', 'HNCP', 'CNCP', 'cPEBI'};
-% gridlabels = {'C', 'HNCP', 'CNCP'};
+gridlabels = {'C', 'HNCP', 'CNCP'};
 % reslabels = {'F', 'F2', 'F3'};
-% reslabels = {'50', '100'};
+reslabels = {'50', '100'};
 % ress = {''};
 
 
@@ -174,11 +174,11 @@ pdiscs = {''};
 uwdiscs = {''};
 deckcase = 'B_ISO_C';
 % tagcases = {'gdz-shift', 'gdz-shift-big'};
-tagcases = {'', 'fixedGrid'};
+tagcases = {''};
 % tagcases = {''};
-jutul = {false};
+jutul = {false, true};
 
-gridlabels = gridcases; %DEFAULT
+% gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
 % labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
 % gridlabels = {'Kartesisk', 'Horisont-kutt', 'Kartesisk-kutt', 'PEBI', 'Firkant/trekant'};
@@ -187,7 +187,7 @@ gridlabels = gridcases; %DEFAULT
 % plotTitle = 'CO2 in sealing units';
 % ytxt = 'CO2 [kg]';
 xtxt = ['Time [', unit, ']'];
-saveplot = false;
+saveplot = true;
 plottitle = false;
 insetPlot = false;
 plotbars = true;
@@ -421,7 +421,7 @@ end
 %% Plot grid RES
 
 set(groot, 'defaultLineLineWidth', 2);
-figure('Position', [100,200, 800, 600], 'Name',plotTitle)
+f1 = figure('Position', [100,200, 800, 600], 'Name',plotTitle)
 hold on;
 scale = floor(log10(max(data, [], 'all')));
 axfix = false;
@@ -482,12 +482,23 @@ if insetPlot
     grid(insetAxes);
 end
 tightfig();
+if plotbars
+    f2 = plotbar3(data, gridlabels, reslabels, gridcasecolors, plotTitle, ytxt);
+    tightfig();
+end
 if saveplot
+    disp('saving...')
     % folder = './../plotsMaster/sealingCO2';
     filename = [SPEcase, '_', filetag,'_', strjoin(gridlabels, '_'), '-', strjoin(reslabels, '_')];
     % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
-    saveas(gcf, fullfile(folder, [filename, '.png']));
-    saveas(gcf, fullfile(folder, filename), 'epsc');
+    saveas(f1, fullfile(folder, [filename, '.png']));
+    saveas(f1, fullfile(folder, filename), 'epsc');
+     if plotbars
+        filename = [SPEcase, '_', filetag,'_', strjoin(gridlabels, '_'), '-', strjoin(reslabels, '_'), '_bar3'];
+        set(f2, 'Renderer', 'painters');
+        saveas(f2, fullfile(folder, 'bars', [filename, '.png']));
+        saveas(f2, fullfile(folder, 'bars', [filename,'.pdf']), 'pdf');
+    end
 end
 %% Load simcases compThermal
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};

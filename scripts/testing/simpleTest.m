@@ -76,6 +76,7 @@ function simpleTest(simcase, varargin)
     plotToolbar(G, state);
     title(opt.title);
     view(0,0);
+    plotContours(G, state{1}.pressure, 5)
     switch opt.direction
         case 'lr'
             loc = 'southoutside';

@@ -73,6 +73,7 @@ h.MissingDataColor = 'none'; % White color for NaNs
 h.YDisplayLabels = discnames;
 %% Newest, using imagesc
 load("/media/kristian/HDD/matlab/output/Benergy.mat")
+energy = energy/max(energy, [], "all");
 h = imagesc(energy);
 
 cdata = get(gca, 'Children');
@@ -80,9 +81,9 @@ cdata = get(gca, 'Children');
 set(cdata, 'AlphaData', ~isnan(energy)); % Make NaNs transparent
 set(gca, 'XTick', [], 'YTick', []);
 colorbar();
-colormap(flipud(hot));
+colormap(hot);
 %% resize, then:
 tightfig();
 
 %% save
-exportgraphics(gca, './../plotsMaster/energyimgHotRev.eps');
+exportgraphics(gca, './../plotsMaster/energyimgHot.eps');

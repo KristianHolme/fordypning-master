@@ -92,11 +92,11 @@ saveplot = false;
 phases = 1;
 grid = 'skewed3D';
 simcase{1} = Simcase('gridcase', grid, ...
+    'pdisc', '');
+simcase{2} = Simcase('gridcase', grid, ...
     'pdisc', 'hybrid-mpfa');
-% simcase{2} = Simcase('gridcase', grid, ...
-%     'pdisc', 'hybrid-ntpfa');
-% simcase{3} = Simcase('gridcase', grid, ...
-%     'pdisc', 'hybrid-ntpfa');
+simcase{3} = Simcase('gridcase', grid, ...
+    'pdisc', 'hybrid-ntpfa');
 % simcase{4} = Simcase('gridcase', grid, ...
 %     'pdisc', 'hybrid-mpfa');
 for i = 1:numel(simcase)
@@ -104,7 +104,6 @@ for i = 1:numel(simcase)
         'paddingLayers', -1, 'saveplot', saveplot, ...
         'uniformK', false, 'phases', phases);
 end
-
 % plotCellData(simcase.G, simcase.G.cells.volumes);view(0,0);
 %% Find boundary faces
 %find side faces
