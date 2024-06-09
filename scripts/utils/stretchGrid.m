@@ -1,4 +1,4 @@
-function G = StretchGrid(G)
+function G = stretchGrid(G)
     %input: 3D grid that is in x-z plane with single layer in y-direction
     %scales from A-grids to B-grids
     if isfield(G, 'parent') %coarsegrid

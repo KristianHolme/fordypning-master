@@ -10,7 +10,7 @@ Lx = 2.8;
 Ly = 1.2;
 G = cartGrid([nx ny 1], [Lx, Ly 0.01]);
 G = computeGeometry(G);
-G = TagbyFacies(G, geodata);
+G = tagbyFacies(G, geodata);
 n = neighboursByNodes(G);
 outercells = arrayfun(@(c) all(G.cells.tag(getCellNeighborsByNode(G, c, 'n', n)) == 7) && G.cells.tag(c) == 7, 1:G.cells.num)';
 G = removeCells(G, outercells);
@@ -22,12 +22,12 @@ buffer = true;
 save = true;
 presplit = false;
 nudgeGeom = true;
-% Gcut = GenerateCutCellGrid(nx, ny, 'type', 'cartesian', ...
+% Gcut = generateCutCellGrid(nx, ny, 'type', 'cartesian', ...
 %     'recombine', false, 'save', save, ...
 %     'bufferVolumeSlice', buffer, 'removeInactive', true, ...
 %     'partitionMethod', 'convexity', ...
 %     'verbose', true);
-Gp = GenerateCutCellGrid(nx, ny, 'type', 'cartesian', ...
+Gp = generateCutCellGrid(nx, ny, 'type', 'cartesian', ...
     'recombine', true, 'save', save, ...
     'bufferVolumeSlice', buffer, 'removeInactive', false, ...
     'partitionMethod', 'convexity', ...
@@ -88,7 +88,7 @@ t = toc(t);
 fprintf("Partition and coarsen in %0.2f s\n", t);
 
 %%
-Gcut = GenerateCutCellGrid(28, 12, 'bufferVolumeSlice', false, 'verbose', true, ...
+Gcut = generateCutCellGrid(28, 12, 'bufferVolumeSlice', false, 'verbose', true, ...
     'recombination', false, 'save', true);
 
 %%
@@ -99,7 +99,7 @@ G = RegularizeCoarseGrid(CG);
 %%
 Gsub = extractSubgrid(Gcut, [78, 211, 210, 219]);
 plotGrid(Gsub);
-Gsub = TagbyFacies(Gsub, geodata);
+Gsub = tagbyFacies(Gsub, geodata);
 subp = PartitionByTag(Gsub);
 CGsub = generateCoarseGrid(Gsub, subp);
 CGsub = coarsenGeometry(CGsub);

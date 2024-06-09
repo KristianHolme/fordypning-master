@@ -21,8 +21,8 @@ function rock = setupRock(simcase, varargin)
         rock = compressRock(rock, active);
         G.cells.tag = rock.regions.saturation;
         % geodata = readGeo('./scripts/geo-files/spe11a.geo', 'assignExtra', true);
-        % geodata = StretchGeo(RotateGrid(geodata));
-        % G = TagbyFacies(G, geodata, 'vertIx', 3); %tagging grid in xz plane
+        % geodata = stretchGeo(rotateGrid(geodata));
+        % G = tagbyFacies(G, geodata, 'vertIx', 3); %tagging grid in xz plane
     end
     if isfield(G.cells, 'tag') && ~contains(simcase.tagcase, 'deckrock')
         if strcmp(simcase.SPEcase, 'A')

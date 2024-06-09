@@ -8,7 +8,7 @@ if strcmp(SPEcase, 'A')
     steps = 40;
     maxsteps = 720;
 else 
-    xscaling = SPEyear;unit='y';
+    xscaling = speyear;unit='y';
     % steps = 60;
     % totsteps = 360;
     totsteps = 4;

@@ -7,7 +7,7 @@ for dny = 1:100
     ny = startny + dny;
     nx = 7*ny;
     try
-        GeneratePEBIGrid(nx, ny, 'save', false, 'earlyReturn', true, 'verbose', false);
+        generatePEBIGrid(nx, ny, 'save', false, 'earlyReturn', true, 'verbose', false);
         fprintf('Success for %dx%d!\n', nx, ny);
         break
     catch
@@ -104,7 +104,7 @@ legend([h2, h3], 'face centroid', 'cell centroid');
 % 898x120: FCF: 1.0, cF: 0.6, useMrstPebi false
 nx = 400;
 ny = 400;
-[G, G2Ds, G2D, Pts] = GeneratePEBIGrid(nx, ny, 'FCFactor', 1.0, 'circleFactor', 0.6, 'save', false, ...
+[G, G2Ds, G2D, Pts] = generatePEBIGrid(nx, ny, 'FCFactor', 1.0, 'circleFactor', 0.6, 'save', false, ...
     'bufferVolumeSlice', false, ...
     'useMrstPebi', false, ...
     'earlyReturn', false, ...
@@ -189,6 +189,6 @@ G = pebiGrid2D(gs, pdims, 'faceConstraints', faults(selection), ...
     'circleFactor', 0.9, ...
     'interpolateFC', false);
 G = computeGeometry(G);
-G = TagbyFacies(G, geodata);
+G = tagbyFacies(G, geodata);
 % nexttile(2);
 newplot;plotCellData(G, G.cells.tag);axis tight equal;

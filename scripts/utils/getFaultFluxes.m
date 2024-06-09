@@ -22,14 +22,14 @@ function data = getFaultFluxes(simcase, steps, varargin)
         % end
         % internal = (neighborTags(:,1) ~= 0) & (neighborTags(:,2) ~= 0);
         % % internal = simcase.model.operators.internalConn;
-        % layercrossingfaces = (neighborTags(:,1) ~= neighborTags(:,2)) & internal;
-        layercrossingfaces = LayerCrossingFaces(G);
+        % layerCrossingFaces = (neighborTags(:,1) ~= neighborTags(:,2)) & internal;
+        layerCrossingFaces = layerCrossingFaces(G);
         completedata = NaN(maxsteps, 1);
         maxsteps = min(maxsteps, numelData(states));
         
         for it = 1:maxsteps
             allfluxes = states{it}.flux;
-            fluxes = allfluxes(layercrossingfaces,2);
+            fluxes = allfluxes(layerCrossingFaces,2);
             absfluxes = abs(fluxes);
             totabsflux = sum(absfluxes);
             completedata(it) = totabsflux;

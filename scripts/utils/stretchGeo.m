@@ -1,4 +1,4 @@
-function geodata = StretchGeo(geodata)
+function geodata = stretchGeo(geodata)
     points = vertcat(geodata.Point{:});
     points(:,1) = points(:,1)*3000;
     points(:,3) = points(:,3)*1000;

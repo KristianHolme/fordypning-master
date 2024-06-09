@@ -9,8 +9,8 @@ set(groot, 'DefaultLineLineWidth', 0.5);
 simcase = Simcase('deckcase', 'B_ISO_SMALL', 'usedeck', true);
 Gdeck = simcase.G;
 geodata = readGeo('./geo-files/spe11a-faults.geo', 'assignExtra', true);
-geodata = RotateGrid(geodata);
-geodata = StretchGeo(geodata);
+geodata = rotateGrid(geodata);
+geodata = stretchGeo(geodata);
 %% Process points
 frontpoints = vertcat(geodata.Point{:});
 backpoints = frontpoints;
@@ -44,12 +44,12 @@ points = unique(vertcat(cellpoints{:}), 'rows');
 numPoints = size(points, 1);
 cellpoints = mat2cell(points, ones(numPoints, 1), 3);
 
-Gpre = PointSplit(G, cellpoints, 'dir', [0 1 0], 'verbose', true, 'waitbar', false);
+Gpre = pointSplit(G, cellpoints, 'dir', [0 1 0], 'verbose', true, 'waitbar', false);
 %% Cut
-Gcut = CutCellGeo(Gpre, geodata, 'dir', [0 1 0], 'verbose', true, ...
+Gcut = cutCellGeo(Gpre, geodata, 'dir', [0 1 0], 'verbose', true, ...
     'extendSliceFactor', 0.01, ...
     'topoSplit', false);
-Gcut = TagbyFacies(Gcut, geodata, 'vertIx', 3);
+Gcut = tagbyFacies(Gcut, geodata, 'vertIx', 3);
 
 %% Save
 G = computeGeometry(Gcut);
@@ -92,9 +92,9 @@ nexttile(2);
 xlim([xMin, xMax]);
 
 %% Without presplitting
-Gcutnopre = CutCellGeo(Ground, geodata, 'dir', [0 1 0], 'verbose', true, ...
+Gcutnopre = cutCellGeo(Ground, geodata, 'dir', [0 1 0], 'verbose', true, ...
     'extendSliceFactor', 0.01, ...
     'topoSplit', false);
-Gcutnopre = TagbyFacies(Gcutnopre, geodata, 'vertIx', 3);
+Gcutnopre = tagbyFacies(Gcutnopre, geodata, 'vertIx', 3);
 %%
 plotCellData(Gcutnopre, Gcutnopre.cells.tag, 'edgealpha', 0.2);view(0,0);

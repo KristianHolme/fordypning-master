@@ -14,7 +14,7 @@ for igrid = 1:numgrids
     simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcases{igrid});
     simcases{igrid} = simcase;
     maxNumCells = max(maxNumCells, simcase.G.cells.num);
-    regBdryfaces{igrid} = LayerCrossingFaces(simcase.G);
+    regBdryfaces{igrid} = layerCrossingFaces(simcase.G);
     maxNumRegFaces = max(maxNumRegFaces, numel(regBdryfaces{igrid})); 
 end
 

@@ -35,8 +35,8 @@ The scripts and functions in this repository depend on a number of packages. The
 
 
 ## Generating grids
-- ```GenerateCutCellGrid``` and ```GeneratePEBIGrid``` for cut-cell and PEBI-grids
-- ```GenerateStructuredGrid``` for generation of structured grid for SPE11C
+- ```generateCutCellGrid``` and ```generatePEBIGrid``` for cut-cell and PEBI-grids
+- ```generateStructuredGrid``` for generation of structured grid for SPE11C
 - Powershell scripts in ```./scripts/gridgeneration/``` to generate structured/unstructured grids for SPE11A and B, using Gmsh and python.
 
 ## Example
@@ -49,6 +49,6 @@ pdisc (pressure discretization) can be changed to the following:
     - 'hybrid-avgmpfa' for TPFA around wells and avgMPFA elsewhere.
     - 'hybrid-mpfa' for MPFA around wells and avgMPFA elsewhere.
     - 'hybrid-ntpfa' for TPFA around well cells and along top pressure boundary.
-    - 'p' (experimental) for "PEBI-style" transmissibility for PEBI-grids (from GeneratePEBIGrid). Similar to 'cc' but cell centers are exchanged for Voronoi sites.
+    - 'p' (experimental) for "PEBI-style" transmissibility for PEBI-grids (from generatePEBIGrid). Similar to 'cc' but cell centers are exchanged for Voronoi sites.
 
 For more options, see 'runSims.m'. The main options to change are ```gridcase(s)``` for different grids and ```pdisc(s)``` for different pressure discretizations.

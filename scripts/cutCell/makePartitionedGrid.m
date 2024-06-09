@@ -167,7 +167,7 @@ function [Gp, curnumfaces] = mergeFaces(G, Gp, partition, faces, cells, curnumfa
         %find which nodes are necessary
         % nodesOrdered = orderNodes(G, f, facecentroid, normal);
         % nodes = gridFaceNodes(G, f);
-        nodes = Faces2Nodes(f, G);
+        nodes = faces2Nodes(f, G);
         if numel(f) == 1
             %shortcut, dont need to compute anything if there only is one
             %face to be merged with itself

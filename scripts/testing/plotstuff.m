@@ -23,7 +23,7 @@ axis equal tight
 tightfig()
 
 %% break point in line 34 in nudgePoints
-GenerateCutCellGrid(130,62, 'save', false, 'type', 'cartesian')
+generateCutCellGrid(130,62, 'save', false, 'type', 'cartesian')
 %% Plot nudging
 clf
 plot(targetpoints(:,1), targetpoints(:,3), '.', 'MarkerSize',30)

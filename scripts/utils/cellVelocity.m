@@ -1,4 +1,4 @@
-function cv = CellVelocity(states, step, G, phase, varargin)
+function cv = cellVelocity(states, step, G, phase, varargin)
     opt = struct('direction', []);
     opt = merge_options(opt, varargin{:});
     switch phase

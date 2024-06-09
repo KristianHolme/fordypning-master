@@ -28,12 +28,14 @@ SPEcase = 'B';
 % gridcases = {'cPEBI_819x117', '5tetRef0.31'};
 % gridcases = {'gq_pb0.19'};
 % gridcases = {'5tetRef0.31'};
+gridcases = {'struct130x62'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 % gridcases = {'horz_ndg_cut_PG_130x62'};
 
 % SPEcase = 'C'; %some grids for SPE11C
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
-% gridcases = {'cart_ndg_cut_PG_50x50x50'};
+% gridcases = {'cart_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_100x100x100'};
+
 
 pdiscs = {''};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
@@ -43,15 +45,16 @@ schedulecases = {''};%defaults to schedule from deck
 deckcases = {'B_ISO_C'}; %B_ISO_C
 uwdiscs = {''}; % '' means SPU, 'WENO' means WENO transport discretizations
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = 'allcells';%some options: normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
+tagcase = 'test';%some options: normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift
 
 Jutul               = false; %use Jutul for simulations. Only works for TPFA
 jutulThermal        = true;
 resetData           = false; %Start simulation at beginning, ignoring saved steps
 resetAssembly       = false; %ignore stored preprocessing computations for consistent discretizations
-do.plotStates       = true; %plot results of simulations using plotToolBar
+do.plotStates       = false; %plot results of simulations using plotToolBar
 do.plotFlux         = false; %plots flux
-do.runSimulation    = false; %run simulation
+do.plotFacies       = false;
+do.runSimulation    = true; %run simulation
 do.plotOrthErr      = false; %plot cellwise K-orthogonality indicator
 do.dispTime         = false;  %display simulation time
 direct_solver       = false; % use direct solver instead of better iterative solvers like AMG/CPR. May not be respected if backslashThreshold is not met
@@ -94,6 +97,10 @@ for ideck = 1:numel(deckcases)
                     end
                     if do.plotOrthErr
                         simcase.plotErr('plotHistogram', true, 'resetData', true);
+                    end
+                    if do.plotFacies
+                        figure;
+                        plotToolbar(simcase.G, simcase.G);view(0,0)
                     end
                     % G = simcase.G;
                     % [inj1, inj2] = getinjcells(simcase);

@@ -1,4 +1,4 @@
-function c = SPE11CUnBend(c)
+function c = unBendSPE11C(c)
 v = c(:,2);
 w = c(:,3);
 

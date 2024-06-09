@@ -1,4 +1,4 @@
-function customColormap = Seismic(dataMin, dataMax)% Define the size of the colormap
+function customColormap = seismic(dataMin, dataMax)% Define the size of the colormap
     n = 256;
     
     % Calculate the index where zero should be in the colormap

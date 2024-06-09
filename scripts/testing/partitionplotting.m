@@ -1,4 +1,4 @@
-GenerateCutCellGrid(500,40, 'presplit', true, 'partitionMethod', 'facearea', ...
+generateCutCellGrid(500,40, 'presplit', true, 'partitionMethod', 'facearea', ...
     'type', 'cartesian', 'save', false)
 
 CG = generateCoarseGrid(G, partition);
@@ -7,7 +7,7 @@ CG = coarsenGeometry(CG);
 maxold = max(G.cells.volumes);
 CG.cells.centroids(i,:)
 [CGcellToGcutCell, IA] = unique(partition);
-G = TagbyFacies(G, geodata, 'vertIx', 3);
+G = tagbyFacies(G, geodata, 'vertIx', 3);
 CG.cells.tag = G.cells.tag(IA);
 
 % VizCoarse(CG)z    

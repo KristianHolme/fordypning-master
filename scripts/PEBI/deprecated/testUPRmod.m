@@ -12,4 +12,4 @@ plotCellData(G, (1:G.cells.num)')
 %%
 FCFactor = 0.53*ones(36, 1);
 FCFactor([20]) = 1.0;
-G = GeneratePEBIGrid(130, 62, 'save', false, 'FCFactor', FCFactor, 'earlyReturn', false);
+G = generatePEBIGrid(130, 62, 'save', false, 'FCFactor', FCFactor, 'earlyReturn', false);

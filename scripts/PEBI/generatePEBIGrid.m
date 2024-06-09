@@ -1,4 +1,4 @@
-function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
+function [G, G2Ds, G2D, Pts, F] = generatePEBIGrid(nx, ny, varargin)
     opt = struct('SPEcase', 'B',...
                  'FCFactor', 1.0, ...
                  'circleFactor', 0.6, ...
@@ -112,7 +112,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     % currxlim = xlim;
     % currylim = ylim;
     
-    G = TagbyFacies(G, geodata);
+    G = tagbyFacies(G, geodata);
     G2D = G;
 
     if opt.removeShortEdges
@@ -204,12 +204,12 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
 
 
     if strcmp(opt.SPEcase, 'B') || strcmp(opt.SPEcase, 'C')
-        G = RotateGrid(G);
+        G = rotateGrid(G);
         G = mcomputeGeometry(G);%maybe not necessary
-        geodata = RotateGrid(geodata);
+        geodata = rotateGrid(geodata);
         if opt.bufferVolumeSlice
             [G, gix] = sliceGrid(G, {[1, 0.5, 0], [8399, 0.5, 0]}, 'normal', [1 0 0]);
-            G = TagbyFacies(G, geodata, 'vertIx', 3);
+            G = tagbyFacies(G, geodata, 'vertIx', 3);
             G = getBufferCells(G);
             newPts = G.cells.centroids;
             unchanged = gix.new.cells == 1;
@@ -221,7 +221,7 @@ function [G, G2Ds, G2D, Pts, F] = GeneratePEBIGrid(nx, ny, varargin)
     end
 
     if ~isfield(G.cells, 'tag') || ( isfield(G.cells, 'tag') && all(G.cells.tag == 0) )
-        G = TagbyFacies(G, geodata, 'vertIx', 3);
+        G = tagbyFacies(G, geodata, 'vertIx', 3);
     end
 
     if strcmp(opt.SPEcase, 'C')

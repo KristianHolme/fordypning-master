@@ -23,7 +23,7 @@ Gr = cartGrid([nx, ny], [xlimit, zlimit]);
 % Gr = computeGeometry(Gr);
 Gr = makeLayeredGrid(Gr, 1);
 Gr = computeGeometry(Gr);
-Gr = RotateGrid(Gr);
+Gr = rotateGrid(Gr);
 Gr = computeGeometry(Gr);
 totCoarseCells = Gr.cells.num;
 

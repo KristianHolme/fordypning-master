@@ -67,8 +67,8 @@ function multiplot(data, varargin)
             end
         end
     end
-    if strcmp(opt.cmap, "Seismic")
-        opt.cmap = Seismic(minV, maxV);
+    if strcmp(opt.cmap, "seismic")
+        opt.cmap = seismic(minV, maxV);
     end
     
     

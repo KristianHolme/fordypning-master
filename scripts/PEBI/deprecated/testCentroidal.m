@@ -3,7 +3,7 @@ close all
 %%
 [G, Pts, F] = compositePebiGrid2D([0.1, 0.1], [1,1], 'faceConstraints', [0.2, 0.2;0.8, 0.5;0.1, 0.8]);
 %%
-[G, G2D, G2Ds, Pts, F] = GeneratePEBIGrid(130, 62, 'save', false, 'earlyReturn', true, 'FCFactor', 0.53);
+[G, G2D, G2Ds, Pts, F] = generatePEBIGrid(130, 62, 'save', false, 'earlyReturn', true, 'FCFactor', 0.53);
 %%
 plotGrid(G);
 %%

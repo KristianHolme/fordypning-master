@@ -4,9 +4,9 @@ close all
 nx = 130;
 ny = 62;
 buffer = false;
-G1 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'horizon', 'presplit', true, 'nudgeGeom', false);
-G2 = GenerateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'horizon');
-% G3 = GeneratePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'FCFactor', 1.0);
+G1 = generateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'horizon', 'presplit', true, 'nudgeGeom', false);
+G2 = generateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'type', 'horizon');
+% G3 = generatePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'FCFactor', 1.0);
 %%
 res = '28x12';
 G1 = load(sprintf('grid-files/cutcell/cartesian_presplit_cutcell_%s_B.mat', res)).G;

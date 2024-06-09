@@ -24,7 +24,7 @@ ny = 12;
 G = cartGrid([nx ny 1], [Lx, Ly 0.01]);
 G = computeGeometry(G);
 %% Presplit at internal points
-[Gpresplit, t] = PointSplit(G, geodata.Point, 'verbose', true, 'waitbar', true, 'save', true);
+[Gpresplit, t] = pointSplit(G, geodata.Point, 'verbose', true, 'waitbar', true, 'save', true);
 % presplitstats = {};
 presplitstats{end+1} = [nx*ny, t];
 %% Load presplitted grid
@@ -32,14 +32,14 @@ nx = 280*2;
 ny = 120*2;
 Gpresplit = loadPresplit('nx', nx, 'ny', ny);
 %% Perform main cutting
-[Gcut, t] = CutCellGeo(Gpresplit, geodata, 'verbose', true);
+[Gcut, t] = cutCellGeo(Gpresplit, geodata, 'verbose', true);
 % sliceStats{end+1} = [nx*ny, t];
 %% Load cutcell grid
 nx = 144;
 ny = 48;
 Gcut = loadCutCell('nx', nx, 'ny', ny);
 %% Tag by layer
-Gcc = TagbyFacies(Gcut, geodata);
+Gcc = tagbyFacies(Gcut, geodata);
 %% Plot tag
 plotCellData(Gcut, Gcut.cells.tag)
 %%

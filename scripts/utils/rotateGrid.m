@@ -1,4 +1,4 @@
-function G = RotateGrid(G)
+function G = rotateGrid(G)
     % Rotation matrix to rotate 90 degrees about X-axis
     % Transformation matrix to rotate -90 degrees about X-axis
     T = [1, 0, 0; 0, 0, 1; 0, -1, 0];
@@ -34,7 +34,7 @@ function G = RotateGrid(G)
         G = setfield(G, subfields{:}, rotatedPoints);
     end
     if isfield(G, 'type')
-        G.type{end+1} = 'RotateGrid';
+        G.type{end+1} = 'rotateGrid';
     else
         G.Point = mat2cell(G.Point, ones(1, size(G.Point, 1)), 3);
     end

@@ -1,4 +1,4 @@
-function [Gcut, t] = CutCellGeo(G, geodata, varargin)
+function [Gcut, t] = cutCellGeo(G, geodata, varargin)
 %cuts grid by using sliceGrid. one slice for each line segment. Slow.
     opt = struct('dir', [0 0 1], ...
                  'verbose', false, ...
@@ -62,7 +62,7 @@ function [Gcut, t] = CutCellGeo(G, geodata, varargin)
     t = toc();
     dispif(opt.verbose, sprintf("Done in %0.2f s\n", t));
     
-    Gcut = TagbyFacies(Gcut, geodata, 'verbose', opt.verbose, 'vertIx', opt.vertIx);%Tag facies
+    Gcut = tagbyFacies(Gcut, geodata, 'verbose', opt.verbose, 'vertIx', opt.vertIx);%Tag facies
     Gcut = getBufferCells(Gcut); %find buffercells
     
     if opt.save

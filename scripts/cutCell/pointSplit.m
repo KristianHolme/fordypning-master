@@ -1,4 +1,4 @@
-function [G, t, skipped] = PointSplit(G, points, varargin)
+function [G, t, skipped] = pointSplit(G, points, varargin)
 % Splits grid at given points, in order to circumvent that sliceGrid cant
 % handle curves changing direction inside an element
 % Performs one call to sliceGrid per point, so can be slow for large
@@ -25,7 +25,7 @@ function [G, t, skipped] = PointSplit(G, points, varargin)
     end
     G.minOrgVol = min(G.cells.volumes); %save the smallest volumes
     G.maxOrgVol = max(G.cells.volumes);
-    dispif(opt.verbose, "Presplitting grid.\nEstimated max time: %0.2f s\n", 0.004*prod(G.cartDims));
+    dispif(opt.verbose, "Presplitting grid.\nEstimated max time: %0.2f s\n", 0.004*prod(G.cartDims));%much faster than this estimate for large grids
     tic();
     
     epsfactor = opt.epsfactor; %factor to extend each slice to make sure the slice goes through each cell
@@ -121,7 +121,7 @@ function [G, t, skipped] = PointSplit(G, points, varargin)
     end
     t = toc();
     dispif(opt.verbose, sprintf("Skipped %d points. Done in %0.2f s\n", skipped, t));
-    G.type{end+1} = 'PointSplit';
+    G.type{end+1} = 'pointSplit';
     if opt.save
         nx = G.cartDims(1);
         ny = G.cartDims(vertIx);

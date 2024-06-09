@@ -7,7 +7,7 @@ if strcmp(SPEcase, 'A')
     steps = 720;
     totsteps = 720;
 else 
-    xscaling = SPEyear;unit='y';
+    xscaling = speyear;unit='y';
     steps = 301;
     totsteps = 301;
 end
@@ -87,3 +87,10 @@ tightfig();
 
 %% save
 exportgraphics(gca, './../plotsMaster/energyimgHot.eps');
+
+%% Stats
+mx = max(energy, [], "all");
+energy = energy ./ mx;
+
+md = median(energy(:), 'omitnan');
+mn = mean(energy(:), 'omitnan');

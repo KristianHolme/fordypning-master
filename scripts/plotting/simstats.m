@@ -78,7 +78,7 @@ meanindex = 5;
 %% get data
 data = cell(6, numel(simcases));
 labels = {};
-xscaling = SPEyear;
+xscaling = speyear;
 xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
 % xdata = xdata(1:steps);
 figure;

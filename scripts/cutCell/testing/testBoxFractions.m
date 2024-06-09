@@ -23,5 +23,5 @@ save(fn, "G");
 % plotToolbar(Gcut, Gcut.cells);view(0,0);
 % 
 % %%
-% Gp = GenerateCutCellGrid(898, 120, 'save', false);
+% Gp = generateCutCellGrid(898, 120, 'save', false);
 

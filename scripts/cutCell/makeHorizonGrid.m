@@ -76,7 +76,7 @@ function G = makeHorizonGrid(nx,nys, varargin)
     else
         G = computeGeometry(G);
     end
-    G = StretchGrid(RotateGrid(G));
+    G = stretchGrid(rotateGrid(G));
     G.cartDims = [nx, 1, sum(nys)];
     G.faces.tag = zeros(G.faces.num, 1);
 

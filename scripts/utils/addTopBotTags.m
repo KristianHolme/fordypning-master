@@ -7,7 +7,7 @@ switch simcase.SPEcase
     case 'C'
         topy = 0;
         boty = 1200;
-        simcase.G.nodes.coords = SPE11CUnBend(simcase.G.nodes.coords);
+        simcase.G.nodes.coords = unBendSPE11C(simcase.G.nodes.coords);
         simcase.G = mcomputeGeometry(simcase.G);
 end
 G = simcase.G;

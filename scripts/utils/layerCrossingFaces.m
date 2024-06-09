@@ -1,4 +1,4 @@
-function layercrossingfaces = LayerCrossingFaces(G)
+function layerCrossingFaces = layerCrossingFaces(G)
 neighbors = G.faces.neighbors;
 neighborTags = neighbors;
 for i=1:2
@@ -7,5 +7,5 @@ for i=1:2
 end
 internal = (neighborTags(:,1) ~= 0) & (neighborTags(:,2) ~= 0);
 % internal = simcase.model.operators.internalConn;
-layercrossingfaces = (neighborTags(:,1) ~= neighborTags(:,2)) & internal;
+layerCrossingFaces = (neighborTags(:,1) ~= neighborTags(:,2)) & internal;
 end

@@ -1,20 +1,20 @@
 clear all;
 close all;
 %% Setup data
-% getData = @(states,step, G) CellVelocity(states, step, G, 'g');cmap=''; dataname = 'CellVelocity';sumReduce = true; force = false;
-getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
+% getData = @(states,step, G) cellVelocity(states, step, G, 'g');cmap=''; dataname = 'cellVelocity';sumReduce = true; force = false;
+% getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
 % getData = @(states, step, G, simcase) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation'; sumReduce = false;force = false;
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';sumReduce = false; force = false;
 % getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap=''; sumReduce = true; force = true;
 % getData = @(states, step, G, simcase) getFwerr(simcase);dataname ='fwerr'; cmap=''; sumReduce = true; force = true;
-% getData = @(states, step, G, simcase) getTotMass(states, step, simcase);cmap='';dataname='totMass'; sumReduce = true; force = false;
+getData = @(states, step, G, simcase) getTotMass(states, step, simcase);cmap='';dataname='totMass'; sumReduce = true; force = false;
 %% SPEcase, steps
 SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
     scaling = hour; unit = 'h';
     steps = [30, 144, 720];
 else 
-    scaling = SPEyear;unit='y';
+    scaling = speyear;unit='y';
     % steps = [40, 150, 360];
     steps = [301];
 end
@@ -269,7 +269,7 @@ for istep = 1:numel(steps)
     plottitle = ['difference in ', dataname, ' at t=', num2str(round(times(step)/scaling)), unit, ' for grid: ', displayNameGrid(gridcase, SPEcase)];
     multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step), apx], ...
-        'saveplot', saveplot, 'cmap', 'Seismic', 'equal', strcmp(SPEcase, 'A'), ...
+        'saveplot', saveplot, 'cmap', 'seismic', 'equal', strcmp(SPEcase, 'A'), ...
         'diff', true, 'bigGrid', bigGrid, 'saveToReport', saveToReport);   
 end
 
@@ -288,13 +288,14 @@ end
 % gridcases = {'struct2640x380', 'horz_ndg_cut_PG_2640x380', 'cart_ndg_cut_PG_2640x380'};
 % gridcases = {'struct1638x234', 'horz_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_1638x234'};
 % gridcases = {'struct819x117'};
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117'};
+% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117'};
+gridcases = {'struct2640x380', 'horz_ndg_cut_PG_2640x380', 'cart_ndg_cut_PG_2640x380', 'cPEBI_2640x380'};
 
-jutul = {false};
-% pdiscs = {''};
+jutul = {true};
+pdiscs = {''};
 % pdiscs = {'hybrid-avgmpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-pdiscs = {'hybrid-ntpfa'};
+% pdiscs = {'hybrid-ntpfa'};
 tagcases = {''}; %one for each pdisc or one for all
 uwdiscs = {''};
 % uwdiscs = {''};
@@ -304,7 +305,7 @@ deckcases = {'B_ISO_C'};%one for each grid or one for all
 saveplot = true;
 saveToReport = false;
 makeCorrTable = false;
-makeEMDTable = false;
+makeEMDTable = true;
 makeL1Table = false;
 filename =[SPEcase, '_', dataname, '_diff_', strjoin(cellfun(@(g)displayNameGrid(g, SPEcase) , gridcases, UniformOutput=false), '_'), strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
 savefolder = ['./../plotsMaster/gridDiff/', SPEcase];
@@ -442,7 +443,7 @@ for istep = 1:numel(steps)
     plottitle = ['difference in ', dataname, ' at t=', num2str(round(times(step)/scaling)), unit];
     multiplot(data(:, :, istep), 'title', plottitle, 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step)], ...
-        'saveplot', saveplot, 'cmap', 'Seismic', 'equal', strcmp(SPEcase, 'A'), ...
+        'saveplot', saveplot, 'cmap', 'seismic', 'equal', strcmp(SPEcase, 'A'), ...
         'diff', true, 'saveToReport', saveToReport);   
 end
 

@@ -1,4 +1,4 @@
-function [G, partition] = GenerateCutCellGrid(nx, ny, varargin)
+function [G, partition] = generateCutCellGrid(nx, ny, varargin)
     opt = struct('save', true, ...
         'savedir', 'grid-files/cutcell', ...
         'verbose', true, ...
@@ -53,8 +53,8 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt, extra)
     G = cartGrid([nx ny 1], [Lx, Ly 0.01]);
     G = computeGeometry(G);
     if ~strcmp(opt.SPEcase, 'A')
-        geodata = StretchGeo(RotateGrid(geodata));
-        G = StretchGrid(RotateGrid(G));
+        geodata = stretchGeo(rotateGrid(geodata));
+        G = stretchGrid(rotateGrid(G));
         depthIx = 2;
         dir = [0 1 0];
     else
@@ -87,25 +87,25 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt, extra)
         %slicing close to sides to create buffer volume cells
         if strcmp(opt.SPEcase, 'A')
             G = sliceGrid(G, {[0.000333333333, 0.5, 0], [2.79966666666, 0.5, 0]}, 'normal', [1 0 0]);
-            G = TagbyFacies(G, geodata);
+            G = tagbyFacies(G, geodata);
             G = getBufferCells(G);
         else
             G = sliceGrid(G, {[1, 0.5, 0], [8399, 0.5, 0]}, 'normal', [1 0 0]);
-            G = TagbyFacies(G, geodata, 'vertIx', 3);
+            G = tagbyFacies(G, geodata, 'vertIx', 3);
             G = getBufferCells(G);
         end
 
     end
      
     if opt.presplit
-        G = PointSplit(G, geodata.Point, 'verbose', opt.verbose, 'waitbar', opt.waitbar, ...
+        G = pointSplit(G, geodata.Point, 'verbose', opt.verbose, 'waitbar', opt.waitbar, ...
             'save', opt.save, 'savedir', fullfile(opt.savedir, 'presplit'), ...
             'bufferVolumeSlice', opt.bufferVolumeSlice, ...
             'SPEcase', opt.SPEcase, ...
             'dir', dir);
     end
     if opt.cut %option to not cut, to return presplit grid if wanted
-        G = CutCellGeo(G, geodata, 'verbose', opt.verbose, ...
+        G = cutCellGeo(G, geodata, 'verbose', opt.verbose, ...
             'save', opt.save, ...
             'savedir', opt.savedir, ...
             'presplit', opt.presplit, ...
@@ -119,8 +119,8 @@ end
 
 function [G, geodata] = makeHorizonCut(nx, totys, opt, extra)
     geodata = readGeo('./geo-files/spe11a-faults.geo', 'assignExtra', true);
-    geodata = RotateGrid(geodata);
-    geodata = StretchGeo(geodata);
+    geodata = rotateGrid(geodata);
+    geodata = stretchGeo(geodata);
     % gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737]; 
     gridfractions = [0.1106, 0.0566, 0.0660, 0.0726, 0.0971, 0.0923, 0.1157, 0.1539, 0.1599, 0.0752]; %scaled by region size
     nys = max(round(totys*gridfractions), 1);
@@ -167,7 +167,7 @@ function [G, geodata] = makeHorizonCut(nx, totys, opt, extra)
         dispif(opt.verbose, 'Slicing to get buffer cells...\n')
         %slicing close to sides to create buffer volume cells
         G = sliceGrid(G, {[1, 0.5, 0], [8399, 0.5, 0]}, 'normal', [1 0 0]);
-        G = TagbyFacies(G, geodata, 'vertIx', 3);
+        G = tagbyFacies(G, geodata, 'vertIx', 3);
         G = getBufferCells(G);
     end
     
@@ -178,12 +178,12 @@ function [G, geodata] = makeHorizonCut(nx, totys, opt, extra)
         numPoints = size(points, 1);
         cellpoints = mat2cell(points, ones(numPoints, 1), 3);
         
-        G = PointSplit(G, cellpoints, 'dir', [0 1 0], 'verbose', opt.verbose, 'waitbar', false, ...
+        G = pointSplit(G, cellpoints, 'dir', [0 1 0], 'verbose', opt.verbose, 'waitbar', false, ...
             'save', opt.save, 'type', opt.type);
     end
     % Cut
     if opt.cut
-        G = CutCellGeo(G, geodata, 'dir', [0 1 0], 'verbose', opt.verbose, ...
+        G = cutCellGeo(G, geodata, 'dir', [0 1 0], 'verbose', opt.verbose, ...
             'extendSliceFactor', 0.0, ...
             'topoSplit', true, 'save', opt.save, ...
             'type', opt.type, ...
@@ -206,7 +206,7 @@ function [G, partition] = Recombine(G, opt, nx, ny, geodata)
     [partition, failed, tries] = PartitionByTag(G, 'method', opt.partitionMethod, ...
             'avoidBufferCells', opt.bufferVolumeSlice);
     G = makePartitionedGrid(G, partition);
-    G = TagbyFacies(G, geodata, 'vertIx', vertIx);
+    G = tagbyFacies(G, geodata, 'vertIx', vertIx);
 
     t = toc(t);
     dispif(opt.verbose, "Partition(%d iterations) and coarsen in %0.2f s\n%d cells failed to merge.\n", tries, t, numel(failed));
@@ -216,10 +216,10 @@ function [G, partition] = Recombine(G, opt, nx, ny, geodata)
         layerthicknesses = [1; repmat(4998/opt.Cdepth, opt.Cdepth,1); 1];%one meter thickness for buffer volume in front and back
         G = makeLayeredGrid(G, layerthicknesses);
         G = mcomputeGeometry(G);
-        G = RotateGrid(G);
+        G = rotateGrid(G);
         G = mcomputeGeometry(G);
-        G = TagbyFacies(G, geodata, 'vertIx', vertIx);
-        G.nodes.coords = SPE11CBend(G.nodes.coords);
+        G = tagbyFacies(G, geodata, 'vertIx', vertIx);
+        G.nodes.coords = bendSPE11C(G.nodes.coords);
         G = mcomputeGeometry(G);
         G = getBufferCells(G);
     end

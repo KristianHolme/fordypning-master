@@ -388,7 +388,7 @@ classdef Simcase < handle
             numsteps = numel(simcase.schedule.step.val);
             cv = cell(1, numsteps);
             for step = 1:numsteps
-                cv{step} = CellVelocity(states, step, G, opt.phase, 'direction', opt.direction);
+                cv{step} = cellVelocity(states, step, G, opt.phase, 'direction', opt.direction);
             end
             figure
             plotToolbar(G, cv, 'pauseTime', opt.pauseTime);

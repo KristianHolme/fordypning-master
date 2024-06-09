@@ -5,9 +5,9 @@ nx = 130;
 ny = 62;
 type = 'cartesian';
 presplit = true;
-G1 = GenerateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', false, 'recombine', false);
-G2 = GenerateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', true, 'recombine', false);
-[G3, partition] = GenerateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', true, 'recombine', true);
+G1 = generateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', false, 'recombine', false);
+G2 = generateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', true, 'recombine', false);
+[G3, partition] = generateCutCellGrid(nx, ny, 'type', type, 'presplit', presplit, 'bufferVolumeSlice', false, 'cut', true, 'recombine', true);
 %%
 CG = generateCoarseGrid(G, partition);
 CG = coarsenGeometry(CG);

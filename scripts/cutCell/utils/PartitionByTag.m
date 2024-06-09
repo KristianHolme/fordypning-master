@@ -259,14 +259,14 @@ function ok = checkConvexMerge2(G, cells, vertIx)
     nodeOrdering = [nodeOrdering(end);nodeOrdering;nodeOrdering(1)];
     nodecoords = G.nodes.coords(nodeOrdering,:);
 
-    A = nodecoords(1:end-2,:);
-    B = nodecoords(2:end-1,:);
-    C = nodecoords(3:end, :);
+    A = nodecoords(1:end-2,:); %first points of triplets
+    B = nodecoords(2:end-1,:); %middle points of triplets
+    C = nodecoords(3:end, :);  %last points of triplets
     
-    BA = A-B;
-    BC = C-B;
+    BA = A-B; %vectors from middle points to first triplet points
+    BC = C-B; %vectors from middle points to last triplet points
     crossproducts = sum(cross(BA, BC), 2);
-
+    
     okangles = crossproducts > 0 | abs(crossproducts)<tol;
     ok = all(okangles);
     % if ok
@@ -277,6 +277,7 @@ function ok = checkConvexMerge2(G, cells, vertIx)
     % clf;
     % scatter3(B(:,1), B(:,2), B(:,3), 500, 1:size(B,1), 'filled');hold on;colorbar;view(0,0);
     % plotGrid(G, cells, 'facealpha', 0, 'edgecolor', color, 'linewidth', 3);
+    % colormap("jet");
     % ;
 
 end
@@ -322,7 +323,7 @@ function ok = checkConvexMerge(G, cells, vertIx)
 end
 
 function ordering = orderFaces(G, faces)
-    faceNodes = vertcat(arrayfun(@(f)Faces2Nodes(f, G), faces, UniformOutput=false));
+    faceNodes = vertcat(arrayfun(@(f)faces2Nodes(f, G), faces, UniformOutput=false));
     neighbors = getFaceNeighbors(faceNodes);
     numfaces = numel(faces);
     ordering = zeros(numfaces, 1);
@@ -337,11 +338,11 @@ function nodesInOrder = orderFaceNodes(G, faces, depthIx)
     tol = 1e-10;
     faceNodes = cell(numel(faces),1);
     for ifc = 1:numel(faces)
-        allfacenodes = Faces2Nodes(faces(ifc), G);
+        allfacenodes = faces2Nodes(faces(ifc), G);
         frontfacenodes = allfacenodes( abs(G.nodes.coords(allfacenodes,depthIx)) < tol );
         faceNodes{ifc} = frontfacenodes;
     end
-    % faceNodesold = arrayfun(@(f)Faces2Nodes(f, G), faces, UniformOutput=false);
+    % faceNodesold = arrayfun(@(f)faces2Nodes(f, G), faces, UniformOutput=false);
     % faceNodesold = cellfun(@(fn)fn( abs(G.nodes.coords(fn,depthIx)) < tol ), faceNodesold, UniformOutput=false);
     valid = cellfun(@(el)numel(el)==2, faceNodes);
     if ~all(valid)
@@ -353,7 +354,7 @@ function nodesInOrder = orderFaceNodes(G, faces, depthIx)
     % frontNodes = find(abs(G.nodes.coords(:,depthIx)) < tol); 
     % faceNodes = reshape(cell2mat(arrayfun(@(f)intersect(frontNodes,gridFaceNodes(G, f)), faces, UniformOutput=false)),2, [])';
     % 
-    % faceNodes2 = reshape(cell2mat(arrayfun(@(f)intersect(frontNodes, Faces2Nodes(f, G)), faces, UniformOutput=false)),2, [])';
+    % faceNodes2 = reshape(cell2mat(arrayfun(@(f)intersect(frontNodes, faces2Nodes(f, G)), faces, UniformOutput=false)),2, [])';
     
     
     numNodes = numel(unique(faceNodes(:)));

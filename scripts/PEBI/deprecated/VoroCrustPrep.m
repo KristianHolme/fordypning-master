@@ -1,1 +1,0 @@
-geodata = readGeo('', 'assignExtra', true);

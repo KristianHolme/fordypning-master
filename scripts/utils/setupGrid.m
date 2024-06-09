@@ -30,7 +30,7 @@ function G = setupGrid(simcase, varargin)
                 config = jsondecode(configFile);
                 fn = fullfile(config.repo_folder, '..', '11thSPE-CSP','geometries', 'spe11a.geo');
                 geodata = readGeo(fn, 'assignExtra', true); 
-                G = TagbyFacies(G, geodata, 'scale', [3000, 1000, 1]);
+                G = tagbyFacies(G, geodata, 'scale', [3000, 1000, 1]);
                 save(matFile, "G")
             end
             sliceForBuffer = true;
@@ -80,7 +80,7 @@ function G = setupGrid(simcase, varargin)
             if strcmp(simcase.SPEcase, 'B')%stretch A-grid
                 amatFile = fullfile(gridFolder, ['spe11a_semi', params, '_grid.mat']);
                 load(amatFile)
-                G = StretchGrid(RotateGrid(G));
+                G = stretchGrid(rotateGrid(G));
                 save(matFile, 'G');
             end
             
@@ -143,8 +143,8 @@ function G = setupGrid(simcase, varargin)
                 G = computeGeometry(G);
                 G.faces.tag = zeros(G.faces.num, 1);
             end
-            if ~any(ismember(G.type, 'RotateGrid')) && ~(max(G.cells.centroids(:,3)) > 1000)
-                G = RotateGrid(G);%rotategrid to Z axis
+            if ~any(ismember(G.type, 'rotateGrid')) && ~(max(G.cells.centroids(:,3)) > 1000)
+                G = rotateGrid(G);%rotateGrid to Z axis
             end
         end
         
@@ -187,7 +187,7 @@ function G = setupGrid(simcase, varargin)
     
 
     if stretch
-        G = StretchGrid(G);
+        G = stretchGrid(G);
     end
 
     if ~isfield(G.cells, 'tag') && opt.extra
@@ -279,6 +279,6 @@ function G = makeSkewed3D()
     k = G.nodes.coords(:,3) > 0;
     G.nodes.coords(k,3) = 0.01;
     G = computeGeometry(G);
-    G = RotateGrid(G);
+    G = rotateGrid(G);
     G = computeGeometry(G);
 end

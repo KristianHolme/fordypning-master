@@ -1,8 +1,8 @@
 % Simple example for generating a cut-cell grid and running a single simulation
 
 %% Generate cut-cell grid
-GenerateCutCellGrid(130,62) %horizon-based background grid
-%GenerateCutCellGrid(130,62, 'type', 'cartesian') %cartesian background grid
+generateCutCellGrid(130,62) %horizon-based background grid
+%generateCutCellGrid(130,62, 'type', 'cartesian') %cartesian background grid
 
 %%
 SPEcase = 'B';

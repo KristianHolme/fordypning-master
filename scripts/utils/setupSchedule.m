@@ -92,13 +92,13 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
                     w3 = addWell(w3, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
                     w4 = addWell(w4, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
                 end
-                wellLength = integral(@(y)SPE11CWell2Arc(y), 1000,4000);
+                wellLength = integral(@(y)well2ArcSPE11C(y), 1000,4000);
                 for ic = 1:numel(cell2)
                     c = cell2(ic);
                     cellFaces = gridCellFaces(simcase.G, c);
                     ymin = max(1000, min(simcase.G.faces.centroids(cellFaces,2)));
                     ymax = min(4000, max(simcase.G.faces.centroids(cellFaces,2)));
-                    L = integral(@(y)SPE11CWell2Arc(y), ymin,ymax);
+                    L = integral(@(y)well2ArcSPE11C(y), ymin,ymax);
                     massRateVal = 50 * L/wellLength;
                     simcase.G.cells.wellMassRate{2}(ic) = massRateVal;
                     rateval = massRateVal*1/deckmodel.fluid.rhoGS;

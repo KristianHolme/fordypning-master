@@ -57,7 +57,7 @@ yticks([]);
 plotToolbar(G, state.rs);view(0,0);
 dmax = max(state.rs);
 dmin = min(state.rs);
-colormap(Seismic(dmin, dmax))
+colormap(seismic(dmin, dmax))
 
 %%
 simcase = Simcase('SPEcase', 'B', 'gridcase', '5tetRef2', 'deckcase', 'RS', 'usedeck', true);

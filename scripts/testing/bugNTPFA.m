@@ -149,6 +149,6 @@ function G = makeSkewed3D()
     
     G = makeLayeredGrid(G, 1);
     G = computeGeometry(G);
-    % G = RotateGrid(G); %custom function
+    % G = rotateGrid(G); %custom function
     G = computeGeometry(G);
 end
