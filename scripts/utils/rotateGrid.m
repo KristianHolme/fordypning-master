@@ -1,5 +1,6 @@
 function G = rotateGrid(G)
     % Rotation matrix to rotate 90 degrees about X-axis
+    
     % Transformation matrix to rotate -90 degrees about X-axis
     T = [1, 0, 0; 0, 0, 1; 0, -1, 0];
 
