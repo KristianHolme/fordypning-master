@@ -1,8 +1,6 @@
 %used for running simulations on remote computer
 function timings = remoteSims(server)
-    mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-        ad-blackoil postprocessing diagnostics prosjektOppgave...
-        deckformat gmsh nfvm mpfa
+
     % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
     % schedulecases = {'simple-coarse', 'simple-std'};
     mrstVerbose off

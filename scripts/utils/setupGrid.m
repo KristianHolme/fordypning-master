@@ -139,7 +139,9 @@ function G = setupGrid(simcase, varargin)
                 depth = 1.0;
             end
             if G.griddim ~=3
-                G = makeLayeredGrid(G, depth);
+                G = makeLayeredGrid(G, 1);
+                k  = G.nodes.coords(:, 3) > 0;
+                G.nodes.coords(k, 3) = depth;
                 G = computeGeometry(G);
                 G.faces.tag = zeros(G.faces.num, 1);
             end
@@ -168,7 +170,7 @@ function G = setupGrid(simcase, varargin)
                 return
             end
             % rock = setupRock(simcase, 'deck', true);
-            G.cells.tag = simcase.deck.REGIONS.SATNUM(simcase.deck.GRID.ACTNUM);
+            G.cells.tag = simcase.deck.REGIONS.SATNUM(logical(simcase.deck.GRID.ACTNUM));
             save(matFile, 'G');
         end
     end

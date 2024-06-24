@@ -1,20 +1,17 @@
 %used for running simulations from terminal
 function timings = runSims2(server)
-    mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-    ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa coarsegrid jutul
     % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
     % schedulecases = {'simple-coarse', 'simple-std'};
     mrstVerbose off
     switch  server
     case 1
-        SPEcase = 'C';
-        gridcases = {'struct50x50x50'};
+        SPEcase = 'A';
+        gridcases = {'5tetRef10'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+        pdiscs = {'ntpfa'};
         uwdiscs = {''};
-        deckcases = {'B_ISO_C'};
-        tagcase = 'fixedGrid';
+        deckcases = {'RS'};
+        tagcase = 'CPPD';
         resetData = false;
         resetAssembly = false;
         Jutul = false;

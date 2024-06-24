@@ -140,15 +140,24 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
         timeStepMultiplier = 100;
         vals = schedule.step.val;
         ctrl = schedule.step.control;
-        schedule.step.control = [ctrl(1);
-            repmat(ctrl(2), timeStepMultiplier,1);
-            repmat(ctrl(3), timeStepMultiplier,1)
-            repmat(ctrl(4), timeStepMultiplier,1)
+        if numel(ctrl) == 4
+            schedule.step.control = ctrl(1);
+            schedule.step.val = vals(1);
+            firstActiveControl = 2;
+        else
+            schedule.step.control = [];
+            schedule.step.val = [];
+            firstActiveControl = 1;
+        end
+        schedule.step.control = [schedule.step.control;
+            repmat(ctrl(firstActiveControl), timeStepMultiplier,1);
+            repmat(ctrl(firstActiveControl+1), timeStepMultiplier,1)
+            repmat(ctrl(firstActiveControl+2), timeStepMultiplier,1)
             ];
-        schedule.step.val = [vals(1);
-            repmat(vals(2)/timeStepMultiplier, timeStepMultiplier,1);
-            repmat(vals(3)/timeStepMultiplier, timeStepMultiplier,1)
-            repmat(vals(4)/timeStepMultiplier, timeStepMultiplier,1)
+        schedule.step.val = [schedule.step.val;
+            repmat(vals(firstActiveControl)/timeStepMultiplier, timeStepMultiplier,1);
+            repmat(vals(firstActiveControl+1)/timeStepMultiplier, timeStepMultiplier,1)
+            repmat(vals(firstActiveControl+2)/timeStepMultiplier, timeStepMultiplier,1)
             ];
         
         bc = setupBC(G, 'experimental', experimental, 'SPEcase', simcase.SPEcase);

@@ -52,9 +52,15 @@ function model = setupModel(simcase, varargin)
         cellblocks = getCellblocks(simcase, varargin{:});
         model = getHybridDisc(simcase, model, replace(simcase.pdisc, 'hybrid-', ''), ...
             cellblocks, varargin{:});
+    elseif ~isempty(simcase.pdisc) && strcmp(simcase.pdisc, 'ntpfa')%for testing new NTPFA
+        model = setNTPFADiscretization(model);
     end
     if ~isempty(simcase.uwdisc) && contains(simcase.uwdisc, 'WENO')
         model = setWENODiscretization(model);
+    end
+    
+    if ~isempty(simcase.tagcase) && contains(simcase.tagcase, 'CPPD')
+        model = setCombinedPhasePotentialDifference(model);
     end
    
 

@@ -11,13 +11,7 @@ function cellblocks = getCellblocks(simcase, varargin)
     paddingLayers = opt.paddingLayers;
     G = simcase.G;
     pdisc = simcase.pdisc;
-    injectionCells = [];
-    % problem with circular dependency
-    % if ~isempty(simcase.schedule) &&
-    % ~isempty(simcase.schedule.control(1).W)
-    %     [cell1, cell2] = simcase.schedule.control(1).W.cells;
-    %     injectionCells = [cell1; cell2];
-    % end
+
     [inj1, inj2] = simcase.getinjcells;
     injectionCells = [inj1, inj2];
 

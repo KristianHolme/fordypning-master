@@ -1,5 +1,23 @@
 function [p1, p2] = getCSPBoxPoints(G, box, SPEcase)
     switch SPEcase
+        case 'A'
+            switch box
+                case 'A'
+                    x1 = 1.1;
+                    x2 = 2.8;
+                    z1 = 1.2;
+                    z2 = 1.2-0.6;
+                case 'B'
+                    x1 = 0.0;
+                    x2 = 1.1;
+                    z1 = 1.2-0.6;
+                    z2 = 1.2-1.2;
+                case 'C'
+                    x1 = 1.1;
+                    x2 = 2.6;
+                    z1 = 1.2-0.1;
+                    z2 = 1.2-0.4;
+            end
         case 'B'
             switch box
                 case 'A'
