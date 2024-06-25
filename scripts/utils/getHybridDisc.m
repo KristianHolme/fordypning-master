@@ -1,4 +1,4 @@
-function hybridModel = getHybridDisc(simcase, tpfaModel, hybridpdisc, cellblocks, varargin)
+function hybridModel = getHybridDisc(simcase, tpfaModel, hybridpdisc, faceBlocks, varargin)
     opt = struct('resetAssembly', true, ...
         'myRatio', [], ...
         'saveAssembly', true, ...
@@ -69,7 +69,7 @@ function hybridModel = getHybridDisc(simcase, tpfaModel, hybridpdisc, cellblocks
     end
     mrstVerbose(mv);
     
-    faceBlocks = getFaceBlocks(G, cellblocks, extra{:});%faces
+    
 
     hybridModel = setHybridDiscretization(tpfaModel, models, faceBlocks);
 end

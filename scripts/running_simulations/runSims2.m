@@ -18,27 +18,27 @@ function timings = runSims2(server)
         direct_solver = false;
         mrstVerbose off;
     case 2
-        SPEcase = 'C';
-        gridcases = {'cart_ndg_cut_PG_50x50x50'};
+        SPEcase = 'B';
+        gridcases = {'cart_ndg_cut_PG_130x62'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
+        pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
-        tagcase = 'fixedGrid';
-        resetData = false;
+        tagcase = '';
+        resetData = true;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
         mrstVerbose off;
     case 3
-        SPEcase = 'C';
-        gridcases = {'horz_ndg_cut_PG_50x50x50'};
+        SPEcase = 'B';
+        gridcases = {'cart_ndg_cut_PG_819x117'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
+        pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
-        tagcase = 'fixedGrid';
-        resetData = false;
+        tagcase = '';
+        resetData = true;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;

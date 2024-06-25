@@ -1,6 +1,6 @@
 function model = setupModel(simcase, varargin)
     opt = struct();
-    opt = merge_options(opt, varargin{:});
+    [opt, extra] = merge_options(opt, varargin{:});
     
     G = simcase.G;
     rock = simcase.rock;
@@ -49,9 +49,18 @@ function model = setupModel(simcase, varargin)
 
 
     if ~isempty(simcase.pdisc) && contains(simcase.pdisc, 'hybrid')
-        cellblocks = getCellblocks(simcase, varargin{:});
-        model = getHybridDisc(simcase, model, replace(simcase.pdisc, 'hybrid-', ''), ...
-            cellblocks, varargin{:});
+        if contains(simcase.pdisc, 'indicator')
+            [err, errvect, fwerr] = simcase.computeStaticIndicator();
+            faceBlocks = getFaceBlocksFromIndicator(simcase.G, 'cellError', fwerr);
+        else
+            cellblocks = getCellblocks(simcase, varargin{:});
+            faceBlocks = getFaceBlocks(G, cellblocks, extra{:});%faces
+        end
+        nameParts = split(simcase.pdisc, '-');
+        discname = nameParts{end}; 
+        
+        model = getHybridDisc(simcase, model, discname, ...
+            faceBlocks, varargin{:});
     elseif ~isempty(simcase.pdisc) && strcmp(simcase.pdisc, 'ntpfa')%for testing new NTPFA
         model = setNTPFADiscretization(model);
     end

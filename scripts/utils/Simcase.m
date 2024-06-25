@@ -404,10 +404,10 @@ classdef Simcase < handle
         end
 
         function [err, errvect, fwerr] = computeStaticIndicator(simcase, varargin)
-            opt = struct('resetData', false);
+            opt = struct('recomputeError', false);
             opt = merge_options(opt, varargin{:});
             filename = fullfile(simcase.dataOutputDir, 'staticIndicator', [simcase.SPEcase, '_', simcase.gridcase, '_staticIndicator.mat']);
-            if isfile(filename) && ~opt.resetData
+            if isfile(filename) && ~opt.recomputeError
                 disp('Loading computed data...')
                 load(filename);
             else

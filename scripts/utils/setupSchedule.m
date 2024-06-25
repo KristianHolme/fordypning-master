@@ -151,7 +151,7 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
         end
         schedule.step.control = [schedule.step.control;
             repmat(ctrl(firstActiveControl), timeStepMultiplier,1);
-            repmat(ctrl(firstActiveControl+1), timeStepMultiplier,1)
+            repmat(ctrl(firstActiveControl+1), timeStepMultiplier,1);
             repmat(ctrl(firstActiveControl+2), timeStepMultiplier,1)
             ];
         schedule.step.val = [schedule.step.val;

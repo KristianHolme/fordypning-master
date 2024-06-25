@@ -13,13 +13,13 @@ mrstVerbose on
 %%
 % gridcases = {'5tetRef10', '5tetRef8', '5tetRef6', '5tetRef4', '5tetRef2',, 'struct193x83', 'struct220x90', 'struct340x150',
 % 'semi188x38_0.3','semi203x72_0.3',  'semi263x154_0.3'};
-SPEcase = 'A';
-gridcases = {'5tetRef10'};
-pdiscs = {'hybrid-ntpfa'};
-deckcases = {'RS'};
+% SPEcase = 'A';
+% gridcases = {'5tetRef10'};
+% pdiscs = {'hybrid-ntpfa'};
+% deckcases = {'RS'};
 % schedulecases = {'simple-coarse', 'simple-std'};
 
-% SPEcase = 'B';
+SPEcase = 'B';
 % gridcases = {'cp_pre_cut_130x62', 'pre_cut_130x62', '5tetRef3-stretch', 'struct130x62', ''};%pre_cut_130x62, 5tetRef1.2
 % gridcases = {'', 'struct130x62', 'horz_pre_cut_PG_130x62', 'cart_pre_cut_PG_130x62', 'cPEBI_130x62'};
 % gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
@@ -34,7 +34,7 @@ deckcases = {'RS'};
 % gridcases = {'5tetRef0.31'};
 % gridcases = {'struct130x62'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
-% gridcases = {'horz_ndg_cut_PG_130x62'};
+gridcases = {'cart_ndg_cut_PG_130x62'};
 
 % SPEcase = 'C'; %some grids for SPE11C
 % gridcases = {'horz_ndg_cut_PG_5', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -43,24 +43,24 @@ deckcases = {'RS'};
 
 % pdiscs = {''};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-% pdiscs = {'hybrid-avgmpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa'};
 
 schedulecases = {''};%defaults to schedule from deck
-% deckcases = {'B_ISO_C'}; %B_ISO_C
+deckcases = {'B_ISO_C'}; %B_ISO_C
 uwdiscs = {''}; % '' means SPU, 'WENO' means WENO transport discretizations
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
-tagcase = 'CPPD';%some options: normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift, CPPD
+tagcase = '';%some options: normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift, CPPD
 
 Jutul               = false; %use Jutul for simulations. Only works for TPFA
 jutulThermal        = false;
-resetData           = true; %Start simulation at beginning, ignoring saved steps
+resetData           = false; %Start simulation at beginning, ignoring saved steps
 resetAssembly       = false; %ignore stored preprocessing computations for consistent discretizations
-do.plotStates       = true; %plot results of simulations using plotToolBar
+do.plotStates       = false; %plot results of simulations using plotToolBar
 do.plotFlux         = false; %plots flux
 do.plotFacies       = false;
 do.runSimulation    = false;  %run simulation
 do.plotOrthErr      = false; %plot cellwise K-orthogonality indicator
-do.dispTime         = false; %display simulation time
+do.dispTime         = true; %display simulation time
 direct_solver       = false; % use direct solver instead of better iterative solvers like AMG/CPR. May not be respected if backslashThreshold is not met
 mrstVerbose off;
 
