@@ -1,7 +1,11 @@
 function discname = shortDiscName(discname, varargin)
     opt = struct('uw', false);
     opt = merge_options(opt, varargin{:});
-
+    if contains(discname, 'indicator')
+        discname = shortDiscName(replace(discname, 'indicator-', ''), varargin{:});
+        discname = ['ind.hyb.-', discname];
+        return
+    end
     if opt.uw
         if strcmp(discname, '');
             discname = 'SPU';
