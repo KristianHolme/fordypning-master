@@ -12,7 +12,7 @@ function timings = runSims2(server)
         uwdiscs = {''};
         deckcases = {'RS'};
         tagcase = 'CPPD';
-        resetData = false;
+        resetData = true;
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
@@ -34,27 +34,28 @@ function timings = runSims2(server)
         SPEcase = 'B';
         gridcases = {'cart_ndg_cut_PG_819x117'};
         schedulecases = {''};
-        pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa'};
+        pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator-hybrid-ntpfa', 'hybrid-mpfa', 'indicator-hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
-        resetData = true;
+        resetData = false;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
         mrstVerbose off;
     case 4
-        SPEcase = 'C';
-        gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
+        SPEcase = 'B';
+        gridcases = {'cPEBI_819x117'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator-hybrid-ntpfa', 'hybrid-mpfa', 'indicator-hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
-        resetAssembly = false;
-        Jutul = true;
+        resetAssembly = true;
+        Jutul = false;
         direct_solver = false;
+        mrstVerbose off;
     case 5
         SPEcase = 'C';
         gridcases = {'cart_ndg_cut_PG_100x100x100'};
