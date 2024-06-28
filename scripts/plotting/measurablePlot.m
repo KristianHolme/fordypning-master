@@ -2,7 +2,7 @@ clear all
 close all
 mrstVerbose off
 %% SPEcase
-SPEcase = 'C';
+SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
     xscaling = hour; unit = 'h';
     steps = 720;
@@ -17,27 +17,27 @@ resetData = false;
 getData = @(simcase, steps)getSealingCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in sealing units';
 ytxt = 'CO2 [kg]';
-folder = './../plotsMaster/sealingCO2';
+folder = './../plots/sealingCO2';
 filetag = 'sealingCO2';
 %% Set-Faultfluxes
 getData = @(simcase, steps)getFaultFluxes(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 fluxes over region boundaries (sum(abs(flux)))';
 ytxt = 'sum(abs(Fluxes))';
-folder = './../plotsMaster/faultfluxes';
+folder = './../plots/faultfluxes';
 filetag = 'faultflux';
 steps = 204;
 %% P6: Set Buffer CO2
 getData = @(simcase, steps)getBufferCO2(simcase, steps, 'resetData', resetData);
 plotTitle='CO2 in buffer volumes';
 ytxt = 'CO2 [kg]';
-folder = './../plotsMaster/bufferCO2';
+folder = './../plots/bufferCO2';
 filetag = 'bufferCO2';
 %% PoP
-popcell = 2;
+popcell = 1;
 getData = @(simcase, steps)getPoP(simcase, steps, popcell, 'resetData', resetData) ./barsa;
 plotTitle = sprintf('Pressure at PoP %d', popcell);
 ytxt = 'Pressure [bar]';
-folder = './../plotsMaster/PoP';
+folder = './../plots/PoP';
 filetag = sprintf('pop%d', popcell);
 %% P2 composition box A
 
@@ -45,7 +45,7 @@ filetag = sprintf('pop%d', popcell);
 box = 'A';
 ytxt = 'CO2 [kg]';
 plotTitle = 'P2.1 Mobile CO2';
-folder = './../plotsMaster/composition/P2boxA';
+folder = './../plots/composition/P2boxA';
 submeasure = 1;
 filetag = ['box', box, 'mob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
@@ -53,7 +53,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 box = 'A';
 ytxt = 'CO2 [kg]';
 plotTitle = 'P2.2 Immobile CO2';
-folder = './../plotsMaster/composition/P2boxA';
+folder = './../plots/composition/P2boxA';
 submeasure = 2;
 filetag = ['box', box, 'immob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
@@ -61,7 +61,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 box = 'A';
 ytxt = 'CO2 [kg]';
 plotTitle = 'P2.3 Dissolved CO2';
-folder = './../plotsMaster/composition/P2boxA';
+folder = './../plots/composition/P2boxA';
 submeasure = 3;
 filetag = ['box', box, 'diss'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
@@ -69,7 +69,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 box = 'A';
 ytxt = 'CO2 [kg]';
 plotTitle = 'P2.4 Seal CO2';
-folder = './../plotsMaster/composition/P2boxA';
+folder = './../plots/composition/P2boxA';
 submeasure = 4;
 filetag = ['box', box, 'seal'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
@@ -79,7 +79,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 box = 'B';
 ytxt = 'CO2 [kg]';
 plotTitle = 'P3.1 Mobile CO2';
-folder = './../plotsMaster/composition/P3boxB';
+folder = './../plots/composition/P3boxB';
 submeasure = 1;
 filetag = ['box', box, 'mob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
@@ -87,7 +87,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 box = 'B';
 ytxt = 'CO2 [kg]';
 plotTitle = 'P3.2 Immobile CO2';
-folder = './../plotsMaster/composition/P3boxB';
+folder = './../plots/composition/P3boxB';
 submeasure = 2;
 filetag = ['box', box, 'immob'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
@@ -95,7 +95,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 box = 'B';
 ytxt = 'CO2 [kg]';
 plotTitle = 'P3.3 Dissolved CO2';
-folder = './../plotsMaster/composition/P3boxB';
+folder = './../plots/composition/P3boxB';
 submeasure = 3;
 filetag = ['box', box, 'diss'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
@@ -103,7 +103,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 box = 'B';
 ytxt = 'CO2 [kg]';
 plotTitle = 'P3.4 Seal CO2';
-folder = './../plotsMaster/composition/P3boxB';
+folder = './../plots/composition/P3boxB';
 submeasure = 4;
 filetag = ['box', box, 'seal'];
 getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
@@ -141,6 +141,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'cPEBI_819x117', 'cPEBI_812x118'};
+gridcases = {'cart_ndg_cut_PG_819x117'};
 
 %Master C
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -156,29 +157,30 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 
 %grid vs res
 % gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_', 'cPEBI_'};
-gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
+% gridcases = {'struct', 'horz_ndg_cut_PG_', 'cart_ndg_cut_PG_'};
 % ress = {'819x117', '1638x234', '2640x380'};
-ress = {'50x50x50', '100x100x100'};
+% ress = {'50x50x50', '100x100x100'};
 % gridlabels = {'C', 'HNCP', 'CNCP', 'cPEBI'};
-gridlabels = {'C', 'HNCP', 'CNCP'};
+% gridlabels = {'C', 'HNCP', 'CNCP'};
 % reslabels = {'F', 'F2', 'F3'};
-reslabels = {'50', '100'};
+% reslabels = {'50', '100'};
 % ress = {''};
 
 
 % pdiscs = {'hybrid-avgmpfa'};
 % pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
-pdiscs = {''};
+% pdiscs = {''};
+pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator-hybrid-ntpfa'};
 
 uwdiscs = {''};
 deckcase = 'B_ISO_C';
 % tagcases = {'gdz-shift', 'gdz-shift-big'};
 tagcases = {''};
 % tagcases = {''};
-jutul = {false, true};
+jutul = {false};
 
-% gridlabels = gridcases; %DEFAULT
+gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
 % labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
 % gridlabels = {'Kartesisk', 'Horisont-kutt', 'Kartesisk-kutt', 'PEBI', 'Firkant/trekant'};
@@ -190,7 +192,7 @@ xtxt = ['Time [', unit, ']'];
 saveplot = true;
 plottitle = false;
 insetPlot = false;
-plotbars = true;
+plotbars = false;
 legendpos = 'best';
 
 %% Load simcases
@@ -203,6 +205,9 @@ if ismember('cc', pdiscs)
         discstyles = {'-', '-', '--', '-.', ':'};
         markers = {'none','|', 'none','none','none'};
     end
+elseif any(contains(pdiscs, 'indicator'))
+    discstyles = {'-', '--', '--', '-.', '-.', ':', ':'};
+    markers = {'none','none','|','none', '|', 'none', '|'};
 else
     discstyles = {'-', '--', '-.', ':'};
     markers = {'none','none','none','none'};
@@ -365,7 +370,7 @@ if plotbars
     tightfig();
 end
 if saveplot
-    % folder = './../plotsMaster/sealingCO2';
+    % folder = './../plots/sealingCO2';
     filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(discsDisp, '_')];
     % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
     saveas(f1, fullfile(folder, [filename, '.png']));
@@ -488,7 +493,7 @@ if plotbars
 end
 if saveplot
     disp('saving...')
-    % folder = './../plotsMaster/sealingCO2';
+    % folder = './../plots/sealingCO2';
     filename = [SPEcase, '_', filetag,'_', strjoin(gridlabels, '_'), '-', strjoin(reslabels, '_')];
     % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
     saveas(f1, fullfile(folder, [filename, '.png']));
@@ -603,7 +608,7 @@ if insetPlot
 end
 tightfig()
 if saveplot
-    % folder = './../plotsMaster/sealingCO2';
+    % folder = './../plots/sealingCO2';
     filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(simlabels, '_')];
     % saveas(gcf, fullfile(folder, [filename, '.svg']))%for color
     % print(fullfile(folder, [filename, '.pdf']), '-dpdf')

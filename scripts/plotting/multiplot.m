@@ -186,7 +186,7 @@ function multiplot(data, varargin)
         % exportgraphics(t, strcat(savepath, '.eps'));
         exportgraphics(t, strcat(savepath, '.png'), 'resolution', 400);
         if opt.saveToReport
-            saveFolder = replace(opt.savefolder, 'plotsMaster', 'rapport/Figures');
+            saveFolder = replace(opt.savefolder, 'plots', 'rapport/Figures');
             if ~exist(saveFolder, 'dir')
                 mkdir(saveFolder)
                 disp(['Folder ', saveFolder, ' created.']);
