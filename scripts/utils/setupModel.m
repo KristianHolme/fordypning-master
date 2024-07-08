@@ -50,8 +50,18 @@ function model = setupModel(simcase, varargin)
 
     if ~isempty(simcase.pdisc) && contains(simcase.pdisc, 'hybrid')
         if contains(simcase.pdisc, 'indicator')
+           
+
             [err, errvect, fwerr] = simcase.computeStaticIndicator();
-            faceBlocks = getFaceBlocksFromIndicator(simcase.G, 'cellError', fwerr);
+            pdiscParts = split(simcase.pdisc, '-');
+            indicatorPart = pdiscParts{1};
+            percentConsistent = str2double(indicatorPart(end-1:end));
+            if ~percentConsistent == 0
+                faceBlocks = getFaceBlocksFromIndicator(simcase.G, 'cellError', fwerr, ...
+                    'percentConsistent', percentConsistent);
+            else
+                faceBlocks = getFaceBlocksFromIndicator(simcase.G, 'cellError', fwerr);
+            end
         elseif ~startsWith(simcase.pdisc, 'hybrid')
             hybridType = split(simcase.pdisc, '-');
             hybridType = hybridType{1};
@@ -73,7 +83,7 @@ function model = setupModel(simcase, varargin)
         model = setWENODiscretization(model);
     end
     
-    if ~isempty(simcase.tagcase) && contains(simcase.tagcase, 'CPPD')
+    if ~isempty(simcase.pdisc) && contains(simcase.pdisc, 'CPPD')
         model = setCombinedPhasePotentialDifference(model);
     end
    

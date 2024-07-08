@@ -5,6 +5,10 @@ function discname = shortDiscName(discname, varargin)
         discname = shortDiscName(replace(discname, 'indicator-', ''), varargin{:});
         discname = ['ind.hyb.-', discname];
         return
+    elseif contains(discname, 'leftFaultEntry')
+            nameparts = split(discname, '-');
+            discname = ['LFE-hybrid-', nameparts{end}];
+            return    
     end
     if opt.uw
         if strcmp(discname, '');

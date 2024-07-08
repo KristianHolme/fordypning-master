@@ -13,100 +13,7 @@ else
     totsteps = 301;
 end
 resetData = false;
-%% P5: Set Sealing-CO2
-getData = @(simcase, steps)getSealingCO2(simcase, steps, 'resetData', resetData);
-plotTitle='CO2 in sealing units';
-ytxt = 'CO2 [kg]';
-folder = './../plots/sealingCO2';
-filetag = 'sealingCO2';
-%% Set-Faultfluxes
-getData = @(simcase, steps)getFaultFluxes(simcase, steps, 'resetData', resetData);
-plotTitle='CO2 fluxes over region boundaries (sum(abs(flux)))';
-ytxt = 'sum(abs(Fluxes))';
-folder = './../plots/faultfluxes';
-filetag = 'faultflux';
-steps = 204;
-%% P6: Set Buffer CO2
-getData = @(simcase, steps)getBufferCO2(simcase, steps, 'resetData', resetData);
-plotTitle='CO2 in buffer volumes';
-ytxt = 'CO2 [kg]';
-folder = './../plots/bufferCO2';
-filetag = 'bufferCO2';
-%% PoP
-popcell = 1;
-getData = @(simcase, steps)getPoP(simcase, steps, popcell, 'resetData', resetData) ./barsa;
-plotTitle = sprintf('Pressure at PoP %d', popcell);
-ytxt = 'Pressure [bar]';
-folder = './../plots/PoP';
-filetag = sprintf('pop%d', popcell);
-%% P2 composition box A
 
-%% P2.1 mobile
-box = 'A';
-ytxt = 'CO2 [kg]';
-plotTitle = 'P2.1 Mobile CO2';
-folder = './../plots/composition/P2boxA';
-submeasure = 1;
-filetag = ['box', box, 'mob'];
-getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
-%% P2.2 immobile
-box = 'A';
-ytxt = 'CO2 [kg]';
-plotTitle = 'P2.2 Immobile CO2';
-folder = './../plots/composition/P2boxA';
-submeasure = 2;
-filetag = ['box', box, 'immob'];
-getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
-%% P2.3 dissolved
-box = 'A';
-ytxt = 'CO2 [kg]';
-plotTitle = 'P2.3 Dissolved CO2';
-folder = './../plots/composition/P2boxA';
-submeasure = 3;
-filetag = ['box', box, 'diss'];
-getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
-%% P2.4 seal
-box = 'A';
-ytxt = 'CO2 [kg]';
-plotTitle = 'P2.4 Seal CO2';
-folder = './../plots/composition/P2boxA';
-submeasure = 4;
-filetag = ['box', box, 'seal'];
-getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
-%% P3 composition box B
-
-%% P3.1 mobile
-box = 'B';
-ytxt = 'CO2 [kg]';
-plotTitle = 'P3.1 Mobile CO2';
-folder = './../plots/composition/P3boxB';
-submeasure = 1;
-filetag = ['box', box, 'mob'];
-getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
-%% P3.2 immobile
-box = 'B';
-ytxt = 'CO2 [kg]';
-plotTitle = 'P3.2 Immobile CO2';
-folder = './../plots/composition/P3boxB';
-submeasure = 2;
-filetag = ['box', box, 'immob'];
-getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
-%% P3.3 dissolved
-box = 'B';
-ytxt = 'CO2 [kg]';
-plotTitle = 'P3.3 Dissolved CO2';
-folder = './../plots/composition/P3boxB';
-submeasure = 3;
-filetag = ['box', box, 'diss'];
-getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
-%% P3.4 seal
-box = 'B';
-ytxt = 'CO2 [kg]';
-plotTitle = 'P3.4 Seal CO2';
-folder = './../plots/composition/P3boxB';
-submeasure = 4;
-filetag = ['box', box, 'seal'];
-getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
 %% SETUP
 % A
 % gridcases = {'6tetRef1', '5tetRef1'}; %RAPPORT 
@@ -180,6 +87,8 @@ tagcases = {''};
 % tagcases = {''};
 jutul = {false};
 
+batchname = 'leftFaultEntryHybrid';
+folder = fullfile('./../plots', batchname);
 gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
 % labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};
@@ -233,8 +142,8 @@ for igrid = 1:numel(gridcases)
     end
 end
 discs = pdiscs;
+
 %% Load simcases uwdisc
-gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
 if ismember('cc', pdiscs)
     if ismember('p', pdiscs)
         discstyles = {'-', '-', '-', '--', '-.', ':'};
@@ -269,119 +178,30 @@ for igrid = 1:numel(gridcases)
 end
 discs = uwdiscs;
 
-%% Load data
-xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
-xdata = xdata(1:steps);
-data = nan(steps, numel(simcases));
-for isim = 1:numel(simcases)
-    simcase = simcases{isim};
-    data(:,isim) = getData(simcase, steps);
-    % fprintf('%s tot co2: %.3e\n', simcase.casename, sum(simcase.getSimData{250}.FlowProps.ComponentTotalMass{2}))
+%% Loading and plotting
+initFuncs = {@(rd)initSealingPlot(rd), @(rd)initBufferPlot(rd), @(rd)initPoPPlot(1, rd), @(rd)initPoPPlot(2, rd),...
+    @(rd)initP21Plot(rd), @(rd)initP22Plot(rd), @(rd)initP23Plot(rd), @(rd)initP24Plot(rd),...
+    @(rd)initP31Plot(rd), @(rd)initP32Plot(rd), @(rd)initP33Plot(rd), @(rd)initP34Plot(rd)};
+for ifunc =1:numel(initFuncs)
+    func = initFuncs{ifunc};
+    [getData, plotTitle, ytxt, ~, filetag] = func(resetData);
+    xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
+    xdata = xdata(1:steps);
+    data = nan(steps, numel(simcases));
+    disp(['Loading data for ', plotTitle]);
+    for isim = 1:numel(simcases)
+        simcase = simcases{isim};
+        data(:,isim) = getData(simcase, steps);
+        % fprintf('%s tot co2: %.3e\n', simcase.casename, sum(simcase.getSimData{250}.FlowProps.ComponentTotalMass{2}))
+    end
+    disp("Loading done.");
+    measurablePlot(data, xdata, {gridcasecolors, discstyles, markers, plotStyles}, discs, ...
+        'plotTitle', plotTitle, 'folder', folder, 'plotbars', plotbars, ...
+        'ytxt', ytxt, 'filetag', filetag, 'numGrids', numel(gridcases), ...
+        'xtxt', xtxt, 'SPEcase', SPEcase, 'gridcases', gridcases);
 end
-disp("Loading done.");
 %% Plot
-set(groot, 'defaultLineLineWidth', 2);
-f1 = figure('Position', [100,200, 800, 600], 'Name',plotTitle);
-hold on;
-scale = floor(log10(max(data, [], 'all')));
-axfix = false;
-if scale ~=1 && ~contains(ytxt, 'bar') && axfix
-    figscaling = 3*floor(scale/3);
-    figytxt = replace(ytxt, '[', ['[10^{', num2str(figscaling), '} ']);
-    figdata = data ./ 10^figscaling;
-else
-    figdata = data;
-    figytxt = ytxt;
-end
-for i=1:numel(simcases)
-    plot(xdata, figdata(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',6, 'MarkerIndices',1:10:numel(xdata));
-end
-if numel(gridcases) > 1
-    % Create dummy plots for legend
-    h_grid = [];
-    for igrid = 1:numel(gridcases)
-        color = gridcasecolors{igrid};
-        h_grid(igrid) = plot(NaN,NaN, 'Color', color, 'LineStyle', '-', 'LineWidth', 2); % No data, just style
-    end
-    h_disc = [];
-    for idisc = 1:numel(discs)
-        if numel(discs) == 1
-            break
-        end
-        style = discstyles{idisc};
-        marker = markers{idisc};
-        h_disc(idisc) = plot(NaN,NaN, 'Color', 'k', 'LineStyle', style, 'LineWidth', 2, 'Marker',marker); % No data, just style
-    end
-    % Combine handles and labels
-    handles = [h_grid, h_disc];
-    gridcasesDisp = cellfun(@(gridcase) displayNameGrid(gridcase, SPEcase), gridlabels,  'UniformOutput', false);
-    if numel(uwdiscs)>1
-        discs{1} = 'SPU';
-    end
-    discsDisp = cellfun(@shortDiscName, discs, 'UniformOutput', false); 
-    labels = [gridcasesDisp, discsDisp];
-else
-    h_disc = [];
-    for idisc = 1:numel(discs)
-        if numel(discs) == 1
-            break
-        end
-        style = discstyles{idisc};
-        marker = markers{idisc};
-        color = gridcasecolors{igrid};
-        h_disc(idisc) = plot(NaN,NaN, 'Color', color, 'LineStyle', style, 'LineWidth', 2, 'Marker',marker); % No data, just style
-    end
-    % Combine handles and labels
-    handles = h_disc;
-    if numel(uwdiscs)>1
-        discs{1} = 'SPU';
-    end
-    discsDisp = cellfun(@shortDiscName, discs, 'UniformOutput', false); 
-    labels = discsDisp;
-end
 
-% Create the legend
-lgd = legend(handles, labels, 'NumColumns', 2);
-set(lgd, 'Interpreter', 'none', 'Location', legendpos);
-hold off
-if plottitle
-    title(plotTitle);
-end
-fontsize(16, 'points'); 
-xlabel(xtxt);
-ylabel(figytxt);
-grid on;
-
-if insetPlot
-    %plot inside plot
-    insetPosition = [0.19 0.15 0.25 0.25];
-    insetAxes = axes('Position',insetPosition);
-    insetsteps = 201;
-    insetxdata = xdata(1:insetsteps);
-    for i=1:numel(simcases)
-        plot(insetAxes, insetxdata, data(1:insetsteps, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',4, 'MarkerIndices',1:10:numel(insetxdata));
-        hold on;
-    end
-    grid(insetAxes);
-end
-tightfig();
-if plotbars
-    f2 = plotbar3(data, gridcasesDisp, discsDisp, gridcasecolors, plotTitle, ytxt);
-    tightfig();
-end
-if saveplot
-    % folder = './../plots/sealingCO2';
-    filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(discsDisp, '_')];
-    % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
-    saveas(f1, fullfile(folder, [filename, '.png']));
-    saveas(f1, fullfile(folder, [filename,'.eps']), 'epsc');
-    if plotbars
-        filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(discsDisp, '_'), '_bar3'];
-        set(f2, 'Renderer', 'painters');
-        saveas(f2, fullfile(folder, 'bars', [filename, '.png']));
-        saveas(f2, fullfile(folder, 'bars', [filename,'.pdf']), 'pdf');
-    end
-end
 % pause(0.3)
 % close all
 %% Load simcases grid RES
@@ -626,4 +446,124 @@ for isim = 1:numel(simcases)
     [~, ~, rep] = simcases{isim}.getSimData;
     reports{isim} = rep;
 end
-reportStats(reports, names)
+savefolder = fullfile('./../plots/performance');
+reportStats(reports, names, 'savefolder', savefolder, 'batchname', batchname)
+
+
+
+%% P5: Set Sealing-CO2
+function [getData, plotTitle, ytxt, folder, filetag] = initSealingPlot(resetData)
+getData = @(simcase, steps)getSealingCO2(simcase, steps, 'resetData', resetData);
+plotTitle='CO2 in sealing units';
+ytxt = 'CO2 [kg]';
+folder = './../plots/sealingCO2';
+filetag = 'sealingCO2';
+end
+%% Set-Faultfluxes
+function [getData, plotTitle, ytxt, folder, filetag] = initFaultFluxPlot(resetData)
+getData = @(simcase, steps)getFaultFluxes(simcase, steps, 'resetData', resetData);
+plotTitle='CO2 fluxes over region boundaries (sum(abs(flux)))';
+ytxt = 'sum(abs(Fluxes))';
+folder = './../plots/faultfluxes';
+filetag = 'faultflux';
+end
+%% P6: Set Buffer CO2
+function [getData, plotTitle, ytxt, folder, filetag] = initBufferPlot(resetData)
+getData = @(simcase, steps)getBufferCO2(simcase, steps, 'resetData', resetData);
+plotTitle='CO2 in buffer volumes';
+ytxt = 'CO2 [kg]';
+folder = './../plots/bufferCO2';
+filetag = 'bufferCO2';
+end
+%% PoP
+function [getData, plotTitle, ytxt, folder, filetag] = initPoPPlot(popcell, resetData)
+getData = @(simcase, steps)getPoP(simcase, steps, popcell, 'resetData', resetData) ./barsa;
+plotTitle = sprintf('Pressure at PoP %d', popcell);
+ytxt = 'Pressure [bar]';
+folder = './../plots/PoP';
+filetag = sprintf('pop%d', popcell);
+end
+%% P2 composition box A
+
+%% P2.1 mobile
+function [getData, plotTitle, ytxt, folder, filetag] = initP21Plot(resetData)
+box = 'A';
+ytxt = 'CO2 [kg]';
+plotTitle = 'P2.1 Mobile CO2';
+folder = './../plots/composition/P2boxA';
+submeasure = 1;
+filetag = ['box', box, 'mob'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+end
+%% P2.2 immobile
+function [getData, plotTitle, ytxt, folder, filetag] = initP22Plot(resetData)
+box = 'A';
+ytxt = 'CO2 [kg]';
+plotTitle = 'P2.2 Immobile CO2';
+folder = './../plots/composition/P2boxA';
+submeasure = 2;
+filetag = ['box', box, 'immob'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+end
+%% P2.3 dissolved
+function [getData, plotTitle, ytxt, folder, filetag] = initP23Plot(resetData)
+box = 'A';
+ytxt = 'CO2 [kg]';
+plotTitle = 'P2.3 Dissolved CO2';
+folder = './../plots/composition/P2boxA';
+submeasure = 3;
+filetag = ['box', box, 'diss'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+end
+%% P2.4 seal
+function [getData, plotTitle, ytxt, folder, filetag] = initP24Plot(resetData)
+box = 'A';
+ytxt = 'CO2 [kg]';
+plotTitle = 'P2.4 Seal CO2';
+folder = './../plots/composition/P2boxA';
+submeasure = 4;
+filetag = ['box', box, 'seal'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+end
+%% P3 composition box B
+
+%% P3.1 mobile
+function [getData, plotTitle, ytxt, folder, filetag] = initP31Plot(resetData)
+box = 'B';
+ytxt = 'CO2 [kg]';
+plotTitle = 'P3.1 Mobile CO2';
+folder = './../plots/composition/P3boxB';
+submeasure = 1;
+filetag = ['box', box, 'mob'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+end
+%% P3.2 immobile
+function [getData, plotTitle, ytxt, folder, filetag] = initP32Plot(resetData)
+box = 'B';
+ytxt = 'CO2 [kg]';
+plotTitle = 'P3.2 Immobile CO2';
+folder = './../plots/composition/P3boxB';
+submeasure = 2;
+filetag = ['box', box, 'immob'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+end
+%% P3.3 dissolved
+function [getData, plotTitle, ytxt, folder, filetag] = initP33Plot(resetData)
+box = 'B';
+ytxt = 'CO2 [kg]';
+plotTitle = 'P3.3 Dissolved CO2';
+folder = './../plots/composition/P3boxB';
+submeasure = 3;
+filetag = ['box', box, 'diss'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+end
+%% P3.4 seal
+function [getData, plotTitle, ytxt, folder, filetag] = initP34Plot(resetData)
+box = 'B';
+ytxt = 'CO2 [kg]';
+plotTitle = 'P3.4 Seal CO2';
+folder = './../plots/composition/P3boxB';
+submeasure = 4;
+filetag = ['box', box, 'seal'];
+getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData', resetData);
+end
