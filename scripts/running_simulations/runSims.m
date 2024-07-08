@@ -35,14 +35,15 @@ SPEcase = 'B';
 % gridcases = {'struct130x62'};
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 % gridcases = {'cart_ndg_cut_PG_130x62'};
-gridcases = {'horz_ndg_cut_PG_130x62'};
+% gridcases = {'horz_ndg_cut_PG_130x62'};
+gridcases = {'horz_ndg_cut_PG_819x117'};
 
 % SPEcase = 'C'; %some grids for SPE11C
 % gridcases = {'horz_ndg_cut_PG_5', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'cart_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_100x100x100'};
 
 
-pdiscs = {''};
+pdiscs = {'leftFaultEntry-hybrid-avgmpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'ntpfa'};
 

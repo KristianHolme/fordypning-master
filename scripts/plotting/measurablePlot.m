@@ -141,7 +141,7 @@ getData = @(simcase, steps)getComp(simcase, steps, submeasure, box, 'resetData',
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'cPEBI_819x117', 'cPEBI_812x118'};
-gridcases = {'cart_ndg_cut_PG_819x117'};
+gridcases = {'horz_ndg_cut_PG_130x62'};
 
 %Master C
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -167,11 +167,11 @@ gridcases = {'cart_ndg_cut_PG_819x117'};
 % ress = {''};
 
 
-% pdiscs = {'hybrid-avgmpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'leftFaultEntry-hybrid-avgmpfa', 'hybrid-ntpfa', 'leftFaultEntry-hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
 % pdiscs = {''};
-pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator-hybrid-ntpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator-hybrid-ntpfa'};
 
 uwdiscs = {''};
 deckcase = 'B_ISO_C';
@@ -205,7 +205,7 @@ if ismember('cc', pdiscs)
         discstyles = {'-', '-', '--', '-.', ':'};
         markers = {'none','|', 'none','none','none'};
     end
-elseif any(contains(pdiscs, 'indicator'))
+elseif any(contains(pdiscs, '-hybrid'))
     discstyles = {'-', '--', '--', '-.', '-.', ':', ':'};
     markers = {'none','none','|','none', '|', 'none', '|'};
 else
@@ -541,6 +541,7 @@ end
 disp("Loading done.");
 
 %% Plot compThermal
+
 set(groot, 'defaultLineLineWidth', 2);
 figure('Position', [100,200, 800, 600], 'Name',plotTitle)
 hold on;
@@ -617,3 +618,12 @@ if saveplot
 end
 % pause(0.5)
 % close gcf
+
+%% Plot reports
+names = cellfun(@(name) shortDiscName(name), pdiscs, UniformOutput=false);
+reports = cell(numel(simcases), 1);
+for isim = 1:numel(simcases)
+    [~, ~, rep] = simcases{isim}.getSimData;
+    reports{isim} = rep;
+end
+reportStats(reports, names)

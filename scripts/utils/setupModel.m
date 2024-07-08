@@ -52,12 +52,17 @@ function model = setupModel(simcase, varargin)
         if contains(simcase.pdisc, 'indicator')
             [err, errvect, fwerr] = simcase.computeStaticIndicator();
             faceBlocks = getFaceBlocksFromIndicator(simcase.G, 'cellError', fwerr);
+        elseif ~startsWith(simcase.pdisc, 'hybrid')
+            hybridType = split(simcase.pdisc, '-');
+            hybridType = hybridType{1};
+            cellblocks = spe11CellblockBoxes(simcase.G, 'box', hybridType);
+            faceBlocks = getFaceBlocks(G, cellblocks, extra{:});
         else
             cellblocks = getCellblocks(simcase, varargin{:});
             faceBlocks = getFaceBlocks(G, cellblocks, extra{:});%faces
         end
         nameParts = split(simcase.pdisc, '-');
-        discname = nameParts{end}; 
+        discname = nameParts{end};
         
         model = getHybridDisc(simcase, model, discname, ...
             faceBlocks, varargin{:});
