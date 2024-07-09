@@ -7,7 +7,7 @@ function discname = shortDiscName(discname, varargin)
         return
     elseif contains(discname, 'leftFaultEntry')
             nameparts = split(discname, '-');
-            discname = ['LFE-hybrid-', nameparts{end}];
+            discname = ['LFE-hybrid-', shortDiscName(nameparts{end})];
             return    
     end
     if opt.uw

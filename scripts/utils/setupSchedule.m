@@ -1,7 +1,9 @@
 function [schedule, simcase] = setupSchedule(simcase, varargin)
 
     schedulecase = simcase.schedulecase;
-    
+    if isempty(schedulecase)
+        schedulecase = '';
+    end
     experimental = strcmp(schedulecase, 'experimental');
 
 
@@ -96,7 +98,7 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
     end
 
     %add more time steps
-    switch simcase.schedulecase
+    switch schedulecase
         case 'animationFriendly'
             timeStepMultiplier = [18, 18, 684];
         otherwise
