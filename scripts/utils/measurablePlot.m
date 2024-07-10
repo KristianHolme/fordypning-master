@@ -120,6 +120,9 @@ if opt.saveplot
     % folder = './../plots/sealingCO2';
     filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(discsDisp, '_')];
     % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
+    if ~exist(folder, 'dir')
+        mkdir(folder);
+    end
     saveas(f1, fullfile(folder, [filename, '.png']));
     saveas(f1, fullfile(folder, [filename,'.eps']), 'epsc');
     if plotbars

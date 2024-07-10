@@ -2,8 +2,11 @@ function discname = shortDiscName(discname, varargin)
     opt = struct('uw', false);
     opt = merge_options(opt, varargin{:});
     if contains(discname, 'indicator')
-        discname = shortDiscName(replace(discname, 'indicator-', ''), varargin{:});
-        discname = ['ind.hyb.-', discname];
+        nameparts = split(discname, '-');
+        nameparts{1} = replace(nameparts{1}, 'indicator', 'ind.');
+        nameparts{end} = shortDiscName(nameparts{end});
+        discname = join(nameparts, '-');
+        discname = discname{1};
         return
     elseif contains(discname, 'leftFaultEntry')
             nameparts = split(discname, '-');
@@ -11,7 +14,7 @@ function discname = shortDiscName(discname, varargin)
             return    
     end
     if opt.uw
-        if strcmp(discname, '');
+        if strcmp(discname, '')
             discname = 'SPU';
         elseif strcmp(discname, 'weno')
             discname = 'WENO';

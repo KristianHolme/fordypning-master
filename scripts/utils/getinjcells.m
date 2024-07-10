@@ -31,7 +31,7 @@ function [well1Index, well2Index, well1Coords, well2Coords] = getinjcells(G, SPE
         % well2InterpPts = 100;
         %well 2 indexing relies on the layered structure, so make sure to
         %cut out buffercells before extruding layers!
-        well2Start = SPE11CBend([5100,1000, 1200-700]);
+        well2Start = bendSPE11C([5100,1000, 1200-700]);
         layerSize = G.cells.num/G.numLayers;
         % well2End = SPE11CBend([5100,4000, 1200-700]);
         well2StartCell = findEnclosingCell(G, well2Start);
