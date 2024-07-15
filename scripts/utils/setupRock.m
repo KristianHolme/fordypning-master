@@ -42,7 +42,7 @@ function rock = setupRock(simcase, varargin)
             rock.poro   = faciesPoro(G.cells.tag);
             rock.regions.saturation = G.cells.tag;
 
-            if strcmp(simcase.SPEcase, 'C') & ~contains(simcase.tagcase, 'diagperm')
+            if strcmp(simcase.SPEcase, 'C') && ~contains(simcase.tagcase, 'diagperm') && ~simcase.nonStdGrid
                 fullperm = zeros(G.cells.num, 6);
                 fullperm(:,[1,4,6]) = rock.perm;
                 v = G.cells.centroids(:,2);
@@ -52,8 +52,17 @@ function rock = setupRock(simcase, varargin)
                 fullperm(:,6) = fullperm(:,6) + xperm .* (scaling.^2);
                 rock.perm = fullperm;                
             end
+            
 
-            [~, rock] = addBufferVolume(G, rock, 'bufferMult', contains(simcase.tagcase, 'bufferMult'));
+            if isfield(G, 'buffereps')
+                eps = G.buffereps;
+            else
+                eps = 1;
+            end
+            [~, rock] = addBufferVolume(G, rock, ...
+                'eps', eps,...
+                'bufferMult', contains(simcase.tagcase, 'bufferMult'), ...
+                'hasCorrectBufferVolumes', simcase.nonStdGrid);
 
         end
     elseif simcase.usedeck

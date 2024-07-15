@@ -1,5 +1,6 @@
 function [schedule, simcase] = setupSchedule(simcase, varargin)
-
+    opt = struct('rateMultiplier', 1);
+    opt = merge_options(opt, varargin{:});
     schedulecase = simcase.schedulecase;
     if isempty(schedulecase)
         schedulecase = '';
@@ -33,8 +34,8 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
             % end
         end
         if strcmp(simcase.SPEcase, 'C')
-            rates1mult = [0,1, 1, 0];
-            rates2mult = [0,0, 1, 0];
+            % rates1mult = [0, 1, 1, 0]; %TODO:remove?
+            % rates2mult = [0, 0, 1, 0];
             w1 = [];
             w2 = [];
             w3 = [];
@@ -42,12 +43,12 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
             simcase.G.cells.wellMassRate = cell(1,2);
             for ic = 1:numel(cell1)
                 c = cell1(ic);
-                cellFaces = gridCellFaces(simcase.G, c);
-                ymin = max(1000, min(simcase.G.faces.centroids(cellFaces,2)));
-                ymax = min(4000, max(simcase.G.faces.centroids(cellFaces,2)));
+
+                [ymin, ymax] = getWellCellYMinMax(simcase, c);
+
                 massRateVal = 50/3000* (ymax-ymin);
                 simcase.G.cells.wellMassRate{1}(ic) = massRateVal;
-                rateval = massRateVal *1/deckmodel.fluid.rhoGS;
+                rateval = massRateVal *1/deckmodel.fluid.rhoGS * opt.rateMultiplier;
                 w1 = addWell(w1, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
                 w2 = addWell(w2, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
                 w3 = addWell(w3, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
@@ -56,13 +57,13 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
             wellLength = integral(@(y)well2ArcSPE11C(y), 1000,4000);
             for ic = 1:numel(cell2)
                 c = cell2(ic);
-                cellFaces = gridCellFaces(simcase.G, c);
-                ymin = max(1000, min(simcase.G.faces.centroids(cellFaces,2)));
-                ymax = min(4000, max(simcase.G.faces.centroids(cellFaces,2)));
-                L = integral(@(y)well2ArcSPE11C(y), ymin,ymax);
+
+                [ymin, ymax] = getWellCellYMinMax(simcase, c);
+                L = getWellLengthInCell(simcase, c, ymin, ymax);
+                
                 massRateVal = 50 * L/wellLength;
                 simcase.G.cells.wellMassRate{2}(ic) = massRateVal;
-                rateval = massRateVal*1/deckmodel.fluid.rhoGS;
+                rateval = massRateVal*1/deckmodel.fluid.rhoGS * opt.rateMultiplier;
                 w1 = addWell(w1, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
                 w2 = addWell(w2, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
                 w3 = addWell(w3, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
@@ -101,6 +102,12 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
     switch schedulecase
         case 'animationFriendly'
             timeStepMultiplier = [18, 18, 684];
+        case 'skipEquil'
+            schedule.step.control = schedule.step.control(2:end);
+            schedule.step.val = schedule.step.val(2:end);
+
+            timeStepMultiplier = [100,100,100];
+
         otherwise
             timeStepMultiplier = [100,100,100];
     end
@@ -131,4 +138,25 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
         schedule.control(i).bc = bc;
     end
 
+end
+
+function [ymin, ymax] = getWellCellYMinMax(simcase, c)
+cellFaces = gridCellFaces(simcase.G, c);
+if simcase.nonStdGrid
+    ymin = -Inf;
+    ymax = Inf;
+else
+    ymin = 1000;
+    ymax = 4000;
+end
+ymin = max(ymin, min(simcase.G.faces.centroids(cellFaces,2)));
+ymax = min(ymax, max(simcase.G.faces.centroids(cellFaces,2)));
+end
+
+function L = getWellLengthInCell(simcase, c, ymin, ymax)
+if simcase.nonStdGrid
+    L = ymax-ymin;
+else
+    L = integral(@(y)well2ArcSPE11C(y), ymin,ymax);
+end
 end

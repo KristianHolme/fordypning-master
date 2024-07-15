@@ -57,7 +57,7 @@ function [state0, model, schedule, nls] = setupSim(simcase, varargin)
             state0 = initResSol(G, 1*atm, [1, 0]);
         end
     elseif strcmp(simcase.SPEcase, 'B') || strcmp(simcase.SPEcase, 'C')
-        if ~isempty(simcase.gridcase)
+        if ~isempty(simcase.gridcase) & ~simcase.nonStdGrid
             p_datum = 19620000;
     
             rsvd = [0,0;1200,0];
@@ -82,15 +82,18 @@ function [state0, model, schedule, nls] = setupSim(simcase, varargin)
     
             state0 = initStateBlackOilAD(model, regions);
 
-        elseif simcase.usedeck
+        elseif simcase.usedeck & ~simcase.nonStdGrid
             state0 = initStateDeck(model, deck);
         else
             %solve ode to get pressure and interpolate to get initial pressure
             rho = @(p) model.fluid.rhoOS/model.fluid.bO(p, 0, 1);
-            well1Depth = 900;
-            equil = ode23(@(z, p) 9.81 .*rho(p), [well1Depth, 0], 300*barsa); %gives pressure at top is 2.0754e+07
+            % well1Depth = 900;
+            wellCells = [schedule.control(3).W.cells];
+            well1Depth = G.cells.centroids(wellCells(1),3);
+            resTop = min(G.nodes.coords(:,3)); % top of reservoir
+            equil = ode23(@(z, p) 9.81 .*rho(p), [well1Depth, resTop], 300*barsa); %gives pressure at top is 2.0754e+07
             topPressure = equil.y(end);
-            equil = ode23(@(z, p) 9.81 .*rho(p), [0, sort(unique(G.cells.centroids(:, 3)'))], topPressure);
+            equil = ode23(@(z, p) 9.81 .*rho(p), [resTop, sort(unique(G.cells.centroids(:, 3)'))], topPressure);
             z_values = equil.x;
             pressure_values = equil.y;
             pressure_interp_func = @(z) interp1(z_values, pressure_values, z, 'linear');

@@ -129,6 +129,72 @@ function G = setupGrid(simcase, varargin)
                 gridfilename = ['buff_', gridfilename];
             end
             matFile = fullfile(gridFolder, gridfilename);
+        elseif contains(gridcase, 'transfault') 
+            gridFolder = fullfile('./../../total-grids/', gridcase);
+            gridfilename = 'G_SPE.mat';
+            matFile = fullfile(gridFolder, gridfilename);
+            if isfile(matFile)
+                load(matFile);
+            else
+                origGridFile = fullfile(gridFolder, 'G_flipped.mat');
+                load(origGridFile)
+                G = transfaultTag(G);
+                G = transfaultBufferSlice(G);
+                G = transfaultGetBufferCells(G);
+                save(matFile, "G")
+            end
+
+            return
+        elseif contains(gridcase, 'flat_tetra')
+            gridFolder = './../../total-grids/flat_tetra';
+            if contains(gridcase, 'subwell')
+                gridfilename = 'flat_tetra_subwell_SPE.mat';
+            else
+                gridfilename = [gridcase, '_SPE.mat'];
+            end
+            matFile = fullfile(gridFolder, gridfilename);
+            if isfile(matFile)
+                load(matFile);
+            else
+                origGridFile = fullfile(gridFolder, [gridcase, '.mat']);
+                load(origGridFile)
+                G = transfaultTag(G);
+                G = transfaultBufferSlice(G, 'sliceOffset', 1);
+                G = transfaultGetBufferCells(G);
+                save(matFile, "G")
+            end
+            %check if we want to elongate in z direction to avoid flatness
+            pattern = 'zx(\d+)'; % Regular expression pattern for "zx" followed by one or more digits
+
+            matches = regexp(gridcase, pattern, 'tokens'); % Find matches and extract tokens
+            
+            if ~isempty(matches)
+                z_scale = str2double(matches{1}{1}); % Convert the extracted token to a number
+                G.nodes.coords(:,3) = G.nodes.coords(:,3)*z_scale;
+                G = mcomputeGeometry(G);
+            end
+            return
+        elseif contains(gridcase, 'cTwist') || contains(gridcase, 'cart')
+            tets = contains(gridcase, 'tets');
+            twist = contains(gridcase, 'wist');
+            if endsWith(gridcase, '-C')
+                nx = 10;
+                ny = 10;
+                nz = 4;
+            elseif endsWith(gridcase, '-M')
+                nx = 40;
+                ny = 40;
+                nz = 8;
+            elseif endsWith(gridcase, '-F')
+                nx = 80;
+                ny = 80;
+                nz = 16;
+            end
+            G = makecTwistGrid(nx, ny, nz, 'tets', tets, 'twist', twist, 'tag', gridcase);
+            G = transfaultTag(G);
+            G = transfaultBufferSlice(G);
+            G = transfaultGetBufferCells(G);
+            return
         end
         load(matFile);
 
@@ -248,20 +314,6 @@ function G = setupGrid(simcase, varargin)
 
     
     
-    % if strcmp(simcase.SPEcase, 'B') && opt.buffer %add buffervolume
-    %     if ~isfield(G.cells, 'tag')
-    %         G.cells.tag = simcase.rock.regions.saturation;
-    %         if max(simcase.rock.poro) > 1 %poro is adjusted instead of volume
-    %             opt.buffer = false;
-    %         end
-    %     end
-    %     if opt.buffer
-    %         if sliceForBuffer
-    %             [G, simcase] = bufferSlice(G, simcase);
-    %         end
-    %         G = addBufferVolume(G, simcase.rock,'verbose', true);
-    %     end
-    % end
     if ~checkGrid(G)
         warning("Grid does not pass checkgrid!")
     end

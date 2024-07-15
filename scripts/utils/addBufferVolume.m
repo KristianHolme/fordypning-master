@@ -6,7 +6,8 @@ function [G, rock] = addBufferVolume(G, rock, varargin)
         'verbose', false, ...
         'slice', false,...%slice not used
         'adjustPoro', true, ...
-        'bufferMult', false);
+        'bufferMult', false, ...
+        'hasCorrectBufferVolumes', false);
     opt = merge_options(opt, varargin{:});
 
     assert(isfield(G.cells, 'tag'), "No tag on G.cells!")
@@ -21,8 +22,10 @@ function [G, rock] = addBufferVolume(G, rock, varargin)
     eps = opt.eps;
     % xlimit = 8400;
     areaVolumeConstant = 5e4;
-
-    G = getBufferCells(G);
+    
+    if ~opt.hasCorrectBufferVolumes
+        G = getBufferCells(G);
+    end
     % G.bufferCells = [];
     bufferMult = ones(numel(G.bufferCells),1);
     if opt.bufferMult

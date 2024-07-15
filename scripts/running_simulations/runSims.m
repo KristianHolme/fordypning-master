@@ -5,7 +5,7 @@ close all
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics...
     deckformat gmsh nfvm mpfa msrsb coarsegrid jutul
-mrstVerbose on
+mrstVerbose off
 %%
 % deckcases = {'RS', 'IMMISCIBLE', 'RS_3PH','RSRV', 'pyopm-Finer', 'pyopm-Coarser'};
 
@@ -36,14 +36,17 @@ SPEcase = 'B';
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 % gridcases = {'cart_ndg_cut_PG_130x62'};
 % gridcases = {'horz_ndg_cut_PG_130x62'};
-gridcases = {'horz_ndg_cut_PG_819x117'};
+% gridcases = {'cart_ndg_cut_PG_819x117'};
 
-% SPEcase = 'C'; %some grids for SPE11C
+SPEcase = 'C'; %some grids for SPE11C
 % gridcases = {'horz_ndg_cut_PG_5', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'cart_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_100x100x100'};
+% gridcases = {'cTwist-M'};
+gridcases = {'flat_tetra_subwell_zx9'};
+% gridcases = {'tetra_transfault_500x500x20'};
+% gridcasesr = {'horz_ndg_cut_PG_20x20x20'};
 
-
-pdiscs = {'leftFaultEntry-hybrid-avgmpfa'};
+pdiscs = {''};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'ntpfa'};
 
@@ -53,14 +56,15 @@ uwdiscs = {''}; % '' means SPU, 'WENO' means WENO transport discretizations
 disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretization, 2 means prio other method
 tagcase = '';%some options: normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift, CPPD
 
-Jutul               = true; %use Jutul for simulations. Only works for TPFA
+Jutul               = false; %use Jutul for simulations. Only works for TPFA
 jutulThermal        = false;
+
 resetData           = false; %Start simulation at beginning, ignoring saved steps
 resetAssembly       = false; %ignore stored preprocessing computations for consistent discretizations
-do.plotStates       = false; %plot results of simulations using plotToolBar
+do.plotStates       = true; %plot results of simulations using plotToolBar
 do.plotFlux         = false; %plots flux
 do.plotFacies       = false;
-do.runSimulation    = true;  %run simulation
+do.runSimulation    = false;  %run simulation
 do.plotOrthErr      = false; %plot cellwise K-orthogonality indicator'
 do.plothybridblocks = false;
 do.dispTime         = true; %display simulation time

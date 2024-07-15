@@ -48,7 +48,7 @@ resetData = false;
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'cPEBI_819x117', 'cPEBI_812x118'};
-gridcases = {'horz_ndg_cut_PG_819x117'};
+gridcases = {'cart_ndg_cut_PG_819x117'};
 
 %Master C
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -88,7 +88,7 @@ tagcases = {''};
 jutul = {false};
 
 batchname = 'leftFaultEntryHybrid';
-folder = fullfile('./../plots', gridcase, batchname);
+folder = fullfile('./../plots', gridcases{1}, batchname);
 gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
 % labels = {'Cartesian', 'Horizon-cut', 'Cartesian-cut', 'PEBI', 'Triangles'};

@@ -44,29 +44,28 @@ function timings = runSims2(server)
         direct_solver = false;
         mrstVerbose off;
     case 4
-        SPEcase = 'B';
-        gridcases = {'cPEBI_819x117'};
-        schedulecases = {''};
-        pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator-hybrid-ntpfa', 'hybrid-mpfa', 'indicator-hybrid-mpfa'};
-        uwdiscs = {''};
-        deckcases = {'B_ISO_C'};
-        tagcase = '';
-        resetData = false;
-        resetAssembly = true;
-        Jutul = false;
-        direct_solver = false;
-        mrstVerbose off;
-    case 5
         SPEcase = 'C';
-        gridcases = {'cart_ndg_cut_PG_100x100x100'};
+        gridcases = {'flat_tetra_subwell_zx9'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
         resetAssembly = false;
-        Jutul = true;
+        Jutul = false;
+        direct_solver = false;
+    case 5
+        SPEcase = 'C';
+        gridcases = {'flat_tetra_subwell'};
+        schedulecases = {'skipEquil'};
+        pdiscs = {'', 'hybrid-ntpfa'};
+        uwdiscs = {''};
+        deckcases = {'B_ISO_C'};
+        tagcase = '';
+        resetData = false;
+        resetAssembly = false;
+        Jutul = false;
         direct_solver = false;
     end
     if Jutul, mrstVerbose on,end

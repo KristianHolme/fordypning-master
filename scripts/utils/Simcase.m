@@ -16,6 +16,7 @@ classdef Simcase < handle
         uwdisc
         jutul
         jutulThermal
+        nonStdGrid
 
         G
         rock
@@ -56,7 +57,8 @@ classdef Simcase < handle
                          'griddim'      , 3, ...
                          'uwdisc'      , [], ...
                          'jutul'       , false, ...
-                         'jutulThermal', false);
+                         'jutulThermal', false, ...
+                         'nonStdGrid', false);
             opt = merge_options(opt, varargin{:});
 
             propnames = {'SPEcase', 'deckcase', 'gridcase', 'pdisc', 'uwdisc', 'fluidcase', 'tagcase',...
@@ -65,11 +67,17 @@ classdef Simcase < handle
             simcase.updateprop = false;
             simcase.resetprop = false;
 
+             
+            
+            
+
             simcase.casename = opt.casename;
             for i = 1:numel(propnames)
                 pn = propnames{i};
                 simcase.(pn) = opt.(pn);
             end
+            simcase.nonStdGrid = contains(simcase.gridcase, 'transfault') ||  contains(simcase.gridcase, 'cTwist')...
+                                || contains(simcase.gridcase, 'flat_tetra');
            
 
             simcase.propnames = propnames;
@@ -217,7 +225,12 @@ classdef Simcase < handle
         function schedule = get.schedule(simcase)
             schedule = simcase.schedule;
             if isempty(schedule)
-                schedule = setupSchedule(simcase);
+                if contains(simcase.gridcase, 'flat_tetra_subwell')
+                    rateMultiplier = 10;
+                else
+                    rateMultiplier = 1;
+                end
+                schedule = setupSchedule(simcase, 'rateMultiplier', rateMultiplier);
                 simcase.schedule = schedule;
             end
         end
@@ -468,7 +481,11 @@ classdef Simcase < handle
         function [well1Index, well2Index] = getinjcells(simcase)
             SPEcase = simcase.SPEcase;
             G = simcase.G;
-            [well1Index, well2Index] = getinjcells(G, SPEcase);
+            if simcase.nonStdGrid
+                [well1Index, well2Index] = getTransfaultInjCells(G, simcase.gridcase);
+            else
+                [well1Index, well2Index] = getinjcells(G, SPEcase);
+            end
         end
 
         function popCells = getPoPCells(simcase)

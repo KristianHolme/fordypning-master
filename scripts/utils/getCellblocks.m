@@ -13,7 +13,7 @@ function cellblocks = getCellblocks(simcase, varargin)
     pdisc = simcase.pdisc;
 
     [inj1, inj2] = simcase.getinjcells;
-    injectionCells = [inj1, inj2];
+    injectionCells = [inj1; inj2];
 
     tpfaCells = findCellNeighbors(G, injectionCells, paddingLayers);
 

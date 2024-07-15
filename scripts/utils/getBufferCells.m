@@ -1,10 +1,6 @@
 function G = getBufferCells(G)
     %adds a field bufferCells to G
-    % assert(isfield(G.cells, 'tag'), "No tag on G.cells!")
-    % if ~isfield(G.cells, 'tag')
-    %     warning("No fascies tags found, can't tag buffer volumes!" )
-    %     return
-    % end
+
     
 
     bf = boundaryFaces(G);
@@ -29,22 +25,6 @@ function G = getBufferCells(G)
     G.bufferCells = bufferCells';
     G.bufferFaces = bf(bufferFaces)';
 
-
-    % G.bufferCells = [];
-    % G.bufferFaces = [];
-    % for iface = 1:numel(bf)
-    %     face = bf(iface);
-    % 
-    %     if ( (abs(G.faces.centroids(face, 1)) < tol) || (abs(G.faces.centroids(face, 1) - xlimit) < tol) )
-    %         cell = max(G.faces.neighbors(face, :));
-    %         facies = G.cells.tag(cell);
-    %         assert(facies ~=6 )
-    % 
-    %         %tag all cells, even if added volume is zero
-    %         G.bufferCells(end+1) = cell;
-    %         G.bufferFaces(end+1) = face; 
-    %     end
-    % end
     %Fix for triangle grids?
     if any(G.cells.centroids(:,1)>2000)
         sideCells = find(G.cells.centroids(:,1) > 8399 | G.cells.centroids(:,1) < 1);

@@ -432,7 +432,10 @@ for k = 1:nf
         else
             % special case might occur for overlapping faces
             startIx = [abs(diff(ia))==1; ia(1)==1 && ia(end)==numel(n1)];
-            chkIx = find(startIx, 1, 'first') + (0:1);    
+            chkIx = find(startIx, 1, 'first') + (0:1);
+            if startIx(end) == 1 && sum(startIx) == 1
+                chkIx(end) = 1;
+            end
             %ii = find(abs(diff(ia))~=1);
             %if isempty(ii)
             %    startIx = 1:numel(ia)-1;
