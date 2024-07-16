@@ -42,7 +42,8 @@ SPEcase = 'C'; %some grids for SPE11C
 % gridcases = {'horz_ndg_cut_PG_5', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'cart_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_100x100x100'};
 % gridcases = {'cTwist-M'};
-gridcases = {'flat_tetra_subwell_zx9'};
+% gridcases = {'flat_tetra_subwell_zx9'};
+gridcases = {'flat_tetra'};
 % gridcases = {'tetra_transfault_500x500x20'};
 % gridcasesr = {'horz_ndg_cut_PG_20x20x20'};
 
@@ -61,14 +62,14 @@ jutulThermal        = false;
 
 resetData           = false; %Start simulation at beginning, ignoring saved steps
 resetAssembly       = false; %ignore stored preprocessing computations for consistent discretizations
-do.plotStates       = true; %plot results of simulations using plotToolBar
+do.plotStates       = true;  %plot results of simulations using plotToolBar
 do.plotFlux         = false; %plots flux
 do.plotFacies       = false;
-do.runSimulation    = false;  %run simulation
+do.runSimulation    = true; %run simulation
 do.plotOrthErr      = false; %plot cellwise K-orthogonality indicator'
 do.plothybridblocks = false;
-do.dispTime         = true; %display simulation time
-direct_solver       = false; % use direct solver instead of better iterative solvers like AMG/CPR. May not be respected if backslashThreshold is not met
+do.dispTime         = true;  %display simulation time
+direct_solver       = false; %use direct solver instead of better iterative solvers like AMG/CPR. May not be respected if backslashThreshold is not met
 % mrstVerbose off;
 
 %Does simulation/plotting for all combinations of parameters specified above

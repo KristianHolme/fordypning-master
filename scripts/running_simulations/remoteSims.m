@@ -6,17 +6,17 @@ function timings = remoteSims(server)
     mrstVerbose off
     switch  server
         case 1
-            SPEcase = 'A';
-            gridcases = {'5tetRef0.7', '5tetRef0.5'};
+            SPEcase = 'C';
+            gridcases = {'flat_tetra'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
+            pdiscs = {''};
             uwdiscs = {''};
-            deckcases = {'RS'};
+            deckcases = {'B_ISO_C'};
             tagcase = '';
             resetData = false;
             resetAssembly = true;
             do.runSimulation = true;
-            Jutul = false;
+            Jutul = true;
             direct_solver = false;
         case 2
             SPEcase = 'A';

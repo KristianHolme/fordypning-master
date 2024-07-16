@@ -4,6 +4,10 @@ function [well1Ix, well2Ix] = getTransfaultInjCells(G, name)
             injCoords1 = [1.4e4 0.6e4 290;1.4e4 0.6e4 290];
         
             injCoords2 = [1.4e4 0.6e4 150;1.4e4 0.6e4 150];
+        case 'flat_tetra'
+            injCoords1 = [1.4e4 0.6e4 290;1.4e4 0.6e4 290];
+        
+            injCoords2 = [0.6e4 1.4e4 150;0.6e4 1.4e4 150];
         otherwise
             num_interps = 50;
             I1RelCoordsStart = [0.3, 0.3, 0.2];

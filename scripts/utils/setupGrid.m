@@ -149,6 +149,8 @@ function G = setupGrid(simcase, varargin)
             gridFolder = './../../total-grids/flat_tetra';
             if contains(gridcase, 'subwell')
                 gridfilename = 'flat_tetra_subwell_SPE.mat';
+            elseif strcmp(gridcase, 'flat_tetra')
+                gridfilename = 'flat_tetra_gmshToMRST_flipped_SPE.mat';
             else
                 gridfilename = [gridcase, '_SPE.mat'];
             end
@@ -156,7 +158,7 @@ function G = setupGrid(simcase, varargin)
             if isfile(matFile)
                 load(matFile);
             else
-                origGridFile = fullfile(gridFolder, [gridcase, '.mat']);
+                origGridFile = fullfile(gridFolder, replace(gridfilename, '_SPE.mat', '.mat'));
                 load(origGridFile)
                 G = transfaultTag(G);
                 G = transfaultBufferSlice(G, 'sliceOffset', 1);
