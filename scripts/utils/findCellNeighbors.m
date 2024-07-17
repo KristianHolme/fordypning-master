@@ -10,25 +10,28 @@ function neighborCells = findCellNeighbors(G, cell_ids, paddingLayers)
         neighborCells = []; %if padding level is -1, then we dont have any tpfacells
         return
     end
-    numCells = G.cells.num;
-    cellsToNodes = cell(round(numCells), 1);
-    for ic = 1:G.cells.num
-        nodes = getNodes(G, ic);
-        cellsToNodes{ic} = nodes;
-    end
+    % numCells = G.cells.num;
+    % cellsToNodes = cell(round(numCells), 1);
+    % for ic = 1:G.cells.num
+    %     nodes = getNodes(G, ic);
+    %     cellsToNodes{ic} = nodes;
+    % end
+
+    [n, pos] = gridCellNodes(G, 1:G.cells.num);
+    cellNo = rldecode(1 : G.cells.num, diff(pos), 2) .';   
 
     
     for i=1:paddingLayers
-        % newCells = [];
-        newNeighbors = bruteForceNeighors(numCells, neighborCells, cellsToNodes);
-        % for icell = 1:numel(neighborCells)
-        %     cellId = neighborCells(icell);
-        %     newNeighbors = bruteForceNeighors(numCells, cellId, cellsToNodes);
-        %     % newNeighbors = getCellLayer(G, cellId);
-        %     newCells = union(newCells, newNeighbors);
-        % end
+        newNeighbors = fastNeighbors(n, cellNo, neighborCells);
+        % newNeighborsOld = bruteForceNeighors(numCells, neighborCells, cellsToNodes); %very slow
+        
         neighborCells = union(neighborCells, newNeighbors);
     end
+end
+function newNeighbors = fastNeighbors(n, cellNo, neighborCells)
+neighborhoodNodes = n(ismember(cellNo, neighborCells));
+neighborhoodCells = cellNo(ismember(n, neighborhoodNodes));
+newNeighbors = setdiff(neighborhoodCells, neighborCells);
 end
 
 function neighBorsByNode = bruteForceNeighors(numCells, cellIds, cellsToNodes)

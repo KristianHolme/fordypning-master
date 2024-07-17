@@ -136,8 +136,8 @@ function G = setupGrid(simcase, varargin)
             if isfile(matFile)
                 load(matFile);
             else
-                origGridFile = fullfile(gridFolder, 'G_flipped.mat');
-                load(origGridFile)
+                origMatFile = fullfile(gridFolder, 'G_flipped.mat');
+                load(origMatFile)
                 G = transfaultTag(G);
                 G = transfaultBufferSlice(G);
                 G = transfaultGetBufferCells(G);
@@ -158,8 +158,8 @@ function G = setupGrid(simcase, varargin)
             if isfile(matFile)
                 load(matFile);
             else
-                origGridFile = fullfile(gridFolder, replace(gridfilename, '_SPE.mat', '.mat'));
-                load(origGridFile)
+                origMatFile = fullfile(gridFolder, replace(gridfilename, '_SPE.mat', '.mat'));
+                load(origMatFile)
                 G = transfaultTag(G);
                 G = transfaultBufferSlice(G, 'sliceOffset', 1);
                 G = transfaultGetBufferCells(G);
@@ -197,6 +197,51 @@ function G = setupGrid(simcase, varargin)
             G = transfaultBufferSlice(G);
             G = transfaultGetBufferCells(G);
             return
+        elseif contains(gridcase, 'gmsh')
+            gridFolder = '~/Code/Sommer2024-SINTEF/src/gmshGrids/';
+            gridfilename = [gridcase, '_SPE.mat'];
+            
+            matFile = fullfile(gridFolder, gridfilename);
+            if isfile(matFile)
+                load(matFile);
+            else
+                origMatFile = fullfile(gridFolder, replace(gridfilename, '_SPE.mat', '.mat'));
+                load(origMatFile)
+                G = transfaultTag(G);
+                G = transfaultBufferSlice(G, 'sliceOffset', 1);
+                G = transfaultGetBufferCells(G);
+                save(matFile, "G")
+            end
+            return
+        elseif contains(gridcase, 'tet')% tet-C, tet-M
+            gridFolder = '~/Code/Sommer2024-SINTEF/src/gmshGrids/SPE11C';
+            gridfilename = [gridcase, '_SPE.mat'];
+            matFile = fullfile(gridFolder, gridfilename);
+            origMatFile = fullfile(gridFolder, replace(gridfilename, '_SPE.mat', '.mat'));
+            if ~isfile(matFile) && ~isfile(origMatFile)
+                mFile = fullfile(gridFolder, [replace(gridcase, '-', '_'),'.m']);
+                G = gmshToMRST(mFile);
+                G = computeGeometry(G);
+                G = rotateGrid(G);
+                save(origMatFile, "G")
+                assert(false, "converted grid from gmsh, run again!");
+            elseif ~isfile(matFile) && isfile(origMatFile)
+                G = load(origMatFile).G;
+                G = transfaultBufferSlice(G, 'sliceOffset', 1);
+                geodata = readGeo('');
+                geodata = stretchGeo(rotateGrid(geodata));
+                % geodata = rotateGrid(stretchGeo(geodata));
+                G = tagbyFacies(G, geodata, 'vertIx', 3);
+                G = transfaultGetBufferCells(G);
+                G.nodes.coords = bendSPE11C(G.nodes.coords);
+                G = computeGeometry(G);
+                save(matFile, "G")
+            end
+            
+            
+            % return
+            
+
         end
         load(matFile);
 
@@ -281,6 +326,7 @@ function G = setupGrid(simcase, varargin)
 
     if ~isfield(G.cells, 'fractionInA')
         G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
+        save(matFile, "G");
     end
     
     testing = false;

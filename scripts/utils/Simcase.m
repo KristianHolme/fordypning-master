@@ -77,7 +77,8 @@ classdef Simcase < handle
                 simcase.(pn) = opt.(pn);
             end
             simcase.nonStdGrid = contains(simcase.gridcase, 'transfault') ||  contains(simcase.gridcase, 'cTwist')...
-                                || contains(simcase.gridcase, 'flat_tetra');
+                                || contains(simcase.gridcase, 'flat_tetra') || contains(simcase.gridcase, 'gmsh')...
+                                || startsWith(simcase.gridcase, 'tet');
            
 
             simcase.propnames = propnames;
@@ -227,6 +228,8 @@ classdef Simcase < handle
             if isempty(schedule)
                 if contains(simcase.gridcase, 'flat_tetra_subwell')
                     rateMultiplier = 10;
+                elseif strcmp(simcase.gridcase, 'flat_tetra')
+                    rateMultiplier = 2.38;
                 else
                     rateMultiplier = 1;
                 end
@@ -379,8 +382,10 @@ classdef Simcase < handle
                 varargin{:});
             [inj1, inj2] = simcase.getinjcells;
             plotGrid(simcase.G, vertcat(inj1, inj2), 'faceAlpha', 0)
-            if simcase.griddim==3
+            if ~strcmp(simcase.SPEcase, 'C') && simcase.griddim==3
                 view(0,0);
+            elseif strcmp(simcase.SPEcase, 'C')
+                view(-20,30);
             end
             axis tight;
             if strcmp(simcase.SPEcase, 'A')

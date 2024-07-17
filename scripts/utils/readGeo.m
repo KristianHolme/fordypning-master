@@ -1,5 +1,5 @@
 function result = readGeo(filename, varargin)
-    opt = struct('assignextra', false);
+    opt = struct('assignextra', true);
     opt = merge_options(opt, varargin{:});
     % Open the file
     if isempty(filename)

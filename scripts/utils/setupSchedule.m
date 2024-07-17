@@ -20,22 +20,8 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
         for i = 1:numel(schedule.control)
             schedule.control(i).W(1).cells = cell1;
             schedule.control(i).W(2).cells = cell2;
-            % if strcmp(simcase.SPEcase, 'C')
-            %     schedule.control(i).W(1).dir = 'Y';
-            %     schedule.control(i).W(2).dir = 'Y';
-            %     schedule.control(i).W(1).WI = repmat(schedule.control(i).W(1).WI, numel(cell1), 1);
-            %     schedule.control(i).W(2).WI = repmat(schedule.control(i).W(2).WI, numel(cell2), 1);
-            %     schedule.control(i).W(1).dZ = repmat(schedule.control(i).W(1).dZ, numel(cell1), 1);
-            %     schedule.control(i).W(2).dZ = repmat(schedule.control(i).W(2).dZ, numel(cell2), 1);
-            %     rateMult = 50/0.035;
-            %     schedule.control(i).W(1).val = schedule.control(i).W(1).val*rateMult;
-            %     schedule.control(i).W(2).val = schedule.control(i).W(2).val*rateMult;
-            % 
-            % end
         end
         if strcmp(simcase.SPEcase, 'C')
-            % rates1mult = [0, 1, 1, 0]; %TODO:remove?
-            % rates2mult = [0, 0, 1, 0];
             w1 = [];
             w2 = [];
             w3 = [];
@@ -43,12 +29,10 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
             simcase.G.cells.wellMassRate = cell(1,2);
             for ic = 1:numel(cell1)
                 c = cell1(ic);
-
-                [ymin, ymax] = getWellCellYMinMax(simcase, c);
-
-                massRateVal = 50/3000* (ymax-ymin);
+                
+                massRateVal = getMassRate(simcase, 1, c, cell1, []);
                 simcase.G.cells.wellMassRate{1}(ic) = massRateVal;
-                rateval = massRateVal *1/deckmodel.fluid.rhoGS * opt.rateMultiplier;
+                rateval = massRateVal*1/deckmodel.fluid.rhoGS * opt.rateMultiplier;
                 w1 = addWell(w1, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
                 w2 = addWell(w2, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
                 w3 = addWell(w3, simcase.G, simcase.rock, c, 'type', 'rate', 'val', rateval, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
@@ -58,10 +42,8 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
             for ic = 1:numel(cell2)
                 c = cell2(ic);
 
-                [ymin, ymax] = getWellCellYMinMax(simcase, c);
-                L = getWellLengthInCell(simcase, c, ymin, ymax);
+                massRateVal = getMassRate(simcase, 2, c, cell2, wellLength);
                 
-                massRateVal = 50 * L/wellLength;
                 simcase.G.cells.wellMassRate{2}(ic) = massRateVal;
                 rateval = massRateVal*1/deckmodel.fluid.rhoGS * opt.rateMultiplier;
                 w1 = addWell(w1, simcase.G, simcase.rock, c, 'type', 'rate', 'val', 0, 'radius', 0.15, 'dir', 'y', 'compi', [0,1], 'sign', 1, 'refDepth', simcase.G.cells.centroids(c, 3));
@@ -86,7 +68,7 @@ function [schedule, simcase] = setupSchedule(simcase, varargin)
         end
     end
     G = simcase.G;
-    bf = boundaryFaces(G);
+    % bf = boundaryFaces(G);
 
     if simcase.griddim == 2
         %adjust rate by multiplying with 100
@@ -159,4 +141,27 @@ if simcase.nonStdGrid
 else
     L = integral(@(y)well2ArcSPE11C(y), ymin,ymax);
 end
+end
+
+function massRateVal = getMassRate(simcase, well, cell, cells, wellLength)
+G = simcase.G;
+if simcase.nonStdGrid
+    totalvolume = sum(G.cells.volumes(cells));
+    volumeproportion = G.cells.volumes(cell)/totalvolume;
+    totalMassRate = 50;
+    massRateVal = totalMassRate*volumeproportion;
+else
+    switch well
+        case 1
+            [ymin, ymax] = getWellCellYMinMax(simcase, cell);
+            massRateVal = 50/3000* (ymax-ymin);
+        case 2
+            [ymin, ymax] = getWellCellYMinMax(simcase, c);
+            L = getWellLengthInCell(simcase, c, ymin, ymax);
+            
+            massRateVal = 50 * L/wellLength;
+    end
+end
+
+
 end
