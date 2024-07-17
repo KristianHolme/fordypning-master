@@ -19,12 +19,12 @@ function timings = remoteSims(server)
             Jutul = true;
             direct_solver = false;
         case 2
-            SPEcase = 'A';
-            gridcases = {'5tetRef0.4'};
+            SPEcase = 'C';
+            gridcases = {'tet_zx10-F'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa','hybrid-mpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa','hybrid-ntpfa', 'hybrid-mpfa'};
             uwdiscs = {''};
-            deckcases = {'RS'};
+            deckcases = {'B_ISO_C'};
             tagcase = '';
             resetData = false;
             resetAssembly = true;

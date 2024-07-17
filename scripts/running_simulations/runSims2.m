@@ -5,23 +5,23 @@ function timings = runSims2(server)
     mrstVerbose off
     switch  server
     case 1
-        SPEcase = 'A';
-        gridcases = {'5tetRef10'};
-        schedulecases = {''};
-        pdiscs = {'ntpfa'};
+        SPEcase = 'C';
+        gridcases = {'tet-F'};
+        schedulecases = {'skipEquil'};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
-        deckcases = {'RS'};
-        tagcase = 'CPPD';
-        resetData = true;
+        deckcases = {'B_ISO_C'};
+        tagcase = '';
+        resetData = false;
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
         mrstVerbose off;
     case 2
-        SPEcase = 'B';
-        gridcases = {'cart_ndg_cut_PG_819x117'};
+        SPEcase = 'C';
+        gridcases = {'tet_zx10-F'};
         schedulecases = {''};
-        pdiscs = {'', };
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
@@ -45,7 +45,7 @@ function timings = runSims2(server)
         mrstVerbose off;
     case 4
         SPEcase = 'C';
-        gridcases = {'flat_tetra_subwell_zx9'};
+        gridcases = {'flat_tetra_subwell_zx5'};
         schedulecases = {''};
         pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
@@ -57,13 +57,13 @@ function timings = runSims2(server)
         direct_solver = false;
     case 5
         SPEcase = 'C';
-        gridcases = {'flat_tetra_subwell'};
-        schedulecases = {'skipEquil'};
-        pdiscs = {'', 'hybrid-ntpfa'};
+        gridcases = {'cTwist-M'};
+        schedulecases = {''};
+        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
-        resetData = false;
+        resetData = true;
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;

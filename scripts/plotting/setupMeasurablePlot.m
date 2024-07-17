@@ -74,7 +74,7 @@ gridcases = {'cart_ndg_cut_PG_819x117'};
 % ress = {''};
 
 
-pdiscs = {'', 'hybrid-avgmpfa', 'leftFaultEntry-hybrid-avgmpfa', 'hybrid-ntpfa', 'leftFaultEntry-hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'indicator20-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator20-hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
 % pdiscs = {''};
