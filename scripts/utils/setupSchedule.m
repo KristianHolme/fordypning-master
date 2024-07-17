@@ -156,8 +156,8 @@ else
             [ymin, ymax] = getWellCellYMinMax(simcase, cell);
             massRateVal = 50/3000* (ymax-ymin);
         case 2
-            [ymin, ymax] = getWellCellYMinMax(simcase, c);
-            L = getWellLengthInCell(simcase, c, ymin, ymax);
+            [ymin, ymax] = getWellCellYMinMax(simcase, cell);
+            L = getWellLengthInCell(simcase, cell, ymin, ymax);
             
             massRateVal = 50 * L/wellLength;
     end

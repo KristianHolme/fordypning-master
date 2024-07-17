@@ -223,6 +223,16 @@ function G = setupGrid(simcase, varargin)
                 G = gmshToMRST(mFile);
                 G = computeGeometry(G);
                 G = rotateGrid(G);
+                %if the grid z direction was scaled in gmsh to increase
+                %cell density, we need to scale z back
+                pattern = 'zx(\d+)';
+                matches = regexp(gridcase, pattern, 'tokens');
+                if ~isempty(matches)
+                    z_scaling_factor = str2double(matches{1});
+                    G.nodes.coords(:,3) = G.nodes.coords(:,3)/z_scaling_factor;
+                    G = computeGeometry(G);
+                end
+
                 save(origMatFile, "G")
                 assert(false, "converted grid from gmsh, run again!");
             elseif ~isfile(matFile) && isfile(origMatFile)
