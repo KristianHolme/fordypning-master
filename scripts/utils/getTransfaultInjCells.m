@@ -1,10 +1,19 @@
 function [well1Ix, well2Ix] = getTransfaultInjCells(G, name)
     num_interps = 50;
     switch name
-        case 'flat_tetra_subwell'
-            injCoords1 = [1.4e4 0.6e4 290;1.4e4 0.6e4 290];
+        case {'flat_tetra_subwell', 'flat_tetra_subwell_zx5'}
+            zmax = max(G.nodes.coords(:,3));
+            zmin = min(G.nodes.coords(:,3));
+            bottomfactor = 0.97;
+            middlefactor = 0.5;
+
+
+            nearbottom = bottomfactor*zmax + (1-bottomfactor)*zmin;
+            nearmiddle = middlefactor*zmax + (1-middlefactor)*zmin;
+
+            injCoords1 = [1.4e4 0.6e4 nearbottom;1.4e4 0.6e4 nearbottom];
         
-            injCoords2 = [1.4e4 0.6e4 150;1.4e4 0.6e4 150];
+            injCoords2 = [1.4e4 0.6e4 nearmiddle;1.4e4 0.6e4 nearmiddle];
         case 'flat_tetra'
             injCoords1 = [1.4e4 0.6e4 240;1.4e4 0.6e4 290];
         

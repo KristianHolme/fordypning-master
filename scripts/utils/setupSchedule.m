@@ -145,7 +145,7 @@ end
 
 function massRateVal = getMassRate(simcase, well, cell, cells, wellLength)
 G = simcase.G;
-if simcase.nonStdGrid
+if simcase.nonStdGrid %scale the total mass according to the ratio of grid volume to SPE11C volume
     totalvolume = sum(G.cells.volumes(cells));
     volumeproportion = G.cells.volumes(cell)/totalvolume;
     totalMassRate = 50;
