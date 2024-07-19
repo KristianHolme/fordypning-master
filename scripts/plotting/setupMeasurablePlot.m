@@ -87,7 +87,7 @@ tagcases = {''};
 % tagcases = {''};
 jutul = {false};
 
-batchname = 'leftFaultEntryHybrid';
+batchname = 'indicator20-CNCP-F';
 folder = fullfile('./../plots', gridcases{1}, batchname);
 gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
@@ -116,7 +116,7 @@ if ismember('cc', pdiscs)
     end
 elseif any(contains(pdiscs, '-hybrid'))
     discstyles = {'-', '--', '--', '-.', '-.', ':', ':'};
-    markers = {'none','none','|','none', '|', 'none', '|'};
+    markers = {'none','none','x','none', 'x', 'none', '|'};
 else
     discstyles = {'-', '--', '-.', ':'};
     markers = {'none','none','none','none'};

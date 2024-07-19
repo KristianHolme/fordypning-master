@@ -46,8 +46,8 @@ function timings = runSims2(server)
     case 4
         SPEcase = 'C';
         gridcases = {'flat_tetra_subwell_zx5'};
-        schedulecases = {''};
-        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
+        schedulecases = {'skipEquil'};
+        pdiscs = {'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';

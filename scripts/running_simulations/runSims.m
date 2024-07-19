@@ -37,9 +37,9 @@ mrstVerbose off
 SPEcase = 'C'; %some grids for SPE11C
 % gridcases = {'horz_ndg_cut_PG_5', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'cart_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_100x100x100'};
-% gridcases = {'tet-F'};
-gridcases = {'tet_zx10-F', 'tetra_transfault_500x500x20', 'flat_tetra_subwell', 'flat_tetra','horz_ndg_cut_PG_50x50x50'};
-% gridcases = {'flat_tetra_subwell_zx9'};
+gridcases = {'tet_zx10-M'};
+% gridcases = {'tet_zx10-F3'};
+% gridcases = {'flat_tetra_subwell_zx5'};
 % gridcases = {'flat_tetra_subwell'};
 % gridcases = {'flat_tetra'};
 % gridcases = {'tetra_transfault_500x500x20'};
@@ -58,7 +58,7 @@ tagcase = '';%some options: normalRock, bufferMult, deckrock, allcells, diagperm
 Jutul               = false; %use Jutul for simulations. Only works for TPFA
 jutulThermal        = false;
 
-resetData           = true; %Start simulation at beginning, ignoring saved steps
+resetData           = false; %Start simulation at beginning, ignoring saved steps
 resetAssembly       = false; %ignore stored preprocessing computations for consistent discretizations
 do.plotStates       = false;  %plot results of simulations using plotToolBar
 do.plotFlux         = false; %plots flux
@@ -122,15 +122,17 @@ for ideck = 1:numel(deckcases)
                     unique_nodes = unique(nodes);
                     
                     % Count occurrences of each unique node
-                    node_counts = histcounts(nodes, [unique_nodes; max(unique_nodes)+1]);
-                    f = figure;
-                    maxCellsPerNode = max(node_counts);
-                    histogram(node_counts,(1:(maxCellsPerNode+1))-0.5);
-                    grid;
-                    title(simcase.gridcase, 'Interpreter','none');
-                    xlabel('number of cells sharing same node')
-                    tightfig()
-                    saveas(f, ['./../plots/cellsPerNode', simcase.gridcase, '.png']);
+                    % node_counts = histcounts(nodes, [unique_nodes; max(unique_nodes)+1]);
+                    % f = figure;
+                    % maxCellsPerNode = max(node_counts);
+                    % histogram(node_counts,(1:(maxCellsPerNode+1))-0.5);
+                    % grid;
+                    % title(simcase.gridcase, 'Interpreter','none');
+                    % xlabel('number of cells sharing same node');
+                    % tightfig();
+                    % saveas(f, ['./../plots/cellsPerNode', simcase.gridcase, '.png']);
+
+
                     %plot faces per cell and nodes per face histograms
                     % figure
                     % histogram(diff(simcase.G.cells.facePos));
