@@ -1,5 +1,6 @@
 function [well1Ix, well2Ix] = getTransfaultInjCells(G, name)
     num_interps = 50;
+    unbend_for_well2 = false;
     switch name
         case {'flat_tetra_subwell', 'flat_tetra_subwell_zx5'}
             zmax = max(G.nodes.coords(:,3));
@@ -22,7 +23,7 @@ function [well1Ix, well2Ix] = getTransfaultInjCells(G, name)
             t = linspace(0, 1, num_interps)';
             injCoords1 = t * injCoords1(1,:) - (t-1)*injCoords1(2,:);
             injCoords2 = t * injCoords2(1,:) - (t-1)*injCoords2(2,:);
-        case {'gmshCuboids', 'gmshCuboids-M', 'tet-C', 'tet-M', 'tet-F'}
+        case {'gmshCuboids', 'gmshCuboids-M', 'tet-C', 'tet-M', 'tet-F', 'tet_zx10-C', 'tet_zx10-M', 'tet_zx10-F'}
             injCoords1 = [2700, 1000, 1200-300;
                           2700, 4000, 1200-300];
             injCoords2 = [5100, 1000, 1200-700;
@@ -30,6 +31,7 @@ function [well1Ix, well2Ix] = getTransfaultInjCells(G, name)
             t = linspace(0, 1, num_interps)';
             injCoords1 = t * injCoords1(1,:) - (t-1)*injCoords1(2,:);
             injCoords2 = t * injCoords2(1,:) - (t-1)*injCoords2(2,:);
+            unbend_for_well2 = true;
         otherwise
             
             I1RelCoordsStart = [0.3, 0.3, 0.2];
@@ -56,16 +58,21 @@ function [well1Ix, well2Ix] = getTransfaultInjCells(G, name)
     
     %approximate
     well1Ix = findWellCells(G, injCoords1);
-    well2Ix = findWellCells(G, injCoords2);
-
+    
     %find candidates
     nbs1 = findCellNeighbors(G, well1Ix, 2);
-    nbs2 = findCellNeighbors(G, well2Ix, 2);
     
     well1Ix = unique(findEnclosingCell(G, injCoords1, nbs1));
-    well2Ix = unique(findEnclosingCell(G, injCoords2, nbs2));
-    % well1Ix = findWellPathCells(G, well1Pth);
-    % well2Ix = findWellPathCells(G, well2Pth);
+    
+    G_temp = G;
+    if unbend_for_well2 %unbend for well2
+        G_temp.nodes.coords = unbendSPE11C(G_temp.nodes.coords);
+        G_temp = computeGeometry(G_temp);
+    end
+    well2Ix = findWellCells(G_temp, injCoords2);
+    nbs2 = findCellNeighbors(G_temp, well2Ix, 2);
+    well2Ix = unique(findEnclosingCell(G_temp, injCoords2, nbs2));
+
 end
 
 function cells = findWellCells(G, pts)

@@ -486,7 +486,7 @@ classdef Simcase < handle
         function [well1Index, well2Index] = getinjcells(simcase)
             SPEcase = simcase.SPEcase;
             G = simcase.G;
-            if simcase.nonStdGrid && ~startsWith(simcase.gridcase, 'tet')%not tet-grids
+            if simcase.nonStdGrid
                 [well1Index, well2Index] = getTransfaultInjCells(G, simcase.gridcase);
             else
                 [well1Index, well2Index] = getinjcells(G, SPEcase);
