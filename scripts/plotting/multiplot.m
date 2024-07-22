@@ -163,15 +163,16 @@ function multiplot(data, varargin)
         end
     end
     if opt.colorbar
-        cb = colorbar(h(2), 'FontSize',12);
+        if opt.diff
+            cb = colorbar(h(2), 'FontSize',12);
+            cb.Layout.Tile = 'east';
+        end
+        cb = colorbar(h(1), 'FontSize',12);
         cb.Layout.Tile = 'east';
         if ~isempty(opt.cblabel)
             ylabel(cb, opt.cblabel);
         end
-        if opt.diff
-            cb = colorbar(h(1), 'FontSize',12);
-            cb.Layout.Tile = 'east';
-        end
+        
     end
     if opt.saveplot
         if ~exist(opt.savefolder, 'dir')

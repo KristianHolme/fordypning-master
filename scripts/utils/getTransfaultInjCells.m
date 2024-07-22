@@ -23,7 +23,7 @@ function [well1Ix, well2Ix] = getTransfaultInjCells(G, name)
             t = linspace(0, 1, num_interps)';
             injCoords1 = t * injCoords1(1,:) - (t-1)*injCoords1(2,:);
             injCoords2 = t * injCoords2(1,:) - (t-1)*injCoords2(2,:);
-        case {'gmshCuboids', 'gmshCuboids-M', 'tet-C', 'tet-M', 'tet-F', 'tet_zx10-C', 'tet_zx10-M', 'tet_zx10-F'}
+        case {'gmshCuboids', 'gmshCuboids-M', 'tet-C', 'tet-M', 'tet-F', 'tet_zx10-C', 'tet_zx10-M', 'tet_zx10-F', 'tet_zx10-F3'}
             injCoords1 = [2700, 1000, 1200-300;
                           2700, 4000, 1200-300];
             injCoords2 = [5100, 1000, 1200-700;
@@ -66,7 +66,7 @@ function [well1Ix, well2Ix] = getTransfaultInjCells(G, name)
     
     G_temp = G;
     if unbend_for_well2 %unbend for well2
-        G_temp.nodes.coords = unbendSPE11C(G_temp.nodes.coords);
+        G_temp.nodes.coords = unBendSPE11C(G_temp.nodes.coords);
         G_temp = computeGeometry(G_temp);
     end
     well2Ix = findWellCells(G_temp, injCoords2);
