@@ -56,7 +56,7 @@ function model = setupModel(simcase, varargin)
             pdiscParts = split(simcase.pdisc, '-');
             indicatorPart = pdiscParts{1};
             percentConsistent = str2double(indicatorPart(end-1:end));
-            if ~percentConsistent == 0
+            if ~isnan(percentConsistent) && ~percentConsistent == 0
                 faceBlocks = getFaceBlocksFromIndicator(simcase.G, 'cellError', fwerr, ...
                     'percentConsistent', percentConsistent);
             else
