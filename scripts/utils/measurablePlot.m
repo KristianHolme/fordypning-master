@@ -54,7 +54,8 @@ if opt.numGrids > 1
     h_grid = [];
     for igrid = 1:numel(gridcases)
         color = gridcasecolors{igrid};
-        h_grid(igrid) = plot(NaN,NaN, 'Color', color, 'LineStyle', '-', 'LineWidth', 2); % No data, just style
+        % h_grid(igrid) = plot(NaN,NaN, 'Color', color, 'LineStyle', '-', 'LineWidth', 2); % No data, just style
+        h_grid(igrid) = patch(NaN, NaN, hex2rgb(color)); % No data, just style
     end
     h_disc = [];
     for idisc = 1:numel(discs)
