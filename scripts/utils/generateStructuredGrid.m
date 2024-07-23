@@ -17,7 +17,7 @@ G = rotateGrid(G);
 G = mcomputeGeometry(G);
 
 G = tagbyFacies(G, geoData, 'vertIx', 3);
-G.nodes.coords = SPE11CBend(G.nodes.coords);
+G.nodes.coords = bendSPE11C(G.nodes.coords);
 G = mcomputeGeometry(G);
 G = getBufferCells(G);
 

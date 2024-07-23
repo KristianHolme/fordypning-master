@@ -529,6 +529,8 @@ classdef Simcase < handle
                 steps = 210;
             elseif isempty(simcase.schedulecase) || strcmp(simcase.schedulecase, 'simple-std')
                 steps = size(simcase.schedule.step.val, 1);
+            else
+                steps = size(simcase.schedule.step.val, 1);
             end
             [states, ~, ~] = simcase.getSimData;
             steps = min(steps, numelData(states));

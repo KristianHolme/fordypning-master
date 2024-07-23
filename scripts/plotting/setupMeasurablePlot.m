@@ -2,7 +2,7 @@ clear all
 close all
 mrstVerbose off
 %% SPEcase
-SPEcase = 'B';
+SPEcase = 'C';
 if strcmp(SPEcase, 'A') 
     xscaling = hour; unit = 'h';
     steps = 720;
@@ -48,14 +48,14 @@ resetData = false;
 % gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
 % gridcases = {'cPEBI_819x117', 'cPEBI_812x118'};
-gridcases = {'cart_ndg_cut_PG_819x117'};
+% gridcases = {'cart_ndg_cut_PG_819x117'};
 
 %Master C
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct100x100x100', 'horz_ndg_cut_PG_100x100x100', 'cart_ndg_cut_PG_100x100x100'};
 % gridcases = {'horz_ndg_cut_PG_50x50x50', 'horz_ndg_cut_PG_50x50x50'};
 % gridcases = {'struct50x50x50', 'struct50x50x50'};
-
+gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50', 'tet_zx10-F'};
 
 % Copmare with thermal
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -74,10 +74,10 @@ gridcases = {'cart_ndg_cut_PG_819x117'};
 % ress = {''};
 
 
-pdiscs = {'', 'hybrid-avgmpfa', 'indicator20-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator20-hybrid-ntpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa', 'indicator20-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator20-hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
-% pdiscs = {''};
+pdiscs = {''};
 % pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator-hybrid-ntpfa'};
 
 uwdiscs = {''};
@@ -87,7 +87,7 @@ tagcases = {''};
 % tagcases = {''};
 jutul = {false};
 
-batchname = 'indicator20-CNCP-F';
+batchname = 'tet_vs_rest';
 folder = fullfile('./../plots', gridcases{1}, batchname);
 gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
@@ -185,20 +185,25 @@ initFuncs = {@(rd)initSealingPlot(rd), @(rd)initBufferPlot(rd), @(rd)initPoPPlot
 for ifunc =1:numel(initFuncs)
     func = initFuncs{ifunc};
     [getData, plotTitle, ytxt, ~, filetag] = func(resetData);
-    xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
-    xdata = xdata(1:steps);
-    data = nan(steps, numel(simcases));
+    xdata = cell(numcases,1);
+    data = cell(numcases, 1);
     disp(['Loading data for ', plotTitle]);
     for isim = 1:numel(simcases)
+        steps = numel(simcases{isim}.schedule.step.val);
+        xdata{isim} = cumsum(simcases{isim}.schedule.step.val)/xscaling;
+        if isempty(simcases{isim}.schedulecase) || ~contains(simcases{isim}.schedulecase, 'skipEquil')
+            xdata{isim} = xdata{isim} - xdata{isim}(1);
+        end
         simcase = simcases{isim};
-        data(:,isim) = getData(simcase, steps);
+        data{isim} = getData(simcase, steps);
         % fprintf('%s tot co2: %.3e\n', simcase.casename, sum(simcase.getSimData{250}.FlowProps.ComponentTotalMass{2}))
     end
     disp("Loading done.");
     measurablePlot(data, xdata, {gridcasecolors, discstyles, markers, plotStyles}, discs, ...
         'plotTitle', plotTitle, 'folder', folder, 'plotbars', plotbars, ...
         'ytxt', ytxt, 'filetag', filetag, 'numGrids', numel(gridcases), ...
-        'xtxt', xtxt, 'SPEcase', SPEcase, 'gridcases', gridcases);
+        'xtxt', xtxt, 'SPEcase', SPEcase, 'gridcases', gridcases,...
+        'gridlabels', gridlabels, 'uwdiscs', uwdiscs);
 end
 %% Plot
 
@@ -440,7 +445,8 @@ end
 % close gcf
 
 %% Plot reports
-names = cellfun(@(name) shortDiscName(name), pdiscs, UniformOutput=false);
+% names = cellfun(@(name) shortDiscName(name), pdiscs, UniformOutput=false);
+names = cellfun(@(name) displayNameGrid(name, 'C'), gridcases, UniformOutput=false);
 reports = cell(numel(simcases), 1);
 for isim = 1:numel(simcases)
     [~, ~, rep] = simcases{isim}.getSimData;
