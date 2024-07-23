@@ -13,7 +13,9 @@ opt = struct(...
     'insetPlot', false, ...
     'saveplot', true, ...
     'SPEcase', 'B', ...
-    'gridcases', {''});
+    'gridcases', {''}, ...
+    'gridlabels', {''}, ...
+    'uwdiscs', {''});
 opt = merge_options(opt, varargin{:});
 folder = opt.folder;
 ytxt = opt.ytxt;
@@ -25,23 +27,27 @@ axfix = opt.axfix;
 legendpos = opt.legendpos;
 SPEcase = opt.SPEcase;
 gridcases = opt.gridcases;
+gridlabels = opt.gridlabels;
+uwdiscs = opt.uwdiscs;
 
 [gridcasecolors, discstyles, markers, plotStyles] = plottingInfo{:};
 set(groot, 'defaultLineLineWidth', 2);
 f1 = figure('Position', [100,200, 800, 600], 'Name',plotTitle);
 hold on;
-scale = floor(log10(max(data, [], 'all')));
+scale = floor(log10(cellmax(data)));
 
 if scale ~=1 && ~contains(ytxt, 'bar') && axfix
     figscaling = 3*floor(scale/3);
     figytxt = replace(ytxt, '[', ['[10^{', num2str(figscaling), '} ']);
-    figdata = data ./ 10^figscaling;
+    for i = 1:numel(data)
+        figdata{i} = data{i} ./ 10^figscaling;
+    end
 else
     figdata = data;
     figytxt = ytxt;
 end
-for i=1:size(data, 2)
-    plot(xdata, figdata(:, i), 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',6, 'MarkerIndices',1:10:numel(xdata));
+for i=1:numel(data)
+    plot(xdata{i}, figdata{i}, 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle, 'Marker', plotStyles{i}.Marker, 'MarkerSize',6, 'MarkerIndices',1:10:numel(xdata{i}));
 end
 if opt.numGrids > 1
     % Create dummy plots for legend

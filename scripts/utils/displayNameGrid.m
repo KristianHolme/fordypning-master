@@ -82,6 +82,7 @@ function displayName = displayNameGrid(gridcase, specase)
     Cmap('struct50x50x50') = 'C-50';
     Cmap('horz_ndg_cut_PG_50x50x50') = 'HNCP-50';
     Cmap('cart_ndg_cut_PG_50x50x50') = 'CNCP-50';
+    Cmap('tet_zx10-F') = 'Tet-F';
 
     if strcmpi(specase, 'a')
         if isKey(Amap, gridcase)
