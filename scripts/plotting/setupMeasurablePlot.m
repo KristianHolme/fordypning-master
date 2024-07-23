@@ -1,19 +1,6 @@
 clear all
 close all
 mrstVerbose off
-%% SPEcase
-SPEcase = 'C';
-if strcmp(SPEcase, 'A') 
-    xscaling = hour; unit = 'h';
-    steps = 720;
-    totsteps = 720;
-else 
-    xscaling = speyear;unit='y';
-    steps = 301;
-    totsteps = 301;
-end
-resetData = false;
-
 %% SETUP
 % A
 % gridcases = {'6tetRef1', '5tetRef1'}; %RAPPORT 
@@ -33,29 +20,12 @@ resetData = false;
 % gridcases = {'struct420x141'};
 
 %Master B
-% gridcases = {'horz_ndg_cut_PG_130x62', 'horz_pre_cut_PG_130x62', 'cart_ndg_cut_PG_130x62', 'cart_pre_cut_PG_130x62'};
-% gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
-% gridcases = {'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
-% gridcases = {'cPEBI_130x62', 'cPEBI_220x110', 'cPEBI_819x117'};
-% gridcases = {'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
-% gridcases = {'cart_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_130x62', 'horz_ndg_cut_PG_220x110', 'horz_ndg_cut_PG_819x117'};
-% gridcases = {'horz_ndg_cut_PG_819x117', 'horz_ndg_cut_PG_819x117'};
-% gridcases = {'', 'struct130x62', 'horz_ndg_cut_PG_130x62', 'cart_ndg_cut_PG_130x62'};
-% gridcases = {'struct220x110', 'horz_ndg_cut_PG_220x110', 'cart_ndg_cut_PG_220x110', 'cPEBI_220x110'};
-% gridcases = {'', '', ''};
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
-% gridcases = {'5tetRef0.31', '5tetRef0.31', 'struct819x117'};
-% gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117'};
-% gridcases = {'cPEBI_819x117', 'cPEBI_812x118'};
-% gridcases = {'cart_ndg_cut_PG_819x117'};
+SPEcase = 'B';
+gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117'};
 
 %Master C
-% gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
-% gridcases = {'struct100x100x100', 'horz_ndg_cut_PG_100x100x100', 'cart_ndg_cut_PG_100x100x100'};
-% gridcases = {'horz_ndg_cut_PG_50x50x50', 'horz_ndg_cut_PG_50x50x50'};
-% gridcases = {'struct50x50x50', 'struct50x50x50'};
-gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50', 'tet_zx10-F'};
+% SPEcase = 'C';
+% gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50', 'tet_zx10-F'};
 
 % Copmare with thermal
 % gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -77,7 +47,7 @@ gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x5
 % pdiscs = {'', 'hybrid-avgmpfa', 'indicator20-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator20-hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
-pdiscs = {''};
+pdiscs = {'', 'hybrid-avgmpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator-hybrid-ntpfa'};
 
 uwdiscs = {''};
@@ -87,6 +57,7 @@ tagcases = {''};
 % tagcases = {''};
 jutul = {false};
 
+resetData = false;
 batchname = 'tet_vs_rest';
 folder = fullfile('./../plots', gridcases{1}, batchname);
 gridlabels = gridcases; %DEFAULT
@@ -97,12 +68,26 @@ gridlabels = gridcases; %DEFAULT
 % labels = {'MRST', 'Jutul'};
 % plotTitle = 'CO2 in sealing units';
 % ytxt = 'CO2 [kg]';
+
+
+% SPEcase
+if strcmp(SPEcase, 'A') 
+    xscaling = hour; unit = 'h';
+    steps = 720;
+    totsteps = 720;
+else 
+    xscaling = speyear;unit='y';
+    steps = 301;
+    totsteps = 301;
+end
 xtxt = ['Time [', unit, ']'];
 saveplot = true;
 plottitle = false;
 insetPlot = false;
 plotbars = false;
 legendpos = 'best';
+
+
 
 %% Load simcases
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
@@ -182,8 +167,10 @@ discs = uwdiscs;
 initFuncs = {@(rd)initSealingPlot(rd), @(rd)initBufferPlot(rd), @(rd)initPoPPlot(1, rd), @(rd)initPoPPlot(2, rd),...
     @(rd)initP21Plot(rd), @(rd)initP22Plot(rd), @(rd)initP23Plot(rd), @(rd)initP24Plot(rd),...
     @(rd)initP31Plot(rd), @(rd)initP32Plot(rd), @(rd)initP33Plot(rd), @(rd)initP34Plot(rd)};
+%%
 for ifunc =1:numel(initFuncs)
     func = initFuncs{ifunc};
+
     [getData, plotTitle, ytxt, ~, filetag] = func(resetData);
     xdata = cell(numcases,1);
     data = cell(numcases, 1);
@@ -205,10 +192,7 @@ for ifunc =1:numel(initFuncs)
         'xtxt', xtxt, 'SPEcase', SPEcase, 'gridcases', gridcases,...
         'gridlabels', gridlabels, 'uwdiscs', uwdiscs);
 end
-%% Plot
 
-% pause(0.3)
-% close all
 %% Load simcases grid RES
 gridcasecolors = {'#0072BD', "#77AC30", "#D95319", "#7E2F8E", '#FFBD43',  '#02bef7', '#AC30C6',  '#19D9E6', '#ffff00'};
 if ismember('cc', pdiscs)
