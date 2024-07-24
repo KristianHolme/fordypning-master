@@ -32,13 +32,13 @@ function timings = runSims2(server)
         mrstVerbose off;
     case 3
         SPEcase = 'B';
-        gridcases = {'cart_ndg_cut_PG_819x117'};
+        gridcases = {'cart_ndg_cut_PG_130x62'};
         schedulecases = {''};
-        pdiscs = {'', 'hybrid-avgmpfa', 'indicator20-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator20-hybrid-ntpfa', 'leftFaultEntry-hybrid-avgmpfa', 'leftFaultEntry-hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
+        pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa','indicator20-hybrid-avgmpfa', 'leftFaultEntry-hybrid-avgmpfa', 'indicator_1layer-hybrid-avgmpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
-        resetData = false;
+        resetData = true;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;

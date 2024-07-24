@@ -21,7 +21,7 @@ mrstVerbose off
 
 %Master B
 SPEcase = 'B';
-gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117'};
+gridcases = {'cart_ndg_cut_PG_819x117'};
 
 %Master C
 % SPEcase = 'C';
@@ -44,10 +44,13 @@ gridcases = {'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117'};
 % ress = {''};
 
 
-% pdiscs = {'', 'hybrid-avgmpfa', 'indicator20-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator20-hybrid-ntpfa'};
+pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa',...
+    'indicator20-hybrid-avgmpfa',...
+    'leftFaultEntry-hybrid-avgmpfa',...
+    'indicator_1layer-hybrid-avgmpfa'};
 % pdiscs = {'', 'cc', 'p', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
-pdiscs = {'', 'hybrid-avgmpfa'};
+% pdiscs = {'', 'hybrid-avgmpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa', 'hybrid-ntpfa', 'indicator-hybrid-ntpfa'};
 
 uwdiscs = {''};
@@ -58,7 +61,7 @@ tagcases = {''};
 jutul = {false};
 
 resetData = false;
-batchname = 'tet_vs_rest';
+batchname = 'hybrid-schemes';
 folder = fullfile('./../plots', gridcases{1}, batchname);
 gridlabels = gridcases; %DEFAULT
 % labels = {'Triangles new', 'Triangles old', 'cartesian'};
@@ -163,11 +166,11 @@ for igrid = 1:numel(gridcases)
 end
 discs = uwdiscs;
 
-%% Loading and plotting
+%% Loading data and plotting
 initFuncs = {@(rd)initSealingPlot(rd), @(rd)initBufferPlot(rd), @(rd)initPoPPlot(1, rd), @(rd)initPoPPlot(2, rd),...
     @(rd)initP21Plot(rd), @(rd)initP22Plot(rd), @(rd)initP23Plot(rd), @(rd)initP24Plot(rd),...
     @(rd)initP31Plot(rd), @(rd)initP32Plot(rd), @(rd)initP33Plot(rd), @(rd)initP34Plot(rd)};
-%%
+%
 for ifunc =1:numel(initFuncs)
     func = initFuncs{ifunc};
 
@@ -429,8 +432,8 @@ end
 % close gcf
 
 %% Plot reports
-% names = cellfun(@(name) shortDiscName(name), pdiscs, UniformOutput=false);
-names = cellfun(@(name) displayNameGrid(name, 'C'), gridcases, UniformOutput=false);
+names = cellf   un(@(name) shortDiscName(name), pdiscs, UniformOutput=false);
+% names = cellfun(@(name) displayNameGrid(name, 'C'), gridcases, UniformOutput=false);
 reports = cell(numel(simcases), 1);
 for isim = 1:numel(simcases)
     [~, ~, rep] = simcases{isim}.getSimData;
