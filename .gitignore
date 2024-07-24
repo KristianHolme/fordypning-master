@@ -17,4 +17,4 @@ data/grid-files/*
 data/PEBI_pointData/*
 scripts/gridgeneration/ggvenv/*
 Misc/
-deck/
+data/deck/
