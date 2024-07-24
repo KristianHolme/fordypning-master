@@ -198,7 +198,7 @@ function G = setupGrid(simcase, varargin)
             G = transfaultGetBufferCells(G);
             return
         elseif contains(gridcase, 'gmsh')
-            gridFolder = '~/Code/Sommer2024-SINTEF/src/gmshGrids/';
+            gridFolder = '~/Code/Sommer2024-SINTEF/data/gmshGrids/';
             gridfilename = [gridcase, '_SPE.mat'];
             
             matFile = fullfile(gridFolder, gridfilename);
@@ -214,7 +214,7 @@ function G = setupGrid(simcase, varargin)
             end
             return
         elseif contains(gridcase, 'tet')% tet-C, tet-M
-            gridFolder = '~/Code/Sommer2024-SINTEF/src/gmshGrids/SPE11C';
+            gridFolder = '~/Code/Sommer2024-SINTEF/src/data/gmshGrids/SPE11C';
             gridfilename = [gridcase, '_SPE.mat'];
             matFile = fullfile(gridFolder, gridfilename);
             origMatFile = fullfile(gridFolder, replace(gridfilename, '_SPE.mat', '.mat'));
