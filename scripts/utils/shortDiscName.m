@@ -2,6 +2,11 @@ function discname = shortDiscName(discname, varargin)
     opt = struct('uw', false);
     opt = merge_options(opt, varargin{:});
     if contains(discname, 'indicator')
+        if contains(discname, 'layer')
+            pattern = 'indicator_\d+';
+            replacement = 'ind.';
+            discname = regexprep(discname, pattern, replacement);
+        end
         nameparts = split(discname, '-');
         nameparts{1} = replace(nameparts{1}, 'indicator', 'ind.');
         nameparts{end} = shortDiscName(nameparts{end});
