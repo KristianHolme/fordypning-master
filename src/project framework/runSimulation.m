@@ -34,7 +34,7 @@ function [ok, status, time] = runSimulation(simcase, varargin)
         else
             restartStep = true;
         end
-        projPath = '~/Code/prosjekt-master/jutul';
+        projPath = '~/Code/SPE11/jutul';
         outputfolder = fullfile(simcase.dataOutputDir);
         [~, ~] = simulatePackedProblemJutul(problem, 'name', simcase.casename, 'project', projPath, 'path', outputfolder, ...
             'restart', restartStep);

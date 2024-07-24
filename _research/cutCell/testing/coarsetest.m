@@ -57,7 +57,7 @@ ylabel('Frequency');
 
 
 %% Save hist
-exportgraphics(T, sprintf('./../plotsMaster/histograms/cartesian_orig_cut_part_%dx%d.pdf', nx, ny));
+exportgraphics(T, sprintf('./plotsMaster/histograms/cartesian_orig_cut_part_%dx%d.pdf', nx, ny));
 
 %%
 % Set the same Y-axis limits for both plots

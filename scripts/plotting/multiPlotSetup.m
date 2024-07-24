@@ -73,7 +73,7 @@ saveToReport = false;
 ColorScale = 'linear';
 
 filename = [SPEcase, '_', dataname, '_', filename];
-savefolder=fullfile('./../plots/multiplot', subname);
+savefolder=fullfile('./plots/multiplot', subname);
 
 
 numGrids = numel(gridcases);
@@ -186,7 +186,7 @@ saveplot = true;
 saveToReport = false;
 bigGrid = false;
 filename =[SPEcase, '_', dataname, '_diff_', gridcase, strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
-savefolder = ['./../plots/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
+savefolder = ['./plots/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
 numpdiscs = numel(pdiscs);
 numuwdiscs = numel(uwdiscs);
 numDiscs = numpdiscs*numuwdiscs;
@@ -310,7 +310,7 @@ makeCorrTable = false;
 makeEMDTable = true;
 makeL1Table = false;
 filename =[SPEcase, '_', dataname, '_diff_', strjoin(cellfun(@(g)displayNameGrid(g, SPEcase) , gridcases, UniformOutput=false), '_'), strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
-savefolder = ['./../plots/gridDiff/', SPEcase];
+savefolder = ['./plots/gridDiff/', SPEcase];
 numpdiscs = numel(pdiscs);
 numuwdiscs = numel(uwdiscs);
 numDiscs = numpdiscs*numuwdiscs;

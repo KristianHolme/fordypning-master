@@ -121,7 +121,7 @@ for ideck = 1:numel(deckcases)
                     % title(simcase.gridcase, 'Interpreter','none');
                     % xlabel('number of cells sharing same node');
                     % tightfig();
-                    % saveas(f, ['./../plots/cellsPerNode', simcase.gridcase, '.png']);
+                    % saveas(f, ['./plots/cellsPerNode', simcase.gridcase, '.png']);
 
 
                     %plot faces per cell and nodes per face histograms

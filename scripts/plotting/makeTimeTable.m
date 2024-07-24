@@ -60,4 +60,4 @@ table2latex(Trelcell, fullfile('./../rapport/Tables', [filename,'_relcell','.tex
 savename =[filename, '.xlsx'];
 writetable(Trelcell,filename, 'WriteRowNames', true)
 %%
-exportapp(fig, './../plotsMaster/Tables/walltimes-pres.pdf')
+exportapp(fig, './plotsMaster/Tables/walltimes-pres.pdf')

@@ -124,7 +124,7 @@ if plotbars
     tightfig();
 end
 if opt.saveplot
-    % folder = './../plots/sealingCO2';
+    % folder = './plots/sealingCO2';
     filename = [SPEcase, '_', filetag,'_', strjoin(gridcases, '_'), '-', strjoin(discsDisp, '_')];
     % exportgraphics(gcf, fullfile(folder, [filename, '.svg']))%for color
     if ~exist(folder, 'dir')

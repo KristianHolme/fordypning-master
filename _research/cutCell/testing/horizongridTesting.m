@@ -135,7 +135,7 @@ ylabel('Frequency');
 
 
 %% Save hist
-exportgraphics(T, sprintf('./../plotsMaster/histograms/horizon_orig_cut_PG_%dx%d.pdf', nx, ny));
+exportgraphics(T, sprintf('./plotsMaster/histograms/horizon_orig_cut_PG_%dx%d.pdf', nx, ny));
 
 %% Plot partitions
 tot = 0;

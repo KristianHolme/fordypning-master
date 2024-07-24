@@ -33,8 +33,8 @@ for ig = 1:numel(grids)
 end
 
 %%
-exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-volumes.pdf', plotname));
-exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-volumes.png', plotname));
+exportgraphics(T, sprintf('./plotsMaster/histograms/%s-volumes.pdf', plotname));
+exportgraphics(T, sprintf('./plotsMaster/histograms/%s-volumes.png', plotname));
 
 %%
 figure
@@ -57,8 +57,8 @@ for ig = 1:numel(grids)
 end
 
 %%
-exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-neighbors.pdf', plotname));
-exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-neighbors.png', plotname));
+exportgraphics(T, sprintf('./plotsMaster/histograms/%s-neighbors.pdf', plotname));
+exportgraphics(T, sprintf('./plotsMaster/histograms/%s-neighbors.png', plotname));
 %%
 figure
 T = tiledlayout(numel(grids), 1);
@@ -74,5 +74,5 @@ for ig = 1:numel(grids)
 end
 
 %%
-exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-faceA.pdf', plotname));
-exportgraphics(T, sprintf('./../plotsMaster/histograms/%s-faceA.png', plotname));
+exportgraphics(T, sprintf('./plotsMaster/histograms/%s-faceA.pdf', plotname));
+exportgraphics(T, sprintf('./plotsMaster/histograms/%s-faceA.png', plotname));
