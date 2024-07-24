@@ -1,7 +1,7 @@
 configFile = fileread('config.JSON');
 config = jsondecode(configFile);
-addpath(fullfile(config.repo_folder, 'scripts'))
-addpath(fullfile(config.repo_folder, 'src'))
+addpath(genpath(fullfile(config.repo_folder, 'scripts')))
+addpath(genpath(fullfile(config.repo_folder, 'src')))
 
 mrstSettings('set', 'useMEX', true)
 
