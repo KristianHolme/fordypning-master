@@ -31,7 +31,7 @@ exportgraphics(gcf, './../rapport/Figures/grids/CP-SC_part.png', 'ContentType','
 % G = generateCutCellGrid(898,120, 'type', 'horizon', 'presplit', false, ...
 %     'recombine', true, 'bufferVolumeSlice', false, 'partitionMethod', 'convexity', ...
 %     'nudgeGeom', true, 'round', false, 'SPEcase', 'B');
-load('grid-files/cutcell/horizon_nudge_cutcell_898x120.mat')
+load('data/grid-files/cutcell/horizon_nudge_cutcell_898x120.mat')
 plotCellData(G, G.cells.tag);view(0,0);
 set(gca, 'xlim', [1085, 1170], 'zlim', [870, 940]); %more zoom in
 % set(gca, 'xlim', [940, 1400], 'zlim', [750, 950]); %original for zoomout

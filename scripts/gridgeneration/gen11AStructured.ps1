@@ -19,7 +19,7 @@ foreach ($nx in $nxValues) {
         gmsh $mshFileName -save -o $newFileName
 
         # Move file to grid-files folder
-        Move-Item -Path $newFileName -Destination ".\..\..\grid-files\"
+        Move-Item -Path $newFileName -Destination "~/Code/SPE11/data/grid-files"
     }
 }
 

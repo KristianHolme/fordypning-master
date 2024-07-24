@@ -4,7 +4,7 @@ param (
 )
 
 $dir = Get-Location
-$savedir = Join-Path (Split-Path -Parent $dir) -ChildPath "..\grid-files"
+$savedir = "~/Code/SPE11/data/grid-files"
 Set-Location .\..\..\11thSPE-CSP\geometries\
 foreach ($refinement_factor in $refs) {
     $str_refinement_factor = [System.String]::Format([System.Globalization.CultureInfo]::InvariantCulture, "{0}", $refinement_factor)

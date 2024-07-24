@@ -8,7 +8,7 @@
 % plotGrid(G)
 %%
 SPEcase = 'B';
-fn = "grid-files/cutcell/buff_horizon_nudge_cutcell_PG_2640x380.mat";
+fn = "data/grid-files/cutcell/buff_horizon_nudge_cutcell_PG_2640x380.mat";
 bigLoad = load(fn);
 G = bigLoad.G;
 t = tic();

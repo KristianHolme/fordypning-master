@@ -1,5 +1,5 @@
 function G = loadPresplit(nx, ny, varargin)
-    opt = struct('dir', 'grid-files/cutcell/presplit');
+    opt = struct('dir', 'data/grid-files/cutcell/presplit');
     opt = merge_options(opt, varargin{:});
     fn = fullfile(opt.dir, sprintf("presplit_%dx%d.mat", nx, ny));
     if isfile(fn)

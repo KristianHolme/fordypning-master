@@ -5,9 +5,9 @@ mrstModule add ad-core ad-props incomp mrst-gui mpfa mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics nfvm gmsh prosjektOppgave...
     deckformat
 %%
-G1 = load('grid-files/cutcell/buff_horizon_nudge_cutcell_PG_100x100x100_C.mat').G;
-G2 = load('grid-files/cutcell/buff_cartesian_nudge_cutcell_PG_100x100x100_C.mat').G;
-G3 = load('grid-files/spe11c_struct100x100x100_grid.mat').G;
+G1 = load('data/grid-files/cutcell/buff_horizon_nudge_cutcell_PG_100x100x100_C.mat').G;
+G2 = load('data/grid-files/cutcell/buff_cartesian_nudge_cutcell_PG_100x100x100_C.mat').G;
+G3 = load('data/grid-files/spe11c_struct100x100x100_grid.mat').G;
 
 grids = {G1, G2, G3};
 names = {'HNCP', 'CNCP', 'C'};
@@ -222,7 +222,7 @@ gridcases = {'5tetRef1', '5tetRef2', '5tetRef3'};SPEcase = 'A';
 % gridcases = {};
 % ress = {};
 
-% files = dir('grid-files/spe11b_struct*');
+% files = dir('data/grid-files/spe11b_struct*');
 % for k = 1:length(files)
 %     filename = files(k).name;
 %     % Regular expression to find the pattern 'structAxB' where A and B are numbers

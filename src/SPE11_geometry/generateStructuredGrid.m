@@ -28,7 +28,7 @@ G.faces.tag = zeros(G.faces.num, 1);
 
 if opt.save
     filename = sprintf('spe11c_struct%dx%dx%d_grid.mat', nx, ny, nz);
-    folder = 'grid-files';
+    folder = 'data/grid-files';
     savepath = fullfile(folder, filename);
     fprintf('Saving to %s\n', savepath);
     save(savepath, "G");

@@ -13,7 +13,7 @@ function G = setupGrid(simcase, varargin)
     prefix = ['spe11', specase];
         
     if ~isempty(gridcase)
-        gridFolder = fullfile(simcase.repoDir, 'grid-files');
+        gridFolder = fullfile(simcase.repoDir, 'data/grid-files');
         if contains(gridcase, 'gq')%gq_pb0.19
             ref = gridcase(6:end); %0.19
             ref = replace(ref, '.', '_');
@@ -88,9 +88,9 @@ function G = setupGrid(simcase, varargin)
                 error([matFile, ' not found']);
             end
         elseif contains(gridcase, 'cp')
-            matFile = fullfile('grid-files/cutcell/', [gridcase, '.mat']);
+            matFile = fullfile('data/grid-files/cutcell/', [gridcase, '.mat']);
         elseif contains(gridcase, 'cut')
-            gridFolder = 'grid-files/cutcell';
+            gridFolder = 'data/data/grid-files/cutcell';
             pattern = '(\d+)x(\d+)x?(\d+)?$';
             tokens = regexp(gridcase, pattern, 'tokens');
             params = tokens{1};
@@ -122,7 +122,7 @@ function G = setupGrid(simcase, varargin)
             end
             matFile = fullfile(gridFolder, matFile);
         elseif contains(gridcase, 'PEBI')
-            gridFolder = 'grid-files/PEBI';
+            gridFolder = 'data/grid-files/PEBI';
             gridfilename = [gridcase, '_', simcase.SPEcase, '.mat'];
 
             if ~strcmp(simcase.SPEcase, 'A')
@@ -275,7 +275,7 @@ function G = setupGrid(simcase, varargin)
         
         
     elseif ~isempty(simcase.deck) %use deck if present
-        matFile = fullfile('grid-files/deck', [simcase.deckcase,'.mat']);
+        matFile = fullfile('data/grid-files/deck', [simcase.deckcase,'.mat']);
         if isfile(matFile)
             load(matFile);
         else
@@ -284,7 +284,7 @@ function G = setupGrid(simcase, varargin)
             G = getBufferCells(G);
             G = addBoxWeights(G, 'SPEcase', simcase.SPEcase);
             % G.cells.indexMap = 1:G.cells.num;
-            matFile = fullfile('grid-files/deck', [simcase.deckcase,'.mat']);
+            matFile = fullfile('data/grid-files/deck', [simcase.deckcase,'.mat']);
             if ~isfield(G.faces, 'tag')
                 G.faces.tag = zeros(G.faces.num, 1);
             end

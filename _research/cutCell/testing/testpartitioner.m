@@ -11,7 +11,7 @@ Gp = makePartitionedGrid(G, partition);
 compareGrids(G, Gp)
 
 %%
-load("grid-files/cutcell/horizon_presplit_cutcell_PG_28x12.mat")
+load("data/grid-files/cutcell/horizon_presplit_cutcell_PG_28x12.mat")
 e1 = [1 0 0];e2 = [0 1 0];e3 = [0 0 1];
 bf = boundaryFaces(G);
 normals = G.faces.normals ./ G.faces.areas;

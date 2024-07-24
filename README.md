@@ -15,8 +15,9 @@ This repository contains files for creating different kind of grids, and running
 
         
 - Run setup.m
-    - Adds the scripts-folder as an mrst module called masterthesis and adds it to the path
+    - Adds the project files to the matlab path
     - Turns the MRST option 'useMEX' on, to utilize accelerated computations where possible.
+    - makes sure the ./data/grid-files directory exists
 ## MRST functions
 A combination of the development version of MRST hosted on bitbucket, and the 2023-b release was used. Some functions are modified.
 The modified MRST functions are in the folder ```src/MRST_functions```. Eventually, some of these modifications may find their way into an official release of MRST.

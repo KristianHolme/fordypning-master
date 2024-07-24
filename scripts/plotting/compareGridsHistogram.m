@@ -9,11 +9,11 @@ G2 = generateCutCellGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'typ
 % G3 = generatePEBIGrid(nx, ny, 'save', true, 'bufferVolumeSlice', buffer, 'FCFactor', 1.0);
 %%
 res = '28x12';
-G1 = load(sprintf('grid-files/cutcell/cartesian_presplit_cutcell_%s_B.mat', res)).G;
-% G2 = load(sprintf('grid-files/cutcell/buff_horizon_presplit_cutcell_PG_%s_C.mat', res)).G;
-G3 = load(sprintf('grid-files/cutcell/cartesian_presplit_cutcell_28x1.mat', res)).G;
-G4 = load(sprintf('grid-files/cutcell/buff_cartesian_presplit_cutcell_PG_%s_C.mat', res)).G;
-% G3 = load('grid-files/PEBI/buff_cPEBI_220x110_B.mat').G;
+G1 = load(sprintf('data/grid-files/cutcell/cartesian_presplit_cutcell_%s_B.mat', res)).G;
+% G2 = load(sprintf('data/grid-files/cutcell/buff_horizon_presplit_cutcell_PG_%s_C.mat', res)).G;
+G3 = load(sprintf('data/grid-files/cutcell/cartesian_presplit_cutcell_28x1.mat', res)).G;
+G4 = load(sprintf('data/grid-files/cutcell/buff_cartesian_presplit_cutcell_PG_%s_C.mat', res)).G;
+% G3 = load('data/grid-files/PEBI/buff_cPEBI_220x110_B.mat').G;
 %%
 grids = {G1, G2};
 names = {'HPCP-C', 'HNCP-C'};

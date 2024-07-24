@@ -18,7 +18,7 @@ end
 warning('on', 'all');
 %% Correct wrong depth
 % Set the folder path and file type
-folderPath = 'grid-files/PEBI'; % Replace with your folder path
+folderPath = 'data/grid-files/PEBI'; % Replace with your folder path
 fileType = '*.mat'; % Replace with your file type, e.g., '*.txt', '*.csv'
 
 % Get a list of all files in the folder with the specified file type

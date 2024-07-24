@@ -19,7 +19,7 @@ simcase = Simcase('SPEcase', SPEcase, 'gridcase', gridcase, 'tagcase', tagcase, 
 name = gridcase;
 simcase.saveGridRock(name);
 % %%
-% load(['grid-files/gridrock_simready/', name]);
+% load(['data/grid-files/gridrock_simready/', name]);
 % 
 % %% 
 % plotToolbar(G, G);view(10,10);

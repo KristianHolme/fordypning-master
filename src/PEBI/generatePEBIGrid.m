@@ -95,7 +95,7 @@ function [G, G2Ds, G2D, Pts, F] = generatePEBIGrid(nx, ny, varargin)
 
     
     if opt.earlyReturn
-        fn = sprintf('scripts/PEBI/pointData/points_%dx%d.mat', nx, ny);
+        fn = sprintf('data/PEBI_pointData/points_%dx%d.mat', nx, ny);
         save(fn, "Pts");
         fprintf("Early return! saving points to %s.\n", fn)
         G2D = [];
@@ -252,7 +252,7 @@ function [G, G2Ds, G2D, Pts, F] = generatePEBIGrid(nx, ny, varargin)
             filename = ['buff_', filename];
         end
         dispif(opt.verbose, 'Saving Grid to %s\n', filename)
-        save(fullfile("grid-files/PEBI", filename), "G");
+        save(fullfile("data/grid-files/PEBI", filename), "G");
     end
     t = toc(tstart);
     dispif(opt.verbose, 'Done! (%0.2fs)\n', t);

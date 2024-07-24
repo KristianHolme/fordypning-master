@@ -319,7 +319,7 @@ timepercell = stats(end, 2)/stats(end, 1);%~0.004 s per cell
 %over two hours for two million cells
 %% Rename variables in stored grids from Gcut to G
 % Specify the directory where your .mat files are located
-directoryPath = 'grid-files\cutcell';
+directoryPath = 'data/grid-files/cutcell';
 
 % Get a list of all .mat files in the directory
 matFiles = dir(fullfile(directoryPath, '*.mat'));

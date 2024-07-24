@@ -56,10 +56,10 @@ plotCellData(Gcut, Gcut.cells.tag, 'edgealpha', 0.5, 'LineWidth', 0.1);view(0,0)
 % set(gca, 'xlim',[2800,3200], 'zlim', [100,180]);
 % plotCellData(Gcut, Gcut.cells.tag, 'facealpha', 0);plotGrid(Gcut, failed);
 %%
-bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_898x120.mat");
+bigLoad = load("data/grid-files/cutcell/buff_horizon_nudge_cutcell_898x120.mat");
 Gcut = bigLoad.G;
 %%
-bigLoad = load("grid-files/cutcell/buff_horizon_nudge_cutcell_PG_130x62.mat");
+bigLoad = load("data/grid-files/cutcell/buff_horizon_nudge_cutcell_PG_130x62.mat");
 Gp = bigLoad.G;
 %% Test partitioning
 

@@ -1,4 +1,4 @@
-load("grid-files/cutcell/buff_horizon_presplit_cutcell_130x62.mat");
+load("data/grid-files/cutcell/buff_horizon_presplit_cutcell_130x62.mat");
 
 
 geodata = readGeo('./geo-files/spe11a-faults.geo', 'assignExtra', true);

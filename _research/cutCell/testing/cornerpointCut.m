@@ -53,7 +53,7 @@ Gcut = tagbyFacies(Gcut, geodata, 'vertIx', 3);
 
 %% Save
 G = computeGeometry(Gcut);
-save('grid-files/cutcell/cp_pre_cut_130x62', "G");
+save('data/grid-files/cutcell/cp_pre_cut_130x62', "G");
 %% Get Gcut with removed cells
 simcase = Simcase('gridcase', 'cp_pre_cut_130x62', 'deckcase', 'B_ISO_SMALL', 'usedeck', true);
 Gcut = simcase.G;

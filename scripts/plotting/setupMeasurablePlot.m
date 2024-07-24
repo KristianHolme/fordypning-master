@@ -432,7 +432,7 @@ end
 % close gcf
 
 %% Plot reports
-names = cellf   un(@(name) shortDiscName(name), pdiscs, UniformOutput=false);
+names = cellfun(@(name) shortDiscName(name), pdiscs, UniformOutput=false);
 % names = cellfun(@(name) displayNameGrid(name, 'C'), gridcases, UniformOutput=false);
 reports = cell(numel(simcases), 1);
 for isim = 1:numel(simcases)
