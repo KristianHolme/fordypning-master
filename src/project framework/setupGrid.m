@@ -90,7 +90,7 @@ function G = setupGrid(simcase, varargin)
         elseif contains(gridcase, 'cp')
             matFile = fullfile('data/grid-files/cutcell/', [gridcase, '.mat']);
         elseif contains(gridcase, 'cut')
-            gridFolder = 'data/data/grid-files/cutcell';
+            gridFolder = 'data/grid-files/cutcell';
             pattern = '(\d+)x(\d+)x?(\d+)?$';
             tokens = regexp(gridcase, pattern, 'tokens');
             params = tokens{1};

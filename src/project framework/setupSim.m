@@ -57,7 +57,7 @@ function [state0, model, schedule, nls] = setupSim(simcase, varargin)
             state0 = initResSol(G, 1*atm, [1, 0]);
         end
     elseif strcmp(simcase.SPEcase, 'B') || strcmp(simcase.SPEcase, 'C')
-        if ~isempty(simcase.gridcase) & ~simcase.nonStdGrid
+        if ~isempty(simcase.gridcase) & (~simcase.nonStdGrid || contains(simcase.gridcase, 'tet_zx10'))
             p_datum = 19620000;
     
             rsvd = [0,0;1200,0];
