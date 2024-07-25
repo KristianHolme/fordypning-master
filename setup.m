@@ -1,12 +1,3 @@
-configFile = fileread('config.JSON');
-config = jsondecode(configFile);
-addpath(genpath(fullfile(config.repo_folder, 'scripts')))
-addpath(genpath(fullfile(config.repo_folder, 'src')))
-addpath(genpath(fullfile(config.repo_folder, '_research')))
-
-mrstSettings('set', 'useMEX', true)
-
-%%
 mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
     ad-blackoil postprocessing diagnostics...
     deckformat gmsh nfvm mpfa msrsb coarsegrid dfm libgeometry...
@@ -22,3 +13,12 @@ if ~exist(gridPath, 'dir')
 end
 
 clear all;
+
+%%
+configFile = fileread('config.JSON');
+config = jsondecode(configFile);
+addpath(genpath(fullfile(config.repo_folder, 'scripts')))
+addpath(genpath(fullfile(config.repo_folder, 'src')))
+addpath(genpath(fullfile(config.repo_folder, '_research')))
+
+mrstSettings('set', 'useMEX', true)
