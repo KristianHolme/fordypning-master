@@ -1,7 +1,16 @@
 # Fordypningsoppgave/masteroppgave
-![animation](Media/BsimPEBI.gif)
-
 This repository contains files for creating different kind of grids, and running SPE11 simulations in Matlab/MRST to compare the effects of different grids and discretization choices.
+
+Simulation using a PEBI grid with ~1M cells (non-linear time in animation):
+
+https://github.com/user-attachments/assets/96f1bc1c-55f8-4ac4-a925-851733ea0fd4
+
+Difference between simulations using TPFA and avgMPFA on a cut-cell grid with ~100k cells:
+
+
+
+https://github.com/user-attachments/assets/fb31003c-4633-4eef-a174-81081d06cf71
+
 
 ## To run files (hopefully):
 - Rename 'config-template.JSON' to 'config.JSON' and modify it to suit your setup
