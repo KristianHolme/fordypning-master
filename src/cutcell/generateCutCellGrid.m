@@ -122,7 +122,7 @@ function [G, geodata] = makeCartesianCut(nx, ny, opt, extra)
 end
 
 function [G, geodata] = makeHorizonCut(nx, totys, opt, extra)
-    geodata = readGeo('./geo-files/spe11a-faults.geo', 'assignExtra', true);
+    geodata = readGeo('./data/geo-files/spe11a-faults.geo', 'assignExtra', true);
     geodata = rotateGrid(geodata);
     geodata = stretchGeo(geodata);
     % gridfractions = [0.1198 0.0612 0.0710 0.0783 0.1051 0.0991 0.1255 0.1663 0.1737]; 
