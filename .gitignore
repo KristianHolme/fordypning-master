@@ -13,8 +13,9 @@ config.JSON
 plotsMaster
 spe11-decks
 decksave
-grid-files/*
-scripts/PEBI/pointData/*
+data/grid-files/*
+data/PEBI_pointData/*
 scripts/gridgeneration/ggvenv/*
 Misc/
-deck/
+data/deck/
+_research/

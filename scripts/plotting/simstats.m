@@ -120,8 +120,8 @@ xlabel('Time [y]');
 ylabel('Cumulative nonlinear iterations');
 legend(labels, Location="best");
 hold off;
-exportgraphics(gcf, ['./../plotsMaster/iterations/', SPEcase, '_', displayNameGrid(simcase.gridcase, SPEcase), '.pdf'])
-exportgraphics(gcf, ['./../plotsMaster/iterations/', SPEcase, '_', displayNameGrid(simcase.gridcase, SPEcase), '.png'])
+exportgraphics(gcf, ['./plotsMaster/iterations/', SPEcase, '_', displayNameGrid(simcase.gridcase, SPEcase), '.pdf'])
+exportgraphics(gcf, ['./plotsMaster/iterations/', SPEcase, '_', displayNameGrid(simcase.gridcase, SPEcase), '.png'])
 
 
 

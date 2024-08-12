@@ -1,20 +1,17 @@
 %used for running simulations from terminal
 function timings = runSims2(server)
-    mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-    ad-blackoil postprocessing diagnostics prosjektOppgave...
-    deckformat gmsh nfvm mpfa coarsegrid jutul
     % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
     % schedulecases = {'simple-coarse', 'simple-std'};
     mrstVerbose off
     switch  server
     case 1
         SPEcase = 'C';
-        gridcases = {'struct50x50x50'};
-        schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+        gridcases = {'tet-F'};
+        schedulecases = {'skipEquil'};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
-        tagcase = 'fixedGrid';
+        tagcase = '';
         resetData = false;
         resetAssembly = false;
         Jutul = false;
@@ -22,53 +19,53 @@ function timings = runSims2(server)
         mrstVerbose off;
     case 2
         SPEcase = 'C';
-        gridcases = {'cart_ndg_cut_PG_50x50x50'};
+        gridcases = {'tet_zx10-F'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
-        tagcase = 'fixedGrid';
+        tagcase = '';
         resetData = false;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
         mrstVerbose off;
     case 3
-        SPEcase = 'C';
-        gridcases = {'horz_ndg_cut_PG_50x50x50'};
+        SPEcase = 'B';
+        gridcases = {'cart_ndg_cut_PG_130x62'};
         schedulecases = {''};
-        pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa',};
+        pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa','indicator20-hybrid-avgmpfa', 'leftFaultEntry-hybrid-avgmpfa', 'indicator_1layer-hybrid-avgmpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
-        tagcase = 'fixedGrid';
-        resetData = false;
+        tagcase = '';
+        resetData = true;
         resetAssembly = true;
         Jutul = false;
         direct_solver = false;
         mrstVerbose off;
     case 4
         SPEcase = 'C';
-        gridcases = {'struct50x50x50', 'horz_ndg_cut_PG_50x50x50', 'cart_ndg_cut_PG_50x50x50'};
-        schedulecases = {''};
-        pdiscs = {''};
+        gridcases = {'flat_tetra_subwell_zx5'};
+        schedulecases = {'skipEquil'};
+        pdiscs = {'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
         resetData = false;
         resetAssembly = false;
-        Jutul = true;
+        Jutul = false;
         direct_solver = false;
     case 5
         SPEcase = 'C';
-        gridcases = {'cart_ndg_cut_PG_100x100x100'};
+        gridcases = {'cTwist-M'};
         schedulecases = {''};
-        pdiscs = {''};
+        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
-        resetData = false;
+        resetData = true;
         resetAssembly = false;
-        Jutul = true;
+        Jutul = false;
         direct_solver = false;
     end
     if Jutul, mrstVerbose on,end

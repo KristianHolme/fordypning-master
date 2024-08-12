@@ -2,7 +2,7 @@
     "output_folder": "/media/user/HDD/matlab/output",
     "spe11utils_folder": "~/code/spe11/spe11-utils",
     "decksave_folder": "/media/user/HDD/matlab/decksave",
-    "repo_folder": "~/code/spe11/src",
+    "repo_folder": "~/code/spe11/project_root",
     "geo_folder": "~/code/spe11/11thSPE-CSP/geometries", 
     "spe11decks_folder": "~/code/spe11/spe11-decks"
 }

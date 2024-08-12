@@ -20,7 +20,7 @@ foreach ($nx in $nxValues) {
             # Run Python script for the current combination of nx and ny
             $dir = Get-Location
             Write-Host current dir $dir
-            $savedir = Join-Path (Split-Path -Parent $dir) -ChildPath "..\grid-files"
+            $savedir = "~/Code/SPE11/data/grid-files"
             Write-Host savedir: $savedir
             Set-Location .\..\..\11thSPE-CSP\geometries\
             Write-Host using CSP scripts...

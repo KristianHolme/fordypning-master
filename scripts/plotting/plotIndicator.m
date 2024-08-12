@@ -49,7 +49,7 @@ ax = gca;
 ax.YScale = 'log';
 grid();
 tightfig();
-saveas(gcf, fullfile('../plotsMaster/staticIndicator', ['err', SPEcase,'.eps']), 'epsc');
+saveas(gcf, fullfile('plotsMaster/staticIndicator', ['err', SPEcase,'.eps']), 'epsc');
 %% bad experimentation
 maxVal = max(errdata, [], 'all');
 transformFunc = @(x) log(x+1) + (x/maxVal) * 10;
