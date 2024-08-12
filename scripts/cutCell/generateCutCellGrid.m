@@ -10,6 +10,7 @@ function [G, partition] = generateCutCellGrid(nx, ny, varargin)
         'type', 'horizon', ...
         'removeInactive', false, ...
         'partitionMethod', 'convexity', ...
+        'backgroundGridMap', true, ...
         'round', true,...
         'SPEcase', 'B', ...
         'Cdepth', 50);
@@ -32,7 +33,10 @@ function [G, partition] = generateCutCellGrid(nx, ny, varargin)
         G.cells.indexMap = (1:G.cells.num)';
     end
     if opt.recombine
+        G0 = G;
         [G, partition] = Recombine(G, opt, nx, ny, geodata);
+    else
+        G = addBackgroundGridMap(G, opt);
     end    
 
     assert(checkGrid(G));
@@ -210,6 +214,7 @@ function [G, partition] = Recombine(G, opt, nx, ny, geodata)
 
     t = toc(t);
     dispif(opt.verbose, "Partition(%d iterations) and coarsen in %0.2f s\n%d cells failed to merge.\n", tries, t, numel(failed));
+    G = addBackgroundGridMap(G, opt);
 
     if strcmp(opt.SPEcase, 'C')
         G = removeLayeredGrid(G);
@@ -222,6 +227,7 @@ function [G, partition] = Recombine(G, opt, nx, ny, geodata)
         G.nodes.coords = bendSPE11C(G.nodes.coords);
         G = mcomputeGeometry(G);
         G = getBufferCells(G);
+        G = finalizeBackgroundGridCaseC(G, opt);
     end
 
     t = tic();
@@ -294,4 +300,39 @@ end
 
 targetPoints = [targetPoints;newPoints];
 
+end
+
+function G = addBackgroundGridMap(G, opt)
+    if opt.backgroundGridMap
+        if strcmp(opt.SPEcase, 'A')
+            % 280 x 120
+            nx = 280;
+            ny = 120;
+        elseif strcmp(opt.SPEcase, 'B')
+            % 840 x 120
+            nx = 840;
+            ny = 120;
+        else
+            % 168 x 100 x 120
+            nx = 168;
+            ny = 100;
+            assert(strcmp(opt.SPEcase, 'C'))
+        end
+        [M, Gr, report] = getReductionMatrix(G, nx, ny);
+        [I, J, V] = find(M);
+        G.reportingGrid = struct('map', [I, J, V], 'G', Gr);
+    else
+        G.reportingGrid = [];
+    end
+end
+
+function G = finalizeBackgroundGridCaseC(G, opt)
+    if opt.backgroundGridMap
+        assert(strcmp(opt.SPEcase, 'C'))
+        Gr = G.reportingGrid.G;
+        map = G.reportingGrid.map;
+        I = map(:, 1);
+        J = map(:, 2);
+        K = map(:, 3);
+    end
 end
