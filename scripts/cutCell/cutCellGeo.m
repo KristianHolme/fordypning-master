@@ -79,6 +79,9 @@ function [Gcut, t] = cutCellGeo(G, geodata, varargin)
             fn = ['buff_', fn];
         end
         G = Gcut;
+        if ~isfolder(opt.savedir)
+            mkdir(opt.savedir);
+        end
         save(fullfile(opt.savedir, fn), "G");
     end
 end
