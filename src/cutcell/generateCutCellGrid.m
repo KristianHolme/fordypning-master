@@ -17,6 +17,12 @@ function [G, partition] = generateCutCellGrid(nx, ny, varargin)
     [opt, extra] = merge_options(opt, varargin{:});
     opt.nudgeGeom = ~opt.presplit;
     totstart = tic();
+    is_A = strcmp(opt.SPEcase, 'A');
+    if is_A
+        % Hack: We just generate case B since that always works and then
+        % scale back.
+        opt.SPEcase = 'B';
+    end
     switch opt.type
         case 'cartesian'
             [G, geodata] = makeCartesianCut(nx, ny, opt, extra);
@@ -42,6 +48,11 @@ function [G, partition] = generateCutCellGrid(nx, ny, varargin)
     assert(checkGrid(G));
     ttot = toc(totstart);
     dispif(opt.verbose, sprintf('Generated cut-cell grid in %f s\n', round(ttot,2)));
+    if is_A
+        ub = [8400, 1, 1200];
+        ua = [2.8, 1.0, 1.2];
+        G.nodes.coords = bsxfun(@times, G.nodes.coords, ua./ub);
+    end
 end
 
 function [G, geodata] = makeCartesianCut(nx, ny, opt, extra)

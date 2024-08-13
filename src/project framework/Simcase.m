@@ -272,6 +272,9 @@ classdef Simcase < handle
                 %load deck from mat file or save to mat file
                 decksavename = replace(deckname, '.DATA', '_deck.mat');
                 decksaveFolder = simcase.decksaveDir;
+                if ~isfolder(decksaveFolder)
+                    mkdir(decksaveFolder)
+                end
                 saveDeck = true;
                 if isempty(decksaveFolder)
                     saveDeck = false;
