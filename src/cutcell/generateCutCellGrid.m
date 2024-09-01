@@ -320,6 +320,7 @@ function G = addBackgroundGridMap(G, opt)
             % 280 x 120
             nx = 280;
             ny = 120;
+            error('Not fixed yet.')
         elseif strcmp(opt.SPEcase, 'B')
             % 840 x 120
             nx = 840;
@@ -331,7 +332,7 @@ function G = addBackgroundGridMap(G, opt)
             nz = 120;
             assert(strcmp(opt.SPEcase, 'C'))
         end
-        [M, Gr, report] = getReductionMatrix(G, nx, ny);
+        [M, Gr, report] = getReductionMatrix(G, nx, 120);
         [I, J, V] = find(M);
         G.reportingGrid = struct('map', [I, J, V], 'dims', [nx, ny, nz]);
     else
@@ -346,7 +347,7 @@ function G = finalizeBackgroundGridCaseC(G, opt)
         I = map(:, 1);
         J = map(:, 2);
         W = map(:, 3);
-        assert(max(I) <= 16800)
+        assert(max(I) <= 120*168)
         assert(max(J) == G.layerSize)
         layerI = {};
         layerJ = {};
@@ -364,7 +365,7 @@ function G = finalizeBackgroundGridCaseC(G, opt)
                 is_overlapping = max(x1,y1) <= min(x2,y2);
                 overlap = min(x2,y2) - max(x1,y1);
                 if is_overlapping
-                    I_offset = I + (layerNoBg-1)*16800;
+                    I_offset = I + (layerNoBg-1)*120*168;
                     assert(overlap >= 0)
                     if overlap > 1e-10
                         layerI{end+1} = I_offset;
