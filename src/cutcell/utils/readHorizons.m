@@ -2,7 +2,7 @@ function geoH = readHorizons(varargin)
     opt = struct('geoH', []);
     opt = merge_options(opt, varargin{:});
     if isempty(opt.geoH)
-        geoH = readGeo('./geo-files/spe11a-horizons.geo');
+        geoH = readGeo('./data/geo-files/spe11a-horizons.geo');
     else
         geoH = opt.geoH;
     end
