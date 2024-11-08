@@ -1,6 +1,7 @@
 clear all;
 close all;
 
+
 %% Setup data
 getData = @(states, step, G, simcase) simcase.computeStaticIndicator; 
 cmap = @(x) [ones(x,1), 1-linspace(0,1,x)', 1-linspace(0,1,x)'];
@@ -36,7 +37,7 @@ for j = 1:numGrids
     G = simcase.G;
     indicator = simcase.computeStaticIndicator;
     [inj1, inj2] = simcase.getinjcells;
-    data{j, 1}.statedata = indicator;
+    data{j, 1}.statedata = sqrt(indicator);
     data{j, 1}.injcells = [inj1, inj2];%not needed
     data{j, 1}.G = G;
     data{j, 1}.title = gridnames{j};
@@ -47,4 +48,7 @@ data = reshape(data, 3,2)';
 %%
 multiplot(data, 'savefolder', savefolder, ...
         'savename', filename, ...
-        'saveplot', saveplot, 'cmap', cmap(200), 'equal', false, 'plotgrid', plotgrid); 
+        'saveplot', saveplot, 'cmap', cmap(200), ...
+        'equal', false, 'plotgrid', plotgrid, ...
+        'facelines', true, ...
+        'graybackground', true); 

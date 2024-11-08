@@ -11,7 +11,9 @@ function multiplot(data, varargin)
                  'cmap'      , [],...
                  'plotgrid'  , false, ...
                  'diff'      , false, ...
-                 'bigGrid'   , true);
+                 'bigGrid'   , true,...
+                 'facelines' , false, ...
+                 'graybackground', false);
     opt = merge_options(opt, varargin{:});
      
 
@@ -127,7 +129,21 @@ function multiplot(data, varargin)
                     else
                         cells = 1:G.cells.num;
                     end
-    
+                    if opt.facelines
+                        bdryfaces = boundaryFaces(G);
+                        sideBdryFaces = abs(G.faces.normals(bdryfaces,:)*[0,1,0]') < 1e-8;
+                        interiorfaces = setdiff(1:G.faces.num, bdryfaces)';
+                        interiorFaceNeighbors = G.faces.neighbors(interiorfaces, :);
+                        neighborFacies = G.cells.tag(interiorFaceNeighbors);
+                        borderFaces = interiorfaces( neighborFacies(:,1)~=neighborFacies(:,2) );
+                        % plotFaces(G, find(bdryfaces(sideBdryFaces)), 'facealpha', 0, 'edgecolor', 'red');
+                        % plotFaces(G, borderFaces, 'facealpha', 0, 'edgecolor', 'blue');
+                        % plotFaces(G, find(bdryfaces), 'facealpha', 0, 'edgecolor', 'green');
+                        plotFaces(G, [bdryfaces(sideBdryFaces);borderFaces], 'facealpha', 0);
+                    end
+                    if opt.graybackground
+                        set(gca, 'Color', [167,166,163]/255); % Set background color to light gray
+                    end
                     plotCellData(G, statedata, cells, 'edgealpha', 0);
                     injcells = intersect(injcells, find(cells));
                     % plotGrid(G, injcells, 'facecolor', 'red');

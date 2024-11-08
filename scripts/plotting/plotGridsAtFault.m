@@ -7,13 +7,13 @@ simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gr
 
 % Define custom colors for tags 1-7
 customColors = [
-    200,153,42;  % Red for 1
-    117,141,189;  % Green for 2
-    200,134,103;  % Blue for 3
-    173,74,57;  % Yellow for 4
-    84,111,61;  % Magenta for 5
-    93,22,159;  % Cyan for 6
-    171,166,164   % Gray for 7
+    200,150,39;  
+    124,149,189;    
+    200,134,103;  
+    190,81,62;  
+    70,122,33;  
+    110,33,172;  
+    167,166,163  
 ]/255;
 
 % Create plot
@@ -24,7 +24,7 @@ view(0,0);
 
 % Customize the plot
 ax = gca;
-set(ax, 'Color', [171,166,164]/255); % Set background color to light gray
+set(ax, 'Color', [167,166,163]/255); % Set background color to light gray
 set(ax, 'xlim', [1050, 1650], 'zlim', [440, 1050]);
 
 % Apply custom colormap for the integer tags
