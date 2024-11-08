@@ -2,17 +2,17 @@ clear all;
 close all;
 %% Setup data
 % getData = @(states,step, G) cellVelocity(states, step, G, 'g');cmap=''; dataname = 'cellVelocity';sumReduce = true; force = false;
-% getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
+getData = @(states, step, G, simcase) states{step}.rs; cmap=''; dataname = 'rs'; sumReduce = false; force = false;
 % getData = @(states, step, G, simcase) states{step}.s(:,2); cmap=''; dataname = 'CO2 saturation'; sumReduce = false;force = false;
 % getData = @(states, step, G) G.cells.tag; cmap = '';dataname = 'facies index';sumReduce = false; force = false;
 % getData = @(states, step, G, simcase) simcase.computeStaticIndicator; dataname ='ortherr'; cmap=''; sumReduce = true; force = true;
 % getData = @(states, step, G, simcase) getFwerr(simcase);dataname ='fwerr'; cmap=''; sumReduce = true; force = true;
-getData = @(states, step, G, simcase) getTotMass(states, step, simcase);cmap='';dataname='totMass'; sumReduce = true; force = false;
+% getData = @(states, step, G, simcase) getTotMass(states, step, simcase);cmap='';dataname='totMass'; sumReduce = true; force = false;
 %% SPEcase, steps
 SPEcase = 'B';
 if strcmp(SPEcase, 'A') 
     scaling = hour; unit = 'h';
-    steps = [30, 144, 720];
+    steps = [300];
 else 
     scaling = speyear;unit='y';
     % steps = [40, 150, 360];
@@ -73,7 +73,7 @@ saveToReport = false;
 ColorScale = 'linear';
 
 filename = [SPEcase, '_', dataname, '_', filename];
-savefolder=fullfile('./../plotsMaster/multiplot', subname);
+savefolder=fullfile('./plots/multiplot', subname);
 
 
 numGrids = numel(gridcases);
@@ -159,12 +159,13 @@ end
 % gridcase = 'cart_pre_cut_PG_130x62';
 
 % gridcase = 'horz_ndg_cut_PG_819x117';
-% gridcase = 'cart_ndg_cut_PG_819x117';
+% gridcase = 'cart_ndg_cut_PG_130x62';
+gridcase = 'cart_ndg_cut_PG_819x117';
 % gridcase = 'struct819x117';
 % gridcase = 'cPEBI_819x117';
 % gridcase = '5tetRef0.31';
 % gridcase = 'gq_pb0.19';
-gridcase = 'struct819x117';
+% gridcase = 'struct819x117';
 % steps = [360];
 
 
@@ -173,9 +174,10 @@ gridcase = 'struct819x117';
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-pdiscs = {''};
-% uwdiscs = {''};uw = false;
-uwdiscs = {'', 'WENO'};uw = true;
+% pdiscs = {''};
+pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa'};
+uwdiscs = {''};uw = false;
+% uwdiscs = {'', 'WENO'};uw = true;
 deckcases = {'B_ISO_C'};
 tagcases = {''};%one for each pdisc or one that applies to all pdiscs
 
@@ -184,7 +186,7 @@ saveplot = true;
 saveToReport = false;
 bigGrid = false;
 filename =[SPEcase, '_', dataname, '_diff_', gridcase, strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
-savefolder = ['./../plotsMaster/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
+savefolder = ['./plots/differenceplots/', SPEcase, '/', displayNameGrid(gridcase, SPEcase)];
 numpdiscs = numel(pdiscs);
 numuwdiscs = numel(uwdiscs);
 numDiscs = numpdiscs*numuwdiscs;
@@ -308,7 +310,7 @@ makeCorrTable = false;
 makeEMDTable = true;
 makeL1Table = false;
 filename =[SPEcase, '_', dataname, '_diff_', strjoin(cellfun(@(g)displayNameGrid(g, SPEcase) , gridcases, UniformOutput=false), '_'), strjoin(cellfun(@(s)shortDiscName(s), pdiscs, UniformOutput=false), '_')];
-savefolder = ['./../plotsMaster/gridDiff/', SPEcase];
+savefolder = ['./plots/gridDiff/', SPEcase];
 numpdiscs = numel(pdiscs);
 numuwdiscs = numel(uwdiscs);
 numDiscs = numpdiscs*numuwdiscs;

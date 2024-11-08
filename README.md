@@ -1,7 +1,16 @@
 # Fordypningsoppgave/masteroppgave
-![animation](Media/BsimPEBI.gif)
-
 This repository contains files for creating different kind of grids, and running SPE11 simulations in Matlab/MRST to compare the effects of different grids and discretization choices.
+
+Simulation using a PEBI grid with ~1M cells (non-linear time in animation):
+
+https://github.com/user-attachments/assets/96f1bc1c-55f8-4ac4-a925-851733ea0fd4
+
+Difference between simulations using TPFA and avgMPFA on a cut-cell grid with ~100k cells:
+
+
+
+https://github.com/user-attachments/assets/fb31003c-4633-4eef-a174-81081d06cf71
+
 
 ## To run files (hopefully):
 - Rename 'config-template.JSON' to 'config.JSON' and modify it to suit your setup
@@ -15,19 +24,20 @@ This repository contains files for creating different kind of grids, and running
 
         
 - Run setup.m
-    - Adds the scripts-folder as an mrst module called masterthesis and adds it to the path
+    - Adds the project files to the matlab path
     - Turns the MRST option 'useMEX' on, to utilize accelerated computations where possible.
+    - makes sure the ./data/grid-files directory exists
 ## MRST functions
 A combination of the development version of MRST hosted on bitbucket, and the 2023-b release was used. Some functions are modified.
-The modified MRST functions are in the folder ```scripts/MRST_functions```. Eventually, some of these modifications may find their way into an official release of MRST.
-## Dependencies
+The modified MRST functions are in the folder ```src/MRST_functions```. Eventually, some of these modifications may find their way into an official release of MRST.
+## Dependencies/Related software
 The scripts and functions in this repository depend on a number of packages. The main dependency is [MRST](https://www.sintef.no/projectweb/mrst/), the Matlab Reservoir Simulation Toolbox, developed at [SINTEF Digital](https://www.sintef.no/en/digital/departments-new/department-of-mathematics-and-cybernetics/research-group-applied-computational-science/). Some modifications to MRST functionality has been made, and some other packages and files have been used:
 1. For generating PEBI-grids, a [fork](https://github.com/KristianHolme/UPR) of the MRST module UPR has been made. 
     - The main modifications are bugfixes and performance improvements, in addition to some modifications to ease the prototyping process.
-2. The official SPE11 [CSP repo](https://github.com/sintefmath/spe11-decks) for some grid generation scripts.
+2. The [spe11-decks repo](https://github.com/sintefmath/spe11-decks) for input deck(s).
 3. [Jutul.jl](https://github.com/sintefmath/Jutul.jl)/[JutulDarcy.jl](https://github.com/sintefmath/JutulDarcy.jl) for accelerated computations in julia.
 4. [CSP11_JutulDarcy.jl](https://github.com/sintefmath/CSP11_JutulDarcy.jl/tree/SPE11C_input) for running compositional models. (branch SPE11C_input for SPE11C support.)
-5. [The official SPE11 CSP repo](https://github.com/Simulation-Benchmarks/11thSPE-CSP/) for ```.geo```-files describing the geometry of the reservoirs.
+5. [The official SPE11 CSP repo](https://github.com/Simulation-Benchmarks/11thSPE-CSP/) for ```.geo```-files describing the geometry of the reservoirs, and for grid generation scripts.
 6. [multilevelOT](https://github.com/liujl11git/multilevelOT) was used for efficiently calculating the [Earth Movers Distance](https://en.wikipedia.org/wiki/Earth_mover%27s_distance) between different mass distributions from different simulations. (Not included in repo)
 7. [tightfig(hfig)](https://se.mathworks.com/matlabcentral/fileexchange/34055-tightfig-hfig) for making nicer plots. (Not included in repo)
 8. A modified version of [table2latex.m](https://se.mathworks.com/matlabcentral/fileexchange/69063-matlab-table-to-latex-conversor) is used for some tables (included in repo).
@@ -36,7 +46,7 @@ The scripts and functions in this repository depend on a number of packages. The
 
 ## Generating grids
 - ```generateCutCellGrid``` and ```generatePEBIGrid``` for cut-cell and PEBI-grids
-- ```generateStructuredGrid``` for generation of structured grid for SPE11C
+- ```generateStructuredGrid``` for generating structured grids for SPE11C
 - Powershell scripts in ```./scripts/gridgeneration/``` to generate structured/unstructured grids for SPE11A and B, using Gmsh and python.
 
 ## Example

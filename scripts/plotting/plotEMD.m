@@ -86,7 +86,7 @@ colormap(hot);
 tightfig();
 
 %% save
-exportgraphics(gca, './../plotsMaster/energyimgHot.eps');
+exportgraphics(gca, './plotsMaster/energyimgHot.eps');
 
 %% Stats
 mx = max(energy, [], "all");

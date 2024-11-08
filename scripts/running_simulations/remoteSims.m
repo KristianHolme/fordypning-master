@@ -1,32 +1,30 @@
 %used for running simulations on remote computer
 function timings = remoteSims(server)
-    mrstModule add ad-core ad-props incomp mrst-gui mimetic linearsolvers ...
-        ad-blackoil postprocessing diagnostics prosjektOppgave...
-        deckformat gmsh nfvm mpfa
+
     % gridcases = {'tetRef10', 'tetRef8', 'tetRef6', 'tetRef4', 'tetRef2'};
     % schedulecases = {'simple-coarse', 'simple-std'};
     mrstVerbose off
     switch  server
         case 1
-            SPEcase = 'A';
-            gridcases = {'5tetRef0.7', '5tetRef0.5'};
+            SPEcase = 'C';
+            gridcases = {'flat_tetra'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-mpfa'};
+            pdiscs = {''};
             uwdiscs = {''};
-            deckcases = {'RS'};
+            deckcases = {'B_ISO_C'};
             tagcase = '';
             resetData = false;
             resetAssembly = true;
             do.runSimulation = true;
-            Jutul = false;
+            Jutul = true;
             direct_solver = false;
         case 2
-            SPEcase = 'A';
-            gridcases = {'5tetRef0.4'};
+            SPEcase = 'C';
+            gridcases = {'tet_zx10-F'};
             schedulecases = {''};
-            pdiscs = {'', 'hybrid-avgmpfa','hybrid-mpfa'};
+            pdiscs = {'', 'hybrid-avgmpfa','hybrid-ntpfa', 'hybrid-mpfa'};
             uwdiscs = {''};
-            deckcases = {'RS'};
+            deckcases = {'B_ISO_C'};
             tagcase = '';
             resetData = false;
             resetAssembly = true;
