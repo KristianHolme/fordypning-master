@@ -10,12 +10,19 @@ function [G, partition] = generateCutCellGrid(nx, ny, varargin)
         'type', 'horizon', ...
         'removeInactive', false, ...
         'partitionMethod', 'convexity', ...
+        'backgroundGridMap', true, ...
         'round', true,...
         'SPEcase', 'B', ...
         'Cdepth', 50);
     [opt, extra] = merge_options(opt, varargin{:});
     opt.nudgeGeom = ~opt.presplit;
     totstart = tic();
+    is_A = strcmp(opt.SPEcase, 'A');
+    if is_A
+        % Hack: We just generate case B since that always works and then
+        % scale back.
+        opt.SPEcase = 'B';
+    end
     switch opt.type
         case 'cartesian'
             [G, geodata] = makeCartesianCut(nx, ny, opt, extra);
@@ -32,12 +39,20 @@ function [G, partition] = generateCutCellGrid(nx, ny, varargin)
         G.cells.indexMap = (1:G.cells.num)';
     end
     if opt.recombine
+        G0 = G;
         [G, partition] = Recombine(G, opt, nx, ny, geodata);
+    else
+        G = addBackgroundGridMap(G, opt);
     end    
 
     assert(checkGrid(G));
     ttot = toc(totstart);
     dispif(opt.verbose, sprintf('Generated cut-cell grid in %f s\n', round(ttot,2)));
+    if is_A
+        ub = [8400, 1, 1200];
+        ua = [2.8, 1.0, 1.2];
+        G.nodes.coords = bsxfun(@times, G.nodes.coords, ua./ub);
+    end
 end
 
 function [G, geodata] = makeCartesianCut(nx, ny, opt, extra)
@@ -210,6 +225,7 @@ function [G, partition] = Recombine(G, opt, nx, ny, geodata)
 
     t = toc(t);
     dispif(opt.verbose, "Partition(%d iterations) and coarsen in %0.2f s\n%d cells failed to merge.\n", tries, t, numel(failed));
+    G = addBackgroundGridMap(G, opt);
 
     if strcmp(opt.SPEcase, 'C')
         G = removeLayeredGrid(G);
@@ -222,6 +238,7 @@ function [G, partition] = Recombine(G, opt, nx, ny, geodata)
         G.nodes.coords = bendSPE11C(G.nodes.coords);
         G = mcomputeGeometry(G);
         G = getBufferCells(G);
+        G = finalizeBackgroundGridCaseC(G, opt);
     end
 
     t = tic();
@@ -294,4 +311,72 @@ end
 
 targetPoints = [targetPoints;newPoints];
 
+end
+
+function G = addBackgroundGridMap(G, opt)
+    if opt.backgroundGridMap
+        nz = 1;
+        if strcmp(opt.SPEcase, 'A')
+            % 280 x 120
+            nx = 280;
+            ny = 120;
+            error('Not fixed yet.')
+        elseif strcmp(opt.SPEcase, 'B')
+            % 840 x 120
+            nx = 840;
+            ny = 120;
+        else
+            % 168 x 100 x 120
+            nx = 168;
+            ny = 100;
+            nz = 120;
+            assert(strcmp(opt.SPEcase, 'C'))
+        end
+        [M, Gr, report] = getReductionMatrix(G, nx, 120);
+        [I, J, V] = find(M);
+        G.reportingGrid = struct('map', [I, J, V], 'dims', [nx, ny, nz]);
+    else
+        G.reportingGrid = [];
+    end
+end
+
+function G = finalizeBackgroundGridCaseC(G, opt)
+    if opt.backgroundGridMap
+        assert(strcmp(opt.SPEcase, 'C'))
+        map = G.reportingGrid.map;
+        I = map(:, 1);
+        J = map(:, 2);
+        W = map(:, 3);
+        assert(max(I) <= 120*168)
+        assert(max(J) == G.layerSize)
+        layerI = {};
+        layerJ = {};
+        layerW = {};
+        sz_background = 120;
+        dy_rep = 1/sz_background;
+        dy_mesh = 1/opt.Cdepth;
+        for layerNo = 1:opt.Cdepth
+            J_offset = J + (layerNo-1)*G.layerSize;
+            x1 = (layerNo-1)*dy_mesh;
+            x2 = x1 + dy_mesh;
+            for layerNoBg = 1:sz_background
+                y1 = (layerNoBg-1)*dy_rep;
+                y2 = y1 + dy_rep;
+                is_overlapping = max(x1,y1) <= min(x2,y2);
+                overlap = min(x2,y2) - max(x1,y1);
+                if is_overlapping
+                    I_offset = I + (layerNoBg-1)*120*168;
+                    assert(overlap >= 0)
+                    if overlap > 1e-10
+                        layerI{end+1} = I_offset;
+                        layerJ{end+1} = J_offset;
+                        layerW{end+1} = W.*overlap/dy_rep;
+                    end
+                else
+                    assert(overlap <= 0)
+                end
+            end
+        end
+        G.reportingGrid.map = [vertcat(layerI{:}), vertcat(layerJ{:}), vertcat(layerW{:})];
+    end
 end

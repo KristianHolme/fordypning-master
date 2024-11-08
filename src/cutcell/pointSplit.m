@@ -130,6 +130,9 @@ function [G, t, skipped] = pointSplit(G, points, varargin)
             fn = ['buff_', fn];
         end
         savepth = fullfile(opt.savedir, fn);
+        if ~isfolder(opt.savedir)
+            mkdir(opt.savedir)
+        end
         save(savepth, 'G');
     end
 end
