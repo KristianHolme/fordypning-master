@@ -30,7 +30,13 @@ function G = setupGrid(simcase, varargin)
                 config = jsondecode(configFile);
                 fn = fullfile(config.repo_folder, '..', '11thSPE-CSP','geometries', 'spe11a.geo');
                 geodata = readGeo(fn, 'assignExtra', true); 
-                G = tagbyFacies(G, geodata, 'scale', [3000, 1000, 1]);
+                %if specase B we scale, if A we dont
+                if strcmp(specase, 'b')
+                    scale = [3000, 1000, 1];
+                else
+                    scale = [1, 1, 1];
+                end
+                G = tagbyFacies(G, geodata, 'scale', scale);
                 save(matFile, "G")
             end
             sliceForBuffer = true;
@@ -324,6 +330,9 @@ function G = setupGrid(simcase, varargin)
 
     if sliceForBuffer
         if min(G.cells.centroids(:,1)) > 0.6
+            if ~exist('SPEcase', 'var')
+                SPEcase = simcase.SPEcase;
+            end
             G = bufferSlice(G, SPEcase);
             G.faces.tag = zeros(G.faces.num, 1);
             save(matFile, 'G');
