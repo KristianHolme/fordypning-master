@@ -30,9 +30,9 @@ function G = generateQTorTGridMatlab(varargin)
 
     %setup simcase with gridcase gq_pb0.19/ tetRef0.19
     if strcmp(opt.gridType, 'QT')
-        gridcase = ['gq_pb', num2str(opt.refinementFactor)];
+        gridcase = ['gq_pb', sprintf('%.1f', opt.refinementFactor)];
     elseif strcmp(opt.gridType, 'T')
-        gridcase = ['5tetRef', num2str(opt.refinementFactor)];
+        gridcase = ['tetRef', sprintf('%.1f', opt.refinementFactor)];
     end
 
     if opt.SPEcase == 'C'
