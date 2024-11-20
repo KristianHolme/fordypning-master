@@ -85,4 +85,4 @@ if __name__ == "__main__":
         raise ValueError("spe_case must be either 'A' or 'B'")
     
     generate_grid(refinement, grid_type, spe_case) 
-    # generate_grid(2, 'QT', 'B') 
+    # generate_grid(0.19, 'T', 'B') 

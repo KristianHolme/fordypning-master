@@ -23,10 +23,10 @@ function multiplot(data, varargin)
     [numRows, numCols] = size(data);
 
     %get min and max value
-    minV = 0; 
-    maxV = 0;
-    diagminV = 0;
-    diagmaxV = 0;
+    minV = Inf; 
+    maxV = -Inf;
+    diagminV = Inf;
+    diagmaxV = -Inf;
     
     for i = 1:numRows
         if opt.diff

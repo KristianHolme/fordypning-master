@@ -40,7 +40,7 @@ function G = generateQTorTGridMatlab(varargin)
         if ~contains(numStr, '.')
             numStr = [numStr, '.0'];
         end
-        gridcase = ['tetRef', numStr];
+        gridcase = ['5tetRef', numStr];
     end
 
     if opt.SPEcase == 'C'
@@ -56,7 +56,7 @@ function G = generateQTorTGridMatlab(varargin)
         makeGmshFile(opt);
         G = setupGrid(simcase);
     end
-
+    fprintf('%s with %d cells (2D)\n', opt.gridType, G.cells.num)
     if strcmp(tempSPECase, 'C')
         % at this point we have a B grid
         opt.SPEcase = 'C';

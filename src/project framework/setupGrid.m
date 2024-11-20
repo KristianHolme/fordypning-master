@@ -63,7 +63,7 @@ function G = setupGrid(simcase, varargin)
                    
             
         elseif contains(gridcase, 'struct')
-            resolution = replace(replace(gridcase, '-2D', ''), 'struct', ''); %format struct200x200
+            resolution = char(replace(replace(gridcase, '-2D', ''), 'struct', '')); %format struct200x200
             matFile = fullfile(gridFolder, [prefix, '_struct', resolution ,'_grid.mat']);
             mFile = fullfile(gridFolder, [prefix, '_struct', resolution, '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
@@ -72,11 +72,12 @@ function G = setupGrid(simcase, varargin)
                 G = gmshToMRST(mFile);
                 save(matFile, "G")
             end
-            if contains(resolution, '8400') %really big case, all cells are small, so dont need extra small (?)
-                sliceForBuffer = false;
-            else
-                sliceForBuffer = true;
-            end
+            %if contains(resolution, '8400') || strcmp(simcase.SPEcase, 'A') %really big case, all cells are small, so dont need extra small (?)
+            %    sliceForBuffer = false;
+            %else
+            %    sliceForBuffer = true;
+            %end
+            sliceForBuffer = false;
         elseif contains(gridcase, 'skewed3D')
             G = makeSkewed3D();
             return

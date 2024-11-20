@@ -560,8 +560,10 @@ classdef Simcase < handle
             end
         end 
 
-        function saveGridRock(simcase, name)
-            folder = 'data/grid-files/gridrock_simready';
+        function saveGridRock(simcase, name, varargin)
+            opt = struct('folder', 'data/grid-files/gridrock_simready');
+            opt = merge_options(opt, varargin{:});
+            folder = opt.folder;
             dispif(isempty(simcase.tagcase), 'No tag! Will remove facies 7 cells!\n');
             if ~isfield(simcase.G.cells, 'topCells')
                 simcase = addTopBotTags(simcase);
