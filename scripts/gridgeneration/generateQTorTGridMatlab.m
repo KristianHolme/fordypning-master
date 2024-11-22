@@ -29,17 +29,13 @@ function G = generateQTorTGridMatlab(varargin)
     end
 
     %setup simcase with gridcase gq_pb0.19/ tetRef0.19
+    numStr = num2str(opt.refinementFactor);
+    if ~contains(numStr, '.')
+        numStr = [numStr, '.0'];
+    end
     if strcmp(opt.gridType, 'QT')
-        numStr = num2str(opt.refinementFactor);
-        if ~contains(numStr, '.')
-            numStr = [numStr, '.0'];
-        end
         gridcase = ['gq_pb', numStr];
     elseif strcmp(opt.gridType, 'T')
-        numStr = num2str(opt.refinementFactor);
-        if ~contains(numStr, '.')
-            numStr = [numStr, '.0'];
-        end
         gridcase = ['5tetRef', numStr];
     end
 

@@ -31,7 +31,7 @@ function G = setupGrid(simcase, varargin)
                 fn = fullfile(config.repo_folder, '..', '11thSPE-CSP','geometries', 'spe11a.geo');
                 geodata = readGeo(fn, 'assignExtra', true); 
                 %if specase B we scale, if A we dont
-                if strcmp(specase, 'b')
+                if ~strcmp(specase, 'a')
                     scale = [3000, 1000, 1];
                 else
                     scale = [1, 1, 1];
@@ -57,6 +57,17 @@ function G = setupGrid(simcase, varargin)
                 error([matFile,' and ', mfile, ' not found']);
             elseif ~isfile(matFile) && isfile(mFile)
                 G = gmshToMRST(mFile);
+                configFile = fileread('config.JSON');
+                config = jsondecode(configFile);
+                fn = fullfile(config.repo_folder, '..', '11thSPE-CSP','geometries', 'spe11a.geo');
+                geodata = readGeo(fn, 'assignExtra', true); 
+                %if specase B we scale, if A we dont
+                if ~strcmp(specase, 'a')
+                    scale = [3000, 1000, 1];
+                else
+                    scale = [1, 1, 1];
+                end
+                G = tagbyFacies(G, geodata, 'scale', scale);
                 save(matFile, "G")
             end
             sliceForBuffer = true;
