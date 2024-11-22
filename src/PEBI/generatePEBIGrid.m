@@ -14,7 +14,7 @@ function [G, G2Ds, G2D, Pts, F] = generatePEBIGrid(nx, ny, varargin)
     dispif(opt.verbose, 'Generating PEBI grid...\n');
     tstart = tic();
     
-    geodata = readGeo('./geo-files/spe11a-V2.geo', 'assignextra', true);
+    geodata = readGeo('./data/geo-files/spe11a-V2.geo', 'assignextra', true);
 
     % make cells so well are in center
     if ~strcmp(opt.SPEcase, 'C')
