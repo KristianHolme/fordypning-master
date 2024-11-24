@@ -104,8 +104,14 @@ classdef Simcase < handle
             simcase.griddim = opt.griddim;
 
             if simcase.jutulThermal
-                simcase.casename = sprintf('spe11%s_%s_thermal_cv', lower(simcase.SPEcase), simcase.gridcase);
-                simcase.dataOutputDir = '/media/kristian/HDD/Jutul/output/csp11/';
+                pdisc = simcase.pdisc;
+                if isempty(pdisc)
+                    pdisc = 'tpfa';
+                end
+                pdisc_split = split(pdisc, '-');
+                pdisc = pdisc_split{end};
+                simcase.casename = sprintf('spe11%s_%s_thermal_cv_%s', lower(simcase.SPEcase), simcase.gridcase, pdisc);
+                simcase.dataOutputDir = '/media/kristian/HDD/Jutul/output/csp11_rsc/';
             end
         end
 
