@@ -9,7 +9,8 @@ function [G, G2Ds, G2D, Pts, F] = generatePEBIGrid(nx, ny, varargin)
                  'earlyReturn', false, ...
                  'removeShortEdges', true, ...
                  'aspect', 'true', ...
-                 'Cdepth', 50);
+                 'Cdepth', 50,...
+                 'backgroundGridMap', true);
     [opt, extra] = merge_options(opt, varargin{:});
     dispif(opt.verbose, 'Generating PEBI grid...\n');
     tstart = tic();
@@ -231,13 +232,17 @@ function [G, G2Ds, G2D, Pts, F] = generatePEBIGrid(nx, ny, varargin)
 
 
     t = tic();
-    dispif(opt.verbose, "Adding injection cells and box-volume-fractions...");
+    dispif(opt.verbose, "Adding injection cells, box-volume-fractions, and background grid map...");
     G = addBoxWeights(G, 'SPEcase', opt.SPEcase);
     [w1, w2] = getinjcells(G, opt.SPEcase);
     if strcmp(opt.SPEcase, 'C')
         G.cells.wellCells = {w1, w2};
     else
         G.cells.wellCells = [w1, w2];
+    end
+    if opt.backgroundGridMap
+        assert(~strcmp(opt.SPEcase, 'C'), 'Background grid map not supported for case C');
+        G = addBackgroundGridMap(G, opt);
     end
     t = toc(t);
     dispif(opt.verbose, "Done in %0.2d s.\n", t);
