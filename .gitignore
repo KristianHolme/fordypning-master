@@ -15,6 +15,7 @@ spe11-decks
 decksave
 data/grid-files/*
 data/PEBI_pointData/*
+data/experiments/*
 scripts/gridgeneration/ggvenv/*
 Misc/
 data/deck/
