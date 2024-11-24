@@ -11,6 +11,11 @@ function G = setupGrid(simcase, varargin)
         stretch = false;
     end
     prefix = ['spe11', specase];
+    if simcase.jutulThermal
+        gridfile = fullfile("~/Code/CSP11_JutulDarcy.jl/data/", [simcase.gridcase, '.mat']);
+        load(gridfile)
+        return
+    end
         
     if ~isempty(gridcase)
         gridFolder = fullfile(simcase.repoDir, 'data/grid-files');

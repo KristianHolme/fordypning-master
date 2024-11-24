@@ -2,6 +2,12 @@ function rock = setupRock(simcase, varargin)
     opt = struct('deck', false);
     opt = merge_options(opt, varargin{:});
 
+    if simcase.jutulThermal
+        gridRockfile = fullfile("~/Code/CSP11_JutulDarcy.jl/data/", [simcase.gridcase, '.mat']);
+        load(gridRockfile)
+        return
+    end
+
     if opt.deck
         rock = initEclipseRock(simcase.deck);
         active = G.cells.indexMap;
