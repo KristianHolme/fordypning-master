@@ -362,10 +362,10 @@ classdef Simcase < handle
             else
                 dataFolder = 'multiphase';
             end
-            contents = dir(fullfile(dirname, dataFolder));
+            % contents = dir(fullfile(dirname, dataFolder));
             
             % Filter out any hidden files or folders (like . and .. on Unix-based systems)
-            contents = contents(~ismember({contents.name}, {'.', '..'}));
+            % contents = contents(~ismember({contents.name}, {'.', '..'}));
 
             states = ResultHandler('dataPrefix', 'state', ...
                                    'dataDirectory', dirname, ...
