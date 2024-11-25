@@ -82,7 +82,7 @@ type = plotTypes{5};
 
 xdata = cumsum(simcases{1}.schedule.step.val)/xscaling;
 xdata = xdata(1:steps);
-xdata_thermal = cumsum(load('/media/kristian/HDD/Jutul/output/csp11/thermal_dt.mat').dt)/xscaling;
+xdata_thermal = load('/media/kristian/HDD/Jutul/output/csp11/thermal_dt.mat').dt/xscaling;
 xdatasets = {xdata, xdata_thermal};
 data = nan(steps, numel(simcases));
 twosteps = [steps, numel(xdata_thermal)];
@@ -113,13 +113,16 @@ else
     figytxt = ytxt;
 end
 for i=1:numel(simcases)
-    step = twosteps(2-mod(i, 2));
-    x = xdatasets{2-mod(i, 2)};
-    y = figdata(1:step, i);
-    if mod(i, 2)==0
-        x = x(10:end);
-        y = y(10:210);
+    simcase = simcases{i};
+    if simcase.jutulThermal
+        step = twosteps(2);
+        x = xdatasets{2};
+    else
+        step = twosteps(1);
+        x = xdatasets{1};
     end
+
+    y = figdata(1:step, i);
     plot(x, y, 'Color', plotStyles{i}.Color, 'LineStyle', plotStyles{i}.LineStyle);
 end
 % Create dummy plots for legend
