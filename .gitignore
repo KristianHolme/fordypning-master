@@ -16,7 +16,8 @@ decksave
 data/grid-files/*
 data/PEBI_pointData/*
 data/experiments/*
+data/deck/
+data/RSC/
 scripts/gridgeneration/ggvenv/*
 Misc/
-data/deck/
 _research/
