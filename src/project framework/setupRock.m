@@ -2,7 +2,7 @@ function rock = setupRock(simcase, varargin)
     opt = struct('deck', false);
     opt = merge_options(opt, varargin{:});
 
-    if simcase.jutulThermal
+    if ~isempty(simcase.jutulComp)
         gridRockfile = fullfile("~/Code/CSP11_JutulDarcy.jl/data/", [simcase.gridcase, '.mat']);
         load(gridRockfile)
         return

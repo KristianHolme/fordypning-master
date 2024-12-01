@@ -11,7 +11,7 @@ function data = getSealingCO2(simcase, steps, varargin)
     else
         savedata = true;
         disp("calculating data...")
-        if simcase.jutulThermal
+        if ~isempty(simcase.jutulComp)
             maxsteps = 210;
         else
             maxsteps = numel(simcase.schedule.step.val);
@@ -19,7 +19,7 @@ function data = getSealingCO2(simcase, steps, varargin)
         sealingcells = G.cells.tag == 1;
         [states, ~, ~] = simcase.getSimData;
         typeParts = strsplit('FlowProps.ComponentTotalMass', '.');
-        if simcase.jutul || simcase.jutulThermal
+        if simcase.jutul || ~isempty(simcase.jutulComp)
             typeParts = {'TotalMasses'};
         end
         
@@ -37,7 +37,7 @@ function data = getSealingCO2(simcase, steps, varargin)
             else
                 adjustmentfactor = 1;
             end
-            if simcase.jutul || simcase.jutulThermal
+            if simcase.jutul || ~isempty(simcase.jutulComp)
                 completedata(it) = sum(fulldata(sealingcells, 2))*adjustmentfactor;
             else
                 completedata(it) = sum(fulldata{2}(sealingcells))*adjustmentfactor;

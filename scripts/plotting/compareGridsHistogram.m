@@ -15,9 +15,13 @@ G3 = load(sprintf('data/grid-files/cutcell/cartesian_presplit_cutcell_28x1.mat',
 G4 = load(sprintf('data/grid-files/cutcell/buff_cartesian_presplit_cutcell_PG_%s_C.mat', res)).G;
 % G3 = load('data/grid-files/PEBI/buff_cPEBI_220x110_B.mat').G;
 %%
+G1 = Simcase('gridcase', 'struct500x100', 'SPEcase', 'B').G
+G2 = Simcase('gridcase', 'struct130x62', 'SPEcase', 'B').G
+
+%%
 grids = {G1, G2};
-names = {'HPCP-C', 'HNCP-C'};
-plotname = 'H-pre-v-nudge-C';
+names = {'C50K', 'C10K'};
+plotname = 'C: 50K vs 10K';
 %%
 figure()
 T = tiledlayout(numel(grids), 1);

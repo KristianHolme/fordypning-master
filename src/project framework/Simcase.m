@@ -15,7 +15,7 @@ classdef Simcase < handle
         pdisc %eks. pressure discretization'hybrid-avgmpfa'
         uwdisc
         jutul
-        jutulThermal
+        jutulComp
         nonStdGrid
 
         G
@@ -57,7 +57,7 @@ classdef Simcase < handle
                          'griddim'      , 3, ...
                          'uwdisc'      , [], ...
                          'jutul'       , false, ...
-                         'jutulThermal', false, ...
+                         'jutulComp', '', ...
                          'nonStdGrid', false);
             opt = merge_options(opt, varargin{:});
 
@@ -84,7 +84,7 @@ classdef Simcase < handle
             simcase.propnames = propnames;
             simcase.usedeck = opt.usedeck;
             simcase.jutul = opt.jutul;
-            simcase.jutulThermal = opt.jutulThermal;
+            simcase.jutulComp = opt.jutulComp;
             
             %configure folder structure
             configFile = fileread('config.JSON');
@@ -103,14 +103,19 @@ classdef Simcase < handle
             end
             simcase.griddim = opt.griddim;
 
-            if simcase.jutulThermal
+            if ~isempty(simcase.jutulComp)
                 pdisc = simcase.pdisc;
                 if isempty(pdisc)
                     pdisc = 'tpfa';
                 end
                 pdisc_split = split(pdisc, '-');
                 pdisc = pdisc_split{end};
-                simcase.casename = sprintf('spe11%s_%s_thermal_cv_%s', lower(simcase.SPEcase), simcase.gridcase, pdisc);
+                if strcmp(simcase.jutulComp, 'thermal')
+                    comptype = 'thermal_Cv';
+                else
+                    comptype = simcase.jutulComp;
+                end
+                simcase.casename = sprintf('spe11%s_%s_%s_%s', lower(simcase.SPEcase), simcase.gridcase, comptype, pdisc);
                 simcase.dataOutputDir = '/media/kristian/HDD/Jutul/output/csp11_rsc/';
             end
         end
@@ -356,7 +361,7 @@ classdef Simcase < handle
             if simcase.jutul
                 dirname =[dirname, '_output_mrst'];
                 dataFolder = '';
-            elseif simcase.jutulThermal
+            elseif ~isempty(simcase.jutulComp)
                 dirname =[dirname, '_mrst'];
                 dataFolder = '';
             else
@@ -534,7 +539,7 @@ classdef Simcase < handle
             cellIx = opt.cellIx;
 
             typeParts = strsplit(type, '.');
-            if simcase.jutulThermal
+            if ~isempty(simcase.jutulComp)
                 steps = 210;
             elseif isempty(simcase.schedulecase) || strcmp(simcase.schedulecase, 'simple-std')
                 steps = size(simcase.schedule.step.val, 1);

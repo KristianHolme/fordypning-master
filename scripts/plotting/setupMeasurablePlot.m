@@ -334,7 +334,7 @@ for igrid = 1:numel(gridcases)
     plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker','none');
 
     style = discstyles{2};
-    simcases{end+1} = Simcase('SPEcase', SPEcase,'gridcase', gridcase, 'jutul', jutul{igrid}, 'jutulThermal', true, 'tagcase', 'allcells');
+    simcases{end+1} = Simcase('SPEcase', SPEcase,'gridcase', gridcase, 'jutul', jutul{igrid}, 'jutulComp', 'thermal', 'tagcase', 'allcells');
     plotStyles{end+1} = struct('Color', color, 'LineStyle', style, 'Marker','none');
 end
 %% Load data compThermal

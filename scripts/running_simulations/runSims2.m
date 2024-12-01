@@ -5,10 +5,10 @@ function timings = runSims2(server)
     mrstVerbose off
     switch  server
     case 1
-        SPEcase = 'C';
-        gridcases = {'tet-F'};
-        schedulecases = {'skipEquil'};
-        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
+        SPEcase = 'B';
+        gridcases = getRSCGridcases({'HC', 'CC'}, [10, 50]);
+        schedulecases = {''};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
@@ -18,10 +18,10 @@ function timings = runSims2(server)
         direct_solver = false;
         mrstVerbose off;
     case 2
-        SPEcase = 'C';
-        gridcases = {'tet_zx10-F'};
+        SPEcase = 'B';
+        gridcases = getRSCGridcases({'C'}, [10, 50, 100, 200]);
         schedulecases = {''};
-        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
+        pdiscs = {''};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
@@ -32,22 +32,9 @@ function timings = runSims2(server)
         mrstVerbose off;
     case 3
         SPEcase = 'B';
-        gridcases = {'cart_ndg_cut_PG_130x62'};
+        gridcases = getRSCGridcases({'QT', 'T'}, [10, 50]);
         schedulecases = {''};
-        pdiscs = {'', 'hybrid-avgmpfa', 'indicator-hybrid-avgmpfa','indicator20-hybrid-avgmpfa', 'leftFaultEntry-hybrid-avgmpfa', 'indicator_1layer-hybrid-avgmpfa'};
-        uwdiscs = {''};
-        deckcases = {'B_ISO_C'};
-        tagcase = '';
-        resetData = true;
-        resetAssembly = true;
-        Jutul = false;
-        direct_solver = false;
-        mrstVerbose off;
-    case 4
-        SPEcase = 'C';
-        gridcases = {'flat_tetra_subwell_zx5'};
-        schedulecases = {'skipEquil'};
-        pdiscs = {'hybrid-mpfa'};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
@@ -55,18 +42,33 @@ function timings = runSims2(server)
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
-    case 5
-        SPEcase = 'C';
-        gridcases = {'cTwist-M'};
+        mrstVerbose off;
+    case 4
+        SPEcase = 'B';
+        gridcases = getRSCGridcases({'QT', 'T'}, [100]);
         schedulecases = {''};
-        pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa', 'hybrid-mpfa'};
         uwdiscs = {''};
         deckcases = {'B_ISO_C'};
         tagcase = '';
-        resetData = true;
+        resetData = false;
         resetAssembly = false;
         Jutul = false;
         direct_solver = false;
+        mrstVerbose off;
+    case 5
+        SPEcase = 'B';
+        gridcases = getRSCGridcases({'HC', 'CC', 'PEBI'}, [100]);
+        schedulecases = {''};
+        pdiscs = {'', 'hybrid-ntpfa', 'hybrid-avgmpfa'};
+        uwdiscs = {''};
+        deckcases = {'B_ISO_C'};
+        tagcase = '';
+        resetData = false;
+        resetAssembly = false;
+        Jutul = false;
+        direct_solver = false;
+        mrstVerbose off;
     end
     if Jutul, mrstVerbose on,end
     warning('off', 'all');

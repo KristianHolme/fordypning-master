@@ -8,7 +8,7 @@ function data = getPoP(simcase, steps, popcell, varargin)
         load(filename)
     else
         disp("calculating data...")
-        if simcase.jutulThermal
+        if ~isempty(simcase.jutulComp)
             maxsteps = 210;
         else
             maxsteps = numel(simcase.schedule.step.val);

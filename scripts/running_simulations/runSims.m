@@ -23,7 +23,9 @@ SPEcase = 'B';
 % gridcases = {'cart_ndg_cut_PG_1638x234', 'cart_ndg_cut_PG_2640x380', 'horz_ndg_cut_PG_1638x234'};
 % gridcases = {'cart_ndg_cut_PG_130x62'};
 % gridcases = {'horz_ndg_cut_PG_130x62'};
-gridcases = {'cart_ndg_cut_PG_819x117'};
+% gridcases = {'cart_ndg_cut_PG_819x117'};
+% gridcases = {'struct500x100'};
+[gridcases, names] = getRSCGridcases({'C', 'HC', 'CC', 'QT', 'T'}, [100]);
 
 % SPEcase = 'C'; %some grids for SPE11C
 % gridcases = {'horz_ndg_cut_PG_5', 'struct50x50x50', 'cart_ndg_cut_PG_50x50x50'};
@@ -36,8 +38,8 @@ gridcases = {'cart_ndg_cut_PG_819x117'};
 % gridcases = {'tetra_transfault_500x500x20'};
 % gridcases = {'cart_ndg_cut_PG_100x100x100'};
 
-pdiscs = {''};
-% pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
+% pdiscs = {''};
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 % pdiscs = {'', 'hybrid-avgmpfa', 'ntpfa'};
 
 schedulecases = {''};%defaults to schedule from deck
@@ -47,17 +49,17 @@ disc_prio = 1;%1 means tpfa prio when creating faceblocks for hybrid discretizat
 tagcase = '';%some options: normalRock, bufferMult, deckrock, allcells, diagperm, gdz-shift, CPPD
 
 Jutul               = false; %use Jutul for simulations. Only works for TPFA
-jutulThermal        = false;
+jutulComp        = '';%thermal or isothermal
 
 resetData           = false; %Start simulation at beginning, ignoring saved steps
 resetAssembly       = false; %ignore stored preprocessing computations for consistent discretizations
 do.plotStates       = false;  %plot results of simulations using plotToolBar
 do.plotFlux         = false; %plots flux
 do.plotFacies       = false;
-do.runSimulation    = true; %run simulation
+do.runSimulation    = false; %run simulation
 do.plotOrthErr      = false; %plot cellwise K-orthogonality indicator'
 do.plothybridblocks = false;
-do.dispTime         = false;  %display simulation time
+do.dispTime         = true;  %display simulation time
 direct_solver       = false; %use direct solver instead of better iterative solvers like AMG/CPR. May not be respected if backslashThreshold is not met
 % mrstVerbose off;
 
@@ -76,7 +78,7 @@ for ideck = 1:numel(deckcases)
                     uwdisc = uwdiscs{iuwdisc};
                     simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                     'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                    'pdisc', pdisc, 'uwdisc', uwdisc, 'jutul', Jutul, 'jutulThermal', jutulThermal);
+                                    'pdisc', pdisc, 'uwdisc', uwdisc, 'jutul', Jutul, 'jutulComp', jutulComp);
                     if do.runSimulation
                         [ok, status, time] = runSimulation(simcase, 'resetData', resetData, 'Jutul', Jutul, ...
                                             'direct_solver', direct_solver, 'prio', disc_prio, 'resetAssembly', resetAssembly);

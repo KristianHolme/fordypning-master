@@ -8,8 +8,8 @@ function data = getComp(simcase, steps, submeasure, box, varargin)
         load(filename)
     else
         disp("calculating data...")
-        if simcase.jutulThermal
-            allsteps = 210;
+        if ~isempty(simcase.jutulComp)
+            allsteps = 201;
         else
             allsteps = numel(simcase.schedule.step.val);
         end
@@ -20,7 +20,7 @@ function data = getComp(simcase, steps, submeasure, box, varargin)
 
         
         for it = 1:maxsteps
-            if simcase.jutulThermal
+            if ~isempty(simcase.jutulComp)
                 state = states{it};
                 totalmass = state.TotalMasses(:,2);
                 

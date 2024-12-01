@@ -8,7 +8,7 @@ opt = struct( ...
     'tagcase', '',...
     'schedulecases', {''},...
     'jutul', false,...
-    'jutulThermal', false);
+    'jutulComp', false);
 opt = merge_options(opt, varargin{:});
 
 deckcases = opt.deckcases;
@@ -18,7 +18,7 @@ schedulecases = opt.schedulecases;
 tagcase = opt.tagcase;
 uwdiscs = opt.uwdiscs;
 Jutul = opt.jutul;
-jutulThermal = opt.jutulThermal;
+jutulComp = opt.jutulComp;
 
 
 simcases = {};
@@ -35,7 +35,7 @@ for ideck = 1:numel(deckcases)
                     uwdisc = uwdiscs{iuwdisc};
                     simcases{end+1} = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase, ...
                                     'schedulecase', schedulecase, 'tagcase', tagcase, ...
-                                    'pdisc', pdisc, 'uwdisc', uwdisc, 'jutul', Jutul, 'jutulThermal', jutulThermal);
+                                    'pdisc', pdisc, 'uwdisc', uwdisc, 'jutul', Jutul, 'jutulComp', jutulComp);
 
                 end
             end
