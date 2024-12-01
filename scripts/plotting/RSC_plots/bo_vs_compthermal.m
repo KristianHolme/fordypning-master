@@ -4,7 +4,7 @@ close all
 SPEcase = 'B';
 
 
-resetData = true;
+resetData = false;
 saveplot = false;
 legendpos = 'best';
 plottitle = true;
@@ -18,18 +18,18 @@ comptype = 'isothermal';
 pdiscs = {'', 'avgmpfa'};
 
 plotTypes = {
-    % 'sealing', ...%1
-    % 'buffer', ...%2
-    % 'pop1', ...%3
-    % 'pop2', ...%4
+    'sealing', ...%1
+    'buffer', ...%2
+    'pop1', ...%3
+    'pop2', ...%4
     'p21', ...%5
-    % 'p22', ...%6
-    % 'p23', ...%7
-    % 'p24', ...%8
-    % 'p31', ...%9
-    % 'p32', ...%10
-    % 'p33', ...%11
-    % 'p34' ...%12
+    'p22', ...%6
+    'p23', ...%7
+    'p24', ...%8
+    'p31', ...%9
+    'p32', ...%10
+    'p33', ...%11
+    'p34' ...%12
     };
 %% make all desired plots
 % tic()

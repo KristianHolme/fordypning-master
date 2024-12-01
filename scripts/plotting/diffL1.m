@@ -92,8 +92,8 @@ colorbar;
 save('/media/kristian/HDD/matlab/output/L1Diffs.mat', 'L1Diffs', 'discnames', 'displaynames')
 %%
 function reducedData = reduce(statedata, G, M, Gr)
-fulldata = zeros(size(M, 2), 1);
-fulldata(G.cells.indexMap) = statedata ./ G.cells.volumes;
-reducedData = (M*fulldata) .* Gr.cells.volumes;
+    fulldata = zeros(size(M, 2), 1);
+    fulldata(G.cells.indexMap) = statedata ./ G.cells.volumes;
+    reducedData = (M*fulldata) .* Gr.cells.volumes;
 end
 
