@@ -5,10 +5,13 @@ SPEcase = 'B';
 [gridcases, gridnames] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI','QT', 'T'}, [100]);
 % [gridcases, gridnames] = getRSCGridcases({'C', 'HC', 'CC','QT', 'T'}, [10]);
 pdiscs = {'', 'avgmpfa', 'ntpfa', 'mpfa'};
+% pdiscs = {'', 'avgmpfa'};
 %%
-simcases = loadSimcases(gridcases, pdiscs);
+simcases = loadSimcases(gridcases, pdiscs); %for mrst
+% simcases = loadSimcases(gridnames, pdiscs, 'jutulComp', 'isothermal'); %for Jutul
 %%
 name = 'mrst100k';
+% name = 'jutul100k';
 %%
 energy = calcEMD(simcases, name);
 %%
@@ -79,8 +82,13 @@ function EMD_energy = calcEMD(simcases, name, varargin)
         j = indicesarray(k,2);
         statesj = simcases{j}.getSimData;
         statesi = simcases{i}.getSimData;
-        statej = statesj{numelData(statesj)}.FlowProps.ComponentTotalMass{2};
-        statei = statesi{numelData(statesi)}.FlowProps.ComponentTotalMass{2};
+        if ~isempty(simcases{i}.jutulComp)
+            statej = statesj{numelData(statesj)}.TotalMasses(:,2);
+            statei = statesi{numelData(statesi)}.TotalMasses(:,2);
+        else
+            statej = statesj{numelData(statesj)}.FlowProps.ComponentTotalMass{2};
+            statei = statesi{numelData(statesi)}.FlowProps.ComponentTotalMass{2};
+        end
         Gj = simcases{j}.G; 
         Gi = simcases{i}.G;
         Mj = simcases{j}.G.reductionMatrix;
@@ -112,14 +120,14 @@ function plotEMD(EMD_energy, simcases, name, varargin)
     
     % Normalize the EMD energy matrix
     EMD_energy = EMD_energy';
-    % EMD_energy = EMD_energy / max(EMD_energy(:));
     
     % Create labels combining grid and discretization info
     labels = cell(numel(simcases), 1);
+    gridnames = cell(numel(simcases), 1);
     for i = 1:numel(simcases)
-        gridname = gridcase_to_RSCname(simcases{i}.gridcase);
+        gridnames{i} = gridcase_to_RSCname(simcases{i}.gridcase);
         discname = shortDiscName(simcases{i}.pdisc);
-        labels{i} = sprintf('%s\n%s', gridname, discname);
+        labels{i} = sprintf('%s\n%s', gridnames{i}, discname);
     end
     
     % Create plot
@@ -129,18 +137,57 @@ function plotEMD(EMD_energy, simcases, name, varargin)
     % Set missing data to white
     cdata = get(gca, 'Children');
     set(cdata, 'AlphaData', ~isnan(EMD_energy));
-    % clim([0 1]);
     
-    % Add labels
-    set(gca, 'XTick', 1:length(labels), 'YTick', 1:length(labels));
-    set(gca, 'XTickLabel', labels, 'YTickLabel', labels);
-    xtickangle(45);
+    % Find grid sections
+    uniqueGrids = unique(gridnames, 'stable');
+    gridSections = zeros(length(uniqueGrids), 2);  % [start, end] indices
+    for i = 1:length(uniqueGrids)
+        gridMask = strcmp(gridnames, uniqueGrids{i});
+        gridSections(i,:) = [find(gridMask, 1, 'first'), find(gridMask, 1, 'last')];
+    end
+    
+    % Add grid lines and centered grid labels
+    hold on
+    % Remove default ticks
+    set(gca, 'XTick', [], 'YTick', []);
+    
+    % Add grid lines and labels
+    for i = 1:length(uniqueGrids)
+        if i < length(uniqueGrids)
+            idx = gridSections(i,2);
+            % Draw vertical and horizontal lines
+            line([idx+0.5 idx+0.5], [idx+0.5 length(labels)+0.5], 'Color', [0 0 1], 'LineWidth', 2);
+            line([0.5 idx+0.5], [idx+0.5 idx+0.5], 'Color', [0 0 1], 'LineWidth', 2);
+        end
+        
+        % Add centered grid labels
+        midPoint = mean(gridSections(i,:));
+        % X-axis label
+        text(midPoint, length(labels)+1, uniqueGrids{i}, ...
+             'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
+             'FontSize', 12);
+        % Y-axis label
+        text(-0.5, midPoint, uniqueGrids{i}, ...
+             'HorizontalAlignment', 'right', 'VerticalAlignment', 'middle', ...
+             'FontSize', 12);
+    end
+    
+    % Add discretization labels on diagonal
+    for i = 1:length(simcases)
+        discname = upper(shortDiscName(simcases{i}.pdisc));
+        if ~isempty(discname)
+            text(i, i, discname(1), ...
+                 'HorizontalAlignment', 'center', ...
+                 'VerticalAlignment', 'middle', ...
+                 'FontSize', 10, 'Color', 'w');
+        end
+    end
+    hold off
     
     % Customize appearance
     colorbar();
     colormap(hot);
     axis square;
-    set(gca, 'FontSize', 10);
     
     % Save plots if requested
     if opt.save
