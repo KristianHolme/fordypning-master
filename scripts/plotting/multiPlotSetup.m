@@ -51,14 +51,16 @@ end
 % gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};filename = 'C-Cut-P-Q-T_F';
 % gridcases = { 'cPEBI_819x117', '5tetRef0.31'};filename = 'pebi-unstruct-F';
 % gridcases = {'struct220x110', 'struct819x117', 'struct2640x380'};filename = 'struct-refine';
-gridcases = {'struct819x117'};filename='B-UWdisc';
+% gridcases = {'struct819x117'};filename='B-UWdisc';
+[gridcases, names] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI', 'QT', 'T'}, [100]);filename="mrst100k";
+pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
 % pdiscs = {'', 'cc', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
-pdiscs = {''};
+% pdiscs = {''};
 jutul = {false};
 
-uwdiscs = {'', 'WENO'};
+uwdiscs = {''};
 
 subname = ''; %'', 'uppermiddle', 'middle'
 [p1, p2] = getBoxPoints(subname, SPEcase, 3);
@@ -69,6 +71,7 @@ tagcases = {''};
 
 plotgrid = false;
 saveplot = false;
+RSC = true;
 saveToReport = false;
 ColorScale = 'linear';
 
@@ -100,6 +103,7 @@ for istep = 1:numel(steps)
     step = steps(istep);
     for i = 1:numDiscs
         disc = discs{i};
+        disc_labeled = false;
         for j = 1:numGrids
             if uw
                 disktype = 'uwdisc';
@@ -121,10 +125,16 @@ for istep = 1:numel(steps)
                 data{i, j, istep}.G = G;
                 data{i, j, istep}.cells = getSubCellsInBox(G, p1, p2);
                 if i == 1
-                    data{i, j, istep}.title = displayNameGrid(gridcase, simcase.SPEcase);
+                    if RSC
+                        gridname = gridcase_to_RSCname(gridcase);
+                    else
+                        gridname = displayNameGrid(gridcase, simcase.SPEcase);
+                    end
+                    data{i, j, istep}.title = gridname;
                 end
-                if j == 1
+                if ~disc_labeled
                     data{i, j, istep}.ylabel = shortDiscName(disc, 'uw', uw);
+                    disc_labeled = true;
                 end
             end
         end
@@ -221,7 +231,7 @@ for istep = 1:numel(steps)
                     % discName = [discName, ', ', uwdisc];
                 end
                 if i == 1
-
+                    gridname
                     data{i, j, istep}.title = discName;
                 end
                 if j == i
