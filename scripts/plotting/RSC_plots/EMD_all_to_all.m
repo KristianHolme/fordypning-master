@@ -18,45 +18,18 @@ energy = calcEMD(simcases, name);
 plotEMD(energy, simcases, name);
 
 %%
-function simcases = loadSimcases(gridcases, pdiscs, varargin)
-    opt = struct('SPEcase', 'B',...
-                 'jutulComp', '');
-    opt = merge_options(opt, varargin{:});
-    simcases = {};
-
-    for igrid = 1:numel(gridcases)
-        gridcase = gridcases{igrid};
-        for idisc = 1:numel(pdiscs)
-            pdisc = pdiscs{idisc};
-            if isempty(opt.jutulComp) && ~strcmp(pdisc, '')
-                simcasepdisc = ['hybrid-', pdisc];
-            else
-                simcasepdisc = pdisc;
-            end
-            if ~isempty(opt.jutulComp)
-                tagcase = 'allcells';
-            else
-                tagcase = '';
-            end
-            newsimcase = Simcase('SPEcase', opt.SPEcase, ...
-                                      'deckcase', 'B_ISO_C', ...
-                                      'usedeck', true, ...
-                                      'gridcase', gridcase, ...
-                                      'pdisc', simcasepdisc,...
-                                      'jutulComp', opt.jutulComp,...
-                                      'tagcase', tagcase);
-            states = newsimcase.getSimData;
-            if numelData(states) > 1
-                simcases{end+1} = newsimcase;
-            end
-        end
-    end
-end
 
 function EMD_energy = calcEMD(simcases, name, varargin)
     opt = struct('dir', './data/RSC/EMD',...
-                 'save', true);
+                 'save', true,...
+                 'recalculate', false);
     opt = merge_options(opt, varargin{:});
+    pth = fullfile(opt.dir, sprintf('%s.mat', name));
+    if isfile(pth) && ~opt.recalculate
+        load(pth)
+        return
+    end
+
     n = numel(simcases);
     EMD_energy = nan(n);
 
@@ -106,16 +79,20 @@ function EMD_energy = calcEMD(simcases, name, varargin)
     end
     
     if opt.save
-        pth = fullfile(opt.dir, sprintf('%s.mat', name));
+        
         save(pth, 'EMD_energy');
     end
 end
 
-
+function plotEMD(EMD_energy, simcases, name, varargin)
+    plotMatrixWithLabels(EMD_energy, simcases, name, 'EMD', varargin{:});
+end
+%{
 function plotEMD(EMD_energy, simcases, name, varargin)
     % Parse options
     opt = struct('dir', 'plots/RSC/EMD', ...
-                'save', true);
+                'save', true,...
+                'graybackground', true);
     opt = merge_options(opt, varargin{:});
     
     % Normalize the EMD energy matrix
@@ -133,6 +110,10 @@ function plotEMD(EMD_energy, simcases, name, varargin)
     % Create plot
     figure('Position', [100 100 1000 800], 'Name', sprintf('EMD, %s', name));
     h = imagesc(EMD_energy);
+    gray = [167,166,163]/255;
+    if opt.graybackground
+        set(gca, 'Color', gray); % Set background color to light gray
+    end
     
     % Set missing data to white
     cdata = get(gca, 'Children');
@@ -156,8 +137,8 @@ function plotEMD(EMD_energy, simcases, name, varargin)
         if i < length(uniqueGrids)
             idx = gridSections(i,2);
             % Draw vertical and horizontal lines
-            line([idx+0.5 idx+0.5], [idx+0.5 length(labels)+0.5], 'Color', [0 0 1], 'LineWidth', 2);
-            line([0.5 idx+0.5], [idx+0.5 idx+0.5], 'Color', [0 0 1], 'LineWidth', 2);
+            line([idx+0.5 idx+0.5], [idx+0.5 length(labels)+0.5], 'Color', gray, 'LineWidth', 2);
+            line([0.5 idx+0.5], [idx+0.5 idx+0.5], 'Color', gray, 'LineWidth', 2);
         end
         
         % Add centered grid labels
@@ -179,14 +160,27 @@ function plotEMD(EMD_energy, simcases, name, varargin)
             text(i, i, discname(1), ...
                  'HorizontalAlignment', 'center', ...
                  'VerticalAlignment', 'middle', ...
-                 'FontSize', 10, 'Color', 'w');
+                 'FontSize', 10, 'Color', 'k');
         end
     end
+    
+    % Add invisible scatter plots for legend
+    h1 = scatter(NaN,NaN, 'w'); % invisible scatter
+    h2 = scatter(NaN,NaN, 'w');
+    h3 = scatter(NaN,NaN, 'w');
+    h4 = scatter(NaN,NaN, 'w');
+    
+    % Add legend
+    legend([h1,h2,h3,h4], {'T = TPFA', 'A = AvgMPFA', 'N = NTPFA', 'M = MPFA'}, ...
+           'Location', 'northeast', ...
+           'TextColor', 'k', ...
+           'Color', 'w', ...
+           'FontSize', 10);
     hold off
     
     % Customize appearance
     colorbar();
-    colormap(hot);
+    C = hot(128); colormap(flipud(C(65:128,:)));
     axis square;
     
     % Save plots if requested
@@ -198,7 +192,7 @@ function plotEMD(EMD_energy, simcases, name, varargin)
         saveas(gcf, fullfile(opt.dir, [name, '_EMD.fig']));
     end
 end
-
+%}
 function reducedData = reduce(statedata, G, M, Gr)
     fulldata = zeros(size(M, 2), 1);
     fulldata(G.cells.indexMap) = statedata ./ G.cells.volumes;

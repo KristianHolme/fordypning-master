@@ -10,10 +10,10 @@ legendpos = 'best';
 plottitle = true;
 
 % chose what mrst simulations to show
-[mrstgridcases, mrstgridnames] = getRSCGridcases({'C', 'HC', 'CC', 'QT', 'T'}, [100]);
+[mrstgridcases, mrstgridnames] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI', 'QT', 'T'}, [100]);
 % chose what jutul simulations to show
 comptype = 'isothermal';
-[~, jutulgridcases] = getRSCGridcases({'C', 'HC', 'CC', 'QT', 'T'}, [100]);
+[~, jutulgridcases] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI', 'QT', 'T'}, [100]);
 
 pdiscs = {'', 'avgmpfa'};
 
