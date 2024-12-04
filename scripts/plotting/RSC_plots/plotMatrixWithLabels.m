@@ -34,7 +34,7 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
     end
     
     % gray = [167,166,163]/255;
-    gray = [240,240,240]/255;
+    gray = [250,250,250]/255;
     if opt.graybackground
         set(gca, 'Color', gray); % Set background color to light gray
     end
@@ -57,13 +57,17 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
     % Calculate center positions for each unique grid type
     gridCenters = zeros(length(uniqueGrids), 1);
     for i = 1:length(uniqueGrids)
-        gridCenters(i) = mean(gridSections(i,:));
+        % Calculate center as midpoint between first and last index of each grid section
+        start_idx = gridSections(i,1);
+        end_idx = gridSections(i,2);
+        gridCenters(i) = (start_idx + end_idx)/2;
     end
     
     % Set ticks and labels for axes
     labelFontSize = 16;
-    set(gca, 'XTick', gridCenters + 0.5, 'XTickLabel', uniqueGrids, 'FontSize', labelFontSize);
-    set(gca, 'YTick', gridCenters + 1.5, 'YTickLabel', uniqueGrids, 'FontSize', labelFontSize);
+    % Adjust tick positions to be centered within each grid section
+    set(gca, 'XTick', gridCenters, 'XTickLabel', uniqueGrids, 'FontSize', labelFontSize);
+    set(gca, 'YTick', gridCenters + 1, 'YTickLabel', uniqueGrids, 'FontSize', labelFontSize);
     set(gca, 'TickLength', [0 0]);
     
     % Add padding to make room for labels
