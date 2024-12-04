@@ -3,7 +3,9 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
     opt = struct('dir', 'plots/RSC/Measures', ...
                 'save', true, ...
                 'graybackground', true, ...
-                'titleInPlot', false);
+                'titleInPlot', false, ...
+                'legendPosition', 'northeast', ...
+                'createFigure', true);
     opt = merge_options(opt, varargin{:});
     
     % Normalize the matrix data
@@ -21,7 +23,9 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
     end
     
     % Create plot
-    figure('Position', [100 100 1000 800], 'Name', sprintf('%s, %s', figtitle, batchname));
+    if opt.createFigure
+        figure('Position', [100 100 1000 800], 'Name', sprintf('%s, %s', figtitle, batchname));
+    end
     h = imagesc(matrixData);
     
     % Add title at the top if option is enabled
@@ -30,7 +34,7 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
     end
     
     % gray = [167,166,163]/255;
-    gray = [220,220,220]/255;
+    gray = [240,240,240]/255;
     if opt.graybackground
         set(gca, 'Color', gray); % Set background color to light gray
     end
@@ -114,7 +118,7 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
     h4 = scatter(NaN,NaN, 'w');
     
     legend([h1,h2,h3,h4], {'T = TPFA', 'A = AvgMPFA', 'N = NTPFA', 'M = MPFA'}, ...
-        'Location', 'northeast', ...
+        'Location', opt.legendPosition, ...
         'TextColor', 'k', ...
         'Color', 'w', ...
         'FontSize', 10);
@@ -126,7 +130,7 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
     axis square;
     
     % Save plots if requested
-    if opt.save
+    if opt.save && opt.createFigure
         if ~exist(opt.dir, 'dir')
             mkdir(opt.dir);
         end
