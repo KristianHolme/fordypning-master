@@ -540,7 +540,7 @@ classdef Simcase < handle
 
             typeParts = strsplit(type, '.');
             if ~isempty(simcase.jutulComp)
-                steps = 210;
+                steps = numelData(simcase.getSimData);
             elseif isempty(simcase.schedulecase) || strcmp(simcase.schedulecase, 'simple-std')
                 steps = size(simcase.schedule.step.val, 1);
             else

@@ -11,7 +11,7 @@ function data = getBufferCO2(simcase, steps, varargin)
         savedata = true;
         disp("calculating data...")
         if ~isempty(    simcase.jutulComp)
-            maxsteps = 210;
+            maxsteps = numelData(simcase.getSimData);
         else
             maxsteps = numel(simcase.schedule.step.val);
         end

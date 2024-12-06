@@ -9,7 +9,7 @@ function data = getPoP(simcase, steps, popcell, varargin)
     else
         disp("calculating data...")
         if ~isempty(simcase.jutulComp)
-            maxsteps = 210;
+            maxsteps = numelData(simcase.getSimData);
         else
             maxsteps = numel(simcase.schedule.step.val);
         end

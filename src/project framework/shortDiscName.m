@@ -40,7 +40,7 @@ function discname = shortDiscName(discname, varargin)
             discname = replace(discname, 'hybrid-', '');
         end
         if strcmp(discname, 'avgmpfa')
-            discname = 'avgMPFA';
+            discname = 'AvgMPFA';
         else
             discname = upper(discname);
         end

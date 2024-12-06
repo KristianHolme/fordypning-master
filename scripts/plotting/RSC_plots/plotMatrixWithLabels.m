@@ -34,9 +34,10 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
     end
     
     % gray = [167,166,163]/255;
-    gray = [250,250,250]/255;
+    backgroundgray = [250,250,250]/255;
+    linegray = [200,200,200]/255;
     if opt.graybackground
-        set(gca, 'Color', gray); % Set background color to light gray
+        set(gca, 'Color', backgroundgray); % Set background color to light gray
     end
     
     % Set missing data to white
@@ -78,8 +79,8 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
         if i < length(uniqueGrids)
             idx = gridSections(i,2);
             % Draw vertical and horizontal lines
-            line([idx+0.5 idx+0.5], [idx+1.5 length(labels)+1.5], 'Color', gray, 'LineWidth', 2);
-            line([0.5 idx+0.5], [idx+1.5 idx+1.5], 'Color', gray, 'LineWidth', 2);
+            line([idx+0.5 idx+0.5], [idx+1.5 length(labels)+1.5], 'Color', linegray, 'LineWidth', 2);
+            line([0.5 idx+0.5], [idx+1.5 idx+1.5], 'Color', linegray, 'LineWidth', 2);
         end
         
         % Calculate center position for the label

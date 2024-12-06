@@ -2,39 +2,39 @@ clear all
 close all
 %%
 SPEcase = 'B';
-% [gridcases, gridnames] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI','QT', 'T'}, [100]);
-[gridcases, gridnames] = getRSCGridcases({'C', 'HC', 'CC','QT', 'T'}, [100]);
+[gridcases, gridnames] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI', 'QT', 'T'}, [100]);
 % [gridcases, gridnames] = getRSCGridcases({'C', 'HC', 'CC','QT', 'T'}, [10]);
-pdiscs = {'', 'avgmpfa', 'ntpfa', 'mpfa'};
-% pdiscs = {'', 'avgmpfa'};
+% pdiscs = {'', 'avgmpfa', 'ntpfa', 'mpfa'};
+pdiscs = {'', 'avgmpfa', 'ntpfa'};
 %%
-simcases = loadSimcases(gridcases, pdiscs); %for mrst
-% simcases = loadSimcases(gridnames, pdiscs, 'jutulComp', 'isothermal'); %for Jutul
+% simcases = loadSimcases(gridcases, pdiscs); %for mrst
+simcases = loadSimcases(gridnames, pdiscs, 'jutulComp', 'isothermal'); %for Jutul
+simcases = removeSimcases(simcases, {'C'}, {'avgmpfa', 'ntpfa'});
 %%
-name = 'mrst100k';
-% name = 'jutul100k';
+% name = 'mrst100k';
+name = 'jutul100k';
 titleInPlot = true;
 %% Choose measures
 measures = {
-    % 'sealing', ...%1
-    % 'buffer', ...%2
-    % 'pop1', ...%3
-    % 'pop2', ...%4
+    'sealing', ...%1
+    'buffer', ...%2
+    'pop1', ...%3
+    'pop2', ...%4
     'p21', ...%5
-    % 'p22', ...%6
-    % 'p23', ...%7
-    % 'p24', ...%8
-    % 'p31', ...%9
-    % 'p32', ...%10
-    % 'p33', ...%11
-    % 'p34' ...%12
+    'p22', ...%6
+    'p23', ...%7
+    'p24', ...%8
+    'p31', ...%9
+    'p32', ...%10
+    'p33', ...%11
+    'p34' ...%12
     };
 %% Plotting
 for im = 1:numel(measures)
     measure = measures{im};
     % plotMeasureMatrix(simcases, measure, name, titleInPlot);
     % Add option to create combined plot
-    plotMeasureMatrixWithTimeSeries(simcases, measure, name, titleInPlot);
+    plotMeasureMatrixWithTimeSeries(simcases, measure, name, titleInPlot, 'save', true);
 end
 %%
 function plotMeasureMatrix(simcases, measure, name, titleInPlot)
@@ -99,7 +99,9 @@ function similarity_matrix = calcSimilarityMatrix(time_series_data)
     end
 end
 
-function plotMeasureMatrixWithTimeSeries(simcases, measure, name, titleInPlot)
+function plotMeasureMatrixWithTimeSeries(simcases, measure, name, titleInPlot, varargin)
+    opt = struct('save', false, 'dir', './plots/RSC/measure_matrix-time_series');
+    opt = merge_options(opt, varargin{:});
     % Load data (reuse existing function)
     [time_series_data, title, ytxt, filetag] = loadMeasureData(simcases, measure);
     similarity_matrix = calcSimilarityMatrix(time_series_data);
@@ -115,8 +117,14 @@ function plotMeasureMatrixWithTimeSeries(simcases, measure, name, titleInPlot)
         'createFigure', false, ...
         'save', false);
     
-    % Create inset axes for time series - make it smaller and move it right
-    ax_inset = axes('Position', [0.45, 0.55, 0.29, 0.35]);  % [left bottom width height]
+    % Set inset position based on name
+    if contains(name, 'mrst')
+        inset_position = [0.41, 0.60, 0.325, 0.30];  % Original position for MRST
+    else
+        inset_position = [0.40, 0.605, 0.325, 0.295];  % Different position for other cases (e.g., Jutul)
+    end
+    
+    ax_inset = axes('Position', inset_position);  % [left bottom width height]
     hold(ax_inset, 'on');
     
     % Setup plotting styles
@@ -138,7 +146,7 @@ function plotMeasureMatrixWithTimeSeries(simcases, measure, name, titleInPlot)
         gridtype = gridcase_to_RSCname(simcase.gridcase);
         
         % Plot with appropriate style
-        plot(ax_inset, data(:,1)/xscaling, data(:,2), ...
+        plot(ax_inset, data(:,1)/xscaling - 1000, data(:,2), ...
             'Color', gridcasecolors(gridtype), ...
             'LineStyle', disc2linestyle(simcase.pdisc), ...
             'LineWidth', 2);
@@ -181,6 +189,22 @@ function plotMeasureMatrixWithTimeSeries(simcases, measure, name, titleInPlot)
     % Create the legend
     lgd = legend(handles, labels, 'NumColumns', 2, 'Location', 'best');
     set(lgd, 'Interpreter', 'none', 'FontSize', 8);
+
+    % Save figure
+    if opt.save
+        % Create directory if it doesn't exist
+        if ~exist(opt.dir, 'dir')
+            mkdir(opt.dir);
+        end
+        
+        % Generate filename
+        filename = fullfile(opt.dir, [name, '_', filetag, '.fig']);
+        % Save as PNG using exportgraphics
+        pngname = fullfile(opt.dir, [name, '_', filetag, '.png']);
+        exportgraphics(gcf, pngname, 'Resolution', 300);
+        % Save as MATLAB .fig file
+        savefig(gcf, filename);
+    end
 end
 
 function linestyle = disc2linestyle(pdisc)

@@ -52,7 +52,7 @@ end
 % gridcases = { 'cPEBI_819x117', '5tetRef0.31'};filename = 'pebi-unstruct-F';
 % gridcases = {'struct220x110', 'struct819x117', 'struct2640x380'};filename = 'struct-refine';
 % gridcases = {'struct819x117'};filename='B-UWdisc';
-[gridcases, names] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI', 'QT', 'T'}, [100]);filename="mrst100k";
+[gridcases, names] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI', 'QT', 'T'}, [100]);filename='mrst100k';
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
@@ -70,13 +70,14 @@ deckcases = {'B_ISO_C'};
 tagcases = {''};
 
 plotgrid = false;
-saveplot = false;
+saveplot = true;
+save_to_fig = true;
 RSC = true;
 saveToReport = false;
-ColorScale = 'linear';
+% ColorScale = 'linear';
 
 filename = [SPEcase, '_', dataname, '_', filename];
-savefolder=fullfile('./plots/multiplot', subname);
+savefolder=fullfile('./plots/RSC/multiplot', subname);
 
 
 numGrids = numel(gridcases);
@@ -157,7 +158,7 @@ for istep = 1:numel(steps)
     multiplot(data(:, :, istep), 'savefolder', savefolder, ...
         'savename', [filename, '_step', num2str(step)], ...
         'saveplot', saveplot, 'cmap', cmap, 'equal', false, 'plotgrid', plotgrid, ...
-        'saveToReport', saveToReport); 
+        'saveToReport', saveToReport, 'save_to_fig', save_to_fig); 
 end
 %% Setup full error plot/diff
 % gridcase = '5tetRef0.4';
