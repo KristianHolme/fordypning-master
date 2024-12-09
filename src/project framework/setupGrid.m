@@ -24,6 +24,8 @@ function G = setupGrid(simcase, varargin)
             ref = replace(ref, '.', '_');
             alg = gridcase(4:5);
 
+            
+
             mFile = fullfile(gridFolder, [prefix, '_ref', ref, '_alg', alg, '.m']);
             matFile = fullfile(gridFolder, [prefix, '_ref', ref, '_alg', alg, '_grid.mat']);
 
@@ -55,11 +57,23 @@ function G = setupGrid(simcase, varargin)
             if mod(refinement_factor, 1) ~= 0
                 str_ref_factor = replace(str_ref_factor, '.', '_');
             end
+
+            if strcmp(simcase.SPEcase, 'C')
+                pattern = 'x(\d+)';
+                match = regexp(gridcase, pattern, 'tokens');
+                if ~isempty(match)
+                    Cdepth = str2double(match{1}{1});
+                else
+                    error('Cdepth not found');
+                end
+                % add Cdepth to ref factor
+                str_ref_factor = [str_ref_factor, 'x', num2str(Cdepth)];
+            end
            
             matFile = fullfile(gridFolder, [prefix, '_ref', str_ref_factor, '_alg', num2str(meshAlg),'_grid.mat']);
             mFile = fullfile(gridFolder, [prefix, '_ref', str_ref_factor, '_alg', num2str(meshAlg), '.m']);
             if ~isfile(matFile) && ~isfile(mFile)
-                error([matFile,' and ', mfile, ' not found']);
+                error([matFile,' and ', mFile, ' not found']);
             elseif ~isfile(matFile) && isfile(mFile)
                 G = gmshToMRST(mFile);
                 configFile = fileread('config.JSON');

@@ -584,9 +584,13 @@ classdef Simcase < handle
             rock = simcase.rock;
             G.bufferMult = rock.bufferMult;
             if ~isfield(G.cells, 'wellCells')
-                assert(strcmp(simcase.SPEcase, 'B'))
                 [w1, w2] = getinjcells(G, 'B');
-                G.cells.wellCells = [w1, w2];
+                switch simcase.SPEcase
+                    case 'B'
+                        G.cells.wellCells = [w1, w2];
+                    case 'C'
+                        G.cells.wellCells = {w1, w2};
+                end
             end
             
             save(fullfile(folder, name), "rock", "G");

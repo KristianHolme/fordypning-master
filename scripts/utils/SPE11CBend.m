@@ -4,7 +4,7 @@ function new_coord = SPE11CBend(coord)
     y = coord(:, 2);
     z = coord(:, 3);
     
-    tmp = 1 - ((y - 2500)/2500)^2;
+    tmp = 1 - ((y - 2500)/2500).^2;
     w = z - 150.*tmp - y./500;
     
     new_coord = [x, y, w];

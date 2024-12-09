@@ -58,21 +58,21 @@ function G = generateQTorTGridMatlab(varargin)
         opt.SPEcase = 'C';
 
 
-        prefix = ['spe11', opt.SPEcase];
-        ref = num2str(opt.refinementFactor);
+        prefix = ['spe11', lower(opt.SPEcase)];
+        ref = replace(num2str(opt.refinementFactor), '.', '_');
         if strcmp(opt.gridType, 'QT')
             alg = 'pb';
         elseif strcmp(opt.gridType, 'T')
             alg = '5';
         end
-        matFile = fullfile(simcase.repoDir, 'data/grid-files', [prefix, '_ref', ref, '_alg', alg, '_grid.mat']);
+        matFile = fullfile(simcase.repoDir, 'data/grid-files', [prefix, '_ref', ref, 'x', num2str(opt.Cdepth), '_alg', alg, '_grid.mat']);
         if isfile(matFile)
             load(matFile, 'G');
         else
             configFile = fileread('config.JSON');
             config = jsondecode(configFile);
             fn = fullfile(config.geo_folder, 'spe11a.geo');
-            geodata = readGeo(fn, 'assignExtra', true);
+            geodata = rotateGrid(readGeo(fn, 'assignExtra', true));
 
             %fn = 'C:\Users\holme\Documents\Prosjekt\Prosjektoppgave\src\11thSPE-CSP\geometries\spe11a.geo';
 
@@ -84,7 +84,7 @@ function G = generateQTorTGridMatlab(varargin)
             G = mcomputeGeometry(G);
             G = rotateGrid(G);
             G = mcomputeGeometry(G);
-            G = tagbyFacies(G, geodata, 'vertIx', 2);
+            G = tagbyFacies(G, geodata, 'vertIx', 3, 'scale', [3000, 1, 1000]);
             G.nodes.coords = bendSPE11C(G.nodes.coords);
             G = mcomputeGeometry(G);
             G = getBufferCells(G);

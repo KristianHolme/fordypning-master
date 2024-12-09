@@ -1,12 +1,12 @@
 function [gridcases, names] = getRSCGridcases(gridTypes, targetResolutions)
     % Grid configurations for different resolutions
     configs = struct();
-    configs.r10k   = struct('nx', 140,  'nz', 75,  'qt', 1.2,   't', 1.3,   'sig', [1,1]);
-    configs.r50k   = struct('nx', 500,  'nz', 100, 'qt', 0.38,  't', 0.54,  'sig', [2,2]);
-    configs.r100k  = struct('nx', 840,  'nz', 120, 'qt', 0.25,  't', 0.37,  'sig', [2,2]);
-    configs.r200k  = struct('nx', 1180, 'nz', 170, 'qt', 0.17,  't', 0.26,  'sig', [2,2]);
-    configs.r500k  = struct('nx', 1870, 'nz', 270, 'qt', 0.103, 't', 0.16,  'sig', [3,2]);
-    configs.r1m    = struct('nx', 2640, 'nz', 380, 'qt', 0.071, 't', 0.112, 'sig', [3,3]);
+    configs.r10k   = struct('nx', 140,  'nz', 75,  'qt', 1.2,   't', 1.25,   'sig', [1,2]);
+    configs.r50k   = struct('nx', 500,  'nz', 100, 'qt', 0.54,  't', 0.52,  'sig', [2,2]);
+    configs.r100k  = struct('nx', 840,  'nz', 120, 'qt', 0.38,  't', 0.36,  'sig', [2,2]);
+    configs.r200k  = struct('nx', 1180, 'nz', 170, 'qt', 0.28,  't', 0.25,  'sig', [2,2]);
+    configs.r500k  = struct('nx', 1870, 'nz', 270, 'qt', 0.175, 't', 0.16,  'sig', [3,2]);
+    configs.r1m    = struct('nx', 2640, 'nz', 380, 'qt', 0.121, 't', 0.112, 'sig', [3,3]);
     
     % Grid type templates as a map
     templates = containers.Map();
