@@ -1,6 +1,7 @@
 % Specify grid case and load simcase
-gridcases = {'struct819x117', 'horz_ndg_cut_PG_819x117', 'cart_ndg_cut_PG_819x117', 'cPEBI_819x117', 'gq_pb0.19', '5tetRef0.31'};
-gridcase = gridcases{6}; % Change this to use different grids
+gridcases, gridnames = getRSCGridcases({'C', 'HC', 'CC', 'PEBI', 'QT', 'T'}, [100]);
+i = 1;
+gridcase = gridcases{i}; % Change this to use different grids
 SPEcase = 'B';
 deckcase = 'B_ISO_C';
 simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcase, 'usedeck', true, 'gridcase', gridcase);
@@ -30,5 +31,5 @@ set(ax, 'xlim', [1050, 1650], 'zlim', [440, 1050]);
 % Apply custom colormap for the integer tags
 colormap(customColors);
 caxis([1 7]); % Set color axis limits to match our tag range
-savepath = ['./plots/RCS/grids-fault/', displayNameGrid(simcase.gridcase, simcase.SPEcase), '_fault.png']
+savepath = ['./plots/RCS/grids-fault/', gridcase_to_RSCname(gridcase), '_fault.png']
 exportgraphics(gcf, savepath, 'ContentType','Auto', Resolution=500);
