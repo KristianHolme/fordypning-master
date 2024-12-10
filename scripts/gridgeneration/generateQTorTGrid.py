@@ -3,6 +3,8 @@ import sys
 import os
 import numpy as np
 import time
+import shutil
+import fileinput
 
 def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh=True):
     """
@@ -31,12 +33,26 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
         # Format refinement factor for filename (e.g., 0.3 -> "0_3")
         ref_str = f"{refinement_factor}".replace(".", "_")
         
-        # Load and execute the .geo script
-        gmsh.open(geo_file)
-        
-        # json = gmsh.onelab.get()
-        # print(json)
-        gmsh.option.setNumber("Mesh.MeshSizeFactor", refinement_factor/5.0)
+        if grid_type == 'QT':
+            # Create a temporary copy of the .geo file
+            temp_geo = os.path.join(script_dir, '..', '..', 'data', 'temp', 'temp_spe11a.geo')
+            os.makedirs(os.path.dirname(temp_geo), exist_ok=True)
+            shutil.copy2(geo_file, temp_geo)
+            
+            # Modify the refinement factor in the temporary file
+            with fileinput.FileInput(temp_geo, inplace=True) as file:
+                for line in file:
+                    if 'DefineConstant[ refinement_factor =' in line:
+                        print(f'DefineConstant[ refinement_factor = {refinement_factor} ];')
+                    else:
+                        print(line, end='')
+            
+            # Load the modified .geo file
+            gmsh.open(temp_geo)
+        else:
+            # For triangle meshes, load original file and use mesh size factor
+            gmsh.open(geo_file)
+            gmsh.option.setNumber("Mesh.MeshSizeFactor", refinement_factor/5.0)
         
         # Enable parallel meshing with multiple threads
         gmsh.option.setNumber("General.NumThreads", 20)  # Adjust based on your CPU
@@ -46,7 +62,6 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
             alg_str = 'pb'  # Parallel packing + blossom
             gmsh.option.setNumber("Mesh.Algorithm", 9)  # Parallel packing
             gmsh.option.setNumber("Mesh.RecombinationAlgorithm", 1)  # Blossom
-            gmsh.option.setNumber("Mesh.RecombineAll", 1)
         else:  # Triangle grid
             alg_str = '5'  # Delaunay
             gmsh.option.setNumber("Mesh.Algorithm", 5)  # Delaunay
@@ -61,6 +76,8 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
         # Generate the mesh
         gmsh.option.setNumber("Mesh.SaveAll", 1)
         gmsh.model.mesh.generate(2)  # 2D mesh
+        if grid_type == 'QT':
+            gmsh.model.mesh.recombine()
         
         # Scale mesh if SPE11B
         if spe_case.upper() == 'B':
@@ -76,6 +93,16 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
         # Save mesh if requested
         if save_mesh:
             gmsh.write(output_file)
+        else:
+            # Save temporary file in Gmsh format for visualization with consistent name
+            temp_file = os.path.join(script_dir, '..', '..', 'data', 'temp', 'temp_mesh.msh')
+            # Create temp directory if it doesn't exist
+            temp_dir = os.path.dirname(temp_file)
+            if not os.path.exists(temp_dir):
+                os.makedirs(temp_dir)
+            gmsh.write(temp_file)
+            print(f"\nTemporary mesh saved to: {temp_file}")
+            print("You can open this file in Gmsh GUI to visualize the mesh")
         
         # Get elements
         elementTypes, elementTags, elementNodes = gmsh.model.mesh.getElements()
@@ -115,6 +142,9 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
         
     finally:
         gmsh.finalize()
+        # Clean up temporary file if it exists
+        if grid_type == 'QT' and os.path.exists(temp_geo):
+            os.remove(temp_geo)
 
 if __name__ == "__main__":
     # Parse command line arguments if called directly
