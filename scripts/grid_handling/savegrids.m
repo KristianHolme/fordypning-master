@@ -4,17 +4,17 @@ close all
 pythonpath = char(fullfile("scripts/gridgeneration/ggvenv/bin/python"));
 %% Generate and save grids for SPE11B
 % Ca 10K celler
-% nx = 140; nz = 75; refinementFactorQT = 1.2; refinementFactorT = 1.25; sigdigits = [1, 2];
+% nx = 140; nz = 75; refinementFactorQT = 1.54; refinementFactorT = 1.25; sigdigits = [2, 2];
 % ca. 50k celler
-% nx = 500; nz = 100; refinementFactorQT = 0.54; refinementFactorT = 0.52; sigdigits = [2, 2];
+% nx = 500; nz = 100; refinementFactorQT = 0.65; refinementFactorT = 0.52; sigdigits = [2, 2];
 % ca 100K celler
-nx = 840; nz = 120; refinementFactorQT = 0.38; refinementFactorT = 0.36; sigdigits = [2, 2];
+nx = 840; nz = 120; refinementFactorQT = 0.45; refinementFactorT = 0.36; sigdigits = [2, 2];
 % ca 200K celler
-% nx = 1180; nz = 170; refinementFactorQT = 0.28; refinementFactorT = 0.25; sigdigits = [2, 2];
+% nx = 1180; nz = 170; refinementFactorQT = NaN; refinementFactorT = 0.25; sigdigits = [3, 2];
 % ca 500K celler
-% nx = 1870; nz = 270; refinementFactorQT = 0.175; refinementFactorT = 0.16; sigdigits = [3, 2];
+% nx = 1870; nz = 270; refinementFactorQT = NaN; refinementFactorT = 0.16; sigdigits = [3, 2];
 % ca 1M celler
-% nx = 2640; nz = 380; refinementFactorQT = 0.12; refinementFactorT = 0.112; sigdigits = [3, 2];
+% nx = 2640; nz = 380; refinementFactorQT = NaN; refinementFactorT = 0.112; sigdigits = [3, 2];
 
 %%
 SPEcase = 'B';
