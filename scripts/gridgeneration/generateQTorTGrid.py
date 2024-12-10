@@ -2,6 +2,7 @@ import gmsh
 import sys
 import os
 import numpy as np
+import time
 
 def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh=True):
     """
@@ -15,6 +16,9 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
     """
     import gmsh
     import os
+
+    # Start timer
+    start_time = time.time()
 
     # Initialize Gmsh
     gmsh.initialize()
@@ -30,6 +34,8 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
         # Load and execute the .geo script
         gmsh.open(geo_file)
         
+        # json = gmsh.onelab.get()
+        # print(json)
         gmsh.option.setNumber("Mesh.MeshSizeFactor", refinement_factor/5.0)
         
         # Enable parallel meshing with multiple threads
@@ -39,7 +45,7 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
         if grid_type == 'QT':
             alg_str = 'pb'  # Parallel packing + blossom
             gmsh.option.setNumber("Mesh.Algorithm", 9)  # Parallel packing
-            gmsh.option.setNumber("Mesh.RecombinationAlgorithm", 2)  # Blossom
+            gmsh.option.setNumber("Mesh.RecombinationAlgorithm", 1)  # Blossom
             gmsh.option.setNumber("Mesh.RecombineAll", 1)
         else:  # Triangle grid
             alg_str = '5'  # Delaunay
@@ -97,6 +103,15 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
         # Print total number of elements
         total_elements = sum(len(tags) for tags in elementTags)
         print(f"\nTotal number of elements: {total_elements}")
+        
+        # Count triangles and quads
+        num_triangles = sum(len(elementTags[i]) for i, elemType in enumerate(elementTypes) if elemType == 2)
+        num_quads = sum(len(elementTags[i]) for i, elemType in enumerate(elementTypes) if elemType == 3)
+        print(f"Number of cells (triangles + quads): {num_triangles + num_quads}")
+        
+        # Print elapsed time
+        elapsed_time = time.time() - start_time
+        print(f"\nGrid generation completed in {elapsed_time:.2f} seconds")
         
     finally:
         gmsh.finalize()
