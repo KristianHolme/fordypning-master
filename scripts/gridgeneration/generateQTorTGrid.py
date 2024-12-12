@@ -28,14 +28,22 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
     try:
         # Get the directory of the current script and construct paths
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        geo_file = os.path.join(script_dir, '..', '..', 'data', 'geo-files', 'spe11a.geo')
+        
+        # Choose geo file based on SPE case for QT grids
+        if grid_type == 'QT' and spe_case.upper() == 'B':
+            geo_file = os.path.join(script_dir, '..', '..', 'data', 'geo-files', 'spe11b.geo')
+            # Adjust refinement factor for scaled geometry
+            adjusted_refinement = refinement_factor * 2000 
+        else:
+            geo_file = os.path.join(script_dir, '..', '..', 'data', 'geo-files', 'spe11a.geo')
+            adjusted_refinement = refinement_factor
         
         # Format refinement factor for filename (e.g., 0.3 -> "0_3")
         ref_str = f"{refinement_factor}".replace(".", "_")
         
         if grid_type == 'QT':
-            # Create a temporary copy of the .geo file
-            temp_geo = os.path.join(script_dir, '..', '..', 'data', 'temp', 'temp_spe11a.geo')
+            # Create and modify temporary geo file
+            temp_geo = os.path.join(script_dir, '..', '..', 'data', 'temp', 'temp.geo')
             os.makedirs(os.path.dirname(temp_geo), exist_ok=True)
             shutil.copy2(geo_file, temp_geo)
             
@@ -43,52 +51,52 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
             with fileinput.FileInput(temp_geo, inplace=True) as file:
                 for line in file:
                     if 'DefineConstant[ refinement_factor =' in line:
-                        print(f'DefineConstant[ refinement_factor = {refinement_factor} ];')
+                        print(f'DefineConstant[ refinement_factor = {adjusted_refinement} ];')
                     else:
                         print(line, end='')
             
             # Load the modified .geo file
             gmsh.open(temp_geo)
+        
         else:
             # For triangle meshes, load original file and use mesh size factor
             gmsh.open(geo_file)
             gmsh.option.setNumber("Mesh.MeshSizeFactor", refinement_factor/5.0)
         
-        # Enable parallel meshing with multiple threads
-        gmsh.option.setNumber("General.NumThreads", 20)  # Adjust based on your CPU
+        # Enable parallel meshing
+        gmsh.option.setNumber("General.NumThreads", 20)
         
         # Set mesh options based on grid type
         if grid_type == 'QT':
-            alg_str = 'pb'  # Parallel packing + blossom
-            gmsh.option.setNumber("Mesh.Algorithm", 9)  # Parallel packing
-            gmsh.option.setNumber("Mesh.RecombinationAlgorithm", 1)  # Blossom
-        else:  # Triangle grid
-            alg_str = '5'  # Delaunay
-            gmsh.option.setNumber("Mesh.Algorithm", 5)  # Delaunay
+            alg_str = 'pb'
+            gmsh.option.setNumber("Mesh.Algorithm", 9)
+            gmsh.option.setNumber("Mesh.RecombinationAlgorithm", 1)
+            # gmsh.option.setNumber("Mesh.RecombineAll", 1)
+        else:
+            alg_str = '5'
+            gmsh.option.setNumber("Mesh.Algorithm", 5)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-        
-        # Set output filename based on SPE case
-        output_file = os.path.join(
-            script_dir, '..', '..', 'data', 'grid-files',
-            f'spe11{spe_case.lower()}_ref{ref_str}_alg{alg_str}.m'
-        )
         
         # Generate the mesh
         gmsh.option.setNumber("Mesh.SaveAll", 1)
-        gmsh.model.mesh.generate(2)  # 2D mesh
+        gmsh.model.mesh.generate(2)
         if grid_type == 'QT':
             gmsh.model.mesh.recombine()
         
-        # Scale mesh if SPE11B
-        if spe_case.upper() == 'B':
-            # Create transformation matrix for scaling
-            # Format: [3000x, 0, 0, 0, 0, 1000y, 0, 0, 0, 0, 1z, 0]
+        # Scale mesh if SPE11B (only for T grids)
+        if spe_case.upper() == 'B' and grid_type == 'T':
             transform = [
                 3000, 0, 0, 0,  # First row: scale x by 3000
                 0, 1000, 0, 0,  # Second row: scale y by 1000
                 0, 0, 1, 0      # Third row: no change to z
             ]
             gmsh.model.mesh.affineTransform(transform)
+        
+        # Set output filename based on SPE case
+        output_file = os.path.join(
+            script_dir, '..', '..', 'data', 'grid-files',
+            f'spe11{spe_case.lower()}_ref{ref_str}_alg{alg_str}.m'
+        )
         
         # Save mesh if requested
         if save_mesh:
@@ -148,7 +156,7 @@ def generate_grid(refinement_factor=1.0, grid_type='QT', spe_case='A', save_mesh
 
 if __name__ == "__main__":
     # Parse command line arguments if called directly
-    refinement = float(sys.argv[1]) if len(sys.argv) > 1 else 1.0
+    refinement = float(sys.argv[1]) if len(sys.argv) > 1 else 5.0
     grid_type = sys.argv[2] if len(sys.argv) > 2 else 'QT'
     spe_case = sys.argv[3] if len(sys.argv) > 3 else 'B'
     save_mesh = True if len(sys.argv) <= 4 else sys.argv[4].lower() == 'true'

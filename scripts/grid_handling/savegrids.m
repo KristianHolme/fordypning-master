@@ -4,47 +4,50 @@ close all
 pythonpath = char(fullfile("scripts/gridgeneration/ggvenv/bin/python"));
 %% Generate and save grids for SPE11B
 % Ca 10K celler
-% nx = 140; nz = 75; refinementFactorQT = 1.54; refinementFactorT = 1.25; sigdigits = [2, 2];
+% nx = 140; nz = 75; refinementFactorQT = 1.34; refinementFactorT = 1.28; sigdigits = [2, 2];
+% Ca 25K celler
+% nx = 420; nz = 60; refinementFactorQT = 0.81; refinementFactorT = 0.762; sigdigits = [2, 3];
 % ca. 50k celler
-% nx = 500; nz = 100; refinementFactorQT = 0.65; refinementFactorT = 0.52; sigdigits = [2, 2];
+% nx = 500; nz = 100; refinementFactorQT = 0.56; refinementFactorT = 0.527; sigdigits = [2, 3];
 % ca 100K celler
-nx = 840; nz = 120; refinementFactorQT = 0.45; refinementFactorT = 0.36; sigdigits = [2, 2];
+% nx = 840; nz = 120; refinementFactorQT = 0.394; refinementFactorT = 0.366; sigdigits = [3, 3];
 % ca 200K celler
-% nx = 1180; nz = 170; refinementFactorQT = NaN; refinementFactorT = 0.25; sigdigits = [3, 2];
+% nx = 1180; nz = 170; refinementFactorQT = NaN; refinementFactorT = 0.256; sigdigits = [3, 3];
 % ca 500K celler
 % nx = 1870; nz = 270; refinementFactorQT = NaN; refinementFactorT = 0.16; sigdigits = [3, 2];
 % ca 1M celler
-% nx = 2640; nz = 380; refinementFactorQT = NaN; refinementFactorT = 0.112; sigdigits = [3, 2];
-
+% nx = 2640; nz = 380; refinementFactorQT = NaN; refinementFactorT = 0.113; sigdigits = [3, 3];
+% ca 2M celler
+nx = 3730; nz = 536; refinementFactorQT = NaN; refinementFactorT = NaN; sigdigits = [3, 2];
 %%
 SPEcase = 'B';
 % generateStructuredGrid(nx, 1, nz, 'SPEcase', SPEcase, 'save', true);
 % generateCutCellGrid(nx, nz, 'SPEcase', SPEcase, 'save', true);
 % generateCutCellGrid(nx, nz, 'SPEcase', SPEcase, 'save', true, 'type', 'cartesian');
-generateQTorTGridMatlab('refinementFactor', refinementFactorQT, 'gridType', 'QT', 'SPEcase', SPEcase, 'pythonPath', pythonpath);
-generateQTorTGridMatlab('refinementFactor', refinementFactorT, 'gridType', 'T', 'SPEcase', SPEcase, 'pythonPath', pythonpath);
+% generateQTorTGridMatlab('refinementFactor', refinementFactorQT, 'gridType', 'QT', 'SPEcase', SPEcase, 'pythonPath', pythonpath);
+% generateQTorTGridMatlab('refinementFactor', refinementFactorT, 'gridType', 'T', 'SPEcase', SPEcase, 'pythonPath', pythonpath);
 % generatePEBIGrid(nx, nz, 'SPEcase', 'B', 'save', true); %likely wont work for cell counts below 100K
 
 gridcases = {
-             % sprintf('struct%dx%d', nx, nz),...
+             sprintf('struct%dx%d', nx, nz),...
              % sprintf('horz_ndg_cut_PG_%dx%d', nx, nz),...
              % sprintf('cart_ndg_cut_PG_%dx%d', nx, nz),...
-             sprintf('gq_pb%.*f', sigdigits(1), refinementFactorQT),...
-             sprintf('5tetRef%.*f', sigdigits(2), refinementFactorT),...
-            %  sprintf('cPEBI_%dx%d', nx, nz)
+             % sprintf('gq_pb%.*f', sigdigits(1), refinementFactorQT),...
+             % sprintf('5tetRef%.*f', sigdigits(2), refinementFactorT),...
+             % sprintf('cPEBI_%dx%d', nx, nz)
              };
 names = {
-         % sprintf('b_C_%dx%d', nx, nz),...
+         sprintf('b_C_%dx%d', nx, nz),...
          % sprintf('b_HC_%dx%d', nx, nz),...
          % sprintf('b_CC_%dx%d', nx, nz),...
-         strrep(sprintf('b_QT%.*f', sigdigits(1), refinementFactorQT), '.', '_'),...
-         strrep(sprintf('b_T%.*f', sigdigits(2), refinementFactorT), '.', '_'),...
-        %  sprintf('b_PEBI_%dx%d', nx, nz)
+         % strrep(sprintf('b_QT%.*f', sigdigits(1), refinementFactorQT), '.', '_'),...
+         % strrep(sprintf('b_T%.*f', sigdigits(2), refinementFactorT), '.', '_'),...
+         % sprintf('b_PEBI_%dx%d', nx, nz)
          };
 
 folder = '~/Code/CSP11_JutulDarcy.jl/data/';
 saveGridRocks(gridcases, names, folder, 'B');
-
+disp("Done.")
 %% SPE11C
 SPEcase = 'C';
 % ~10K cells

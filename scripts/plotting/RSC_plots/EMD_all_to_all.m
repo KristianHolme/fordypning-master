@@ -9,11 +9,12 @@ pdiscs = {'', 'avgmpfa', 'ntpfa', 'mpfa'};
 %%
 simcases = loadSimcases(gridcases, pdiscs); %for mrst
 % simcases = loadSimcases(gridnames, pdiscs, 'jutulComp', 'isothermal'); %for Jutul
+simcases = removeSimcases(simcases, {'C'}, {'avgmpfa', 'ntpfa'});
 %%
 name = 'mrst100k';
 % name = 'jutul100k';
 %%
-energy = calcEMD(simcases, name);
+energy = calcEMD(simcases, name, 'recalculate', false);
 %%
 plotEMD(energy, simcases, name);
 
@@ -85,7 +86,7 @@ function EMD_energy = calcEMD(simcases, name, varargin)
 end
 
 function plotEMD(EMD_energy, simcases, name, varargin)
-    plotMatrixWithLabels(EMD_energy, simcases, name, 'EMD', varargin{:});
+    plotMatrixWithLabels(EMD_energy, simcases, name, 'EMD', 'EMD', varargin{:});
 end
 %{
 function plotEMD(EMD_energy, simcases, name, varargin)

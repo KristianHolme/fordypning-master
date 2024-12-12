@@ -4,15 +4,15 @@ close all
 SPEcase = 'B';
 [gridcases, gridnames] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI', 'QT', 'T'}, [100]);
 % [gridcases, gridnames] = getRSCGridcases({'C', 'HC', 'CC','QT', 'T'}, [10]);
-% pdiscs = {'', 'avgmpfa', 'ntpfa', 'mpfa'};
-pdiscs = {'', 'avgmpfa', 'ntpfa'};
+pdiscs = {'', 'avgmpfa', 'ntpfa', 'mpfa'};
+% pdiscs = {'', 'avgmpfa', 'ntpfa'};
 %%
-% simcases = loadSimcases(gridcases, pdiscs); %for mrst
-simcases = loadSimcases(gridnames, pdiscs, 'jutulComp', 'isothermal'); %for Jutul
+simcases = loadSimcases(gridcases, pdiscs); %for mrst
+% simcases = loadSimcases(gridnames, pdiscs, 'jutulComp', 'isothermal'); %for Jutul
 simcases = removeSimcases(simcases, {'C'}, {'avgmpfa', 'ntpfa'});
 %%
-% name = 'mrst100k';
-name = 'jutul100k';
+name = 'mrst100k';
+% name = 'jutul100k';
 titleInPlot = true;
 %% Choose measures
 measures = {
@@ -198,9 +198,13 @@ function plotMeasureMatrixWithTimeSeries(simcases, measure, name, titleInPlot, v
         end
         
         % Generate filename
-        filename = fullfile(opt.dir, [name, '_', filetag, '.fig']);
-        % Save as PNG using exportgraphics
-        pngname = fullfile(opt.dir, [name, '_', filetag, '.png']);
+        titleStr = '';
+        if titleInPlot
+            titleStr = '_withTitle';
+        end
+        filename = fullfile(opt.dir, [name, '_', filetag, titleStr, '.fig']);
+        % Save as PNG using exportgraphics 
+        pngname = fullfile(opt.dir, [name, '_', filetag, titleStr, '.png']);
         exportgraphics(gcf, pngname, 'Resolution', 300);
         % Save as MATLAB .fig file
         savefig(gcf, filename);

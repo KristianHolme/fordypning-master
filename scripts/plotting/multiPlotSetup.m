@@ -53,6 +53,7 @@ end
 % gridcases = {'struct220x110', 'struct819x117', 'struct2640x380'};filename = 'struct-refine';
 % gridcases = {'struct819x117'};filename='B-UWdisc';
 [gridcases, names] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI', 'QT', 'T'}, [100]);filename='mrst100k';
+% [gridcases, names] = getRSCGridcases({'C', 'HC', 'CC', 'PEBI'}, [100]);filename='mrst100k';
 pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa', 'hybrid-mpfa'};
 
 % pdiscs = {'', 'hybrid-avgmpfa', 'hybrid-ntpfa'};
@@ -71,7 +72,7 @@ tagcases = {''};
 
 plotgrid = false;
 saveplot = true;
-save_to_fig = true;
+save_to_fig = false;
 RSC = true;
 saveToReport = false;
 % ColorScale = 'linear';
@@ -99,23 +100,24 @@ end
 if numel(deckcases) ~= numGrids
     deckcases = repmat(deckcases, 1, numGrids);
 end
-data = cell(numDiscs, numGrids, numel(steps));
+data = cell(numGrids, numDiscs, numel(steps));
 for istep = 1:numel(steps)
     step = steps(istep);
-    for i = 1:numDiscs
-        disc = discs{i};
-        disc_labeled = false;
-        for j = 1:numGrids
+    discs_labeled = false(numDiscs, 1);
+    for i = 1:numGrids
+        gridcase = gridcases{i};
+        for j = 1:numDiscs
+            disc = discs{j};
+            
             if uw
                 disktype = 'uwdisc';
             else
                 disktype = 'pdisc';
             end
-            gridcase = gridcases{j};
-            simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcases{j}, 'usedeck', true, 'gridcase', gridcase, ...
-                                'tagcase', tagcases{j}, ...
+            simcase = Simcase('SPEcase', SPEcase, 'deckcase', deckcases{i}, 'usedeck', true, 'gridcase', gridcase, ...
+                                'tagcase', tagcases{i}, ...
                                 disktype, disc, ...
-                                'jutul', jutul{j});
+                                'jutul', jutul{i});
             [states, ~, ~] = simcase.getSimData;
             G = simcase.G;
             if numelData(states) >= step || force
@@ -125,17 +127,17 @@ for istep = 1:numel(steps)
                 data{i, j, istep}.injcells = [inj1, inj2];
                 data{i, j, istep}.G = G;
                 data{i, j, istep}.cells = getSubCellsInBox(G, p1, p2);
-                if i == 1
+                if j == 1
                     if RSC
                         gridname = gridcase_to_RSCname(gridcase);
                     else
                         gridname = displayNameGrid(gridcase, simcase.SPEcase);
                     end
-                    data{i, j, istep}.title = gridname;
+                    data{i, j, istep}.ylabel = gridname;
                 end
-                if ~disc_labeled
-                    data{i, j, istep}.ylabel = shortDiscName(disc, 'uw', uw);
-                    disc_labeled = true;
+                if ~discs_labeled(j)
+                    data{i, j, istep}.title = shortDiscName(disc, 'uw', uw);
+                    discs_labeled(j) = true;
                 end
             end
         end

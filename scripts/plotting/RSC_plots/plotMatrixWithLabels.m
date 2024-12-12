@@ -142,9 +142,10 @@ function plotMatrixWithLabels(matrixData, simcases, batchname, figtitle, filetag
         % Ensure figure is rendered properly before saving
         drawnow
         
+        disp(['saving to ', fullfile(opt.dir, [batchname, '_', filetag, '.png'])])
         % Save as PNG using exportgraphics
         exportgraphics(gcf, fullfile(opt.dir, [batchname, '_', filetag, '.png']), 'Resolution', 300);
-        exportgraphics(gcf, fullfile(opt.dir, [batchname, '_', filetag, '.png']), 'Resolution', 300);
+        % exportgraphics(gcf, fullfile(opt.dir, [batchname, '_', filetag, '.png']), 'Resolution', 300);
         % Save as FIG
         savefig(gcf, fullfile(opt.dir, [batchname, '_', filetag, '.fig']));
     end
